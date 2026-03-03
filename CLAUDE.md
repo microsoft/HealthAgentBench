@@ -70,6 +70,9 @@ Key rules (see `PLANS.md` for the complete specification):
 # Install dependencies
 uv sync --all-extras
 
+# Activate virtual environment
+source .venv/bin/activate
+
 # Copy and fill in API keys
 cp .env.example .env
 
