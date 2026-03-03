@@ -6,7 +6,7 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 ## Purpose / Big Picture
 
-After this change, a user can run MedAgentBench tasks from this repository against a local FHIR endpoint that is started with Docker Compose, while the Python agent and benchmark runner remain local in the project virtual environment. This enables realistic FHIR-standard evaluation without introducing local Java/HAPI dependency conflicts. A user will be able to run one setup command, one benchmark command, and see task-level results plus pass@1 aggregate metrics.
+After this change, a user can run MedAgentBench tasks from this repository against a local FHIR endpoint that is started with Docker Compose, while the Python agent and benchmark runner remain local in the project virtual environment. This enables realistic FHIR-standard evaluation without introducing local Java/HAPI dependency conflicts. A user will be able to run one setup command, run benchmarks with configurable task selection (whole split, IDs, categories, or manifest file), and see task-level results plus pass@1 aggregate metrics.
 
 ## Progress
 
@@ -40,6 +40,10 @@ After this change, a user can run MedAgentBench tasks from this repository again
   Rationale: Benchmark reproducibility depends on stable task files and reference assets, not ad-hoc manual downloads.
   Date/Author: 2026-03-03 / Codex
 
+- Decision: Introduce a dataset-agnostic internal task schema plus selector filters in the runner.
+  Rationale: The project will later combine multiple datasets and may reuse only subsets of MedAgentBench or rebind equivalent tasks to another database; this requires explicit task selection and backend-agnostic task descriptors.
+  Date/Author: 2026-03-03 / Codex
+
 ## Outcomes & Retrospective
 
 At plan creation time, no implementation has been started yet. The immediate outcome is a concrete, repository-specific path that can be executed by a novice from a clean clone. Retrospective and measured outcomes will be added after each milestone is implemented.
@@ -48,7 +52,7 @@ At plan creation time, no implementation has been started yet. The immediate out
 
 This repository currently provides a project skeleton for an EHR agent system but not yet a functioning benchmark runtime. The key folders relevant to this plan are `src/ehr_co_scientist/` for runtime code, `tasks/` for benchmark task definitions, `benchmarks/` for scoring logic, `experiments/` for runnable entry points, and `scripts/` for setup automation. MedAgentBench is an external benchmark with a FHIR-based task environment and de-identified patient data exposed through FHIR APIs. In this plan, “FHIR server” means an HTTP service implementing the HL7 FHIR REST patterns used by MedAgentBench tasks. “Task adapter” means the code that transforms MedAgentBench task JSON into this repository’s internal task execution request shape.
 
-The implementation target is not to re-create MedAgentBench internals. The target is to add a compatible benchmark integration layer that can run MedAgentBench tasks against a configured FHIR endpoint, collect outputs, and score the run with pass@1 and category-level breakdowns.
+The implementation target is not to re-create MedAgentBench internals. The target is to add a compatible benchmark integration layer that can run MedAgentBench tasks against a configured FHIR endpoint, collect outputs, and score the run with pass@1 and category-level breakdowns. The implementation also must define a stable internal task contract with fields that separate task intent from backend source details so task prompts can later be rebound to non-MedAgentBench datasets.
 
 ## Plan of Work
 
@@ -60,9 +64,9 @@ Milestone 2 adds foundational runtime config and FHIR client tools.
 
 Populate `config/agent.yaml` with a concrete model/tool config that includes FHIR query and action tools. Implement `src/ehr_co_scientist/tools/fhir_client.py` with a typed client class that supports: search (`GET /<Resource>?...`), create (`POST /<Resource>`), and capability check (`GET /metadata`). Implement `src/ehr_co_scientist/tools/fhir_medagentbench_tools.py` exposing MedAgentBench-aligned tool wrappers (`patient.search`, `lab.search`, `condition.search`, `procedure.search`, `medicationrequest.search`, plus create endpoints used by action tasks). Add shared request/retry utilities in `src/ehr_co_scientist/utils/http.py`.
 
-Milestone 3 introduces task ingestion and execution loop.
+Milestone 3 introduces task ingestion, task selection, and execution loop.
 
-Create `tasks/medagentbench/` with canonical task YAML generated from source JSON using `scripts/import_medagentbench_tasks.py`. The import script must map each source task to fields required by this repository (`task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `required_actions`, and split labels). Implement `src/ehr_co_scientist/agent.py` with a minimal loop supporting up to 8 tool interaction rounds to align with MedAgentBench protocol. Add `experiments/run.py` CLI accepting `--task medagentbench`, `--split`, `--max-tasks`, `--model`, and `--fhir-base-url`.
+Create `tasks/medagentbench/` with canonical task YAML generated from source JSON using `scripts/import_medagentbench_tasks.py`. The import script must map each source task to fields required by this repository (`task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `required_actions`, split labels, and `backend_profile`). Add a generic selector file format at `tasks/selectors/*.yaml` with include/exclude rules by `task_id`, category, difficulty, and task type (query or action). Implement `src/ehr_co_scientist/agent.py` with a minimal loop supporting up to 8 tool interaction rounds to align with MedAgentBench protocol. Add `experiments/run.py` CLI accepting `--task medagentbench`, `--split`, `--max-tasks`, `--model`, `--fhir-base-url`, `--task-ids`, `--task-categories`, and `--task-selector-file`.
 
 Milestone 4 adds evaluation and reporting.
 
@@ -97,7 +101,29 @@ Expected: the second command prints JSON containing a FHIR CapabilityStatement p
 
 Expected: output file exists and contains deterministic ordering by `task_id`.
 
-4. Run a tiny benchmark slice.
+4. Run a filtered benchmark slice by explicit task IDs.
+
+    uv run python experiments/run.py \
+      --task medagentbench \
+      --split std \
+      --task-ids mab_001,mab_017,mab_043 \
+      --model claude-4-sonnet \
+      --fhir-base-url http://localhost:8080
+
+Expected: run executes exactly those task IDs, and the run metadata file records the resolved selector.
+
+5. Run a filtered benchmark slice by selector file.
+
+    uv run python experiments/run.py \
+      --task medagentbench \
+      --split std \
+      --task-selector-file tasks/selectors/medagentbench_query_easy.yaml \
+      --model claude-4-sonnet \
+      --fhir-base-url http://localhost:8080
+
+Expected: only tasks matching selector rules are executed, and skipped counts by rule are reported.
+
+6. Run a tiny benchmark slice with max-task cap.
 
     uv run python experiments/run.py \
       --task medagentbench \
@@ -108,7 +134,7 @@ Expected: output file exists and contains deterministic ordering by `task_id`.
 
 Expected: run directory under `experiments/results/medagentbench/` with `results.jsonl` containing 3 records.
 
-5. Evaluate run outputs.
+7. Evaluate run outputs.
 
     uv run python benchmarks/evaluate.py \
       --task medagentbench \
@@ -116,7 +142,7 @@ Expected: run directory under `experiments/results/medagentbench/` with `results
 
 Expected: printed summary includes `pass_at_1`, category breakdowns, and query/action split.
 
-6. Run quality gates.
+8. Run quality gates.
 
     uv run pytest tests/
     uv run ruff check src/ tests/
@@ -126,12 +152,13 @@ Expected: tests pass, lint passes, formatter makes no additional changes on seco
 
 ## Validation and Acceptance
 
-Acceptance is achieved when a novice can clone the repository, run the MedAgentBench setup script, start the Dockerized FHIR service, execute at least one MedAgentBench split through `experiments/run.py`, and generate scoring outputs through `benchmarks/evaluate.py` without manually editing source files.
+Acceptance is achieved when a novice can clone the repository, run the MedAgentBench setup script, start the Dockerized FHIR service, execute at least one MedAgentBench split through `experiments/run.py`, execute a filtered subset through selector configuration, and generate scoring outputs through `benchmarks/evaluate.py` without manually editing source files.
 
 The concrete observable checks are:
 
 - `GET http://localhost:8080/metadata` succeeds while Docker service is up.
 - `experiments/run.py` produces one JSONL record per attempted task with final answer, tool trace, and success flag.
+- `experiments/run.py` supports task selection by explicit IDs, category filters, and selector file, and records the effective resolved task set in run metadata.
 - `benchmarks/evaluate.py` writes both machine-readable and human-readable summaries.
 - `tests/integration/test_medagentbench_smoke.py` passes when the FHIR service is running.
 
@@ -149,6 +176,7 @@ Expected key file additions and modifications:
 - `scripts/medagentbench_fhir_up.sh`
 - `scripts/medagentbench_fhir_down.sh`
 - `scripts/import_medagentbench_tasks.py`
+- `tasks/selectors/medagentbench_query_easy.yaml`
 - `benchmarks/medagentbench/README.md`
 - `benchmarks/medagentbench/docker-compose.yaml`
 - `benchmarks/medagentbench/evaluator.py`
@@ -198,6 +226,28 @@ In `experiments/run.py`, define CLI entrypoint:
     def main() -> None: ...
 
 with flags `--task`, `--split`, `--max-tasks`, `--model`, `--fhir-base-url`, and output directory selection.
+with flags `--task`, `--split`, `--max-tasks`, `--model`, `--fhir-base-url`, `--task-ids`, `--task-categories`, and `--task-selector-file`, plus output directory selection.
+
+In `tasks/selectors/*.yaml`, define selector schema:
+
+    include:
+      task_ids: []
+      categories: []
+      difficulties: []
+      task_types: []   # query | action
+    exclude:
+      task_ids: []
+      categories: []
+      difficulties: []
+      task_types: []
+
+In `experiments/run.py`, selector precedence must be deterministic:
+
+- `--task-ids` has highest priority.
+- `--task-selector-file` is applied next.
+- `--task-categories` is applied next.
+- `--split` default selection is base set.
+- `--max-tasks` truncates final resolved list with stable ordering by `task_id`.
 
 In `benchmarks/medagentbench/evaluator.py`, define:
 
@@ -212,3 +262,4 @@ The evaluation dictionary must contain keys:
 - `error_taxonomy`
 
 Revision note (2026-03-03): Initial ExecPlan authored to guide first implementation of MedAgentBench integration in an otherwise scaffold-only repository.
+Revision note (2026-03-03): Updated plan to require configurable task selection (IDs/categories/selector files) and dataset-agnostic task mapping to support future subset and cross-dataset task reuse.
