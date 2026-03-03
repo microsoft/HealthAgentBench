@@ -1,5 +1,7 @@
 # EHR Co-Scientist
 
+![Building an EHR Co-Scientist](cover.png)
+
 An agentic system powered by frontier language models for solving complex, multi-step tasks over Electronic Health Record (EHR) databases through tool-augmented reasoning.
 
 ## Overview
