@@ -8,7 +8,10 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "aiolimiter>=1.2.1",
     "anthropic>=0.84.0",
+    "azure-identity>=1.25.1",
+    "backoff>=2.2.1",
     "beautifulsoup4>=4.14.3",
     "biopython>=1.86",
     "fhir-resources>=8.2.0",
@@ -35,10 +38,12 @@ dependencies = [
     "sqlparse>=0.5.5",
     "tenacity>=9.1.4",
     "tiktoken>=0.12.0",
+    "tqdm>=4.67.1",
 ]
 
 [project.scripts]
 ehr-co-scientist = "ehr_co_scientist:main"
+ehr-azure-openai = "ehr_co_scientist.backends.azure_openai:main"
 
 [build-system]
 requires = ["uv_build>=0.9.26,<0.10.0"]
