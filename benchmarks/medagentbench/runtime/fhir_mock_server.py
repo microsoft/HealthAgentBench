@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Minimal local FHIR-like server for development smoke checks."""
+"""Minimal FHIR-like HTTP server for local MedAgentBench smoke runs."""
 
 from __future__ import annotations
 
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 8080
 
 CAPABILITY_STATEMENT = {
@@ -19,7 +19,7 @@ CAPABILITY_STATEMENT = {
 
 
 class Handler(BaseHTTPRequestHandler):
-    def _write_json(self, status: int, payload: dict) -> None:
+    def _json(self, status: int, payload: dict) -> None:
         body = json.dumps(payload).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/fhir+json")
@@ -29,17 +29,22 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802
         if self.path.startswith("/metadata"):
-            self._write_json(200, CAPABILITY_STATEMENT)
+            self._json(200, CAPABILITY_STATEMENT)
             return
-        self._write_json(404, {"resourceType": "OperationOutcome", "issue": [{"severity": "error", "code": "not-found"}]})
+        self._json(
+            404,
+            {
+                "resourceType": "OperationOutcome",
+                "issue": [{"severity": "error", "code": "not-found"}],
+            },
+        )
 
     def log_message(self, fmt: str, *args: object) -> None:
         return
 
 
 def main() -> None:
-    server = HTTPServer((HOST, PORT), Handler)
-    server.serve_forever()
+    HTTPServer((HOST, PORT), Handler).serve_forever()
 
 
 if __name__ == "__main__":

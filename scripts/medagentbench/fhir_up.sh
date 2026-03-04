@@ -2,30 +2,33 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-PID_FILE="/tmp/ehr_medagentbench_fhir_mock.pid"
-LOG_FILE="/tmp/ehr_medagentbench_fhir_mock.log"
+COMPOSE_FILE="${ROOT_DIR}/benchmarks/medagentbench/docker-compose.yaml"
+SERVICE_NAME="fhir"
 
-if [[ -f "${PID_FILE}" ]]; then
-  pid="$(cat "${PID_FILE}")"
-  if kill -0 "${pid}" 2>/dev/null; then
-    echo "[fhir_up] mock FHIR already running (pid=${pid})"
-  else
-    rm -f "${PID_FILE}"
-  fi
+if [[ ! -f "${COMPOSE_FILE}" ]]; then
+  echo "[fhir_up] missing compose file: ${COMPOSE_FILE}" >&2
+  exit 1
 fi
 
-if ! curl -sSf "http://localhost:8080/metadata" >/dev/null 2>&1; then
-  nohup "${ROOT_DIR}/.venv/bin/python" "${ROOT_DIR}/scripts/medagentbench/fhir_mock_server.py" >"${LOG_FILE}" 2>&1 &
-  echo $! > "${PID_FILE}"
+docker compose -f "${COMPOSE_FILE}" up -d --build "${SERVICE_NAME}"
+
+container_id="$(docker compose -f "${COMPOSE_FILE}" ps -q "${SERVICE_NAME}")"
+if [[ -z "${container_id}" ]]; then
+  echo "[fhir_up] failed to resolve container id for service ${SERVICE_NAME}" >&2
+  exit 1
 fi
 
-for _ in $(seq 1 30); do
-  if curl -sSf "http://localhost:8080/metadata" >/dev/null 2>&1; then
-    echo "[fhir_up] FHIR endpoint ready at http://localhost:8080/metadata"
-    exit 0
+for _ in $(seq 1 60); do
+  status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "${container_id}")"
+  if [[ "${status}" == "healthy" || "${status}" == "running" ]]; then
+    if curl -sSf "http://localhost:8080/metadata" >/dev/null 2>&1; then
+      echo "[fhir_up] FHIR endpoint ready at http://localhost:8080/metadata"
+      exit 0
+    fi
   fi
   sleep 1
 done
 
-echo "[fhir_up] failed to start FHIR endpoint" >&2
+echo "[fhir_up] container did not become healthy in time" >&2
+docker compose -f "${COMPOSE_FILE}" logs --no-color "${SERVICE_NAME}" | tail -n 50 >&2 || true
 exit 1

@@ -22,9 +22,9 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-04 23:40Z) Aligned repository architecture and docs to treat `tasks/` as first-class task packages (metadata + task-local runner/evaluator + fixtures), and created scaffold directories/files.
 - [x] (2026-03-04 23:58Z) Updated architecture to organize `tasks/` by task type (README task taxonomy) and removed pre-created MedAgentBench task package scaffold pending integration milestones.
 - [x] (2026-03-05 00:31Z) Implemented runnable scripts for setup, mock FHIR startup/shutdown, and task import under `scripts/medagentbench/` to satisfy first three concrete steps.
-- [ ] Implement MedAgentBench asset ingestion scripts and documentation.
-- [ ] Implement Docker Compose based FHIR runtime and health checks.
-- [ ] Implement FHIR tool modules and task adapters in `src/ehr_co_scientist/tools/`.
+- [x] (2026-03-05 01:07Z) Implemented idempotent MedAgentBench asset ingestion + schema validation + checksum generation in `scripts/medagentbench/setup.sh`, and documented usage in `benchmarks/medagentbench/README.md`.
+- [x] (2026-03-05 01:07Z) Implemented Docker Compose-based local FHIR runtime with container healthcheck and compose-managed startup/shutdown scripts.
+- [x] (2026-03-05 01:18Z) Implemented `FHIRClient`, MedAgentBench-aligned FHIR tool wrappers, and shared JSON HTTP retry utilities in `src/ehr_co_scientist/tools/` and `src/ehr_co_scientist/utils/http.py`.
 - [ ] Implement MedAgentBench runner and evaluator under `experiments/` and `benchmarks/`.
 - [ ] Add unit and integration tests for import, tool calls, and scoring.
 - [ ] Validate end-to-end on a small split and capture reproducible outputs.
@@ -89,7 +89,7 @@ Create `scripts/medagentbench/setup.sh` to download or verify required MedAgentB
 
 Milestone 2 adds foundational runtime config and FHIR client tools.
 
-Populate `config/agent.yaml` with a concrete model/tool config that includes FHIR query and action tools, sets backend `azure_openai`, and uses default model `gpt-5.2` unless overridden by CLI. Implement `src/ehr_co_scientist/tools/fhir_client.py` with a typed client class that supports: search (`GET /<Resource>?...`), create (`POST /<Resource>`), and capability check (`GET /metadata`). Implement `src/ehr_co_scientist/tools/fhir_medagentbench_tools.py` exposing MedAgentBench-aligned tool wrappers (`patient.search`, `lab.search`, `condition.search`, `procedure.search`, `medicationrequest.search`, plus create endpoints used by action tasks). Add shared request/retry utilities in `src/ehr_co_scientist/utils/http.py`.
+Populate `config/agent.yaml` with a concrete model/tool config that includes FHIR query and action tools, sets backend `azure_openai`, and uses default model `gpt-5.2` unless overridden by CLI. Implement `src/ehr_co_scientist/tools/fhir_client.py` with a typed client class that supports: search (`GET /<Resource>?...`), create (`POST /<Resource>`), and capability check (`GET /metadata`). Implement reusable FHIR tool wrappers in `src/ehr_co_scientist/tools/fhir_tools.py` (`patient.search`, `lab.search`, `condition.search`, `procedure.search`, `medicationrequest.search`, plus create endpoints used by action tasks). Keep these tools dataset-agnostic so they can be reused across MedAgentBench and future task suites. Add shared request/retry utilities in `src/ehr_co_scientist/utils/http.py`.
 
 Milestone 3 introduces task ingestion, task selection, and execution loop.
 
@@ -219,10 +219,11 @@ Expected key file additions and modifications:
 - `scripts/medagentbench/setup.sh`: Idempotent downloader/verifier for MedAgentBench assets into repository-local benchmark paths.
 - `scripts/medagentbench/fhir_up.sh`: One-command wrapper to start the Dockerized FHIR service with health checks.
 - `scripts/medagentbench/fhir_down.sh`: Wrapper to stop and cleanly tear down the Dockerized FHIR service.
-- `scripts/medagentbench/import_tasks.py`: Deterministic converter from source MedAgentBench task JSON into internal canonical YAML schema.
+- `scripts/medagentbench/import_tasks.py`: Deterministic converter from source MedAgentBench task JSON into internal canonical YAML schema, including grouped output under `tasks/<task_type>/sources/medagentbench/`.
 - `tasks/selectors/medagentbench_query_easy.yaml`: Example selector manifest demonstrating include/exclude filtering for a simple query subset.
 - `benchmarks/medagentbench/README.md`: Operator guide for setup, startup, task import, benchmark execution, and troubleshooting.
 - `benchmarks/medagentbench/docker-compose.yaml`: Container orchestration definition for the local MedAgentBench-compatible FHIR runtime.
+- `benchmarks/medagentbench/fhir_medagentbench_tools.py`: Benchmark-specific adapter wrappers that bind MedAgentBench tool naming/protocol to generic FHIR tools.
 - `benchmarks/medagentbench/evaluator.py`: MedAgentBench scoring logic that computes pass@1 and category/query-action breakdowns.
 - `tasks/<task_type>/task.yaml`: Task-type package metadata with manifest and entrypoint wiring.
 - `tasks/<task_type>/sources/medagentbench/std.yaml`: Canonical normalized task manifest for standard split routed to the corresponding task type.
@@ -235,7 +236,7 @@ Expected key file additions and modifications:
 - `src/ehr_co_scientist/backends/adapter.py`: Provider-neutral backend interface and dispatch layer used by the runner.
 - `src/ehr_co_scientist/backends/azure_openai.py`: Azure OpenAI backend implementation and CLI smoke-test utility used as the default backend.
 - `src/ehr_co_scientist/tools/fhir_client.py`: Typed FHIR HTTP client abstraction for capability checks, search, and resource creation.
-- `src/ehr_co_scientist/tools/fhir_medagentbench_tools.py`: MedAgentBench-aligned tool wrappers that map agent tool calls to FHIR client operations.
+- `src/ehr_co_scientist/tools/fhir_tools.py`: Reusable FHIR tool wrappers (flat, dataset-agnostic tools module) that map agent tool calls to FHIR client operations.
 - `src/ehr_co_scientist/utils/http.py`: Shared HTTP retry/timeout/error-handling helpers used by FHIR and backend integrations.
 - `tests/test_fhir_client.py`: Unit tests for FHIR client request building, response parsing, and retry/error behavior.
 - `tests/test_medagentbench_task_import.py`: Unit tests ensuring deterministic and schema-correct MedAgentBench task import output.
@@ -260,7 +261,7 @@ In `src/ehr_co_scientist/tools/fhir_client.py`, define:
         def search(self, resource_type: str, params: dict[str, str]) -> dict: ...
         def create(self, resource_type: str, resource_body: dict) -> dict: ...
 
-In `src/ehr_co_scientist/tools/fhir_medagentbench_tools.py`, define:
+In `src/ehr_co_scientist/tools/fhir_tools.py`, define:
 
     def patient_search(client: FHIRClient, **kwargs) -> dict: ...
     def lab_search(client: FHIRClient, **kwargs) -> dict: ...
