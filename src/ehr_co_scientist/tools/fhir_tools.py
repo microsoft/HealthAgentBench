@@ -21,6 +21,12 @@ def lab_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     return client.search("Observation", params)
 
 
+def vital_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
+    params = _to_search_params(kwargs)
+    params.setdefault("category", "vital-signs")
+    return client.search("Observation", params)
+
+
 def condition_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     return client.search("Condition", _to_search_params(kwargs))
 
@@ -50,6 +56,7 @@ def medicationrequest_create(
 TOOL_REGISTRY: dict[str, Any] = {
     "patient.search": patient_search,
     "lab.search": lab_search,
+    "vital.search": vital_search,
     "condition.search": condition_search,
     "procedure.search": procedure_search,
     "medicationrequest.search": medicationrequest_search,

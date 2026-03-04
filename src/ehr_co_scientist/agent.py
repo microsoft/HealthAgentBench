@@ -44,6 +44,18 @@ def _parse_tool_call(text: str) -> tuple[str, dict[str, Any]] | None:
     return None
 
 
+def _tool_feedback_message(tool_name: str, payload: dict[str, Any]) -> dict[str, str]:
+    # Keep tool feedback in a user-role message to stay compatible across chat backends
+    # when no native function-calling tool_call_id flow is active.
+    return {
+        "role": "user",
+        "content": json.dumps(
+            {"tool_name": tool_name, "tool_output": payload},
+            ensure_ascii=True,
+        ),
+    }
+
+
 def run_task(
     *,
     task: dict[str, Any],
@@ -92,10 +104,7 @@ def run_task(
                 }
             )
             messages.append(
-                {
-                    "role": "tool",
-                    "content": json.dumps(tool_result, ensure_ascii=True),
-                }
+                _tool_feedback_message(tool_name, {"result": tool_result})
             )
         except Exception as exc:  # noqa: BLE001
             last_error = str(exc)
@@ -108,10 +117,7 @@ def run_task(
                 }
             )
             messages.append(
-                {
-                    "role": "tool",
-                    "content": json.dumps({"error": last_error}, ensure_ascii=True),
-                }
+                _tool_feedback_message(tool_name, {"error": last_error})
             )
 
     return {

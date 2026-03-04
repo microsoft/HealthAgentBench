@@ -3,6 +3,8 @@ from pathlib import Path
 
 import yaml
 
+from ehr_co_scientist.tools.fhir_tools import TOOL_REGISTRY
+
 
 def test_import_groups_into_task_type_manifests(tmp_path: Path):
     output_root = tmp_path / "tasks"
@@ -27,6 +29,10 @@ def test_import_groups_into_task_type_manifests(tmp_path: Path):
     total = 0
     for manifest in manifests:
         payload = yaml.safe_load(manifest.read_text(encoding="utf-8"))
-        total += len(payload["tasks"])
+        tasks = payload["tasks"]
+        total += len(tasks)
+        for task in tasks:
+            allowed = task.get("allowed_tools", [])
+            assert set(allowed).issubset(TOOL_REGISTRY.keys())
 
     assert total == 300
