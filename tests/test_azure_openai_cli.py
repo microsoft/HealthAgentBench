@@ -47,10 +47,31 @@ def test_batch_cli_example_command(monkeypatch, capsys):
     assert captured["endpoint_name"] == "trapi-msrhf-shared"
     assert captured["model"] == "o3_2025-04-16"
     assert captured["reasoning_effort"] == "low"
+    assert captured["tools"] == []
 
 
-def test_batch_cli_function_calling_flags(monkeypatch, capsys):
+def test_batch_cli_function_calling_flags(monkeypatch, capsys, tmp_path):
     captured: dict[str, object] = {}
+    tools_file = tmp_path / "tools.json"
+    tools_file.write_text(
+        json.dumps(
+            [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_weather",
+                        "description": "Get weather by city.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {"city": {"type": "string"}},
+                            "required": ["city"],
+                        },
+                    },
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
 
     def _fake_run_batch_chat_completion(**kwargs):
         captured.update(kwargs)
@@ -73,12 +94,8 @@ def test_batch_cli_function_calling_flags(monkeypatch, capsys):
             "o3_2025-04-16",
             "--prompt",
             "Use tools.",
-            "--function-name",
-            "get_weather",
-            "--function-description",
-            "Get weather by city.",
-            "--function-parameters-json",
-            '{"type":"object","properties":{"city":{"type":"string"}},"required":["city"]}',
+            "--tools",
+            str(tools_file),
             "--tool-choice",
             "function:get_weather",
             "--parallel-tool-calls",
@@ -100,12 +117,12 @@ def test_batch_cli_function_calling_flags(monkeypatch, capsys):
         {
             "type": "function",
             "function": {
-                "name": "get_weather",
                 "description": "Get weather by city.",
+                "name": "get_weather",
                 "parameters": {
-                    "type": "object",
                     "properties": {"city": {"type": "string"}},
                     "required": ["city"],
+                    "type": "object",
                 },
             },
         }

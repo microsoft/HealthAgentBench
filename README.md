@@ -125,39 +125,9 @@ Task-local execution/scoring scripts live under each task-type package in `tasks
 
 Scripts should be grouped under `scripts/<integration_or_domain>/` as the repository grows (for example `scripts/medagentbench/`) to avoid an unscalable flat script list.
 
-## MedAgentBench Workflow
+## MedAgentBench
 
-```bash
-# 1) Prepare benchmark assets
-bash scripts/medagentbench/setup.sh
-
-# 2) Start local FHIR runtime
-bash scripts/medagentbench/fhir_up.sh
-
-# 3) Import and group tasks by repo task type
-python scripts/medagentbench/import_tasks.py \
-  --input data/medagentbench/test_data_v2.json \
-  --funcs-json data/medagentbench/funcs_v1.json \
-  --output-root tasks \
-  --split std
-
-# 4) Run a small benchmark slice
-python experiments/run.py \
-  --task medagentbench \
-  --split std \
-  --max-tasks 3 \
-  --backend mock \
-  --model gpt-5.2 \
-  --fhir-base-url http://localhost:8080/fhir
-
-# 5) Evaluate run outputs
-python benchmarks/evaluate.py \
-  --task medagentbench \
-  --results experiments/results/medagentbench/<run-id>/results.jsonl
-
-# 6) Stop runtime
-bash scripts/medagentbench/fhir_down.sh
-```
+For full MedAgentBench setup, execution, evaluation, and demo instructions, see `benchmarks/medagentbench/README.md`.
 
 ## License
 

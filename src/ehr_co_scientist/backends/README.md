@@ -48,14 +48,28 @@ uv run ehr-azure-openai \
 Function-calling example:
 
 ```bash
+# tools.json:
+# [
+#   {
+#     "type": "function",
+#     "function": {
+#       "name": "get_weather",
+#       "description": "Get current weather by city.",
+#       "parameters": {
+#         "type": "object",
+#         "properties": {"city": {"type": "string"}},
+#         "required": ["city"]
+#       }
+#     }
+#   }
+# ]
+#
 uv run ehr-azure-openai \
   --example direct \
   --endpoint-name hanover-openai-east \
   --model gpt-5.2 \
   --prompt "What is the weather in Seattle? Use the tool." \
-  --function-name get_weather \
-  --function-description "Get current weather by city." \
-  --function-parameters-json '{"type":"object","properties":{"city":{"type":"string"}},"required":["city"]}' \
+  --tools tools.json \
   --tool-choice function:get_weather \
   --parallel-tool-calls false
 ```

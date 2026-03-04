@@ -138,6 +138,7 @@ def run_direct_chat_completion(
     endpoint_name: str | None = None,
     api_key: str | None = None,
     retry_attempts: int = 3,
+    tools: list[dict[str, Any]] | None = None,
     **kwargs: Any,
 ) -> ChatCompletion:
     """Run a single direct Azure OpenAI chat completion request.
@@ -154,6 +155,7 @@ def run_direct_chat_completion(
         )
     )
     request_kwargs = _normalize_chat_kwargs(model=model, kwargs=kwargs)
+    request_kwargs["tools"] = list(tools or [])
 
     if resolved_api_key:
         client = openai.AzureOpenAI(
@@ -226,11 +228,13 @@ async def _throttled_chat_completion_create(
     messages: list[dict[str, Any]],
     limiter: aiolimiter.AsyncLimiter,
     retries: int = 3,
+    tools: list[dict[str, Any]] | None = None,
     **kwargs: Any,
 ) -> ChatCompletion | None:
     async with limiter:
         await _load_local_images_in_messages(messages)
         request_kwargs = _normalize_chat_kwargs(model=model, kwargs=kwargs)
+        request_kwargs["tools"] = list(tools or [])
         retry_policy = AsyncRetrying(
             stop=stop_after_attempt(retries),
             wait=wait_exponential_jitter(initial=1, max=20),
@@ -261,6 +265,7 @@ async def generate_from_openai_chat_completion(
     api_key: str | None = None,
     requests_per_minute: int = 150,
     api_version: str = API_VERSION,
+    tools: list[dict[str, Any]] | None = None,
     **kwargs: Any,
 ) -> list[ChatCompletion | None]:
     target_endpoint, deployment_name, token_provider, resolved_api_key = (
@@ -289,6 +294,7 @@ async def generate_from_openai_chat_completion(
             model=deployment_name,
             messages=messages,
             limiter=limiter,
+            tools=tools,
             **kwargs,
         )
         for messages in batch_messages
@@ -308,6 +314,7 @@ def run_batch_chat_completion(
     api_key: str | None = None,
     requests_per_minute: int = 150,
     api_version: str = API_VERSION,
+    tools: list[dict[str, Any]] | None = None,
     **kwargs: Any,
 ) -> list[ChatCompletion | None]:
     pending_ids = list(range(len(all_messages)))
@@ -331,6 +338,7 @@ def run_batch_chat_completion(
                     api_key=api_key,
                     requests_per_minute=requests_per_minute,
                     api_version=api_version,
+                    tools=tools,
                     **kwargs,
                 )
             )
@@ -422,31 +430,12 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--temperature", type=float, default=None)
     parser.add_argument("--max-tokens", type=int, default=None)
     parser.add_argument(
-        "--tool-json",
-        action="append",
+        "--tools",
         default=None,
         help=(
-            "Raw JSON tool spec. Can be either a full tool object "
-            "({'type':'function','function':{...}}) or a function object ({...}). "
-            "Repeat for multiple tools."
-        ),
-    )
-    parser.add_argument(
-        "--function-name",
-        default=None,
-        help="Convenience flag to define a function tool name from CLI.",
-    )
-    parser.add_argument(
-        "--function-description",
-        default=None,
-        help="Convenience flag to define a function tool description from CLI.",
-    )
-    parser.add_argument(
-        "--function-parameters-json",
-        default=None,
-        help=(
-            "JSON schema for the function parameters, e.g. "
-            '\'{"type":"object","properties":{"city":{"type":"string"}},"required":["city"]}\'.'
+            "Path to a JSON file that defines tools for model tool calling. "
+            "The file may contain a tools list directly or an object with a "
+            "'tools' key."
         ),
     )
     parser.add_argument(
@@ -500,34 +489,31 @@ def _parse_tool_choice(value: str | None) -> str | dict[str, Any] | None:
     return json.loads(value)
 
 
-def _normalize_tool_json(raw_tool: str) -> dict[str, Any]:
-    parsed = json.loads(raw_tool)
-    if isinstance(parsed, dict) and parsed.get("type") == "function":
-        return parsed
-    if isinstance(parsed, dict) and "name" in parsed:
-        return {"type": "function", "function": parsed}
-    raise ValueError(
-        "Invalid --tool-json payload. Provide a full tool object or function object."
-    )
+def _load_tools_from_file(path_value: str | None) -> list[dict[str, Any]]:
+    if path_value is None:
+        return []
+
+    payload = json.loads(Path(path_value).read_text(encoding="utf-8"))
+    if isinstance(payload, list):
+        tools = payload
+    elif isinstance(payload, dict) and isinstance(payload.get("tools"), list):
+        tools = payload["tools"]
+    else:
+        raise ValueError(
+            "Invalid --tools JSON. Expected a list or an object with a 'tools' list."
+        )
+
+    normalized: list[dict[str, Any]] = []
+    for item in tools:
+        if not isinstance(item, dict):
+            raise ValueError("Invalid --tools JSON. Every tool must be an object.")
+        normalized.append(dict(item))
+    return normalized
 
 
 def _build_function_calling_kwargs(args: argparse.Namespace) -> dict[str, Any]:
     kwargs: dict[str, Any] = {}
-    tools: list[dict[str, Any]] = []
-
-    if args.tool_json:
-        tools.extend(_normalize_tool_json(raw_tool) for raw_tool in args.tool_json)
-
-    if args.function_name:
-        function_payload: dict[str, Any] = {"name": args.function_name}
-        if args.function_description is not None:
-            function_payload["description"] = args.function_description
-        if args.function_parameters_json is not None:
-            function_payload["parameters"] = json.loads(args.function_parameters_json)
-        tools.append({"type": "function", "function": function_payload})
-
-    if tools:
-        kwargs["tools"] = tools
+    kwargs["tools"] = _load_tools_from_file(args.tools)
 
     tool_choice = _parse_tool_choice(args.tool_choice)
     if tool_choice is not None:
@@ -557,6 +543,7 @@ def main() -> None:
     if args.max_tokens is not None:
         kwargs["max_tokens"] = args.max_tokens
     kwargs.update(_build_function_calling_kwargs(args))
+    tools = kwargs.pop("tools", [])
 
     if args.example == "batch":
         batch_kwargs: dict[str, Any] = {
@@ -567,6 +554,7 @@ def main() -> None:
             "api_key": args.api_key,
             "requests_per_minute": args.requests_per_minute,
             "api_version": args.api_version,
+            "tools": tools,
             **kwargs,
         }
         responses = run_batch_chat_completion(**batch_kwargs)
@@ -582,6 +570,7 @@ def main() -> None:
         endpoint_name=args.endpoint_name,
         api_key=args.api_key,
         api_version=args.api_version,
+        tools=tools,
         **kwargs,
     )
     print(json.dumps(direct_response.to_dict(), indent=2))
