@@ -20,7 +20,9 @@ class HttpRetryPolicy:
 class HttpRequestError(RuntimeError):
     """Raised when an HTTP request fails after retries."""
 
-    def __init__(self, message: str, *, status_code: int | None = None, body: str | None = None) -> None:
+    def __init__(
+        self, message: str, *, status_code: int | None = None, body: str | None = None
+    ) -> None:
         super().__init__(message)
         self.status_code = status_code
         self.body = body
@@ -69,9 +71,14 @@ class JsonHttpClient:
                 continue
 
             if response.ok:
-                return self._decode_json_or_raise(response.text, response.status_code, url)
+                return self._decode_json_or_raise(
+                    response.text, response.status_code, url
+                )
 
-            if response.status_code in self.retry_policy.retry_statuses and attempt < self.retry_policy.attempts:
+            if (
+                response.status_code in self.retry_policy.retry_statuses
+                and attempt < self.retry_policy.attempts
+            ):
                 self._sleep_backoff(attempt)
                 continue
 

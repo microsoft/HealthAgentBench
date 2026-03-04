@@ -72,7 +72,9 @@ def _resolve_endpoint_name_url(endpoint_name: str | None) -> tuple[str, str]:
     url = ENDPOINTS.get(name)
     if url is None:
         available = sorted(ENDPOINTS)
-        raise ValueError(f"Unknown endpoint name {name!r}. Available endpoints: {available}")
+        raise ValueError(
+            f"Unknown endpoint name {name!r}. Available endpoints: {available}"
+        )
     return name, url
 
 
@@ -181,7 +183,9 @@ def run_direct_chat_completion(
                     messages=messages,
                     **request_kwargs,
                 )
-        raise RuntimeError("Unexpected retry flow termination for direct chat completion.")
+        raise RuntimeError(
+            "Unexpected retry flow termination for direct chat completion."
+        )
     finally:
         client.close()
 
@@ -566,7 +570,9 @@ def main() -> None:
             **kwargs,
         }
         responses = run_batch_chat_completion(**batch_kwargs)
-        serializable = [resp.to_dict() if resp is not None else None for resp in responses]
+        serializable = [
+            resp.to_dict() if resp is not None else None for resp in responses
+        ]
         print(json.dumps(serializable, indent=2))
         return
 

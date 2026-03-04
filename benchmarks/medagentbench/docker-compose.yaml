@@ -1,15 +1,9 @@
 services:
   fhir:
-    build:
-      context: ./runtime
-      dockerfile: Dockerfile
+    image: hapiproject/hapi:latest
     container_name: ehr-medagentbench-fhir
     ports:
       - "8080:8080"
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/metadata', timeout=2).read()"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 3s
+    environment:
+      hapi.fhir.server_address: "http://localhost:8080/fhir"
     restart: unless-stopped

@@ -1,0 +1,580 @@
+tasks:
+- task_id: task6_1
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6307599 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6307599
+  allowed_tools: &id001
+  - condition.search
+  - lab.search
+  - medicationrequest.create
+  - medicationrequest.search
+  - patient.search
+  - procedure.create
+  - procedure.search
+  - vital.create
+  - vital.search
+- task_id: task6_10
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6268253 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6268253
+  allowed_tools: *id001
+- task_id: task6_11
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6540602 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6540602
+  allowed_tools: *id001
+- task_id: task6_12
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6222362 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6222362
+  allowed_tools: *id001
+- task_id: task6_13
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S2075210 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S2075210
+  allowed_tools: *id001
+- task_id: task6_14
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S3032536 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S3032536
+  allowed_tools: *id001
+- task_id: task6_15
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S1777769 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S1777769
+  allowed_tools: *id001
+- task_id: task6_16
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6549951 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6549951
+  allowed_tools: *id001
+- task_id: task6_17
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S1311412 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S1311412
+  allowed_tools: *id001
+- task_id: task6_18
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S1478444 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S1478444
+  allowed_tools: *id001
+- task_id: task6_19
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S2197736 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S2197736
+  allowed_tools: *id001
+- task_id: task6_2
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6539215 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6539215
+  allowed_tools: *id001
+- task_id: task6_20
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6426560 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6426560
+  allowed_tools: *id001
+- task_id: task6_21
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6488980 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6488980
+  allowed_tools: *id001
+- task_id: task6_22
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6530813 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6530813
+  allowed_tools: *id001
+- task_id: task6_23
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S0674240 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S0674240
+  allowed_tools: *id001
+- task_id: task6_24
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S0581164 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S0581164
+  allowed_tools: *id001
+- task_id: task6_25
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S1754095 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S1754095
+  allowed_tools: *id001
+- task_id: task6_26
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S3228213 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S3228213
+  allowed_tools: *id001
+- task_id: task6_27
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S2402518 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S2402518
+  allowed_tools: *id001
+- task_id: task6_28
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6542579 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6542579
+  allowed_tools: *id001
+- task_id: task6_29
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6330912 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6330912
+  allowed_tools: *id001
+- task_id: task6_3
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S2863714 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S2863714
+  allowed_tools: *id001
+- task_id: task6_30
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S3241217 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S3241217
+  allowed_tools: *id001
+- task_id: task6_4
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6541609 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6541609
+  allowed_tools: *id001
+- task_id: task6_5
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6541353 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6541353
+  allowed_tools: *id001
+- task_id: task6_6
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S3070524 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S3070524
+  allowed_tools: *id001
+- task_id: task6_7
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S1152319 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S1152319
+  allowed_tools: *id001
+- task_id: task6_8
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S2450227 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S2450227
+  allowed_tools: *id001
+- task_id: task6_9
+  category: data_aggregation
+  difficulty: easy
+  instruction: 'What is the average CBG of the patient S6538722 over the last 24 hours?
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
+    should be a single number converted to a unit of mg/dL, and it should be -1 if
+    a measurement within last 24 hours is not available.'
+  expected_answer: ''
+  required_actions: []
+  split: std
+  task_type: query
+  backend_profile: fhir
+  source_benchmark: medagentbench
+  source_group: task6
+  source_task_type: patient_data_aggregation
+  eval_mrn: S6538722
+  allowed_tools: *id001

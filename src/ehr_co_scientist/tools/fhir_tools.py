@@ -41,7 +41,9 @@ def procedure_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, 
     return client.create("Procedure", resource)
 
 
-def medicationrequest_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]:
+def medicationrequest_create(
+    client: FHIRClient, resource: dict[str, Any]
+) -> dict[str, Any]:
     return client.create("MedicationRequest", resource)
 
 
@@ -62,6 +64,8 @@ def call_tool(tool_name: str, client: FHIRClient, **kwargs: Any) -> dict[str, An
         fn = TOOL_REGISTRY[tool_name]
     except KeyError as exc:  # noqa: PERF203
         available = ", ".join(sorted(TOOL_REGISTRY))
-        raise ValueError(f"Unknown tool name: {tool_name}. Available: {available}") from exc
+        raise ValueError(
+            f"Unknown tool name: {tool_name}. Available: {available}"
+        ) from exc
 
     return fn(client, **kwargs)

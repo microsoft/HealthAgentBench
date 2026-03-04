@@ -10,7 +10,7 @@ EHR Co-Scientist is a research project exploring how LLM-based agents (GPT, Clau
 
 ## Tasks
 
-The system targets 12 agentic EHR tasks spanning data understanding, clinical reasoning, and report generation:
+The system targets 15 agentic EHR tasks spanning data understanding, clinical reasoning, and report generation:
 
 | Task | Description |
 |------|-------------|
@@ -26,6 +26,9 @@ The system targets 12 agentic EHR tasks spanning data understanding, clinical re
 | **Medication reconciliation** | Compile active medications and flag drug interactions |
 | **Data quality auditing** | Detect inconsistencies, missing values, and implausible entries |
 | **Report generation** | Draft clinical documents (referral letters, discharge summaries) from data |
+| **Data aggregation** | Aggregate multiple EHR measurements into computed summaries or trends |
+| **Clinical data recording** | Record new observations or updates into the clinical chart via structured APIs |
+| **Care ordering** | Place orders/referrals/tests with appropriate coded payloads and rationale |
 
 ## Tools
 
@@ -121,6 +124,40 @@ python benchmarks/evaluate.py --task cohort_construction --results experiments/r
 Task-local execution/scoring scripts live under each task-type package in `tasks/<task_type>/`. Benchmark-specific imports (such as MedAgentBench) should map into the relevant task-type package during integration work, rather than creating benchmark-named task roots.
 
 Scripts should be grouped under `scripts/<integration_or_domain>/` as the repository grows (for example `scripts/medagentbench/`) to avoid an unscalable flat script list.
+
+## MedAgentBench Workflow
+
+```bash
+# 1) Prepare benchmark assets
+bash scripts/medagentbench/setup.sh
+
+# 2) Start local FHIR runtime
+bash scripts/medagentbench/fhir_up.sh
+
+# 3) Import and group tasks by repo task type
+python scripts/medagentbench/import_tasks.py \
+  --input data/medagentbench/test_data_v2.json \
+  --funcs-json data/medagentbench/funcs_v1.json \
+  --output-root tasks \
+  --split std
+
+# 4) Run a small benchmark slice
+python experiments/run.py \
+  --task medagentbench \
+  --split std \
+  --max-tasks 3 \
+  --backend mock \
+  --model gpt-5.2 \
+  --fhir-base-url http://localhost:8080/fhir
+
+# 5) Evaluate run outputs
+python benchmarks/evaluate.py \
+  --task medagentbench \
+  --results experiments/results/medagentbench/<run-id>/results.jsonl
+
+# 6) Stop runtime
+bash scripts/medagentbench/fhir_down.sh
+```
 
 ## License
 

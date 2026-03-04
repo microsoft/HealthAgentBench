@@ -21,13 +21,15 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-04 01:26Z) Reviewed plan for PLANS.md compliance and repository drift; corrected backend default assumptions, interface duplication, and evidence wording for scaffold state.
 - [x] (2026-03-04 23:40Z) Aligned repository architecture and docs to treat `tasks/` as first-class task packages (metadata + task-local runner/evaluator + fixtures), and created scaffold directories/files.
 - [x] (2026-03-04 23:58Z) Updated architecture to organize `tasks/` by task type (README task taxonomy) and removed pre-created MedAgentBench task package scaffold pending integration milestones.
-- [x] (2026-03-05 00:31Z) Implemented runnable scripts for setup, mock FHIR startup/shutdown, and task import under `scripts/medagentbench/` to satisfy first three concrete steps.
+- [x] (2026-03-05 00:31Z) Implemented runnable scripts for setup, Dockerized FHIR startup/shutdown, and task import under `scripts/medagentbench/` to satisfy first three concrete steps.
 - [x] (2026-03-05 01:07Z) Implemented idempotent MedAgentBench asset ingestion + schema validation + checksum generation in `scripts/medagentbench/setup.sh`, and documented usage in `benchmarks/medagentbench/README.md`.
 - [x] (2026-03-05 01:07Z) Implemented Docker Compose-based local FHIR runtime with container healthcheck and compose-managed startup/shutdown scripts.
 - [x] (2026-03-05 01:18Z) Implemented `FHIRClient`, MedAgentBench-aligned FHIR tool wrappers, and shared JSON HTTP retry utilities in `src/ehr_co_scientist/tools/` and `src/ehr_co_scientist/utils/http.py`.
-- [ ] Implement MedAgentBench runner and evaluator under `experiments/` and `benchmarks/`.
-- [ ] Add unit and integration tests for import, tool calls, and scoring.
-- [ ] Validate end-to-end on a small split and capture reproducible outputs.
+- [x] (2026-03-05 04:10Z) Imported real MedAgentBench files (`data/medagentbench/test_data_v2.json`, `data/medagentbench/funcs_v1.json`) and grouped 300 tasks into repo task-type folders under `tasks/<task_type>/sources/medagentbench/` using an explicit 6-type alignment map.
+- [x] (2026-03-04 19:30Z) Implemented MedAgentBench runner and evaluator CLIs (`experiments/run.py`, `benchmarks/evaluate.py`, `benchmarks/medagentbench/evaluator.py`) plus backend adapter and minimal agent loop wiring.
+- [x] (2026-03-04 19:33Z) Added unit tests for FHIR client, task import, and evaluator, plus integration smoke test for Dockerized runtime workflow.
+- [x] (2026-03-04 19:34Z) Validated end-to-end on small slices (explicit IDs, selector-based run, and `--max-tasks 3`) and generated summary artifacts.
+- [x] (2026-03-04 21:05Z) Implemented and validated interactive terminal demo CLI (`experiments/demo.py`) for ad-hoc prompt/task execution against a running FHIR server.
 
 ## Surprises & Discoveries
 
@@ -36,6 +38,12 @@ For MedAgentBench background and design context used when refining this plan, se
 
 - Observation: The mostly scaffold status means integration work must include first implementations for runner/evaluator abstractions instead of only adding MedAgentBench-specific glue.
   Evidence: `rg --files src tests tasks benchmarks experiments` returned only a small set of files (core package stubs, one backend module, and one CLI examples test) on 2026-03-04.
+
+- Observation: Real MedAgentBench task records in `test_data_v2.json` do not include an explicit task-type field; grouping must be inferred from `id` prefixes (`task1`..`task10`) and instruction patterns.
+  Evidence: Parsing `data/medagentbench/test_data_v2.json` showed keys `id`, `instruction`, `context`, `eval_MRN`, optional `sol`, with no `task_type`/`category` fields.
+
+- Observation: Concrete step 4 (Azure backend smoke) is environment-dependent and requires valid Azure identity/endpoint access from the execution environment.
+  Evidence: Endpoint and credential checks must succeed for direct Azure completion calls.
 
 ## Decision Log
 
@@ -71,9 +79,23 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: Task type taxonomy is the durable public contribution, while benchmark source is a transient provenance dimension.
   Date/Author: 2026-03-04 / User+Codex
 
+- Decision: Align MedAgentBench 6 task types to repo task taxonomy using explicit mapping and create new repo task types only where no existing type is semantically correct.
+  Rationale: Keeps benchmark compatibility while preserving reusable, task-type-centric organization in this repository.
+  Date/Author: 2026-03-05 / User+Codex
+
 ## Outcomes & Retrospective
 
-At plan creation time, no implementation has been started yet. The immediate outcome is a concrete, repository-specific path that can be executed by a novice from a clean clone. Retrospective and measured outcomes will be added after each milestone is implemented.
+Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBench tasks into task-type folders, Dockerized FHIR runtime with health checks, provider-neutral runner/evaluator CLIs, reusable FHIR tool modules, and passing unit/integration coverage for the implemented scope. Measured validation evidence:
+
+- `pytest tests/` -> `5 passed, 1 skipped` (integration skipped unless explicitly enabled).
+- `RUN_MEDAGENTBENCH_SMOKE=1 pytest tests/integration/test_medagentbench_smoke.py -q` -> `1 passed`.
+- Run artifacts generated under `experiments/results/medagentbench/20260304T191914Z`, `...191921Z`, and `...191930Z`.
+- Evaluation artifacts generated: `experiments/results/medagentbench/20260304T191930Z/summary.json` and `summary.md`.
+- Azure backend rerun without `--endpoint-name` succeeded on 2026-03-04:
+  - `uv run ehr-azure-openai --example direct --model gpt-5.2 --prompt "Reply with exactly: backend_ok"` returned `backend_ok`.
+  - Additional run IDs with actual backend: `20260304T193527Z`, `20260304T193547Z`, `20260304T194005Z`; evaluation artifact at `experiments/results/medagentbench/20260304T194005Z/summary.json`.
+- Interactive demo validation on 2026-03-04:
+- `printf 'For patient S2874099, summarize known conditions.\nquit\n' | uv run python experiments/demo.py --backend azure_openai --model gpt-5.2 --api-version 2025-03-01-preview --fhir-base-url http://localhost:8080/fhir` executed successfully and returned structured JSON output with `task_id`, `final_answer`, `rounds_used`, and tool trace summary fields.
 
 ## Context and Orientation
 
@@ -85,7 +107,7 @@ The implementation target is not to re-create MedAgentBench internals. The targe
 
 Milestone 1 establishes reproducible benchmark assets and container orchestration.
 
-Create `scripts/medagentbench/setup.sh` to download or verify required MedAgentBench artifacts into `benchmarks/medagentbench/assets/`. The script must be idempotent: if files already exist and checksums match, it exits without modifying files. Create `benchmarks/medagentbench/docker-compose.yaml` with a single `fhir` service exposing port `8080`, and add `scripts/medagentbench/fhir_up.sh` and `scripts/medagentbench/fhir_down.sh` wrappers. Add `benchmarks/medagentbench/README.md` documenting prerequisites, expected files, and one-command startup.
+Create `scripts/medagentbench/setup.sh` to download or verify required MedAgentBench artifacts into `data/medagentbench/`. The script must be idempotent: if files already exist and checksums match, it exits without modifying files. Create `benchmarks/medagentbench/docker-compose.yaml` with a single `fhir` service exposing port `8080`, and add `scripts/medagentbench/fhir_up.sh` and `scripts/medagentbench/fhir_down.sh` wrappers. Add `benchmarks/medagentbench/README.md` documenting prerequisites, expected files, and one-command startup.
 
 Milestone 2 adds foundational runtime config and FHIR client tools.
 
@@ -103,6 +125,10 @@ Milestone 5 hardens quality with tests and smoke runs.
 
 Add unit tests in `tests/test_fhir_client.py`, `tests/test_medagentbench_task_import.py`, and `tests/test_medagentbench_evaluator.py`. Add an integration smoke test `tests/integration/test_medagentbench_smoke.py` that runs a tiny fixed subset (for example 3 tasks) against the running Dockerized FHIR endpoint. Update `README.md` with a “MedAgentBench” section linking to setup, run, and evaluate commands.
 
+Milestone 6 adds an interactive demo mode for terminal users.
+
+Assuming FHIR runtime is already running, add a CLI entrypoint `experiments/demo.py` that starts an interactive prompt loop in terminal. A user can type an ad-hoc clinical task/prompt, the system runs one task execution flow using existing agent/backend/tool stack, and prints structured output (final answer, rounds used, and tool trace summary). The demo must support `--backend`, `--model`, `--api-version`, and `--fhir-base-url`, and should exit cleanly on `exit`/`quit`/EOF.
+
 ## Concrete Steps
 
 All commands below are run from `/home/shezhan/repos/ehr-co-scientist`.
@@ -116,38 +142,38 @@ Expected: existing tests pass (initially may be zero tests).
 2. Start the FHIR service.
 
     bash scripts/medagentbench/fhir_up.sh
-    curl -sSf http://localhost:8080/metadata | head -c 200
+    curl -sSf http://localhost:8080/fhir/metadata | head -c 200
 
 Expected: the second command prints JSON containing a FHIR CapabilityStatement payload.
 
 3. Import and normalize MedAgentBench task files.
 
     uv run python scripts/medagentbench/import_tasks.py \
-      --input benchmarks/medagentbench/assets/tasks.json \
-      --output tasks/cohort_construction/sources/medagentbench/std.yaml
+      --input data/medagentbench/test_data_v2.json \
+      --funcs-json data/medagentbench/funcs_v1.json \
+      --output-root tasks \
+      --split std
 
-Expected: output file exists and contains deterministic ordering by `task_id`.
+Expected: grouped output files exist under `tasks/<task_type>/sources/medagentbench/std.yaml` with deterministic ordering by `task_id`.
 
 4. Smoke-test Azure OpenAI backend defaults used by benchmark runs.
 
     uv run ehr-azure-openai \
       --example direct \
       --model gpt-5.2 \
-      --endpoint-name "$AZURE_OPENAI_ENDPOINT_NAME" \
       --prompt "Reply with exactly: backend_ok"
 
-Expected: command returns a direct chat completion payload from Azure OpenAI and confirms endpoint/model wiring. If `$AZURE_OPENAI_ENDPOINT_NAME` is unset, pass `--endpoint-name <your-endpoint-name>` explicitly.
+Expected: command returns a direct chat completion payload from Azure OpenAI and confirms default endpoint/model wiring.
 
 5. Run a filtered benchmark slice by explicit task IDs.
 
     uv run python experiments/run.py \
       --task medagentbench \
       --split std \
-      --task-ids mab_001,mab_017,mab_043 \
+      --task-ids task1_1,task4_1,task9_1 \
       --model gpt-5.2 \
-      --endpoint-name "$AZURE_OPENAI_ENDPOINT_NAME" \
       --api-version 2025-03-01-preview \
-      --fhir-base-url http://localhost:8080
+      --fhir-base-url http://localhost:8080/fhir
 
 Expected: run executes exactly those task IDs, and the run metadata file records the resolved selector.
 
@@ -158,9 +184,8 @@ Expected: run executes exactly those task IDs, and the run metadata file records
       --split std \
       --task-selector-file tasks/selectors/medagentbench_query_easy.yaml \
       --model gpt-5.2 \
-      --endpoint-name "$AZURE_OPENAI_ENDPOINT_NAME" \
       --api-version 2025-03-01-preview \
-      --fhir-base-url http://localhost:8080
+      --fhir-base-url http://localhost:8080/fhir
 
 Expected: only tasks matching selector rules are executed, and skipped counts by rule are reported.
 
@@ -171,9 +196,8 @@ Expected: only tasks matching selector rules are executed, and skipped counts by
       --split std \
       --max-tasks 3 \
       --model gpt-5.2 \
-      --endpoint-name "$AZURE_OPENAI_ENDPOINT_NAME" \
       --api-version 2025-03-01-preview \
-      --fhir-base-url http://localhost:8080
+      --fhir-base-url http://localhost:8080/fhir
 
 Expected: run directory under `experiments/results/medagentbench/` with `results.jsonl` containing 3 records.
 
@@ -193,22 +217,33 @@ Expected: printed summary includes `pass_at_1`, category breakdowns, and query/a
 
 Expected: tests pass, lint passes, formatter makes no additional changes on second run.
 
+10. Run interactive demo CLI (FHIR server already running).
+
+    uv run python experiments/demo.py \
+      --backend azure_openai \
+      --model gpt-5.2 \
+      --api-version 2025-03-01-preview \
+      --fhir-base-url http://localhost:8080/fhir
+
+Expected: terminal enters interactive mode, accepts free-form task prompts, and prints task result payload per prompt until user exits with `quit`/`exit`.
+
 ## Validation and Acceptance
 
 Acceptance is achieved when a novice can clone the repository, run the MedAgentBench setup script, start the Dockerized FHIR service, execute at least one MedAgentBench split through `experiments/run.py`, execute a filtered subset through selector configuration, and generate scoring outputs through `benchmarks/evaluate.py` without manually editing source files.
 
 The concrete observable checks are:
 
-- `GET http://localhost:8080/metadata` succeeds while Docker service is up.
+- `GET http://localhost:8080/fhir/metadata` succeeds while Docker service is up.
 - `experiments/run.py` produces one JSONL record per attempted task with final answer, tool trace, and success flag.
 - `experiments/run.py` supports task selection by explicit IDs, category filters, and selector file, and records the effective resolved task set in run metadata.
 - `experiments/run.py` records backend call metadata including backend name, model name, endpoint name, and API version for reproducibility.
 - `benchmarks/evaluate.py` writes both machine-readable and human-readable summaries.
 - `tests/integration/test_medagentbench_smoke.py` passes when the FHIR service is running.
+- `experiments/demo.py` provides interactive terminal workflow and returns structured outputs for user-entered prompts while FHIR server is running.
 
 ## Idempotence and Recovery
 
-The setup scripts must be idempotent. Re-running `scripts/medagentbench/setup.sh` should only re-download missing or checksum-mismatched assets. Re-running `scripts/medagentbench/fhir_up.sh` should either report the existing running service or restart cleanly. If container startup fails due to a stale container, `scripts/medagentbench/fhir_down.sh` followed by `scripts/medagentbench/fhir_up.sh` must recover. Task import must overwrite outputs deterministically so repeated imports do not create drift.
+The setup scripts must be idempotent. Re-running `scripts/medagentbench/setup.sh` should only re-download missing or checksum-mismatched assets under `data/medagentbench/`. Re-running `scripts/medagentbench/fhir_up.sh` should either report the existing running service or restart cleanly. If container startup fails due to a stale container, `scripts/medagentbench/fhir_down.sh` followed by `scripts/medagentbench/fhir_up.sh` must recover. Task import must overwrite outputs deterministically so repeated imports do not create drift.
 
 No destructive operations on unrelated repository files are allowed. All generated run artifacts must stay under `experiments/results/medagentbench/`.
 
@@ -216,10 +251,13 @@ No destructive operations on unrelated repository files are allowed. All generat
 
 Expected key file additions and modifications:
 
-- `scripts/medagentbench/setup.sh`: Idempotent downloader/verifier for MedAgentBench assets into repository-local benchmark paths.
+- `scripts/medagentbench/setup.sh`: Idempotent downloader/verifier for MedAgentBench assets under `data/medagentbench/`.
 - `scripts/medagentbench/fhir_up.sh`: One-command wrapper to start the Dockerized FHIR service with health checks.
 - `scripts/medagentbench/fhir_down.sh`: Wrapper to stop and cleanly tear down the Dockerized FHIR service.
 - `scripts/medagentbench/import_tasks.py`: Deterministic converter from source MedAgentBench task JSON into internal canonical YAML schema, including grouped output under `tasks/<task_type>/sources/medagentbench/`.
+- `data/medagentbench/test_data_v2.json`: Real MedAgentBench task dataset (300 tasks) used as import source of truth.
+- `data/medagentbench/funcs_v1.json`: MedAgentBench tool/function schema file used for allowed-tool metadata during import.
+- `data/medagentbench/task_type_mapping.yaml`: Explicit alignment map from MedAgentBench 6 task types to repo task types and source task groups.
 - `tasks/selectors/medagentbench_query_easy.yaml`: Example selector manifest demonstrating include/exclude filtering for a simple query subset.
 - `benchmarks/medagentbench/README.md`: Operator guide for setup, startup, task import, benchmark execution, and troubleshooting.
 - `benchmarks/medagentbench/docker-compose.yaml`: Container orchestration definition for the local MedAgentBench-compatible FHIR runtime.
@@ -227,10 +265,14 @@ Expected key file additions and modifications:
 - `benchmarks/medagentbench/evaluator.py`: MedAgentBench scoring logic that computes pass@1 and category/query-action breakdowns.
 - `tasks/<task_type>/task.yaml`: Task-type package metadata with manifest and entrypoint wiring.
 - `tasks/<task_type>/sources/medagentbench/std.yaml`: Canonical normalized task manifest for standard split routed to the corresponding task type.
+- `tasks/data_aggregation/task.yaml`: New task type package metadata for aggregation-style tasks.
+- `tasks/clinical_data_recording/task.yaml`: New task type package metadata for chart-recording tasks.
+- `tasks/care_ordering/task.yaml`: New task type package metadata for non-medication ordering/referral tasks.
 - `tasks/<task_type>/runner.py`: Task-local execution adapter invoked by top-level experiment runner.
 - `tasks/<task_type>/evaluator.py`: Task-local scoring adapter used by benchmark harness.
 - `experiments/run.py`: Main benchmark runner CLI handling task resolution, agent execution, backend dispatch, and result persistence.
 - `benchmarks/evaluate.py`: Top-level evaluation CLI entrypoint that loads run outputs and writes summary metrics artifacts.
+- `experiments/demo.py`: Interactive terminal demo CLI for ad-hoc prompt/task execution using the same backend/tool pipeline.
 - `src/ehr_co_scientist/agent.py`: Agent loop implementation coordinating prompt construction, tool calls, and final answer extraction.
 - `src/ehr_co_scientist/backends/__init__.py`: Backend package exports and registry entrypoint for available backend adapters.
 - `src/ehr_co_scientist/backends/adapter.py`: Provider-neutral backend interface and dispatch layer used by the runner.

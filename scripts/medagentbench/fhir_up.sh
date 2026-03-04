@@ -4,13 +4,14 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 COMPOSE_FILE="${ROOT_DIR}/benchmarks/medagentbench/docker-compose.yaml"
 SERVICE_NAME="fhir"
+FHIR_BASE_URL="${FHIR_BASE_URL:-http://localhost:8080/fhir}"
 
 if [[ ! -f "${COMPOSE_FILE}" ]]; then
   echo "[fhir_up] missing compose file: ${COMPOSE_FILE}" >&2
   exit 1
 fi
 
-docker compose -f "${COMPOSE_FILE}" up -d --build "${SERVICE_NAME}"
+docker compose -f "${COMPOSE_FILE}" up -d "${SERVICE_NAME}"
 
 container_id="$(docker compose -f "${COMPOSE_FILE}" ps -q "${SERVICE_NAME}")"
 if [[ -z "${container_id}" ]]; then
@@ -18,11 +19,11 @@ if [[ -z "${container_id}" ]]; then
   exit 1
 fi
 
-for _ in $(seq 1 60); do
+for _ in $(seq 1 180); do
   status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "${container_id}")"
   if [[ "${status}" == "healthy" || "${status}" == "running" ]]; then
-    if curl -sSf "http://localhost:8080/metadata" >/dev/null 2>&1; then
-      echo "[fhir_up] FHIR endpoint ready at http://localhost:8080/metadata"
+    if curl -sSf "${FHIR_BASE_URL}/metadata" >/dev/null 2>&1; then
+      echo "[fhir_up] FHIR endpoint ready at ${FHIR_BASE_URL}/metadata"
       exit 0
     fi
   fi

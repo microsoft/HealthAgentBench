@@ -33,7 +33,9 @@ class FHIRClient:
             headers={"Accept": "application/fhir+json"},
         )
 
-    def create(self, resource_type: str, resource_body: dict[str, Any]) -> dict[str, Any]:
+    def create(
+        self, resource_type: str, resource_body: dict[str, Any]
+    ) -> dict[str, Any]:
         return self._http.request_json(
             method="POST",
             url=f"{self.base_url}/{resource_type}",

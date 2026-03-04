@@ -1,0 +1,13 @@
+include:
+  task_ids: []
+  categories:
+    - factual_qa
+  difficulties:
+    - easy
+  task_types:
+    - query
+exclude:
+  task_ids: []
+  categories: []
+  difficulties: []
+  task_types: []

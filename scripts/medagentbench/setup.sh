@@ -2,68 +2,69 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-ASSET_DIR="${ROOT_DIR}/benchmarks/medagentbench/assets"
-TASKS_JSON="${ASSET_DIR}/tasks.json"
-CHECKSUMS_FILE="${ASSET_DIR}/SHA256SUMS"
+DATA_DIR="${ROOT_DIR}/data/medagentbench"
+TEST_DATA_JSON="${DATA_DIR}/test_data_v2.json"
+FUNCS_JSON="${DATA_DIR}/funcs_v1.json"
+CHECKSUMS_FILE="${DATA_DIR}/SHA256SUMS"
 
-mkdir -p "${ASSET_DIR}"
+TEST_DATA_URL="https://raw.githubusercontent.com/stanfordmlgroup/MedAgentBench/main/data/medagentbench/test_data_v2.json"
+FUNCS_URL="https://raw.githubusercontent.com/stanfordmlgroup/MedAgentBench/main/data/medagentbench/funcs_v1.json"
 
-if [[ ! -f "${TASKS_JSON}" ]]; then
-  cat > "${TASKS_JSON}" <<'JSON'
-[
-  {
-    "task_id": "mab_001",
-    "category": "cohort_construction",
-    "difficulty": "easy",
-    "instruction": "Find patients older than 65 with at least one inpatient encounter in the last year.",
-    "expected_answer": "A cohort list with patient identifiers",
-    "required_actions": [],
-    "split": "std",
-    "task_type": "query",
-    "backend_profile": "fhir"
-  },
-  {
-    "task_id": "mab_017",
-    "category": "cohort_construction",
-    "difficulty": "medium",
-    "instruction": "Build a cohort for type 2 diabetes with HbA1c above 8.0 in the last 90 days.",
-    "expected_answer": "Patients meeting diabetes and HbA1c criteria",
-    "required_actions": [],
-    "split": "std",
-    "task_type": "query",
-    "backend_profile": "fhir"
-  }
-]
-JSON
-  echo "[setup] wrote sample benchmark asset: ${TASKS_JSON}"
+mkdir -p "${DATA_DIR}"
+
+if [[ ! -f "${TEST_DATA_JSON}" ]]; then
+  echo "[setup] downloading ${TEST_DATA_JSON}"
+  curl -fsSL "${TEST_DATA_URL}" -o "${TEST_DATA_JSON}"
 else
-  echo "[setup] found existing asset: ${TASKS_JSON}"
+  echo "[setup] found existing file: ${TEST_DATA_JSON}"
 fi
 
-"${ROOT_DIR}/.venv/bin/python" - "${TASKS_JSON}" <<'PY'
+if [[ ! -f "${FUNCS_JSON}" ]]; then
+  echo "[setup] downloading ${FUNCS_JSON}"
+  curl -fsSL "${FUNCS_URL}" -o "${FUNCS_JSON}"
+else
+  echo "[setup] found existing file: ${FUNCS_JSON}"
+fi
+
+"${ROOT_DIR}/.venv/bin/python" - "${TEST_DATA_JSON}" "${FUNCS_JSON}" <<'PY'
 from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
 
-path = Path(sys.argv[1])
-raw = json.loads(path.read_text(encoding="utf-8"))
-if not isinstance(raw, list):
-    raise SystemExit("tasks.json must contain a top-level list")
-required = {"task_id", "category", "difficulty", "instruction", "split", "task_type"}
-for i, row in enumerate(raw):
+test_data_path = Path(sys.argv[1])
+funcs_path = Path(sys.argv[2])
+
+test_data = json.loads(test_data_path.read_text(encoding="utf-8"))
+if not isinstance(test_data, list) or not test_data:
+    raise SystemExit("test_data_v2.json must contain a non-empty list")
+required_task_keys = {"id", "instruction", "context"}
+for i, row in enumerate(test_data):
     if not isinstance(row, dict):
-        raise SystemExit(f"task index {i} is not an object")
-    missing = sorted(required - row.keys())
+        raise SystemExit(f"test_data row {i} is not an object")
+    missing = sorted(required_task_keys - row.keys())
     if missing:
-        raise SystemExit(f"task index {i} missing required keys: {', '.join(missing)}")
-print(f"validated {len(raw)} task records")
+        raise SystemExit(f"test_data row {i} missing keys: {', '.join(missing)}")
+
+funcs_data = json.loads(funcs_path.read_text(encoding="utf-8"))
+if not isinstance(funcs_data, list) or not funcs_data:
+    raise SystemExit("funcs_v1.json must contain a non-empty list")
+required_func_keys = {"name", "description", "parameters"}
+for i, row in enumerate(funcs_data):
+    if not isinstance(row, dict):
+        raise SystemExit(f"funcs row {i} is not an object")
+    missing = sorted(required_func_keys - row.keys())
+    if missing:
+        raise SystemExit(f"funcs row {i} missing keys: {', '.join(missing)}")
+
+print(f"validated task rows: {len(test_data)}")
+print(f"validated function schemas: {len(funcs_data)}")
 PY
 
 (
-  cd "${ASSET_DIR}"
-  sha256sum "tasks.json" > "${CHECKSUMS_FILE}"
+  cd "${DATA_DIR}"
+  sha256sum "test_data_v2.json" "funcs_v1.json" > "${CHECKSUMS_FILE}"
 )
 
 echo "[setup] wrote checksums: ${CHECKSUMS_FILE}"

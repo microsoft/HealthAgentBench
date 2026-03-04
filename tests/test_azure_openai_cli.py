@@ -92,7 +92,10 @@ def test_batch_cli_function_calling_flags(monkeypatch, capsys):
     assert output[0]["content"] == "tool_calling_ok"
 
     assert captured["parallel_tool_calls"] is False
-    assert captured["tool_choice"] == {"type": "function", "function": {"name": "get_weather"}}
+    assert captured["tool_choice"] == {
+        "type": "function",
+        "function": {"name": "get_weather"},
+    }
     assert captured["tools"] == [
         {
             "type": "function",

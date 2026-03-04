@@ -1,0 +1,24 @@
+source: medagentbench
+source_files:
+  tasks: data/medagentbench/test_data_v2.json
+  tools: data/medagentbench/funcs_v1.json
+
+medagentbench_task_types:
+  patient_information_retrieval:
+    source_groups: [task1, task2]
+    repo_task_type: factual_qa
+  lab_result_retrieval:
+    source_groups: [task4, task7]
+    repo_task_type: factual_qa
+  patient_data_aggregation:
+    source_groups: [task6]
+    repo_task_type: data_aggregation
+  recording_patient_data:
+    source_groups: [task3]
+    repo_task_type: clinical_data_recording
+  test_ordering:
+    source_groups: [task8, task10]
+    repo_task_type: care_ordering
+  medication_ordering:
+    source_groups: [task5, task9]
+    repo_task_type: medication_reconciliation

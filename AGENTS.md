@@ -49,7 +49,7 @@ Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must e
 
 ## Tasks
 
-The system supports 12 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with task metadata (`task.yaml`) plus optional task-local execution/scoring modules (`runner.py`, `evaluator.py`), prompts, and fixtures. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep the top-level CLIs in `experiments/` and `benchmarks/` responsible for consistent cross-task execution.
+The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with task metadata (`task.yaml`) plus optional task-local execution/scoring modules (`runner.py`, `evaluator.py`), prompts, and fixtures. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep the top-level CLIs in `experiments/` and `benchmarks/` responsible for consistent cross-task execution.
 
 ## ExecPlans
 
