@@ -1,6 +1,6 @@
 # EHR Co-Scientist — Agent Instructions
 
-> **Sync notice:** This file (`CLAUDE.md`) and `AGENTS.md` must always be identical.
+> **Sync notice:** `AGENTS.md` and `CLAUDE.md` must always be identical.
 > When you update one, update the other immediately.
 
 ## Project Overview
@@ -14,12 +14,12 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 - `src/ehr_co_scientist/prompts/` — System and task prompt templates.
 - `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
 - `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
-- `tasks/` — Task definitions in YAML, one per task type.
-- `benchmarks/` — Evaluation protocol, datasets, and gold-standard answers.
-- `experiments/` — Run configurations, CLI entry points, and result artifacts.
+- `tasks/` — Task suite package organized by task type (task specs, task-local runners/evaluators, prompts, fixtures, selectors, and registry).
+- `benchmarks/` — Cross-task evaluation harness, datasets, and gold-standard answers.
+- `experiments/` — Top-level run configurations, orchestration CLI entry points, and result artifacts.
 - `notebooks/` — Jupyter notebooks for analysis and paper figures.
 - `paper/` — LaTeX source for the arxiv submission.
-- `scripts/` — Setup and export utilities (e.g., `setup_mimic.sh`).
+- `scripts/` — Setup and export utilities organized by integration/domain (e.g., `setup_mimic.sh`, `medagentbench/`).
 - `tests/` — Unit and integration tests for tools and the agent.
 - `.agent/plans/` — Individual ExecPlan files (see ExecPlans section below).
 
@@ -32,6 +32,7 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 - **Testing** uses `pytest`. Run the full suite with `pytest tests/` from the repo root.
 - **Linting** uses `ruff`. Run `ruff check src/ tests/` before committing.
 - **Formatting** uses `ruff format`. Run `ruff format src/ tests/` before committing.
+- **Scripts layout** should avoid a flat `scripts/` list as integrations grow; place related scripts under subdirectories such as `scripts/medagentbench/`.
 - **Commits** should be small, focused, and have descriptive messages. Prefer one logical change per commit.
 
 ## Tool Categories
@@ -48,7 +49,7 @@ Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must e
 
 ## Tasks
 
-The system supports 12 agentic EHR tasks. Task definitions live in `tasks/` as YAML files. When adding or modifying tasks, ensure the YAML schema stays consistent and that evaluation scripts in `benchmarks/` can consume the output.
+The system supports 12 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with task metadata (`task.yaml`) plus optional task-local execution/scoring modules (`runner.py`, `evaluator.py`), prompts, and fixtures. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep the top-level CLIs in `experiments/` and `benchmarks/` responsible for consistent cross-task execution.
 
 ## ExecPlans
 

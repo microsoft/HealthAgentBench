@@ -37,6 +37,19 @@ The agent has access to tools across five categories:
 - **EHR utilities** — FHIR client, ClinicalTrials.gov search, de-identification checker
 - **File & format** — CSV/Parquet reader, document parser, schema mapper, web fetcher, bash tools
 
+## Task Suite Architecture
+
+Tasks are first-class artifacts in this repository. Each task can include:
+
+- declarative metadata (`task.yaml`)
+- task-specific execution glue (`runner.py`)
+- task-specific scoring logic (`evaluator.py`)
+- prompts, fixtures, and docs needed to reproduce the task
+
+Task packages are organized by task type from the `Tasks` table above (for example `tasks/cohort_construction/`, `tasks/temporal_reasoning/`), not by benchmark source. If a new task type is added, update the `Tasks` section first, then add the corresponding `tasks/<task_type>/` package.
+
+Shared orchestration still lives in `src/ehr_co_scientist/`, while `tasks/` owns task-type-specific assets and logic.
+
 ## Project Structure
 
 ```
@@ -58,13 +71,23 @@ ehr-co-scientist/
 │   ├── prompts/                      # System & task prompt templates
 │   ├── tools/                        # Tool implementations
 │   └── utils/                        # DB, sandbox, logging helpers
-├── tasks/                            # Task definitions (YAML)
-├── benchmarks/                       # Evaluation protocol, datasets, gold answers
-├── experiments/                      # Run configs, CLI, results
+├── tasks/                            # Task suite: specs + runners + evaluators + fixtures
+│   ├── registry.py                   # Task discovery/registration
+│   ├── selectors/                    # Reusable task selection manifests
+│   ├── cohort_construction/          # Task-type package
+│   │   └── task.yaml                 # Task-type metadata/spec
+│   ├── temporal_reasoning/           # Task-type package
+│   │   └── task.yaml                 # Task-type metadata/spec
+│   └── report_generation/            # Task-type package
+│       └── task.yaml                 # Task-type metadata/spec
+├── benchmarks/                       # Cross-task evaluation harness + datasets/gold answers
+├── experiments/                      # Top-level run CLI, configs, and results
 ├── notebooks/                        # Analysis & paper figures
 ├── paper/                            # LaTeX source for arxiv submission
 ├── design/                           # Design docs, architecture, scope, ideas
-├── scripts/                          # Setup & export utilities
+├── scripts/                          # Setup/export utilities organized by integration domain
+│   ├── setup_mimic.sh                # Core MIMIC bootstrap script
+│   └── medagentbench/                # MedAgentBench-specific operational scripts
 └── tests/                            # Tool & agent tests
 ```
 
@@ -94,6 +117,10 @@ python experiments/run.py --task cohort_construction --model claude-4-sonnet
 # Evaluate results
 python benchmarks/evaluate.py --task cohort_construction --results experiments/results/
 ```
+
+Task-local execution/scoring scripts live under each task-type package in `tasks/<task_type>/`. Benchmark-specific imports (such as MedAgentBench) should map into the relevant task-type package during integration work, rather than creating benchmark-named task roots.
+
+Scripts should be grouped under `scripts/<integration_or_domain>/` as the repository grows (for example `scripts/medagentbench/`) to avoid an unscalable flat script list.
 
 ## License
 
