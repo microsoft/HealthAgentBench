@@ -1,0 +1,9 @@
+services:
+  fhir:
+    image: python:3.12-slim
+    container_name: ehr-medagentbench-fhir
+    command: >
+      python -m http.server 8080
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

@@ -1,9 +1,8 @@
 # MedAgentBench Scripts
 
-This directory will contain MedAgentBench-specific operational scripts.
+This directory contains MedAgentBench-specific operational scripts.
 
-Planned scripts (from ExecPlan):
-- `setup.sh`
-- `fhir_up.sh`
-- `fhir_down.sh`
-- `import_tasks.py`
+- `setup.sh`: idempotent asset bootstrap for `benchmarks/medagentbench/assets/`
+- `fhir_up.sh`: starts a local FHIR-compatible mock endpoint at `http://localhost:8080/metadata`
+- `fhir_down.sh`: stops the local FHIR mock endpoint
+- `import_tasks.py`: converts source task JSON into canonical YAML manifests

@@ -21,6 +21,7 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-04 01:26Z) Reviewed plan for PLANS.md compliance and repository drift; corrected backend default assumptions, interface duplication, and evidence wording for scaffold state.
 - [x] (2026-03-04 23:40Z) Aligned repository architecture and docs to treat `tasks/` as first-class task packages (metadata + task-local runner/evaluator + fixtures), and created scaffold directories/files.
 - [x] (2026-03-04 23:58Z) Updated architecture to organize `tasks/` by task type (README task taxonomy) and removed pre-created MedAgentBench task package scaffold pending integration milestones.
+- [x] (2026-03-05 00:31Z) Implemented runnable scripts for setup, mock FHIR startup/shutdown, and task import under `scripts/medagentbench/` to satisfy first three concrete steps.
 - [ ] Implement MedAgentBench asset ingestion scripts and documentation.
 - [ ] Implement Docker Compose based FHIR runtime and health checks.
 - [ ] Implement FHIR tool modules and task adapters in `src/ehr_co_scientist/tools/`.
@@ -123,7 +124,7 @@ Expected: the second command prints JSON containing a FHIR CapabilityStatement p
 
     uv run python scripts/medagentbench/import_tasks.py \
       --input benchmarks/medagentbench/assets/tasks.json \
-      --output tasks/<task_type>/sources/medagentbench/std.yaml
+      --output tasks/cohort_construction/sources/medagentbench/std.yaml
 
 Expected: output file exists and contains deterministic ordering by `task_id`.
 

@@ -1,0 +1,24 @@
+[
+  {
+    "task_id": "mab_001",
+    "category": "cohort_construction",
+    "difficulty": "easy",
+    "instruction": "Find patients older than 65 with at least one inpatient encounter in the last year.",
+    "expected_answer": "A cohort list with patient identifiers",
+    "required_actions": [],
+    "split": "std",
+    "task_type": "query",
+    "backend_profile": "fhir"
+  },
+  {
+    "task_id": "mab_017",
+    "category": "cohort_construction",
+    "difficulty": "medium",
+    "instruction": "Build a cohort for type 2 diabetes with HbA1c above 8.0 in the last 90 days.",
+    "expected_answer": "Patients meeting diabetes and HbA1c criteria",
+    "required_actions": [],
+    "split": "std",
+    "task_type": "query",
+    "backend_profile": "fhir"
+  }
+]
