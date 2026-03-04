@@ -37,7 +37,7 @@ from tqdm.asyncio import tqdm_asyncio
 LOG = logging.getLogger(__name__)
 
 API_VERSION = "2025-03-01-preview"
-DEFAULT_ENDPOINT_NAME = "trapi-msrhf-shared"
+DEFAULT_ENDPOINT_NAME = "hanover-openai-east"
 ENDPOINTS: dict[str, str] = {
     "hanover-openai": "https://hanover-openai.openai.azure.com/",
     "hanover-openai-south": "https://hanover-openai-south.openai.azure.com/",
@@ -67,13 +67,7 @@ def _build_credential_chain() -> ChainedTokenCredential:
     )
 
 
-def _resolve_endpoint_name_url(
-    endpoint_name: str | None,
-    endpoint_url: str | None,
-) -> tuple[str, str]:
-    if endpoint_url:
-        return "custom", endpoint_url
-
+def _resolve_endpoint_name_url(endpoint_name: str | None) -> tuple[str, str]:
     name = endpoint_name or DEFAULT_ENDPOINT_NAME
     url = ENDPOINTS.get(name)
     if url is None:
@@ -92,10 +86,9 @@ def resolve_endpoint_config(
     *,
     model: str,
     endpoint_name: str | None = None,
-    endpoint: str | None = None,
     api_key: str | None = None,
 ) -> tuple[str, str, Any | None, str | None]:
-    resolved_name, target_endpoint = _resolve_endpoint_name_url(endpoint_name, endpoint)
+    resolved_name, target_endpoint = _resolve_endpoint_name_url(endpoint_name)
     resolved_api_key = api_key or _default_api_key_for_endpoint(resolved_name)
     target_deployment = model
 
@@ -141,7 +134,6 @@ def run_direct_chat_completion(
     messages: list[dict[str, Any]],
     api_version: str = API_VERSION,
     endpoint_name: str | None = None,
-    endpoint: str | None = None,
     api_key: str | None = None,
     retry_attempts: int = 3,
     **kwargs: Any,
@@ -149,15 +141,13 @@ def run_direct_chat_completion(
     """Run a single direct Azure OpenAI chat completion request.
 
     Endpoint resolution order:
-    1) explicit `endpoint`
-    2) named `endpoint_name` from ENDPOINTS
-    3) default endpoint name
+    1) named `endpoint_name` from ENDPOINTS
+    2) default endpoint name
     """
     target_endpoint, target_deployment, token_provider, resolved_api_key = (
         resolve_endpoint_config(
             model=model,
             endpoint_name=endpoint_name,
-            endpoint=endpoint,
             api_key=api_key,
         )
     )
@@ -264,7 +254,6 @@ async def generate_from_openai_chat_completion(
     batch_messages: list[list[dict[str, Any]]],
     model: str,
     endpoint_name: str | None = None,
-    endpoint: str | None = None,
     api_key: str | None = None,
     requests_per_minute: int = 150,
     api_version: str = API_VERSION,
@@ -274,7 +263,6 @@ async def generate_from_openai_chat_completion(
         resolve_endpoint_config(
             model=model,
             endpoint_name=endpoint_name,
-            endpoint=endpoint,
             api_key=api_key,
         )
     )
@@ -313,7 +301,6 @@ def run_batch_chat_completion(
     retry: int = 10,
     model: str,
     endpoint_name: str | None = None,
-    endpoint: str | None = None,
     api_key: str | None = None,
     requests_per_minute: int = 150,
     api_version: str = API_VERSION,
@@ -337,7 +324,6 @@ def run_batch_chat_completion(
                     batch_messages=batch_messages,
                     model=model,
                     endpoint_name=endpoint_name,
-                    endpoint=endpoint,
                     api_key=api_key,
                     requests_per_minute=requests_per_minute,
                     api_version=api_version,
@@ -408,21 +394,19 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--example",
         choices=["batch", "direct"],
-        default="batch",
+        default="direct",
         help="Which example flow to run.",
     )
-    parser.add_argument("--model", default="o3", help="Model alias in endpoint mapping.")
+    parser.add_argument(
+        "--model",
+        default="gpt-5.2",
+        help="Model alias in endpoint mapping.",
+    )
     parser.add_argument(
         "--endpoint-name",
         choices=sorted(ENDPOINTS),
-        default=None,
+        default=DEFAULT_ENDPOINT_NAME,
         help="Named endpoint from the internal ENDPOINTS map.",
-    )
-    parser.add_argument(
-        "--connection",
-        dest="endpoint_name",
-        choices=sorted(ENDPOINTS),
-        help=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--prompt",
@@ -474,11 +458,6 @@ def _parse_args() -> argparse.Namespace:
         choices=["true", "false"],
         default=None,
         help="Whether to allow parallel tool calls.",
-    )
-    parser.add_argument(
-        "--azure-endpoint",
-        default=None,
-        help="Optional endpoint override for direct or batch mode.",
     )
     parser.add_argument(
         "--api-key",
@@ -581,7 +560,6 @@ def main() -> None:
             "batch_size": args.batch_size,
             "model": args.model,
             "endpoint_name": args.endpoint_name,
-            "endpoint": args.azure_endpoint,
             "api_key": args.api_key,
             "requests_per_minute": args.requests_per_minute,
             "api_version": args.api_version,
@@ -596,7 +574,6 @@ def main() -> None:
         model=args.model,
         messages=all_messages[0],
         endpoint_name=args.endpoint_name,
-        endpoint=args.azure_endpoint,
         api_key=args.api_key,
         api_version=args.api_version,
         **kwargs,
