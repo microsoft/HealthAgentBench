@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from ehr_co_scientist.backends import azure_openai
 
 
@@ -48,9 +50,19 @@ def test_batch_cli_example_command(monkeypatch, capsys):
     assert captured["model"] == "o3_2025-04-16"
     assert captured["reasoning_effort"] == "low"
     assert captured["tools"] == []
+    assert "tool_choice" not in captured
 
 
-def test_batch_cli_function_calling_flags(monkeypatch, capsys, tmp_path):
+@pytest.mark.parametrize(
+    "tool_choice_arg",
+    [
+        "function:get_weather",
+        '{"type":"function","function":{"name":"get_weather"}}',
+    ],
+)
+def test_batch_cli_function_calling_flags(
+    monkeypatch, capsys, tmp_path, tool_choice_arg
+):
     captured: dict[str, object] = {}
     tools_file = tmp_path / "tools.json"
     tools_file.write_text(
@@ -97,7 +109,7 @@ def test_batch_cli_function_calling_flags(monkeypatch, capsys, tmp_path):
             "--tools",
             str(tools_file),
             "--tool-choice",
-            "function:get_weather",
+            tool_choice_arg,
             "--parallel-tool-calls",
             "false",
         ],

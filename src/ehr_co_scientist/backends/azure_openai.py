@@ -476,17 +476,6 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _parse_tool_choice(value: str | None) -> str | dict[str, Any] | None:
-    if value is None:
-        return None
-    if value in {"auto", "none", "required"}:
-        return value
-    if value.startswith("function:"):
-        name = value.split(":", 1)[1].strip()
-        if not name:
-            raise ValueError("Invalid --tool-choice. Expected function:<name>.")
-        return {"type": "function", "function": {"name": name}}
-    return json.loads(value)
 
 
 def _load_tools_from_file(path_value: str | None) -> list[dict[str, Any]]:
@@ -511,10 +500,21 @@ def _load_tools_from_file(path_value: str | None) -> list[dict[str, Any]]:
     return normalized
 
 
+def _parse_tool_choice(value: str | None) -> str | dict[str, Any] | None:
+    if value is None:
+        return None
+    if value in {"auto", "none", "required"}:
+        return value
+    if value.startswith("function:"):
+        name = value.split(":", 1)[1].strip()
+        if not name:
+            raise ValueError("Invalid --tool-choice. Expected function:<name>.")
+        return {"type": "function", "function": {"name": name}}
+    return json.loads(value)
+
+
 def _build_function_calling_kwargs(args: argparse.Namespace) -> dict[str, Any]:
     kwargs: dict[str, Any] = {}
-    kwargs["tools"] = _load_tools_from_file(args.tools)
-
     tool_choice = _parse_tool_choice(args.tool_choice)
     if tool_choice is not None:
         kwargs["tool_choice"] = tool_choice
@@ -542,8 +542,9 @@ def main() -> None:
         kwargs["temperature"] = args.temperature
     if args.max_tokens is not None:
         kwargs["max_tokens"] = args.max_tokens
+
+    tools = _load_tools_from_file(args.tools)
     kwargs.update(_build_function_calling_kwargs(args))
-    tools = kwargs.pop("tools", [])
 
     if args.example == "batch":
         batch_kwargs: dict[str, Any] = {
