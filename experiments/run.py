@@ -14,7 +14,7 @@ import yaml
 
 from ehr_co_scientist.agent import AgentConfig, run_task
 from ehr_co_scientist.backends.adapter import BackendConfig
-from ehr_co_scientist.tools.fhir_tools import TOOL_DEFINITIONS
+from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
 from ehr_co_scientist.tools.tooling.function_tools import get_openai_function_tools
 
 

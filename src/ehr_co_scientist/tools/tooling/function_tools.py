@@ -11,40 +11,64 @@ from typing import Any, Callable, Mapping
 @dataclass(frozen=True)
 class ToolDefinition:
     tool_name: str
-    function_name: str
     description: str
     parameters: dict[str, Any]
     handler: Callable[..., dict[str, Any]]
     stop_on_call_in_evaluation: bool = False
 
 
+_PENDING_REGISTRATIONS: list[dict[str, Any]] = []
+_REGISTERED_TOOL_NAMES: set[str] = set()
+
+
+def register_tool(
+    *,
+    tool_name: str,
+    description: str,
+    parameters: dict[str, Any] | Callable[[], dict[str, Any]],
+    stop_on_call_in_evaluation: bool = False,
+):
+    """Decorator to register a tool handler for catalog materialization."""
+
+    def _decorator(fn: Callable[..., dict[str, Any]]):
+        if tool_name in _REGISTERED_TOOL_NAMES:
+            raise ValueError(f"Duplicate tool_name registration: {tool_name}")
+        _REGISTERED_TOOL_NAMES.add(tool_name)
+        _PENDING_REGISTRATIONS.append(
+            {
+                "tool_name": tool_name,
+                "description": description,
+                "parameters": parameters,
+                "handler": fn,
+                "stop_on_call_in_evaluation": stop_on_call_in_evaluation,
+            }
+        )
+        return fn
+
+    return _decorator
+
+
+def collect_registered_tool_definitions() -> dict[str, ToolDefinition]:
+    definitions: dict[str, ToolDefinition] = {}
+    for entry in _PENDING_REGISTRATIONS:
+        raw_parameters = entry["parameters"]
+        resolved_parameters = (
+            raw_parameters() if callable(raw_parameters) else raw_parameters
+        )
+        definitions[entry["tool_name"]] = ToolDefinition(
+            tool_name=entry["tool_name"],
+            description=entry["description"],
+            parameters=resolved_parameters,
+            handler=entry["handler"],
+            stop_on_call_in_evaluation=entry["stop_on_call_in_evaluation"],
+        )
+    return definitions
+
+
 def build_handler_registry(
     tool_definitions: Mapping[str, ToolDefinition],
 ) -> dict[str, Callable[..., dict[str, Any]]]:
     return {name: definition.handler for name, definition in tool_definitions.items()}
-
-
-def build_function_name_alias(
-    tool_definitions: Mapping[str, ToolDefinition],
-) -> dict[str, str]:
-    return {
-        definition.function_name: name
-        for name, definition in tool_definitions.items()
-    }
-
-
-def resolve_tool_name(
-    name: str,
-    *,
-    registry: Mapping[str, Any],
-    function_name_to_tool_name: Mapping[str, str],
-) -> str:
-    if name in registry:
-        return name
-    mapped = function_name_to_tool_name.get(name)
-    if mapped is not None:
-        return mapped
-    return name
 
 
 def get_openai_function_tools(
@@ -65,7 +89,7 @@ def get_openai_function_tools(
             {
                 "type": "function",
                 "function": {
-                    "name": definition.function_name,
+                    "name": definition.tool_name,
                     "description": definition.description,
                     "parameters": definition.parameters,
                 },
@@ -94,22 +118,12 @@ def call_registered_tool(
     client: Any,
     *,
     registry: Mapping[str, Callable[..., dict[str, Any]]],
-    function_name_to_tool_name: Mapping[str, str],
     kwargs: dict[str, Any],
 ) -> dict[str, Any]:
-    resolved_name = resolve_tool_name(
-        tool_name,
-        registry=registry,
-        function_name_to_tool_name=function_name_to_tool_name,
-    )
     try:
-        fn = registry[resolved_name]
+        fn = registry[tool_name]
     except KeyError as exc:  # noqa: PERF203
-        available_internal = ", ".join(sorted(registry))
-        available_function = ", ".join(sorted(function_name_to_tool_name))
-        raise ValueError(
-            "Unknown tool name: "
-            f"{tool_name}. Internal names: {available_internal}. "
-            f"Function names: {available_function}"
-        ) from exc
+        available = ", ".join(sorted(registry))
+        raise ValueError(f"Unknown tool name: {tool_name}. Available: {available}") from exc
     return fn(client, **kwargs)
+

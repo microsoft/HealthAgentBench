@@ -70,27 +70,27 @@ def _parse_tool_names(path: Path | None) -> list[str]:
             continue
         name = str(item.get("name", ""))
         if "Condition" in name and "GET" in name:
-            tool_names.append("condition.search")
+            tool_names.append("condition_search")
         elif "Observation" in name and "Labs" in str(item.get("description", "")):
-            tool_names.append("lab.search")
+            tool_names.append("lab_search")
         elif (
             "Observation" in name
             and "Vitals" in str(item.get("description", ""))
             and "GET" in name
         ):
-            tool_names.append("vital.search")
+            tool_names.append("vital_search")
         elif "Observation" in name and "POST" in name:
-            tool_names.append("vital.create")
+            tool_names.append("vital_create")
         elif "MedicationRequest" in name and "GET" in name:
-            tool_names.append("medicationrequest.search")
+            tool_names.append("medicationrequest_search")
         elif "MedicationRequest" in name and "POST" in name:
-            tool_names.append("medicationrequest.create")
+            tool_names.append("medicationrequest_create")
         elif "Procedure" in name and "GET" in name:
-            tool_names.append("procedure.search")
+            tool_names.append("procedure_search")
         elif "ServiceRequest" in name and "POST" in name:
-            tool_names.append("procedure.create")
+            tool_names.append("procedure_create")
         elif "Patient" in name and "GET" in name:
-            tool_names.append("patient.search")
+            tool_names.append("patient_search")
 
     return sorted(set(tool_names))
 

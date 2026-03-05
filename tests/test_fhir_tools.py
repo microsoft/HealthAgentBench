@@ -1,8 +1,7 @@
 import json
 
-from ehr_co_scientist.tools.fhir_tools import (
+from ehr_co_scientist.tools.catalog import (
     TOOL_DEFINITIONS,
-    FUNCTION_NAME_TO_TOOL_NAME,
     TOOL_REGISTRY,
     should_stop_on_call_in_evaluation,
 )
@@ -29,8 +28,7 @@ class _FakeFHIRClient:
 def test_get_openai_function_tools_contains_all_registry_tools():
     tools = get_openai_function_tools(TOOL_DEFINITIONS)
     exported_names = {tool["function"]["name"] for tool in tools}
-    assert len(tools) == len(TOOL_REGISTRY)
-    assert exported_names == set(FUNCTION_NAME_TO_TOOL_NAME)
+    assert exported_names == set(TOOL_REGISTRY)
 
 
 def test_write_openai_function_tools_json_writes_tools_wrapper(tmp_path):
@@ -38,7 +36,7 @@ def test_write_openai_function_tools_json_writes_tools_wrapper(tmp_path):
     write_openai_function_tools_json(
         output,
         tool_definitions=TOOL_DEFINITIONS,
-        tool_names=["patient.search"],
+        tool_names=["patient_search"],
     )
 
     payload = json.loads(output.read_text(encoding="utf-8"))
@@ -47,13 +45,12 @@ def test_write_openai_function_tools_json_writes_tools_wrapper(tmp_path):
     assert payload["tools"][0]["function"]["name"] == "patient_search"
 
 
-def test_call_tool_accepts_exported_function_name_alias():
+def test_call_tool_dispatches_by_canonical_name():
     client = _FakeFHIRClient()
     result = call_registered_tool(
         "patient_search",
         client,
         registry=TOOL_REGISTRY,
-        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
         kwargs={"family": "Alice"},
     )
     assert result["resourceType"] == "Bundle"
@@ -66,7 +63,6 @@ def test_patient_search_splits_full_name_to_family_given():
         "patient_search",
         client,
         registry=TOOL_REGISTRY,
-        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
         kwargs={"name": "Peter Stafford", "birthdate": "1932-12-29"},
     )
     assert client.calls == [
@@ -136,15 +132,13 @@ def test_procedure_create_posts_service_request():
         "procedure_create",
         client,
         registry=TOOL_REGISTRY,
-        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
         kwargs={"resource": payload},
     )
     assert client.calls == [("create", "ServiceRequest", payload)]
 
 
 def test_write_tools_stop_in_evaluation_mode():
-    assert should_stop_on_call_in_evaluation("vital.create") is True
-    assert should_stop_on_call_in_evaluation("procedure.create") is True
-    assert should_stop_on_call_in_evaluation("medicationrequest.create") is True
     assert should_stop_on_call_in_evaluation("vital_create") is True
-    assert should_stop_on_call_in_evaluation("patient.search") is False
+    assert should_stop_on_call_in_evaluation("procedure_create") is True
+    assert should_stop_on_call_in_evaluation("medicationrequest_create") is True
+    assert should_stop_on_call_in_evaluation("patient_search") is False

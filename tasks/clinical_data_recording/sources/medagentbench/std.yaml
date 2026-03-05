@@ -19,15 +19,15 @@ tasks:
   source_task_type: recording_patient_data
   eval_mrn: S2380121
   allowed_tools: &id001
-  - condition.search
-  - lab.search
-  - medicationrequest.create
-  - medicationrequest.search
-  - patient.search
-  - procedure.create
-  - procedure.search
-  - vital.create
-  - vital.search
+  - condition_search
+  - lab_search
+  - medicationrequest_create
+  - medicationrequest_search
+  - patient_search
+  - procedure_create
+  - procedure_search
+  - vital_create
+  - vital_search
 - task_id: task3_10
   category: clinical_data_recording
   difficulty: medium

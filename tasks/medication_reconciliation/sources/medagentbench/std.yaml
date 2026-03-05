@@ -32,15 +32,15 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6315806
   allowed_tools: &id001
-  - condition.search
-  - lab.search
-  - medicationrequest.create
-  - medicationrequest.search
-  - patient.search
-  - procedure.create
-  - procedure.search
-  - vital.create
-  - vital.search
+  - condition_search
+  - lab_search
+  - medicationrequest_create
+  - medicationrequest_search
+  - patient_search
+  - procedure_create
+  - procedure_search
+  - vital_create
+  - vital_search
 - task_id: task5_10
   category: medication_reconciliation
   difficulty: medium

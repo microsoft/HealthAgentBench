@@ -7,15 +7,13 @@ from dataclasses import dataclass
 from typing import Any
 
 from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion
-from ehr_co_scientist.tools.tooling.function_tools import (
-    call_registered_tool,
-    resolve_tool_name,
-)
-from ehr_co_scientist.tools.fhir_tools import (
-    FHIRClient,
-    FUNCTION_NAME_TO_TOOL_NAME,
+from ehr_co_scientist.tools.catalog import (
     TOOL_REGISTRY,
     should_stop_on_call_in_evaluation,
+)
+from ehr_co_scientist.tools.fhir_tools import FHIRClient
+from ehr_co_scientist.tools.tooling.function_tools import (
+    call_registered_tool,
 )
 
 
@@ -154,7 +152,7 @@ def run_task(
             "backend_result": backend_result,
             "error": (
                 "Tool not allowed by task policy: "
-                f"{resolve_tool_name(tool_name, registry=TOOL_REGISTRY, function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME)}"
+                f"{tool_name}"
             ),
             "terminated_early": True,
             "termination_reason": "tool_not_allowed",
@@ -189,14 +187,9 @@ def run_task(
                 except Exception as exc:  # noqa: BLE001
                     parsed_args = {}
                     last_error = f"Invalid tool arguments for {function_name}: {exc}"
-                resolved_name = resolve_tool_name(
-                    function_name,
-                    registry=TOOL_REGISTRY,
-                    function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
-                )
                 if (
                     allowed_tools is not None
-                    and resolved_name not in allowed_tools
+                    and function_name not in allowed_tools
                 ):
                     return _blocked_not_allowed(
                         round_index=round_index,
@@ -216,7 +209,6 @@ def run_task(
                         function_name,
                         client,
                         registry=TOOL_REGISTRY,
-                        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
                         kwargs=parsed_args,
                     )
                     tool_trace.append(
@@ -272,12 +264,7 @@ def run_task(
             }
 
         tool_name, args = parsed
-        resolved_name = resolve_tool_name(
-            tool_name,
-            registry=TOOL_REGISTRY,
-            function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
-        )
-        if allowed_tools is not None and resolved_name not in allowed_tools:
+        if allowed_tools is not None and tool_name not in allowed_tools:
             return _blocked_not_allowed(
                 round_index=round_index,
                 tool_name=tool_name,
@@ -296,7 +283,6 @@ def run_task(
                 tool_name,
                 client,
                 registry=TOOL_REGISTRY,
-                function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
                 kwargs=args,
             )
             tool_trace.append(

@@ -15,8 +15,8 @@ flowchart TD
     I --> J[Load task-type package runner from tasks/<task_type>/]
     J --> K[src/ehr_co_scientist/agent.py loop max 8 rounds]
 
-    K --> L[src/ehr_co_scientist/tools/fhir_tools.py]
-    L --> M[src/ehr_co_scientist/tools/fhir_client.py]
+    K --> L[src/ehr_co_scientist/tools/catalog.py]
+    L --> M[src/ehr_co_scientist/tools/fhir_tools.py]
     M --> N[src/ehr_co_scientist/utils/http.py retry/timeout]
     N --> G
 
@@ -25,7 +25,7 @@ flowchart TD
     P --> K
 
     K --> Q[Write run artifacts\nexperiments/results/medagentbench/<run-id>/results.jsonl + metadata]
-    Q --> R[benchmarks/evaluate.py]
+    Q --> R[scripts/medagentbench/evaluate.py]
     R --> S[scripts/medagentbench/evaluator.py]
     S --> T[summary.json + summary.md\npass@1, by_category, query_vs_action, error_taxonomy]
 

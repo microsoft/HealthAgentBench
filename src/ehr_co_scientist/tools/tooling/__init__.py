@@ -2,21 +2,20 @@
 
 from .function_tools import (
     ToolDefinition,
-    build_function_name_alias,
     build_handler_registry,
     call_registered_tool,
+    collect_registered_tool_definitions,
     get_openai_function_tools,
-    resolve_tool_name,
+    register_tool,
     write_openai_function_tools_json,
 )
 
 __all__ = [
     "ToolDefinition",
-    "build_function_name_alias",
     "build_handler_registry",
     "call_registered_tool",
+    "collect_registered_tool_definitions",
     "get_openai_function_tools",
-    "resolve_tool_name",
+    "register_tool",
     "write_openai_function_tools_json",
 ]
-

@@ -7,10 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from ehr_co_scientist.tools.tooling import (
-    ToolDefinition,
-    build_function_name_alias,
-    build_handler_registry,
-    resolve_tool_name as resolve_registered_tool_name,
+    register_tool,
     write_openai_function_tools_json,
 )
 from ehr_co_scientist.utils.http import JsonHttpClient
@@ -59,6 +56,14 @@ def _to_search_params(kwargs: dict[str, Any]) -> dict[str, str]:
     return {k: str(v) for k, v in kwargs.items() if v is not None}
 
 
+@register_tool(
+    tool_name="patient_search",
+    description=(
+        "Search Patient resources. Prefer family + given (+ optional birthdate) "
+        "for person matching."
+    ),
+    parameters=lambda: _patient_search_parameters_schema(),
+)
 def patient_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     params = _to_search_params(kwargs)
     # Compatibility fallback: if caller provides a full name string, derive
@@ -74,39 +79,88 @@ def patient_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     return client.search("Patient", params)
 
 
+@register_tool(
+    tool_name="lab_search",
+    description=(
+        "Search Observation resources for laboratory results. "
+        "Defaults category=laboratory when category is omitted."
+    ),
+    parameters=lambda: _lab_search_parameters_schema(),
+)
 def lab_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     params = _to_search_params(kwargs)
     params.setdefault("category", "laboratory")
     return client.search("Observation", params)
 
 
+@register_tool(
+    tool_name="vital_search",
+    description=(
+        "Search Observation resources for vital signs. "
+        "Defaults category=vital-signs when category is omitted."
+    ),
+    parameters=lambda: _vital_search_parameters_schema(),
+)
 def vital_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     params = _to_search_params(kwargs)
     params.setdefault("category", "vital-signs")
     return client.search("Observation", params)
 
 
+@register_tool(
+    tool_name="condition_search",
+    description="Search Condition resources by standard FHIR query params.",
+    parameters=lambda: _condition_search_parameters_schema(),
+)
 def condition_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     return client.search("Condition", _to_search_params(kwargs))
 
 
+@register_tool(
+    tool_name="procedure_search",
+    description="Search Procedure resources by standard FHIR query params.",
+    parameters=lambda: _procedure_search_parameters_schema(),
+)
 def procedure_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     return client.search("Procedure", _to_search_params(kwargs))
 
 
+@register_tool(
+    tool_name="medicationrequest_search",
+    description="Search MedicationRequest resources by standard FHIR query params.",
+    parameters=lambda: _medicationrequest_search_parameters_schema(),
+)
 def medicationrequest_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     return client.search("MedicationRequest", _to_search_params(kwargs))
 
 
+@register_tool(
+    tool_name="vital_create",
+    description="Create a new Observation resource (typically a vital sign).",
+    parameters=lambda: _wrap_resource_schema(_vital_create_resource_schema()),
+    stop_on_call_in_evaluation=True,
+)
 def vital_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]:
     return client.create("Observation", resource)
 
 
+@register_tool(
+    tool_name="procedure_create",
+    description="Create a new ServiceRequest resource.",
+    parameters=lambda: _wrap_resource_schema(_servicerequest_create_resource_schema()),
+    stop_on_call_in_evaluation=True,
+)
 def procedure_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]:
     # MedAgentBench maps this action tool to ServiceRequest.Create.
     return client.create("ServiceRequest", resource)
 
 
+@register_tool(
+    tool_name="medicationrequest_create",
+    description="Create a new MedicationRequest resource.",
+    parameters=lambda: _wrap_resource_schema(_medicationrequest_create_resource_schema()),
+    stop_on_call_in_evaluation=True,
+)
 def medicationrequest_create(
     client: FHIRClient, resource: dict[str, Any]
 ) -> dict[str, Any]:
@@ -355,100 +409,6 @@ def _wrap_resource_schema(resource_schema: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
-    "patient.search": ToolDefinition(
-        tool_name="patient.search",
-        function_name="patient_search",
-        description=(
-            "Search Patient resources. Prefer family + given (+ optional birthdate) "
-            "for person matching."
-        ),
-        parameters=_patient_search_parameters_schema(),
-        handler=patient_search,
-    ),
-    "lab.search": ToolDefinition(
-        tool_name="lab.search",
-        function_name="lab_search",
-        description=(
-            "Search Observation resources for laboratory results. "
-            "Defaults category=laboratory when category is omitted."
-        ),
-        parameters=_lab_search_parameters_schema(),
-        handler=lab_search,
-    ),
-    "vital.search": ToolDefinition(
-        tool_name="vital.search",
-        function_name="vital_search",
-        description=(
-            "Search Observation resources for vital signs. "
-            "Defaults category=vital-signs when category is omitted."
-        ),
-        parameters=_vital_search_parameters_schema(),
-        handler=vital_search,
-    ),
-    "condition.search": ToolDefinition(
-        tool_name="condition.search",
-        function_name="condition_search",
-        description="Search Condition resources by standard FHIR query params.",
-        parameters=_condition_search_parameters_schema(),
-        handler=condition_search,
-    ),
-    "procedure.search": ToolDefinition(
-        tool_name="procedure.search",
-        function_name="procedure_search",
-        description="Search Procedure resources by standard FHIR query params.",
-        parameters=_procedure_search_parameters_schema(),
-        handler=procedure_search,
-    ),
-    "medicationrequest.search": ToolDefinition(
-        tool_name="medicationrequest.search",
-        function_name="medicationrequest_search",
-        description=(
-            "Search MedicationRequest resources by standard FHIR query params."
-        ),
-        parameters=_medicationrequest_search_parameters_schema(),
-        handler=medicationrequest_search,
-    ),
-    "vital.create": ToolDefinition(
-        tool_name="vital.create",
-        function_name="vital_create",
-        description="Create a new Observation resource (typically a vital sign).",
-        parameters=_wrap_resource_schema(_vital_create_resource_schema()),
-        handler=vital_create,
-        stop_on_call_in_evaluation=True,
-    ),
-    "procedure.create": ToolDefinition(
-        tool_name="procedure.create",
-        function_name="procedure_create",
-        description="Create a new ServiceRequest resource.",
-        parameters=_wrap_resource_schema(_servicerequest_create_resource_schema()),
-        handler=procedure_create,
-        stop_on_call_in_evaluation=True,
-    ),
-    "medicationrequest.create": ToolDefinition(
-        tool_name="medicationrequest.create",
-        function_name="medicationrequest_create",
-        description="Create a new MedicationRequest resource.",
-        parameters=_wrap_resource_schema(_medicationrequest_create_resource_schema()),
-        handler=medicationrequest_create,
-        stop_on_call_in_evaluation=True,
-    ),
-}
-
-TOOL_REGISTRY = build_handler_registry(TOOL_DEFINITIONS)
-FUNCTION_NAME_TO_TOOL_NAME = build_function_name_alias(TOOL_DEFINITIONS)
-
-
-def should_stop_on_call_in_evaluation(tool_name: str) -> bool:
-    resolved = resolve_registered_tool_name(
-        tool_name,
-        registry=TOOL_REGISTRY,
-        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
-    )
-    definition = TOOL_DEFINITIONS.get(resolved)
-    return bool(definition and definition.stop_on_call_in_evaluation)
-
-
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Export FHIR tool schemas for GPT function calling."
@@ -473,6 +433,8 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
+
     args = _parse_args()
     written = write_openai_function_tools_json(
         args.output,

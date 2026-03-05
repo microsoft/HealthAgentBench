@@ -34,8 +34,12 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 00:30Z) Switched runtime to preloaded MedAgentBench FHIR image (`jyxsu6/medagentbench:latest`), diagnosed first factual QA failure with `--show-full-trace`, and fixed `patient_search` schema/handler to use MedAgentBench-style `family/given` matching (with full-name fallback).
 - [x] (2026-03-05 08:10Z) Backfilled expected answers (`sol`) in `data/medagentbench/test_data_v2.json` for all query-derived groups supported by `refsol.py` (`task2`, `task4`, `task5`, `task6`, `task7`, `task9`, `task10`) using live FHIR queries against the MedAgentBench server.
 - [x] (2026-03-05 05:22Z) Executed Milestone 7 repo-structure/tooling refactor: moved remaining benchmark artifacts into `scripts/medagentbench/` (including evaluation CLI), merged `FHIRClient` implementation into `fhir_tools.py` with compatibility shim, and extracted tool-agnostic registry/schema/export helpers into `src/ehr_co_scientist/tools/tooling/`.
-- [x] (2026-03-05 10:22Z) Added evaluation-mode write-tool short-circuit: when `--evaluation-mode` is enabled, `run_task` now terminates immediately on write-tool calls (`vital.create`, `procedure.create`, `medicationrequest.create`) without executing HTTP writes; wired through both `experiments/run.py` and `experiments/demo.py` flags and validated with new agent/tool tests.
+- [x] (2026-03-05 10:22Z) Added evaluation-mode write-tool short-circuit: when `--evaluation-mode` is enabled, `run_task` now terminates immediately on write-tool calls (`vital_create`, `procedure_create`, `medicationrequest_create`) without executing HTTP writes; wired through both `experiments/run.py` and `experiments/demo.py` flags and validated with new agent/tool tests.
 - [x] (2026-03-05 11:05Z) Enforced per-task `allowed_tools` in benchmark runs: `experiments/run.py` now passes task-scoped OpenAI tool schemas and `allowed_tools` policy into `run_task`, and `run_task` now blocks/terminates on disallowed tool calls (`blocked_not_allowed`) for both native function-calling and fallback tool-call paths.
+- [x] (2026-03-05 13:45Z) Refactored tool registration to a central decorator-backed catalog (`src/ehr_co_scientist/tools/catalog.py`) with explicit module imports, and removed transitional wrapper usage from `fhir_tools.py`.
+- [x] (2026-03-05 14:05Z) Standardized canonical tool IDs to function-safe underscore names (for example `patient_search`, `vital_create`) and removed `function_name` alias mapping/translation from shared tooling and agent dispatch.
+- [x] (2026-03-05 14:12Z) Removed unused compatibility adapter `scripts/medagentbench/fhir_medagentbench_tools.py` after verifying no runtime references; updated `scripts/medagentbench/README.md`.
+- [x] (2026-03-05 14:20Z) Consolidated redundant agent/tool tests via parametrization to reduce duplicate fallback/native cases while preserving coverage.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task3_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task8_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 
@@ -53,8 +57,8 @@ For MedAgentBench background and design context used when refining this plan, se
 - Observation: Concrete step 4 (Azure backend smoke) is environment-dependent and requires valid Azure identity/endpoint access from the execution environment.
   Evidence: Endpoint and credential checks must succeed for direct Azure completion calls.
 
-- Observation: Internal tool names (`patient.search`) differ from OpenAI function names (`patient_search`) needed for function-calling payloads.
-  Evidence: Generated tools JSON must use identifier-safe function names while runtime registry kept dot-delimited names for task manifests and agent dispatch.
+- Observation: The temporary split between dotted tool IDs and function-safe names created avoidable complexity in dispatch and policy enforcement.
+  Evidence: Runtime previously required alias maps and resolution logic; this was removed after converting canonical tool IDs to underscore names.
 
 - Observation: For task `task1_1`, HAPI/MedAgentBench patient lookup returned zero when queried with `name="Peter Stafford"` + `birthdate`, but returned the expected patient when queried with `family="Stafford"` + `given="Peter"` + `birthdate`.
   Evidence: Demo full trace showed `Patient?...&name=Peter%20Stafford` -> `total: 0`; direct FHIR query with family/given returned `total: 1` and MRN `S6534835`.
@@ -116,11 +120,19 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: Defense-in-depth avoids policy bypass when models emit unadvertised tools and keeps benchmark behavior aligned with task manifests.
   Date/Author: 2026-03-05 / User+Codex
 
+- Decision: Use function-safe canonical tool IDs directly (for example `patient_search`, `vital_create`) and remove `function_name` alias metadata.
+  Rationale: Eliminates duplicate naming sources and alias translation paths, reducing registry drift and dispatch bugs.
+  Date/Author: 2026-03-05 / User+Codex
+
+- Decision: Centralize tool definitions/registry materialization in `src/ehr_co_scientist/tools/catalog.py` with explicit module imports instead of dynamic module loading.
+  Rationale: Keeps registration mechanics predictable and discoverable while retaining extensibility for future non-FHIR tools.
+  Date/Author: 2026-03-05 / User+Codex
+
 ## Outcomes & Retrospective
 
-Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBench tasks into task-type folders, Dockerized FHIR runtime with health checks, provider-neutral runner/evaluator CLIs, reusable FHIR tool modules, and passing unit/integration coverage for the implemented scope. Measured validation evidence:
+Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBench tasks into task-type folders, Dockerized FHIR runtime with health checks, provider-neutral runner/evaluator CLIs, reusable FHIR tool modules, canonicalized tool catalog/dispatch abstractions, and passing unit/integration coverage for the implemented scope. Measured validation evidence:
 
-- `pytest tests/` -> `5 passed, 1 skipped` (integration skipped unless explicitly enabled).
+- `uv run pytest tests/ -q` -> `20 passed, 2 skipped`.
 - `RUN_MEDAGENTBENCH_SMOKE=1 pytest tests/integration/test_medagentbench_smoke.py -q` -> `1 passed`.
 - Run artifacts generated under `experiments/results/medagentbench/20260304T191914Z`, `...191921Z`, and `...191930Z`.
 - Evaluation artifacts generated: `experiments/results/medagentbench/20260304T191930Z/summary.json` and `summary.md`.
@@ -130,7 +142,7 @@ Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBenc
 - Interactive demo validation on 2026-03-04:
 - `printf 'For patient S2874099, summarize known conditions.\nquit\n' | uv run python experiments/demo.py --backend azure_openai --model gpt-5.2 --api-version 2025-03-01-preview --fhir-base-url http://localhost:8080/fhir` executed successfully and returned structured JSON output with `task_id`, `final_answer`, `rounds_used`, and tool trace summary fields.
 - Function-tools schema export and dispatch alignment validation on 2026-03-04:
-  - `uv run pytest tests/test_fhir_tools.py tests/test_fhir_client.py tests/test_medagentbench_task_import.py -q` -> `5 passed`.
+  - `uv run pytest tests/test_fhir_tools.py tests/test_fhir_client.py tests/test_medagentbench_task_import.py -q` -> `10 passed`.
   - `uv run ruff check src/ehr_co_scientist/tools/fhir_tools.py tests/test_fhir_tools.py` -> `All checks passed`.
 - Real dataset runtime + first-task validation on 2026-03-05:
   - After switching to `jyxsu6/medagentbench:latest`, `Patient?identifier=S6534835` returned `total: 1`.
@@ -151,7 +163,7 @@ Create `scripts/medagentbench/setup.sh` to download or verify required MedAgentB
 
 Milestone 2 adds foundational runtime config and FHIR client tools.
 
-Populate `config/agent.yaml` with a concrete model/tool config that includes FHIR query and action tools, sets backend `azure_openai`, and uses default model `gpt-5.2` unless overridden by CLI. Implement `src/ehr_co_scientist/tools/fhir_client.py` with a typed client class that supports: search (`GET /<Resource>?...`), create (`POST /<Resource>`), and capability check (`GET /metadata`). Implement reusable FHIR tool wrappers in `src/ehr_co_scientist/tools/fhir_tools.py` (`patient.search`, `lab.search`, `condition.search`, `procedure.search`, `medicationrequest.search`, plus create endpoints used by action tasks). Keep these tools dataset-agnostic so they can be reused across MedAgentBench and future task suites. Add shared request/retry utilities in `src/ehr_co_scientist/utils/http.py`.
+Populate `config/agent.yaml` with a concrete model/tool config that includes FHIR query and action tools, sets backend `azure_openai`, and uses default model `gpt-5.2` unless overridden by CLI. Implement a typed FHIR client class (now co-located in `src/ehr_co_scientist/tools/fhir_tools.py`) that supports: search (`GET /<Resource>?...`), create (`POST /<Resource>`), and capability check (`GET /metadata`). Implement reusable FHIR tool wrappers in `src/ehr_co_scientist/tools/fhir_tools.py` (`patient_search`, `lab_search`, `condition_search`, `procedure_search`, `medicationrequest_search`, plus create endpoints used by action tasks). Keep these tools dataset-agnostic so they can be reused across MedAgentBench and future task suites. Add shared request/retry utilities in `src/ehr_co_scientist/utils/http.py`.
 
 Milestone 3 introduces task ingestion, task selection, and execution loop.
 
@@ -311,7 +323,6 @@ Expected key file additions and modifications:
 - `tasks/selectors/medagentbench_query_easy.yaml`: Example selector manifest demonstrating include/exclude filtering for a simple query subset.
 - `scripts/medagentbench/README.md`: Operator guide for setup, startup, task import, benchmark execution, and troubleshooting.
 - `scripts/medagentbench/docker-compose.yaml`: Container orchestration definition for the local MedAgentBench-compatible FHIR runtime.
-- `scripts/medagentbench/fhir_medagentbench_tools.py`: Benchmark-specific adapter wrappers that bind MedAgentBench tool naming/protocol to generic FHIR tools.
 - `scripts/medagentbench/evaluator.py`: MedAgentBench scoring logic that computes pass@1 and category/query-action breakdowns.
 - `tasks/<task_type>/task.yaml`: Task-type package metadata with manifest and entrypoint wiring.
 - `tasks/<task_type>/sources/medagentbench/std.yaml`: Canonical normalized task manifest for standard split routed to the corresponding task type.
@@ -327,9 +338,9 @@ Expected key file additions and modifications:
 - `src/ehr_co_scientist/backends/__init__.py`: Backend package exports and registry entrypoint for available backend adapters.
 - `src/ehr_co_scientist/backends/adapter.py`: Provider-neutral backend interface and dispatch layer used by the runner.
 - `src/ehr_co_scientist/backends/azure_openai.py`: Azure OpenAI backend implementation and CLI smoke-test utility used as the default backend.
-- `src/ehr_co_scientist/tools/fhir_client.py`: Typed FHIR HTTP client abstraction for capability checks, search, and resource creation.
-- `src/ehr_co_scientist/tools/fhir_tools.py`: Reusable FHIR tool wrappers plus schema-first tool definitions that can export OpenAI-compatible function-calling `tools` JSON and resolve exported function names back to runtime handlers.
-- `tests/test_fhir_tools.py`: Unit tests for function-tools schema export, registry/schema consistency, and function-name alias dispatch.
+- `src/ehr_co_scientist/tools/catalog.py`: Central tool catalog with explicit tool-module imports and materialized registry/definitions.
+- `src/ehr_co_scientist/tools/fhir_tools.py`: Reusable FHIR client + tool wrappers plus schema-first tool definitions that can export OpenAI-compatible function-calling `tools` JSON.
+- `tests/test_fhir_tools.py`: Unit tests for function-tools schema export, registry/schema consistency, and canonical-name dispatch.
 - `src/ehr_co_scientist/utils/http.py`: Shared HTTP retry/timeout/error-handling helpers used by FHIR and backend integrations.
 - `tests/test_fhir_client.py`: Unit tests for FHIR client request building, response parsing, and retry/error behavior.
 - `tests/test_medagentbench_task_import.py`: Unit tests ensuring deterministic and schema-correct MedAgentBench task import output.
@@ -346,7 +357,7 @@ Use the existing Python 3.11+ project toolchain and dependencies already managed
 
 Required runtime interfaces to exist after implementation:
 
-In `src/ehr_co_scientist/tools/fhir_client.py`, define:
+In `src/ehr_co_scientist/tools/fhir_tools.py`, define:
 
     class FHIRClient:
         def __init__(self, base_url: str, timeout_s: float = 30.0) -> None: ...
@@ -426,3 +437,4 @@ The evaluation dictionary must contain keys:
 Revision note (2026-03-03): Initial ExecPlan authored to guide first implementation of MedAgentBench integration in an otherwise scaffold-only repository.
 Revision note (2026-03-03): Updated plan to require configurable task selection (IDs/categories/selector files) and dataset-agnostic task mapping to support future subset and cross-dataset task reuse.
 Revision note (2026-03-04): Reviewed plan for consistency with current repository state and PLANS.md guidance; removed non-portable hardcoded endpoint defaults, fixed duplicated interface text, and refreshed scaffold evidence wording.
+Revision note (2026-03-05): Updated plan to reflect canonical underscore tool IDs, central catalog-based tool registration, removal of unused MedAgentBench compatibility adapter file, and current test evidence totals.

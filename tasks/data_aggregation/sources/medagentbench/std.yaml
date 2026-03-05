@@ -18,15 +18,15 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6307599
   allowed_tools: &id001
-  - condition.search
-  - lab.search
-  - medicationrequest.create
-  - medicationrequest.search
-  - patient.search
-  - procedure.create
-  - procedure.search
-  - vital.create
-  - vital.search
+  - condition_search
+  - lab_search
+  - medicationrequest_create
+  - medicationrequest_search
+  - patient_search
+  - procedure_create
+  - procedure_search
+  - vital_create
+  - vital_search
 - task_id: task6_10
   category: data_aggregation
   difficulty: easy

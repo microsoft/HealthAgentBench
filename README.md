@@ -114,7 +114,7 @@ bash scripts/setup_mimic.sh
 
 ```bash
 # Run a task
-python experiments/run.py --task cohort_construction --model claude-4-sonnet
+python experiments/run.py --task medagentbench --split std --max-tasks 3 --model gpt-5.2
 
 # Evaluate MedAgentBench results
 python scripts/medagentbench/evaluate.py --task medagentbench --results experiments/results/medagentbench/<run-id>/results.jsonl
