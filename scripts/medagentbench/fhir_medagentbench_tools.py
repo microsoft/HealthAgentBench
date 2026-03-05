@@ -1,8 +1,9 @@
 """MedAgentBench-specific adapter over generic FHIR tools."""
 
 from ehr_co_scientist.tools.fhir_tools import (  # noqa: F401
+    FUNCTION_NAME_TO_TOOL_NAME,
+    TOOL_DEFINITIONS,
     TOOL_REGISTRY,
-    call_tool,
     condition_search,
     lab_search,
     medicationrequest_create,

@@ -10,7 +10,8 @@ from typing import Any
 
 from ehr_co_scientist.agent import AgentConfig, run_task
 from ehr_co_scientist.backends.adapter import BackendConfig
-from ehr_co_scientist.tools.fhir_tools import get_openai_function_tools
+from ehr_co_scientist.tools.fhir_tools import TOOL_DEFINITIONS
+from ehr_co_scientist.tools.tooling.function_tools import get_openai_function_tools
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -91,7 +92,7 @@ def main() -> None:
     )
     chat_kwargs: dict[str, Any] = {}
     if not args.disable_default_tools:
-        chat_kwargs["tools"] = get_openai_function_tools()
+        chat_kwargs["tools"] = get_openai_function_tools(TOOL_DEFINITIONS)
         chat_kwargs["tool_choice"] = "auto"
         chat_kwargs["parallel_tool_calls"] = False
 

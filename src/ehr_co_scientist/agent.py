@@ -7,9 +7,14 @@ from dataclasses import dataclass
 from typing import Any
 
 from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion
+from ehr_co_scientist.tools.tooling.function_tools import (
+    call_registered_tool,
+    resolve_tool_name,
+)
 from ehr_co_scientist.tools.fhir_tools import (
     FHIRClient,
-    call_tool,
+    FUNCTION_NAME_TO_TOOL_NAME,
+    TOOL_REGISTRY,
     should_stop_on_call_in_evaluation,
 )
 
@@ -86,6 +91,7 @@ def run_task(
     fhir_base_url: str,
     config: AgentConfig | None = None,
     chat_kwargs: dict[str, Any] | None = None,
+    allowed_tools: set[str] | None = None,
 ) -> dict[str, Any]:
     cfg = config or AgentConfig()
     client = FHIRClient(base_url=fhir_base_url)
@@ -126,6 +132,34 @@ def run_task(
             "termination_reason": "evaluation_mode_write_tool_called",
         }
 
+    def _blocked_not_allowed(
+        *,
+        round_index: int,
+        tool_name: str,
+        args: dict[str, Any],
+        backend_result: dict[str, Any] | None,
+    ) -> dict[str, Any]:
+        return {
+            "final_answer": "",
+            "tool_trace": tool_trace
+            + [
+                {
+                    "tool": tool_name,
+                    "args": args,
+                    "status": "blocked_not_allowed",
+                    "stop_reason": "tool_not_allowed",
+                }
+            ],
+            "rounds_used": round_index + 1,
+            "backend_result": backend_result,
+            "error": (
+                "Tool not allowed by task policy: "
+                f"{resolve_tool_name(tool_name, registry=TOOL_REGISTRY, function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME)}"
+            ),
+            "terminated_early": True,
+            "termination_reason": "tool_not_allowed",
+        }
+
     for round_index in range(cfg.max_rounds):
         backend_result = run_chat_completion(
             config=backend_config,
@@ -155,6 +189,21 @@ def run_task(
                 except Exception as exc:  # noqa: BLE001
                     parsed_args = {}
                     last_error = f"Invalid tool arguments for {function_name}: {exc}"
+                resolved_name = resolve_tool_name(
+                    function_name,
+                    registry=TOOL_REGISTRY,
+                    function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+                )
+                if (
+                    allowed_tools is not None
+                    and resolved_name not in allowed_tools
+                ):
+                    return _blocked_not_allowed(
+                        round_index=round_index,
+                        tool_name=function_name,
+                        args=parsed_args,
+                        backend_result=backend_result,
+                    )
                 if cfg.evaluation_mode and should_stop_on_call_in_evaluation(function_name):
                     return _early_termination(
                         round_index=round_index,
@@ -163,7 +212,13 @@ def run_task(
                         backend_result=backend_result,
                     )
                 try:
-                    tool_result = call_tool(function_name, client, **parsed_args)
+                    tool_result = call_registered_tool(
+                        function_name,
+                        client,
+                        registry=TOOL_REGISTRY,
+                        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+                        kwargs=parsed_args,
+                    )
                     tool_trace.append(
                         {
                             "tool": function_name,
@@ -217,6 +272,18 @@ def run_task(
             }
 
         tool_name, args = parsed
+        resolved_name = resolve_tool_name(
+            tool_name,
+            registry=TOOL_REGISTRY,
+            function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+        )
+        if allowed_tools is not None and resolved_name not in allowed_tools:
+            return _blocked_not_allowed(
+                round_index=round_index,
+                tool_name=tool_name,
+                args=args,
+                backend_result=backend_result,
+            )
         if cfg.evaluation_mode and should_stop_on_call_in_evaluation(tool_name):
             return _early_termination(
                 round_index=round_index,
@@ -225,7 +292,13 @@ def run_task(
                 backend_result=backend_result,
             )
         try:
-            tool_result = call_tool(tool_name, client, **args)
+            tool_result = call_registered_tool(
+                tool_name,
+                client,
+                registry=TOOL_REGISTRY,
+                function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+                kwargs=args,
+            )
             tool_trace.append(
                 {
                     "tool": tool_name,

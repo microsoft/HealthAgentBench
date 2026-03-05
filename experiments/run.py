@@ -14,6 +14,8 @@ import yaml
 
 from ehr_co_scientist.agent import AgentConfig, run_task
 from ehr_co_scientist.backends.adapter import BackendConfig
+from ehr_co_scientist.tools.fhir_tools import TOOL_DEFINITIONS
+from ehr_co_scientist.tools.tooling.function_tools import get_openai_function_tools
 
 
 def _now_run_id() -> str:
@@ -198,6 +200,17 @@ def main() -> None:
         for task in selected:
             task_id = str(task.get("task_id", ""))
             error_type: str | None = None
+            task_allowed_tools = list(task.get("allowed_tools", []) or [])
+            allowed_tool_set = set(task_allowed_tools) if task_allowed_tools else None
+            chat_kwargs: dict[str, Any] = {}
+            if task_allowed_tools:
+                chat_kwargs = {
+                    "tools": get_openai_function_tools(
+                        TOOL_DEFINITIONS, task_allowed_tools
+                    ),
+                    "tool_choice": "auto",
+                    "parallel_tool_calls": False,
+                }
             try:
                 agent_result = run_task(
                     task=task,
@@ -207,6 +220,8 @@ def main() -> None:
                         max_rounds=8,
                         evaluation_mode=args.evaluation_mode,
                     ),
+                    chat_kwargs=chat_kwargs if chat_kwargs else None,
+                    allowed_tools=allowed_tool_set,
                 )
                 final_answer = str(agent_result.get("final_answer", ""))
                 error_text = agent_result.get("error")
@@ -235,6 +250,7 @@ def main() -> None:
                 "error_type": error_type,
                 "terminated_early": bool(agent_result.get("terminated_early", False)),
                 "termination_reason": agent_result.get("termination_reason"),
+                "allowed_tools": task_allowed_tools,
                 "backend": {
                     "backend": backend_config.backend,
                     "model": backend_config.model,
@@ -252,6 +268,7 @@ def main() -> None:
         "task_count": len(selected),
         "backend_config": asdict(backend_config),
         "evaluation_mode": args.evaluation_mode,
+        "enforce_allowed_tools": True,
         "fhir_base_url": args.fhir_base_url,
         "results_path": str(results_path),
     }

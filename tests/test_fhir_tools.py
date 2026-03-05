@@ -1,11 +1,14 @@
 import json
 
 from ehr_co_scientist.tools.fhir_tools import (
+    TOOL_DEFINITIONS,
     FUNCTION_NAME_TO_TOOL_NAME,
     TOOL_REGISTRY,
-    call_tool,
-    get_openai_function_tools,
     should_stop_on_call_in_evaluation,
+)
+from ehr_co_scientist.tools.tooling.function_tools import (
+    call_registered_tool,
+    get_openai_function_tools,
     write_openai_function_tools_json,
 )
 
@@ -24,7 +27,7 @@ class _FakeFHIRClient:
 
 
 def test_get_openai_function_tools_contains_all_registry_tools():
-    tools = get_openai_function_tools()
+    tools = get_openai_function_tools(TOOL_DEFINITIONS)
     exported_names = {tool["function"]["name"] for tool in tools}
     assert len(tools) == len(TOOL_REGISTRY)
     assert exported_names == set(FUNCTION_NAME_TO_TOOL_NAME)
@@ -32,7 +35,11 @@ def test_get_openai_function_tools_contains_all_registry_tools():
 
 def test_write_openai_function_tools_json_writes_tools_wrapper(tmp_path):
     output = tmp_path / "fhir_tools.json"
-    write_openai_function_tools_json(output, tool_names=["patient.search"])
+    write_openai_function_tools_json(
+        output,
+        tool_definitions=TOOL_DEFINITIONS,
+        tool_names=["patient.search"],
+    )
 
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert isinstance(payload, dict)
@@ -42,14 +49,26 @@ def test_write_openai_function_tools_json_writes_tools_wrapper(tmp_path):
 
 def test_call_tool_accepts_exported_function_name_alias():
     client = _FakeFHIRClient()
-    result = call_tool("patient_search", client, family="Alice")
+    result = call_registered_tool(
+        "patient_search",
+        client,
+        registry=TOOL_REGISTRY,
+        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+        kwargs={"family": "Alice"},
+    )
     assert result["resourceType"] == "Bundle"
     assert client.calls == [("search", "Patient", {"family": "Alice"})]
 
 
 def test_patient_search_splits_full_name_to_family_given():
     client = _FakeFHIRClient()
-    _ = call_tool("patient_search", client, name="Peter Stafford", birthdate="1932-12-29")
+    _ = call_registered_tool(
+        "patient_search",
+        client,
+        registry=TOOL_REGISTRY,
+        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+        kwargs={"name": "Peter Stafford", "birthdate": "1932-12-29"},
+    )
     assert client.calls == [
         (
             "search",
@@ -60,7 +79,10 @@ def test_patient_search_splits_full_name_to_family_given():
 
 
 def test_search_tool_required_fields_align_with_medagentbench():
-    tools = {tool["function"]["name"]: tool["function"]["parameters"] for tool in get_openai_function_tools()}
+    tools = {
+        tool["function"]["name"]: tool["function"]["parameters"]
+        for tool in get_openai_function_tools(TOOL_DEFINITIONS)
+    }
     assert tools["condition_search"].get("required") == ["patient"]
     assert tools["lab_search"].get("required") == ["patient", "code"]
     assert tools["vital_search"].get("required") == ["patient"]
@@ -69,7 +91,10 @@ def test_search_tool_required_fields_align_with_medagentbench():
 
 
 def test_create_tool_schemas_are_resource_specific():
-    tools = {tool["function"]["name"]: tool["function"]["parameters"] for tool in get_openai_function_tools()}
+    tools = {
+        tool["function"]["name"]: tool["function"]["parameters"]
+        for tool in get_openai_function_tools(TOOL_DEFINITIONS)
+    }
 
     vital_required = tools["vital_create"]["properties"]["resource"]["required"]
     med_required = tools["medicationrequest_create"]["properties"]["resource"]["required"]
@@ -107,7 +132,13 @@ def test_create_tool_schemas_are_resource_specific():
 def test_procedure_create_posts_service_request():
     client = _FakeFHIRClient()
     payload = {"resourceType": "ServiceRequest", "status": "active"}
-    _ = call_tool("procedure_create", client, resource=payload)
+    _ = call_registered_tool(
+        "procedure_create",
+        client,
+        registry=TOOL_REGISTRY,
+        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+        kwargs={"resource": payload},
+    )
     assert client.calls == [("create", "ServiceRequest", payload)]
 
 

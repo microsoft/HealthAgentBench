@@ -4,17 +4,14 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
 
 from ehr_co_scientist.tools.tooling import (
     ToolDefinition,
     build_function_name_alias,
     build_handler_registry,
-    call_registered_tool,
-    get_openai_function_tools as build_openai_function_tools,
     resolve_tool_name as resolve_registered_tool_name,
-    write_openai_function_tools_json as write_function_tools_json,
+    write_openai_function_tools_json,
 )
 from ehr_co_scientist.utils.http import JsonHttpClient
 
@@ -442,46 +439,12 @@ TOOL_REGISTRY = build_handler_registry(TOOL_DEFINITIONS)
 FUNCTION_NAME_TO_TOOL_NAME = build_function_name_alias(TOOL_DEFINITIONS)
 
 
-# Backward-compatible convenience wrappers that bind generic tooling helpers
-# to the FHIR toolset for existing call sites.
-def resolve_tool_name(name: str) -> str:
-    return resolve_registered_tool_name(
-        name,
-        registry=TOOL_REGISTRY,
-        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
-    )
-
-
-def get_openai_function_tools(tool_names: list[str] | None = None) -> list[dict[str, Any]]:
-    return build_openai_function_tools(TOOL_DEFINITIONS, tool_names)
-
-
-def write_openai_function_tools_json(
-    output_path: str | Path,
-    *,
-    tool_names: list[str] | None = None,
-    wrap_with_tools_key: bool = True,
-) -> Path:
-    return write_function_tools_json(
-        output_path,
-        tool_definitions=TOOL_DEFINITIONS,
-        tool_names=tool_names,
-        wrap_with_tools_key=wrap_with_tools_key,
-    )
-
-
-def call_tool(tool_name: str, client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
-    return call_registered_tool(
-        tool_name,
-        client,
-        registry=TOOL_REGISTRY,
-        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
-        kwargs=kwargs,
-    )
-
-
 def should_stop_on_call_in_evaluation(tool_name: str) -> bool:
-    resolved = resolve_tool_name(tool_name)
+    resolved = resolve_registered_tool_name(
+        tool_name,
+        registry=TOOL_REGISTRY,
+        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+    )
     definition = TOOL_DEFINITIONS.get(resolved)
     return bool(definition and definition.stop_on_call_in_evaluation)
 
@@ -513,6 +476,7 @@ def main() -> None:
     args = _parse_args()
     written = write_openai_function_tools_json(
         args.output,
+        tool_definitions=TOOL_DEFINITIONS,
         tool_names=args.tool,
         wrap_with_tools_key=not args.as_list,
     )
