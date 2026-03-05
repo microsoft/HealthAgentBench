@@ -7,12 +7,17 @@ from dataclasses import dataclass
 from typing import Any
 
 from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion
-from ehr_co_scientist.tools.fhir_tools import FHIRClient, call_tool
+from ehr_co_scientist.tools.fhir_tools import (
+    FHIRClient,
+    call_tool,
+    should_stop_on_call_in_evaluation,
+)
 
 
 @dataclass(frozen=True)
 class AgentConfig:
     max_rounds: int = 8
+    evaluation_mode: bool = False
 
 
 def _system_prompt() -> str:
@@ -96,6 +101,31 @@ def run_task(
     tool_trace: list[dict[str, Any]] = []
     last_error: str | None = None
 
+    def _early_termination(
+        *,
+        round_index: int,
+        tool_name: str,
+        args: dict[str, Any],
+        backend_result: dict[str, Any] | None,
+    ) -> dict[str, Any]:
+        return {
+            "final_answer": "",
+            "tool_trace": tool_trace
+            + [
+                {
+                    "tool": tool_name,
+                    "args": args,
+                    "status": "skipped_evaluation_mode",
+                    "stop_reason": "evaluation_mode_write_tool_called",
+                }
+            ],
+            "rounds_used": round_index + 1,
+            "backend_result": backend_result,
+            "error": last_error,
+            "terminated_early": True,
+            "termination_reason": "evaluation_mode_write_tool_called",
+        }
+
     for round_index in range(cfg.max_rounds):
         backend_result = run_chat_completion(
             config=backend_config,
@@ -125,6 +155,13 @@ def run_task(
                 except Exception as exc:  # noqa: BLE001
                     parsed_args = {}
                     last_error = f"Invalid tool arguments for {function_name}: {exc}"
+                if cfg.evaluation_mode and should_stop_on_call_in_evaluation(function_name):
+                    return _early_termination(
+                        round_index=round_index,
+                        tool_name=function_name,
+                        args=parsed_args,
+                        backend_result=backend_result,
+                    )
                 try:
                     tool_result = call_tool(function_name, client, **parsed_args)
                     tool_trace.append(
@@ -175,9 +212,18 @@ def run_task(
                 "rounds_used": round_index + 1,
                 "backend_result": backend_result,
                 "error": last_error,
+                "terminated_early": False,
+                "termination_reason": None,
             }
 
         tool_name, args = parsed
+        if cfg.evaluation_mode and should_stop_on_call_in_evaluation(tool_name):
+            return _early_termination(
+                round_index=round_index,
+                tool_name=tool_name,
+                args=args,
+                backend_result=backend_result,
+            )
         try:
             tool_result = call_tool(tool_name, client, **args)
             tool_trace.append(
@@ -211,4 +257,6 @@ def run_task(
         "rounds_used": cfg.max_rounds,
         "backend_result": None,
         "error": last_error or "max_rounds_exceeded",
+        "terminated_early": False,
+        "termination_reason": None,
     }

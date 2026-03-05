@@ -22,6 +22,14 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--endpoint-name", default=None)
     parser.add_argument("--max-rounds", type=int, default=8)
     parser.add_argument(
+        "--evaluation-mode",
+        action="store_true",
+        help=(
+            "Do not execute write tools in evaluation mode; terminate task early "
+            "when a write tool is called."
+        ),
+    )
+    parser.add_argument(
         "--disable-default-tools",
         action="store_true",
         help="Disable default FHIR function-calling tools in demo requests.",
@@ -51,6 +59,8 @@ def _result_payload(
         "final_answer": result.get("final_answer", ""),
         "rounds_used": result.get("rounds_used", 0),
         "error": result.get("error"),
+        "terminated_early": result.get("terminated_early", False),
+        "termination_reason": result.get("termination_reason"),
         "tool_trace_count": len(tool_trace),
         "tool_trace_summary": [
             {
@@ -75,7 +85,10 @@ def main() -> None:
         endpoint_name=args.endpoint_name,
         api_version=args.api_version,
     )
-    agent_config = AgentConfig(max_rounds=args.max_rounds)
+    agent_config = AgentConfig(
+        max_rounds=args.max_rounds,
+        evaluation_mode=args.evaluation_mode,
+    )
     chat_kwargs: dict[str, Any] = {}
     if not args.disable_default_tools:
         chat_kwargs["tools"] = get_openai_function_tools()

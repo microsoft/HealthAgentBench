@@ -34,6 +34,7 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 00:30Z) Switched runtime to preloaded MedAgentBench FHIR image (`jyxsu6/medagentbench:latest`), diagnosed first factual QA failure with `--show-full-trace`, and fixed `patient_search` schema/handler to use MedAgentBench-style `family/given` matching (with full-name fallback).
 - [x] (2026-03-05 08:10Z) Backfilled expected answers (`sol`) in `data/medagentbench/test_data_v2.json` for all query-derived groups supported by `refsol.py` (`task2`, `task4`, `task5`, `task6`, `task7`, `task9`, `task10`) using live FHIR queries against the MedAgentBench server.
 - [x] (2026-03-05 05:22Z) Executed Milestone 7 repo-structure/tooling refactor: moved remaining benchmark artifacts into `scripts/medagentbench/` (including evaluation CLI), merged `FHIRClient` implementation into `fhir_tools.py` with compatibility shim, and extracted tool-agnostic registry/schema/export helpers into `src/ehr_co_scientist/tools/tooling/`.
+- [x] (2026-03-05 10:22Z) Added evaluation-mode write-tool short-circuit: when `--evaluation-mode` is enabled, `run_task` now terminates immediately on write-tool calls (`vital.create`, `procedure.create`, `medicationrequest.create`) without executing HTTP writes; wired through both `experiments/run.py` and `experiments/demo.py` flags and validated with new agent/tool tests.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task3_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task8_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 
@@ -104,6 +105,10 @@ For MedAgentBench background and design context used when refining this plan, se
 
 - Decision: Use the MedAgentBench preloaded server image (`jyxsu6/medagentbench:latest`) as the benchmark runtime image for data-faithful task execution.
   Rationale: The generic HAPI image has no benchmark patient data; the preloaded image includes the benchmark dataset and supports real task validation.
+  Date/Author: 2026-03-05 / User+Codex
+
+- Decision: In evaluation mode, end tasks immediately when a write tool is called rather than executing writes or returning synthetic write outputs.
+  Rationale: MedAgentBench action-task grading logic validates called tool name and payload shape; skipping write execution avoids mutating shared runtime state and keeps evaluation deterministic.
   Date/Author: 2026-03-05 / User+Codex
 
 ## Outcomes & Retrospective

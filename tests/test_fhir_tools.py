@@ -5,6 +5,7 @@ from ehr_co_scientist.tools.fhir_tools import (
     TOOL_REGISTRY,
     call_tool,
     get_openai_function_tools,
+    should_stop_on_call_in_evaluation,
     write_openai_function_tools_json,
 )
 
@@ -108,3 +109,11 @@ def test_procedure_create_posts_service_request():
     payload = {"resourceType": "ServiceRequest", "status": "active"}
     _ = call_tool("procedure_create", client, resource=payload)
     assert client.calls == [("create", "ServiceRequest", payload)]
+
+
+def test_write_tools_stop_in_evaluation_mode():
+    assert should_stop_on_call_in_evaluation("vital.create") is True
+    assert should_stop_on_call_in_evaluation("procedure.create") is True
+    assert should_stop_on_call_in_evaluation("medicationrequest.create") is True
+    assert should_stop_on_call_in_evaluation("vital_create") is True
+    assert should_stop_on_call_in_evaluation("patient.search") is False

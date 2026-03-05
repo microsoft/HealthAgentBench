@@ -418,6 +418,7 @@ TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
         description="Create a new Observation resource (typically a vital sign).",
         parameters=_wrap_resource_schema(_vital_create_resource_schema()),
         handler=vital_create,
+        stop_on_call_in_evaluation=True,
     ),
     "procedure.create": ToolDefinition(
         tool_name="procedure.create",
@@ -425,6 +426,7 @@ TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
         description="Create a new ServiceRequest resource.",
         parameters=_wrap_resource_schema(_servicerequest_create_resource_schema()),
         handler=procedure_create,
+        stop_on_call_in_evaluation=True,
     ),
     "medicationrequest.create": ToolDefinition(
         tool_name="medicationrequest.create",
@@ -432,6 +434,7 @@ TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
         description="Create a new MedicationRequest resource.",
         parameters=_wrap_resource_schema(_medicationrequest_create_resource_schema()),
         handler=medicationrequest_create,
+        stop_on_call_in_evaluation=True,
     ),
 }
 
@@ -475,6 +478,12 @@ def call_tool(tool_name: str, client: FHIRClient, **kwargs: Any) -> dict[str, An
         function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
         kwargs=kwargs,
     )
+
+
+def should_stop_on_call_in_evaluation(tool_name: str) -> bool:
+    resolved = resolve_tool_name(tool_name)
+    definition = TOOL_DEFINITIONS.get(resolved)
+    return bool(definition and definition.stop_on_call_in_evaluation)
 
 
 def _parse_args() -> argparse.Namespace:

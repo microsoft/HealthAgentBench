@@ -15,6 +15,7 @@ class ToolDefinition:
     description: str
     parameters: dict[str, Any]
     handler: Callable[..., dict[str, Any]]
+    stop_on_call_in_evaluation: bool = False
 
 
 def build_handler_registry(
@@ -112,4 +113,3 @@ def call_registered_tool(
             f"Function names: {available_function}"
         ) from exc
     return fn(client, **kwargs)
-

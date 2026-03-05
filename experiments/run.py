@@ -127,6 +127,14 @@ def main() -> None:
     parser.add_argument("--endpoint-name")
     parser.add_argument("--api-version", default="2025-03-01-preview")
     parser.add_argument("--output-dir")
+    parser.add_argument(
+        "--evaluation-mode",
+        action="store_true",
+        help=(
+            "Do not execute write tools in evaluation mode; terminate task early "
+            "when a write tool is called."
+        ),
+    )
     args = parser.parse_args()
 
     if args.task != "medagentbench":
@@ -195,7 +203,10 @@ def main() -> None:
                     task=task,
                     backend_config=backend_config,
                     fhir_base_url=args.fhir_base_url,
-                    config=AgentConfig(max_rounds=8),
+                    config=AgentConfig(
+                        max_rounds=8,
+                        evaluation_mode=args.evaluation_mode,
+                    ),
                 )
                 final_answer = str(agent_result.get("final_answer", ""))
                 error_text = agent_result.get("error")
@@ -222,6 +233,8 @@ def main() -> None:
                 "tool_trace": agent_result.get("tool_trace", []),
                 "rounds_used": agent_result.get("rounds_used", 0),
                 "error_type": error_type,
+                "terminated_early": bool(agent_result.get("terminated_early", False)),
+                "termination_reason": agent_result.get("termination_reason"),
                 "backend": {
                     "backend": backend_config.backend,
                     "model": backend_config.model,
@@ -238,6 +251,7 @@ def main() -> None:
         "selector_stats": selector_stats,
         "task_count": len(selected),
         "backend_config": asdict(backend_config),
+        "evaluation_mode": args.evaluation_mode,
         "fhir_base_url": args.fhir_base_url,
         "results_path": str(results_path),
     }
