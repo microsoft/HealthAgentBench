@@ -127,7 +127,7 @@ Scripts should be grouped under `scripts/<integration_or_domain>/` as the reposi
 
 ## MedAgentBench
 
-For full MedAgentBench setup, execution, evaluation, and demo instructions, see `benchmarks/medagentbench/README.md`.
+For full MedAgentBench setup, execution, evaluation, and demo instructions, see `scripts/medagentbench/README.md`.
 
 ## License
 

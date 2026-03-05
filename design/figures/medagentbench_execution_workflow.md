@@ -26,7 +26,7 @@ flowchart TD
 
     K --> Q[Write run artifacts\nexperiments/results/medagentbench/<run-id>/results.jsonl + metadata]
     Q --> R[benchmarks/evaluate.py]
-    R --> S[benchmarks/medagentbench/evaluator.py]
+    R --> S[scripts/medagentbench/evaluator.py]
     S --> T[summary.json + summary.md\npass@1, by_category, query_vs_action, error_taxonomy]
 
     T --> U[scripts/medagentbench/fhir_down.sh]

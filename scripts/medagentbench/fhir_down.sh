@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-COMPOSE_FILE="${ROOT_DIR}/benchmarks/medagentbench/docker-compose.yaml"
+COMPOSE_FILE="${ROOT_DIR}/scripts/medagentbench/docker-compose.yaml"
 SERVICE_NAME="fhir"
 
 if [[ ! -f "${COMPOSE_FILE}" ]]; then

@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
-from benchmarks.medagentbench.evaluator import evaluate_results
+from scripts.medagentbench.evaluator import evaluate_results
 
 
 def _to_markdown(summary: dict) -> str:

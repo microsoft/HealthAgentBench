@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from benchmarks.medagentbench.evaluator import evaluate_results
+from scripts.medagentbench.evaluator import evaluate_results
 
 
 def test_evaluate_results_computes_metrics(tmp_path: Path):
