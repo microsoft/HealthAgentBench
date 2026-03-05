@@ -10,6 +10,7 @@ from ehr_co_scientist.tools.tooling.function_tools import (
     get_openai_function_tools,
     write_openai_function_tools_json,
 )
+from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
 
 
 class _FakeFHIRClient:
@@ -49,7 +50,7 @@ def test_call_tool_dispatches_by_canonical_name():
     client = _FakeFHIRClient()
     result = call_registered_tool(
         "patient_search",
-        client,
+        ToolRuntime(fhir=client),
         registry=TOOL_REGISTRY,
         kwargs={"family": "Alice"},
     )
@@ -61,7 +62,7 @@ def test_patient_search_splits_full_name_to_family_given():
     client = _FakeFHIRClient()
     _ = call_registered_tool(
         "patient_search",
-        client,
+        ToolRuntime(fhir=client),
         registry=TOOL_REGISTRY,
         kwargs={"name": "Peter Stafford", "birthdate": "1932-12-29"},
     )
@@ -130,7 +131,7 @@ def test_procedure_create_posts_service_request():
     payload = {"resourceType": "ServiceRequest", "status": "active"}
     _ = call_registered_tool(
         "procedure_create",
-        client,
+        ToolRuntime(fhir=client),
         registry=TOOL_REGISTRY,
         kwargs={"resource": payload},
     )

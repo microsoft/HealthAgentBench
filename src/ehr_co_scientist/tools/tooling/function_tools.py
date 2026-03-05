@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
+from .runtime import ToolRuntime
+
 
 @dataclass(frozen=True)
 class ToolDefinition:
@@ -115,7 +117,7 @@ def write_openai_function_tools_json(
 
 def call_registered_tool(
     tool_name: str,
-    client: Any,
+    tool_runtime: ToolRuntime,
     *,
     registry: Mapping[str, Callable[..., dict[str, Any]]],
     kwargs: dict[str, Any],
@@ -125,5 +127,4 @@ def call_registered_tool(
     except KeyError as exc:  # noqa: PERF203
         available = ", ".join(sorted(registry))
         raise ValueError(f"Unknown tool name: {tool_name}. Available: {available}") from exc
-    return fn(client, **kwargs)
-
+    return fn(tool_runtime, **kwargs)

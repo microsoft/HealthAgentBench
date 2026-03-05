@@ -17,9 +17,10 @@ def test_run_task_uses_backend_safe_tool_feedback(monkeypatch):
             return {"assistant_text": '{"tool":"patient_search","args":{"name":"Alice"}}'}
         return {"assistant_text": "done"}
 
-    def fake_call_tool(tool_name, client, **kwargs):  # noqa: ANN001
+    def fake_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
         assert tool_name == "patient_search"
         assert "registry" in kwargs
+        assert "runtime" not in kwargs
         assert kwargs["kwargs"] == {"name": "Alice"}
         return {"resourceType": "Bundle", "total": 1}
 
@@ -31,7 +32,6 @@ def test_run_task_uses_backend_safe_tool_feedback(monkeypatch):
     result = run_task(
         task={"instruction": "find patient"},
         backend_config=BackendConfig(backend="mock", model="m"),
-        fhir_base_url="http://localhost:8080/fhir",
         config=AgentConfig(max_rounds=3),
     )
 
@@ -75,7 +75,7 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
             }
         return {"assistant_text": "done", "raw": {"choices": [{"message": {"role": "assistant", "content": "done"}}]}}
 
-    def fake_call_tool(tool_name, client, **kwargs):  # noqa: ANN001
+    def fake_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
         assert tool_name == "patient_search"
         assert kwargs["kwargs"] == {"name": "Alice"}
         return {"resourceType": "Bundle", "total": 1}
@@ -88,7 +88,6 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
     result = run_task(
         task={"instruction": "find patient"},
         backend_config=BackendConfig(backend="mock", model="m"),
-        fhir_base_url="http://localhost:8080/fhir",
         config=AgentConfig(max_rounds=3),
         chat_kwargs={"tools": [{"type": "function", "function": {"name": "patient_search"}}]},
     )
@@ -130,7 +129,7 @@ def test_run_task_evaluation_mode_ends_on_write_tool(monkeypatch, native_tool_ca
             }
         return {"assistant_text": '{"tool":"vital_create","args":{"resource":{"resourceType":"Observation"}}}'}
 
-    def fail_call_tool(tool_name, client, **kwargs):  # noqa: ANN001
+    def fail_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
         raise AssertionError(f"call_tool should not run in evaluation mode: {tool_name}")
 
     monkeypatch.setattr(
@@ -141,7 +140,6 @@ def test_run_task_evaluation_mode_ends_on_write_tool(monkeypatch, native_tool_ca
     result = run_task(
         task={"instruction": "record BP"},
         backend_config=BackendConfig(backend="mock", model="m"),
-        fhir_base_url="http://localhost:8080/fhir",
         config=AgentConfig(max_rounds=3, evaluation_mode=True),
         chat_kwargs=(
             {"tools": [{"type": "function", "function": {"name": "vital_create"}}]}
@@ -186,7 +184,7 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
             }
         return {"assistant_text": '{"tool":"vital_create","args":{"resource":{"resourceType":"Observation"}}}'}
 
-    def fail_call_tool(tool_name, client, **kwargs):  # noqa: ANN001
+    def fail_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
         raise AssertionError(f"call_tool should not run for disallowed tool: {tool_name}")
 
     monkeypatch.setattr(
@@ -197,7 +195,6 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
     result = run_task(
         task={"instruction": "record BP"},
         backend_config=BackendConfig(backend="mock", model="m"),
-        fhir_base_url="http://localhost:8080/fhir",
         config=AgentConfig(max_rounds=3),
         chat_kwargs=(
             {"tools": [{"type": "function", "function": {"name": "vital_create"}}]}

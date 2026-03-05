@@ -9,6 +9,7 @@ from .function_tools import (
     register_tool,
     write_openai_function_tools_json,
 )
+from .runtime import ToolRuntime
 
 __all__ = [
     "ToolDefinition",
@@ -17,5 +18,6 @@ __all__ = [
     "collect_registered_tool_definitions",
     "get_openai_function_tools",
     "register_tool",
+    "ToolRuntime",
     "write_openai_function_tools_json",
 ]

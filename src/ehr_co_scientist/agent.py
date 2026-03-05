@@ -11,10 +11,10 @@ from ehr_co_scientist.tools.catalog import (
     TOOL_REGISTRY,
     should_stop_on_call_in_evaluation,
 )
-from ehr_co_scientist.tools.fhir_tools import FHIRClient
 from ehr_co_scientist.tools.tooling.function_tools import (
     call_registered_tool,
 )
+from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
 
 
 @dataclass(frozen=True)
@@ -82,17 +82,161 @@ def _extract_native_tool_calls(
     return message, valid_calls
 
 
+def _build_early_termination(
+    *,
+    tool_trace: list[dict[str, Any]],
+    round_index: int,
+    tool_name: str,
+    args: dict[str, Any],
+    backend_result: dict[str, Any] | None,
+    last_error: str | None,
+) -> dict[str, Any]:
+    return {
+        "final_answer": "",
+        "tool_trace": tool_trace
+        + [
+            {
+                "tool": tool_name,
+                "args": args,
+                "status": "skipped_evaluation_mode",
+                "stop_reason": "evaluation_mode_write_tool_called",
+            }
+        ],
+        "rounds_used": round_index + 1,
+        "backend_result": backend_result,
+        "error": last_error,
+        "terminated_early": True,
+        "termination_reason": "evaluation_mode_write_tool_called",
+    }
+
+
+def _build_blocked_not_allowed(
+    *,
+    tool_trace: list[dict[str, Any]],
+    round_index: int,
+    tool_name: str,
+    args: dict[str, Any],
+    backend_result: dict[str, Any] | None,
+) -> dict[str, Any]:
+    return {
+        "final_answer": "",
+        "tool_trace": tool_trace
+        + [
+            {
+                "tool": tool_name,
+                "args": args,
+                "status": "blocked_not_allowed",
+                "stop_reason": "tool_not_allowed",
+            }
+        ],
+        "rounds_used": round_index + 1,
+        "backend_result": backend_result,
+        "error": f"Tool not allowed by task policy: {tool_name}",
+        "terminated_early": True,
+        "termination_reason": "tool_not_allowed",
+    }
+
+
+def _check_tool_policy(
+    *,
+    tool_trace: list[dict[str, Any]],
+    round_index: int,
+    tool_name: str,
+    args: dict[str, Any],
+    backend_result: dict[str, Any] | None,
+    allowed_tools: set[str] | None,
+    cfg: AgentConfig,
+    last_error: str | None,
+) -> dict[str, Any] | None:
+    if allowed_tools is not None and tool_name not in allowed_tools:
+        return _build_blocked_not_allowed(
+            tool_trace=tool_trace,
+            round_index=round_index,
+            tool_name=tool_name,
+            args=args,
+            backend_result=backend_result,
+        )
+    if cfg.evaluation_mode and should_stop_on_call_in_evaluation(tool_name):
+        return _build_early_termination(
+            tool_trace=tool_trace,
+            round_index=round_index,
+            tool_name=tool_name,
+            args=args,
+            backend_result=backend_result,
+            last_error=last_error,
+        )
+    return None
+
+
+def _execute_tool_call(
+    *,
+    tool_name: str,
+    args: dict[str, Any],
+    tool_runtime: ToolRuntime,
+    tool_trace: list[dict[str, Any]],
+    messages: list[dict[str, Any]],
+    tool_call_id: str | None,
+) -> str | None:
+    try:
+        tool_result = call_registered_tool(
+            tool_name,
+            tool_runtime,
+            registry=TOOL_REGISTRY,
+            kwargs=args,
+        )
+        tool_trace.append(
+            {
+                "tool": tool_name,
+                "args": args,
+                "result": tool_result,
+                "status": "ok",
+            }
+        )
+        if tool_call_id is not None:
+            messages.append(
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call_id,
+                    "content": json.dumps(tool_result, ensure_ascii=True),
+                }
+            )
+        else:
+            messages.append(_tool_feedback_message(tool_name, {"result": tool_result}))
+        return None
+    except Exception as exc:  # noqa: BLE001
+        last_error = str(exc)
+        tool_trace.append(
+            {
+                "tool": tool_name,
+                "args": args,
+                "status": "error",
+                "error": last_error,
+            }
+        )
+        if tool_call_id is not None:
+            messages.append(
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call_id,
+                    "content": json.dumps({"error": last_error}, ensure_ascii=True),
+                }
+            )
+        else:
+            messages.append(_tool_feedback_message(tool_name, {"error": last_error}))
+        return last_error
+
+
 def run_task(
     *,
     task: dict[str, Any],
     backend_config: BackendConfig,
-    fhir_base_url: str,
+    tool_runtime: ToolRuntime | None = None,
     config: AgentConfig | None = None,
     chat_kwargs: dict[str, Any] | None = None,
     allowed_tools: set[str] | None = None,
 ) -> dict[str, Any]:
     cfg = config or AgentConfig()
-    client = FHIRClient(base_url=fhir_base_url)
+    tool_runtime_obj = tool_runtime or ToolRuntime()
 
     messages: list[dict[str, Any]] = [{"role": "system", "content": _system_prompt()}]
     messages.append(
@@ -104,59 +248,6 @@ def run_task(
 
     tool_trace: list[dict[str, Any]] = []
     last_error: str | None = None
-
-    def _early_termination(
-        *,
-        round_index: int,
-        tool_name: str,
-        args: dict[str, Any],
-        backend_result: dict[str, Any] | None,
-    ) -> dict[str, Any]:
-        return {
-            "final_answer": "",
-            "tool_trace": tool_trace
-            + [
-                {
-                    "tool": tool_name,
-                    "args": args,
-                    "status": "skipped_evaluation_mode",
-                    "stop_reason": "evaluation_mode_write_tool_called",
-                }
-            ],
-            "rounds_used": round_index + 1,
-            "backend_result": backend_result,
-            "error": last_error,
-            "terminated_early": True,
-            "termination_reason": "evaluation_mode_write_tool_called",
-        }
-
-    def _blocked_not_allowed(
-        *,
-        round_index: int,
-        tool_name: str,
-        args: dict[str, Any],
-        backend_result: dict[str, Any] | None,
-    ) -> dict[str, Any]:
-        return {
-            "final_answer": "",
-            "tool_trace": tool_trace
-            + [
-                {
-                    "tool": tool_name,
-                    "args": args,
-                    "status": "blocked_not_allowed",
-                    "stop_reason": "tool_not_allowed",
-                }
-            ],
-            "rounds_used": round_index + 1,
-            "backend_result": backend_result,
-            "error": (
-                "Tool not allowed by task policy: "
-                f"{tool_name}"
-            ),
-            "terminated_early": True,
-            "termination_reason": "tool_not_allowed",
-        }
 
     for round_index in range(cfg.max_rounds):
         backend_result = run_chat_completion(
@@ -187,65 +278,28 @@ def run_task(
                 except Exception as exc:  # noqa: BLE001
                     parsed_args = {}
                     last_error = f"Invalid tool arguments for {function_name}: {exc}"
-                if (
-                    allowed_tools is not None
-                    and function_name not in allowed_tools
-                ):
-                    return _blocked_not_allowed(
-                        round_index=round_index,
-                        tool_name=function_name,
-                        args=parsed_args,
-                        backend_result=backend_result,
-                    )
-                if cfg.evaluation_mode and should_stop_on_call_in_evaluation(function_name):
-                    return _early_termination(
-                        round_index=round_index,
-                        tool_name=function_name,
-                        args=parsed_args,
-                        backend_result=backend_result,
-                    )
-                try:
-                    tool_result = call_registered_tool(
-                        function_name,
-                        client,
-                        registry=TOOL_REGISTRY,
-                        kwargs=parsed_args,
-                    )
-                    tool_trace.append(
-                        {
-                            "tool": function_name,
-                            "args": parsed_args,
-                            "result": tool_result,
-                            "status": "ok",
-                        }
-                    )
-                    messages.append(
-                        {
-                            "role": "tool",
-                            "tool_call_id": tool_call.get("id"),
-                            "content": json.dumps(tool_result, ensure_ascii=True),
-                        }
-                    )
-                except Exception as exc:  # noqa: BLE001
-                    last_error = str(exc)
-                    tool_trace.append(
-                        {
-                            "tool": function_name,
-                            "args": parsed_args,
-                            "status": "error",
-                            "error": last_error,
-                        }
-                    )
-                    messages.append(
-                        {
-                            "role": "tool",
-                            "tool_call_id": tool_call.get("id"),
-                            "content": json.dumps(
-                                {"error": last_error},
-                                ensure_ascii=True,
-                            ),
-                        }
-                    )
+                policy_result = _check_tool_policy(
+                    tool_trace=tool_trace,
+                    round_index=round_index,
+                    tool_name=function_name,
+                    args=parsed_args,
+                    backend_result=backend_result,
+                    allowed_tools=allowed_tools,
+                    cfg=cfg,
+                    last_error=last_error,
+                )
+                if policy_result is not None:
+                    return policy_result
+                execution_error = _execute_tool_call(
+                    tool_name=function_name,
+                    args=parsed_args,
+                    tool_runtime=tool_runtime_obj,
+                    tool_trace=tool_trace,
+                    messages=messages,
+                    tool_call_id=tool_call.get("id"),
+                )
+                if execution_error is not None:
+                    last_error = execution_error
             continue
 
         assistant_text = backend_result["assistant_text"]
@@ -264,51 +318,28 @@ def run_task(
             }
 
         tool_name, args = parsed
-        if allowed_tools is not None and tool_name not in allowed_tools:
-            return _blocked_not_allowed(
-                round_index=round_index,
-                tool_name=tool_name,
-                args=args,
-                backend_result=backend_result,
-            )
-        if cfg.evaluation_mode and should_stop_on_call_in_evaluation(tool_name):
-            return _early_termination(
-                round_index=round_index,
-                tool_name=tool_name,
-                args=args,
-                backend_result=backend_result,
-            )
-        try:
-            tool_result = call_registered_tool(
-                tool_name,
-                client,
-                registry=TOOL_REGISTRY,
-                kwargs=args,
-            )
-            tool_trace.append(
-                {
-                    "tool": tool_name,
-                    "args": args,
-                    "result": tool_result,
-                    "status": "ok",
-                }
-            )
-            messages.append(
-                _tool_feedback_message(tool_name, {"result": tool_result})
-            )
-        except Exception as exc:  # noqa: BLE001
-            last_error = str(exc)
-            tool_trace.append(
-                {
-                    "tool": tool_name,
-                    "args": args,
-                    "status": "error",
-                    "error": last_error,
-                }
-            )
-            messages.append(
-                _tool_feedback_message(tool_name, {"error": last_error})
-            )
+        policy_result = _check_tool_policy(
+            tool_trace=tool_trace,
+            round_index=round_index,
+            tool_name=tool_name,
+            args=args,
+            backend_result=backend_result,
+            allowed_tools=allowed_tools,
+            cfg=cfg,
+            last_error=last_error,
+        )
+        if policy_result is not None:
+            return policy_result
+        execution_error = _execute_tool_call(
+            tool_name=tool_name,
+            args=args,
+            tool_runtime=tool_runtime_obj,
+            tool_trace=tool_trace,
+            messages=messages,
+            tool_call_id=None,
+        )
+        if execution_error is not None:
+            last_error = execution_error
 
     return {
         "final_answer": "",

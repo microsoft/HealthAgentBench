@@ -15,7 +15,9 @@ import yaml
 from ehr_co_scientist.agent import AgentConfig, run_task
 from ehr_co_scientist.backends.adapter import BackendConfig
 from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
+from ehr_co_scientist.tools.fhir_tools import FHIRClient
 from ehr_co_scientist.tools.tooling.function_tools import get_openai_function_tools
+from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
 
 
 def _now_run_id() -> str:
@@ -195,6 +197,7 @@ def main() -> None:
         endpoint_name=args.endpoint_name,
         api_version=args.api_version,
     )
+    tool_runtime = ToolRuntime(fhir=FHIRClient(base_url=args.fhir_base_url))
 
     with results_path.open("w", encoding="utf-8") as out:
         for task in selected:
@@ -215,7 +218,7 @@ def main() -> None:
                 agent_result = run_task(
                     task=task,
                     backend_config=backend_config,
-                    fhir_base_url=args.fhir_base_url,
+                    tool_runtime=tool_runtime,
                     config=AgentConfig(
                         max_rounds=8,
                         evaluation_mode=args.evaluation_mode,

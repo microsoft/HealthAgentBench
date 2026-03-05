@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from ehr_co_scientist.tools.tooling import (
+    ToolRuntime,
     register_tool,
     write_openai_function_tools_json,
 )
@@ -64,7 +65,8 @@ def _to_search_params(kwargs: dict[str, Any]) -> dict[str, str]:
     ),
     parameters=lambda: _patient_search_parameters_schema(),
 )
-def patient_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
+def patient_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     params = _to_search_params(kwargs)
     # Compatibility fallback: if caller provides a full name string, derive
     # family/given fields to match MedAgentBench-style Patient search usage.
@@ -87,7 +89,8 @@ def patient_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     ),
     parameters=lambda: _lab_search_parameters_schema(),
 )
-def lab_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
+def lab_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     params = _to_search_params(kwargs)
     params.setdefault("category", "laboratory")
     return client.search("Observation", params)
@@ -101,7 +104,8 @@ def lab_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     ),
     parameters=lambda: _vital_search_parameters_schema(),
 )
-def vital_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
+def vital_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     params = _to_search_params(kwargs)
     params.setdefault("category", "vital-signs")
     return client.search("Observation", params)
@@ -112,7 +116,8 @@ def vital_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     description="Search Condition resources by standard FHIR query params.",
     parameters=lambda: _condition_search_parameters_schema(),
 )
-def condition_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
+def condition_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     return client.search("Condition", _to_search_params(kwargs))
 
 
@@ -121,7 +126,8 @@ def condition_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     description="Search Procedure resources by standard FHIR query params.",
     parameters=lambda: _procedure_search_parameters_schema(),
 )
-def procedure_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
+def procedure_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     return client.search("Procedure", _to_search_params(kwargs))
 
 
@@ -130,7 +136,8 @@ def procedure_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
     description="Search MedicationRequest resources by standard FHIR query params.",
     parameters=lambda: _medicationrequest_search_parameters_schema(),
 )
-def medicationrequest_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
+def medicationrequest_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     return client.search("MedicationRequest", _to_search_params(kwargs))
 
 
@@ -140,7 +147,8 @@ def medicationrequest_search(client: FHIRClient, **kwargs: Any) -> dict[str, Any
     parameters=lambda: _wrap_resource_schema(_vital_create_resource_schema()),
     stop_on_call_in_evaluation=True,
 )
-def vital_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]:
+def vital_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     return client.create("Observation", resource)
 
 
@@ -150,7 +158,8 @@ def vital_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]
     parameters=lambda: _wrap_resource_schema(_servicerequest_create_resource_schema()),
     stop_on_call_in_evaluation=True,
 )
-def procedure_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]:
+def procedure_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     # MedAgentBench maps this action tool to ServiceRequest.Create.
     return client.create("ServiceRequest", resource)
 
@@ -162,8 +171,9 @@ def procedure_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, 
     stop_on_call_in_evaluation=True,
 )
 def medicationrequest_create(
-    client: FHIRClient, resource: dict[str, Any]
+    tool_runtime: ToolRuntime, resource: dict[str, Any]
 ) -> dict[str, Any]:
+    client = tool_runtime.require_fhir()
     return client.create("MedicationRequest", resource)
 
 

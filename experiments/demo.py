@@ -11,7 +11,9 @@ from typing import Any
 from ehr_co_scientist.agent import AgentConfig, run_task
 from ehr_co_scientist.backends.adapter import BackendConfig
 from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
+from ehr_co_scientist.tools.fhir_tools import FHIRClient
 from ehr_co_scientist.tools.tooling.function_tools import get_openai_function_tools
+from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -90,6 +92,7 @@ def main() -> None:
         max_rounds=args.max_rounds,
         evaluation_mode=args.evaluation_mode,
     )
+    tool_runtime = ToolRuntime(fhir=FHIRClient(base_url=args.fhir_base_url))
     chat_kwargs: dict[str, Any] = {}
     if not args.disable_default_tools:
         chat_kwargs["tools"] = get_openai_function_tools(TOOL_DEFINITIONS)
@@ -128,7 +131,7 @@ def main() -> None:
             result = run_task(
                 task=task,
                 backend_config=backend_config,
-                fhir_base_url=args.fhir_base_url,
+                tool_runtime=tool_runtime,
                 config=agent_config,
                 chat_kwargs=chat_kwargs,
             )
