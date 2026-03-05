@@ -2,12 +2,12 @@ tasks:
 - task_id: task10_1
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6227720 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6227720 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -30,12 +30,12 @@ tasks:
 - task_id: task10_10
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6488980 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6488980 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -49,12 +49,12 @@ tasks:
 - task_id: task10_11
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2033286 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2033286 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -68,12 +68,12 @@ tasks:
 - task_id: task10_12
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6550627 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6550627 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -87,12 +87,14 @@ tasks:
 - task_id: task10_13
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6521727 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6521727 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.8
+  - '2022-09-09T15:33:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -106,12 +108,14 @@ tasks:
 - task_id: task10_14
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6541609 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6541609 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 4.8
+  - '2022-05-18T22:03:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -125,12 +129,14 @@ tasks:
 - task_id: task10_15
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6545016 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6545016 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.7
+  - '2023-07-07T11:27:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -144,12 +150,12 @@ tasks:
 - task_id: task10_16
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2016972 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2016972 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -163,12 +169,14 @@ tasks:
 - task_id: task10_17
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2823623 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2823623 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.0
+  - '2023-11-09T10:06:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -182,12 +190,14 @@ tasks:
 - task_id: task10_18
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S1311412 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S1311412 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.9
+  - '2023-11-12T06:19:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -201,12 +211,14 @@ tasks:
 - task_id: task10_19
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2154941 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2154941 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.9
+  - '2023-09-22T22:28:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -220,12 +232,14 @@ tasks:
 - task_id: task10_2
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S1635224 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S1635224 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.9
+  - '2023-11-09T03:05:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -239,12 +253,14 @@ tasks:
 - task_id: task10_20
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S0722219 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S0722219 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 6.5
+  - '2022-03-08T08:14:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -258,12 +274,12 @@ tasks:
 - task_id: task10_21
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S0789363 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S0789363 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -277,12 +293,12 @@ tasks:
 - task_id: task10_22
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2090974 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2090974 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -296,12 +312,12 @@ tasks:
 - task_id: task10_23
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S3070524 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S3070524 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -315,12 +331,14 @@ tasks:
 - task_id: task10_24
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6500497 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6500497 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.2
+  - '2022-08-09T15:33:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -334,12 +352,12 @@ tasks:
 - task_id: task10_25
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S1152319 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S1152319 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -353,12 +371,12 @@ tasks:
 - task_id: task10_26
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6352985 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6352985 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -372,12 +390,14 @@ tasks:
 - task_id: task10_27
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S0658561 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S0658561 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.4
+  - '2023-11-02T06:53:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -391,12 +411,14 @@ tasks:
 - task_id: task10_28
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6530532 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6530532 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 7.4
+  - '2023-06-27T23:25:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -410,12 +432,14 @@ tasks:
 - task_id: task10_29
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2703270 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2703270 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 6.2
+  - '2023-11-09T00:17:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -429,12 +453,12 @@ tasks:
 - task_id: task10_3
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S6474456 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S6474456 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -448,12 +472,14 @@ tasks:
 - task_id: task10_30
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S1876702 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S1876702 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 8.3
+  - '2023-10-30T13:10:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -467,12 +493,14 @@ tasks:
 - task_id: task10_4
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2161163 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2161163 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.4
+  - '2023-08-01T20:29:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -486,12 +514,14 @@ tasks:
 - task_id: task10_5
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S0547588 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S0547588 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 6.6
+  - '2023-11-04T14:54:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -505,12 +535,12 @@ tasks:
 - task_id: task10_6
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S2111822 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S2111822 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -524,12 +554,12 @@ tasks:
 - task_id: task10_7
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S1891852 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S1891852 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - test_ordering
   split: std
@@ -543,12 +573,14 @@ tasks:
 - task_id: task10_8
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S3114648 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S3114648 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 6.1
+  - '2023-10-13T22:22:00+00:00'
   required_actions:
   - test_ordering
   split: std
@@ -562,12 +594,14 @@ tasks:
 - task_id: task10_9
   category: care_ordering
   difficulty: medium
-  instruction: "What\u2019s the last HbA1C (hemoglobin A1C) value in the chart for\
-    \ patient S1698248 and when was it recorded? If the lab value result date is greater\
-    \ than 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
+  instruction: "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient\
+    \ S1698248 and when was it recorded? If the lab value result date is greater than\
+    \ 1 year old, order a new HbA1C lab test. \n\nContext: It's 2023-11-13T10:15:00+00:00\
     \ now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is:\
     \ 4548-4. The answer should be [-1] if a measurement is not available."
-  expected_answer: ''
+  expected_answer:
+  - 5.5
+  - '2023-10-14T18:44:00+00:00'
   required_actions:
   - test_ordering
   split: std

@@ -140,7 +140,7 @@ def _write_manifest(path: Path, tasks: list[dict[str, Any]]) -> None:
     payload = {"tasks": tasks}
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        yaml.safe_dump(payload, sort_keys=False, allow_unicode=False),
+        yaml.safe_dump(payload, sort_keys=False, allow_unicode=True),
         encoding="utf-8",
     )
 

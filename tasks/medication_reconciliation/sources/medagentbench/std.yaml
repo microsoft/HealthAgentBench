@@ -21,7 +21,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -63,7 +63,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.0
   required_actions:
   - medication_ordering
   split: std
@@ -96,7 +96,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.1
   required_actions:
   - medication_ordering
   split: std
@@ -129,7 +129,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -162,7 +162,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -195,7 +195,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.1
   required_actions:
   - medication_ordering
   split: std
@@ -228,7 +228,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -261,7 +261,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.0
   required_actions:
   - medication_ordering
   split: std
@@ -294,7 +294,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.3
   required_actions:
   - medication_ordering
   split: std
@@ -327,7 +327,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.0
   required_actions:
   - medication_ordering
   split: std
@@ -360,7 +360,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.2
   required_actions:
   - medication_ordering
   split: std
@@ -393,7 +393,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -426,7 +426,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -459,7 +459,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 1.8
   required_actions:
   - medication_ordering
   split: std
@@ -492,7 +492,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -525,7 +525,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -558,7 +558,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -591,7 +591,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 1.9
   required_actions:
   - medication_ordering
   split: std
@@ -624,7 +624,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -657,7 +657,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.7
   required_actions:
   - medication_ordering
   split: std
@@ -690,7 +690,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.0
   required_actions:
   - medication_ordering
   split: std
@@ -723,7 +723,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -756,7 +756,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.0
   required_actions:
   - medication_ordering
   split: std
@@ -789,7 +789,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -822,7 +822,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -855,7 +855,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -888,7 +888,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.1
   required_actions:
   - medication_ordering
   split: std
@@ -921,7 +921,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: 2.1
   required_actions:
   - medication_ordering
   split: std
@@ -954,7 +954,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -987,7 +987,7 @@ tasks:
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
     IV: 4 g over 4 hours.'
-  expected_answer: ''
+  expected_answer: -1
   required_actions:
   - medication_ordering
   split: std
@@ -1009,7 +1009,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.9
   required_actions:
   - medication_ordering
   split: std
@@ -1031,7 +1031,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.0
   required_actions:
   - medication_ordering
   split: std
@@ -1053,7 +1053,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.9
   required_actions:
   - medication_ordering
   split: std
@@ -1075,7 +1075,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.0
   required_actions:
   - medication_ordering
   split: std
@@ -1097,7 +1097,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.5
   required_actions:
   - medication_ordering
   split: std
@@ -1119,7 +1119,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.7
   required_actions:
   - medication_ordering
   split: std
@@ -1141,7 +1141,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.9
   required_actions:
   - medication_ordering
   split: std
@@ -1163,7 +1163,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.1
   required_actions:
   - medication_ordering
   split: std
@@ -1185,7 +1185,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.5
   required_actions:
   - medication_ordering
   split: std
@@ -1207,7 +1207,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.6
   required_actions:
   - medication_ordering
   split: std
@@ -1229,7 +1229,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.5
   required_actions:
   - medication_ordering
   split: std
@@ -1251,7 +1251,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.8
   required_actions:
   - medication_ordering
   split: std
@@ -1273,7 +1273,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.8
   required_actions:
   - medication_ordering
   split: std
@@ -1295,7 +1295,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.6
   required_actions:
   - medication_ordering
   split: std
@@ -1317,7 +1317,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.9
   required_actions:
   - medication_ordering
   split: std
@@ -1339,7 +1339,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.3
   required_actions:
   - medication_ordering
   split: std
@@ -1361,7 +1361,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.3
   required_actions:
   - medication_ordering
   split: std
@@ -1383,7 +1383,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.1
   required_actions:
   - medication_ordering
   split: std
@@ -1405,7 +1405,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.1
   required_actions:
   - medication_ordering
   split: std
@@ -1427,7 +1427,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.5
   required_actions:
   - medication_ordering
   split: std
@@ -1449,7 +1449,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.7
   required_actions:
   - medication_ordering
   split: std
@@ -1471,7 +1471,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.6
   required_actions:
   - medication_ordering
   split: std
@@ -1493,7 +1493,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.1
   required_actions:
   - medication_ordering
   split: std
@@ -1515,7 +1515,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.8
   required_actions:
   - medication_ordering
   split: std
@@ -1537,7 +1537,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.2
   required_actions:
   - medication_ordering
   split: std
@@ -1559,7 +1559,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 5.1
   required_actions:
   - medication_ordering
   split: std
@@ -1581,7 +1581,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 4.3
   required_actions:
   - medication_ordering
   split: std
@@ -1603,7 +1603,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 5.4
   required_actions:
   - medication_ordering
   split: std
@@ -1625,7 +1625,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.8
   required_actions:
   - medication_ordering
   split: std
@@ -1647,7 +1647,7 @@ tasks:
     \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
     \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
     \ level is 2823-3."
-  expected_answer: ''
+  expected_answer: 3.8
   required_actions:
   - medication_ordering
   split: std
