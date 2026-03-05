@@ -65,3 +65,46 @@ def test_search_tool_required_fields_align_with_medagentbench():
     assert tools["vital_search"].get("required") == ["patient"]
     assert tools["medicationrequest_search"].get("required") == ["patient"]
     assert tools["procedure_search"].get("required") == ["patient", "date"]
+
+
+def test_create_tool_schemas_are_resource_specific():
+    tools = {tool["function"]["name"]: tool["function"]["parameters"] for tool in get_openai_function_tools()}
+
+    vital_required = tools["vital_create"]["properties"]["resource"]["required"]
+    med_required = tools["medicationrequest_create"]["properties"]["resource"]["required"]
+    procedure_required = tools["procedure_create"]["properties"]["resource"]["required"]
+
+    assert vital_required == [
+        "resourceType",
+        "category",
+        "code",
+        "effectiveDateTime",
+        "status",
+        "valueString",
+        "subject",
+    ]
+    assert med_required == [
+        "resourceType",
+        "medicationCodeableConcept",
+        "authoredOn",
+        "dosageInstruction",
+        "status",
+        "intent",
+        "subject",
+    ]
+    assert procedure_required == [
+        "resourceType",
+        "code",
+        "authoredOn",
+        "status",
+        "intent",
+        "priority",
+        "subject",
+    ]
+
+
+def test_procedure_create_posts_service_request():
+    client = _FakeFHIRClient()
+    payload = {"resourceType": "ServiceRequest", "status": "active"}
+    _ = call_tool("procedure_create", client, resource=payload)
+    assert client.calls == [("create", "ServiceRequest", payload)]

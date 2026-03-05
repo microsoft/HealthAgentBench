@@ -106,7 +106,8 @@ def vital_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]
 
 
 def procedure_create(client: FHIRClient, resource: dict[str, Any]) -> dict[str, Any]:
-    return client.create("Procedure", resource)
+    # MedAgentBench maps this action tool to ServiceRequest.Create.
+    return client.create("ServiceRequest", resource)
 
 
 def medicationrequest_create(
@@ -199,15 +200,159 @@ def _medicationrequest_search_parameters_schema() -> dict[str, Any]:
     }
 
 
-def _create_parameters_schema() -> dict[str, Any]:
+def _vital_create_resource_schema() -> dict[str, Any]:
     return {
         "type": "object",
         "properties": {
-            "resource": {
+            "resourceType": {
+                "type": "string",
+                "description": 'Use "Observation" for vitals observations.',
+            },
+            "category": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "coding": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "system": {"type": "string"},
+                                    "code": {"type": "string"},
+                                    "display": {"type": "string"},
+                                },
+                            },
+                        }
+                    },
+                },
+            },
+            "code": {
                 "type": "object",
-                "description": "FHIR resource body to create.",
-            }
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "What is being measured.",
+                    }
+                },
+            },
+            "effectiveDateTime": {"type": "string"},
+            "status": {"type": "string"},
+            "valueString": {"type": "string"},
+            "subject": {
+                "type": "object",
+                "properties": {"reference": {"type": "string"}},
+            },
         },
+        "required": [
+            "resourceType",
+            "category",
+            "code",
+            "effectiveDateTime",
+            "status",
+            "valueString",
+            "subject",
+        ],
+    }
+
+
+def _medicationrequest_create_resource_schema() -> dict[str, Any]:
+    return {
+        "type": "object",
+        "properties": {
+            "resourceType": {"type": "string"},
+            "medicationCodeableConcept": {
+                "type": "object",
+                "properties": {
+                    "coding": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "system": {"type": "string"},
+                                "code": {"type": "string"},
+                                "display": {"type": "string"},
+                            },
+                        },
+                    },
+                    "text": {"type": "string"},
+                },
+            },
+            "authoredOn": {"type": "string"},
+            "dosageInstruction": {
+                "type": "array",
+                "items": {"type": "object"},
+            },
+            "status": {"type": "string"},
+            "intent": {"type": "string"},
+            "subject": {
+                "type": "object",
+                "properties": {"reference": {"type": "string"}},
+            },
+        },
+        "required": [
+            "resourceType",
+            "medicationCodeableConcept",
+            "authoredOn",
+            "dosageInstruction",
+            "status",
+            "intent",
+            "subject",
+        ],
+    }
+
+
+def _servicerequest_create_resource_schema() -> dict[str, Any]:
+    return {
+        "type": "object",
+        "properties": {
+            "resourceType": {"type": "string"},
+            "code": {
+                "type": "object",
+                "properties": {
+                    "coding": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "system": {"type": "string"},
+                                "code": {"type": "string"},
+                                "display": {"type": "string"},
+                            },
+                        },
+                    }
+                },
+            },
+            "authoredOn": {"type": "string"},
+            "status": {"type": "string"},
+            "intent": {"type": "string"},
+            "priority": {"type": "string"},
+            "subject": {
+                "type": "object",
+                "properties": {"reference": {"type": "string"}},
+            },
+            "note": {
+                "type": "object",
+                "properties": {"text": {"type": "string"}},
+            },
+            "occurrenceDateTime": {"type": "string"},
+        },
+        "required": [
+            "resourceType",
+            "code",
+            "authoredOn",
+            "status",
+            "intent",
+            "priority",
+            "subject",
+        ],
+    }
+
+
+def _wrap_resource_schema(resource_schema: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "type": "object",
+        "properties": {"resource": resource_schema},
         "required": ["resource"],
         "additionalProperties": False,
     }
@@ -271,21 +416,21 @@ TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
         tool_name="vital.create",
         function_name="vital_create",
         description="Create a new Observation resource (typically a vital sign).",
-        parameters=_create_parameters_schema(),
+        parameters=_wrap_resource_schema(_vital_create_resource_schema()),
         handler=vital_create,
     ),
     "procedure.create": ToolDefinition(
         tool_name="procedure.create",
         function_name="procedure_create",
-        description="Create a new Procedure resource.",
-        parameters=_create_parameters_schema(),
+        description="Create a new ServiceRequest resource.",
+        parameters=_wrap_resource_schema(_servicerequest_create_resource_schema()),
         handler=procedure_create,
     ),
     "medicationrequest.create": ToolDefinition(
         tool_name="medicationrequest.create",
         function_name="medicationrequest_create",
         description="Create a new MedicationRequest resource.",
-        parameters=_create_parameters_schema(),
+        parameters=_wrap_resource_schema(_medicationrequest_create_resource_schema()),
         handler=medicationrequest_create,
     ),
 }
