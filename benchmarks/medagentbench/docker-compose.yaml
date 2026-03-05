@@ -1,9 +1,7 @@
 services:
   fhir:
-    image: hapiproject/hapi:latest
+    image: jyxsu6/medagentbench:latest
     container_name: ehr-medagentbench-fhir
     ports:
       - "8080:8080"
-    environment:
-      hapi.fhir.server_address: "http://localhost:8080/fhir"
     restart: unless-stopped

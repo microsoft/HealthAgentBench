@@ -1,0 +1,67 @@
+import json
+
+from ehr_co_scientist.tools.fhir_tools import (
+    FUNCTION_NAME_TO_TOOL_NAME,
+    TOOL_REGISTRY,
+    call_tool,
+    get_openai_function_tools,
+    write_openai_function_tools_json,
+)
+
+
+class _FakeFHIRClient:
+    def __init__(self):
+        self.calls = []
+
+    def search(self, resource_type, params):
+        self.calls.append(("search", resource_type, dict(params)))
+        return {"resourceType": "Bundle", "type": "searchset"}
+
+    def create(self, resource_type, resource_body):
+        self.calls.append(("create", resource_type, dict(resource_body)))
+        return {"resourceType": resource_type, "id": "example"}
+
+
+def test_get_openai_function_tools_contains_all_registry_tools():
+    tools = get_openai_function_tools()
+    exported_names = {tool["function"]["name"] for tool in tools}
+    assert len(tools) == len(TOOL_REGISTRY)
+    assert exported_names == set(FUNCTION_NAME_TO_TOOL_NAME)
+
+
+def test_write_openai_function_tools_json_writes_tools_wrapper(tmp_path):
+    output = tmp_path / "fhir_tools.json"
+    write_openai_function_tools_json(output, tool_names=["patient.search"])
+
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert isinstance(payload, dict)
+    assert "tools" in payload
+    assert payload["tools"][0]["function"]["name"] == "patient_search"
+
+
+def test_call_tool_accepts_exported_function_name_alias():
+    client = _FakeFHIRClient()
+    result = call_tool("patient_search", client, family="Alice")
+    assert result["resourceType"] == "Bundle"
+    assert client.calls == [("search", "Patient", {"family": "Alice"})]
+
+
+def test_patient_search_splits_full_name_to_family_given():
+    client = _FakeFHIRClient()
+    _ = call_tool("patient_search", client, name="Peter Stafford", birthdate="1932-12-29")
+    assert client.calls == [
+        (
+            "search",
+            "Patient",
+            {"given": "Peter", "family": "Stafford", "birthdate": "1932-12-29"},
+        )
+    ]
+
+
+def test_search_tool_required_fields_align_with_medagentbench():
+    tools = {tool["function"]["name"]: tool["function"]["parameters"] for tool in get_openai_function_tools()}
+    assert tools["condition_search"].get("required") == ["patient"]
+    assert tools["lab_search"].get("required") == ["patient", "code"]
+    assert tools["vital_search"].get("required") == ["patient"]
+    assert tools["medicationrequest_search"].get("required") == ["patient"]
+    assert tools["procedure_search"].get("required") == ["patient", "date"]

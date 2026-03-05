@@ -30,6 +30,11 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-04 19:33Z) Added unit tests for FHIR client, task import, and evaluator, plus integration smoke test for Dockerized runtime workflow.
 - [x] (2026-03-04 19:34Z) Validated end-to-end on small slices (explicit IDs, selector-based run, and `--max-tasks 3`) and generated summary artifacts.
 - [x] (2026-03-04 21:05Z) Implemented and validated interactive terminal demo CLI (`experiments/demo.py`) for ad-hoc prompt/task execution against a running FHIR server.
+- [x] (2026-03-04 23:19Z) Refactored `src/ehr_co_scientist/tools/fhir_tools.py` to be schema-first (tool definitions + handlers), added OpenAI function-tools JSON export helpers/CLI, and validated with new `tests/test_fhir_tools.py`.
+- [x] (2026-03-05 00:30Z) Switched runtime to preloaded MedAgentBench FHIR image (`jyxsu6/medagentbench:latest`), diagnosed first factual QA failure with `--show-full-trace`, and fixed `patient_search` schema/handler to use MedAgentBench-style `family/given` matching (with full-name fallback).
+- [x] (2026-03-05 08:10Z) Backfilled expected answers (`sol`) in `data/medagentbench/test_data_v2.json` for all query-derived groups supported by `refsol.py` (`task2`, `task4`, `task5`, `task6`, `task7`, `task9`, `task10`) using live FHIR queries against the MedAgentBench server.
+- [ ] TODO: Add expected-answer (`sol`) derivation for `task3_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
+- [ ] TODO: Add expected-answer (`sol`) derivation for `task8_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 
 ## Surprises & Discoveries
 
@@ -44,6 +49,15 @@ For MedAgentBench background and design context used when refining this plan, se
 
 - Observation: Concrete step 4 (Azure backend smoke) is environment-dependent and requires valid Azure identity/endpoint access from the execution environment.
   Evidence: Endpoint and credential checks must succeed for direct Azure completion calls.
+
+- Observation: Internal tool names (`patient.search`) differ from OpenAI function names (`patient_search`) needed for function-calling payloads.
+  Evidence: Generated tools JSON must use identifier-safe function names while runtime registry kept dot-delimited names for task manifests and agent dispatch.
+
+- Observation: For task `task1_1`, HAPI/MedAgentBench patient lookup returned zero when queried with `name="Peter Stafford"` + `birthdate`, but returned the expected patient when queried with `family="Stafford"` + `given="Peter"` + `birthdate`.
+  Evidence: Demo full trace showed `Patient?...&name=Peter%20Stafford` -> `total: 0`; direct FHIR query with family/given returned `total: 1` and MRN `S6534835`.
+
+- Observation: Non-`task1` expected-answer backfill is partially automatable; `refsol.py` provides query-derived reference logic for `task2/task4/task5/task6/task7/task9/task10`, but `task3` and `task8` are action-validation tasks that do not currently expose a direct query-to-`sol` mapping.
+  Evidence: Backfill run updated 210 records and left `task3`/`task8` `sol` empty by design (`non_empty_sol_by_group` includes task groups above, while `empty_sol_by_group` remains `task3:30`, `task8:30`).
 
 ## Decision Log
 
@@ -83,6 +97,14 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: Keeps benchmark compatibility while preserving reusable, task-type-centric organization in this repository.
   Date/Author: 2026-03-05 / User+Codex
 
+- Decision: Treat `fhir_tools.py` as the single source of truth for both runtime tool dispatch and OpenAI function-calling schemas.
+  Rationale: Prevents drift between advertised tools and executable handlers, and enables deterministic `--tools` JSON generation for `gpt-5.2` runs.
+  Date/Author: 2026-03-04 / Codex
+
+- Decision: Use the MedAgentBench preloaded server image (`jyxsu6/medagentbench:latest`) as the benchmark runtime image for data-faithful task execution.
+  Rationale: The generic HAPI image has no benchmark patient data; the preloaded image includes the benchmark dataset and supports real task validation.
+  Date/Author: 2026-03-05 / User+Codex
+
 ## Outcomes & Retrospective
 
 Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBench tasks into task-type folders, Dockerized FHIR runtime with health checks, provider-neutral runner/evaluator CLIs, reusable FHIR tool modules, and passing unit/integration coverage for the implemented scope. Measured validation evidence:
@@ -96,6 +118,13 @@ Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBenc
   - Additional run IDs with actual backend: `20260304T193527Z`, `20260304T193547Z`, `20260304T194005Z`; evaluation artifact at `experiments/results/medagentbench/20260304T194005Z/summary.json`.
 - Interactive demo validation on 2026-03-04:
 - `printf 'For patient S2874099, summarize known conditions.\nquit\n' | uv run python experiments/demo.py --backend azure_openai --model gpt-5.2 --api-version 2025-03-01-preview --fhir-base-url http://localhost:8080/fhir` executed successfully and returned structured JSON output with `task_id`, `final_answer`, `rounds_used`, and tool trace summary fields.
+- Function-tools schema export and dispatch alignment validation on 2026-03-04:
+  - `uv run pytest tests/test_fhir_tools.py tests/test_fhir_client.py tests/test_medagentbench_task_import.py -q` -> `5 passed`.
+  - `uv run ruff check src/ehr_co_scientist/tools/fhir_tools.py tests/test_fhir_tools.py` -> `All checks passed`.
+- Real dataset runtime + first-task validation on 2026-03-05:
+  - After switching to `jyxsu6/medagentbench:latest`, `Patient?identifier=S6534835` returned `total: 1`.
+  - Full-trace demo run with first factual task initially failed due to `name`-based search (`total: 0`), then succeeded after schema/handler fix.
+  - `printf '<task1_1 prompt>\nquit\n' | uv run python experiments/demo.py ... --show-full-trace` now returns final answer `S6534835`.
 
 ## Context and Orientation
 
@@ -133,20 +162,26 @@ Assuming FHIR runtime is already running, add a CLI entrypoint `experiments/demo
 
 All commands below are run from `/home/shezhan/repos/ehr-co-scientist`.
 
-1. Create asset and orchestration files and scripts.
-
-    uv run python -m pytest -q
-
-Expected: existing tests pass (initially may be zero tests).
-
-2. Start the FHIR service.
+1. Start the FHIR service (required before `setup.sh` expected-answer backfill).
 
     bash scripts/medagentbench/fhir_up.sh
     curl -sSf http://localhost:8080/fhir/metadata | head -c 200
 
 Expected: the second command prints JSON containing a FHIR CapabilityStatement payload.
 
-3. Import and normalize MedAgentBench task files.
+2. Prepare MedAgentBench assets (download + format + expected-answer backfill).
+
+    bash scripts/medagentbench/setup.sh
+
+Expected: `data/medagentbench/test_data_v2.json`, `funcs_v1.json`, and `refsol.py` exist; JSON files are pretty-formatted; setup logs include validation counts and checksum write confirmation.
+
+3. Create asset and orchestration files and scripts.
+
+    uv run python -m pytest -q
+
+Expected: existing tests pass (initially may be zero tests).
+
+4. Import and normalize MedAgentBench task files.
 
     uv run python scripts/medagentbench/import_tasks.py \
       --input data/medagentbench/test_data_v2.json \
@@ -156,7 +191,7 @@ Expected: the second command prints JSON containing a FHIR CapabilityStatement p
 
 Expected: grouped output files exist under `tasks/<task_type>/sources/medagentbench/std.yaml` with deterministic ordering by `task_id`.
 
-4. Smoke-test Azure OpenAI backend defaults used by benchmark runs.
+5. Smoke-test Azure OpenAI backend defaults used by benchmark runs.
 
     uv run ehr-azure-openai \
       --example direct \
@@ -165,7 +200,7 @@ Expected: grouped output files exist under `tasks/<task_type>/sources/medagentbe
 
 Expected: command returns a direct chat completion payload from Azure OpenAI and confirms default endpoint/model wiring.
 
-5. Run a filtered benchmark slice by explicit task IDs.
+6. Run a filtered benchmark slice by explicit task IDs.
 
     uv run python experiments/run.py \
       --task medagentbench \
@@ -177,7 +212,7 @@ Expected: command returns a direct chat completion payload from Azure OpenAI and
 
 Expected: run executes exactly those task IDs, and the run metadata file records the resolved selector.
 
-6. Run a filtered benchmark slice by selector file.
+7. Run a filtered benchmark slice by selector file.
 
     uv run python experiments/run.py \
       --task medagentbench \
@@ -189,7 +224,7 @@ Expected: run executes exactly those task IDs, and the run metadata file records
 
 Expected: only tasks matching selector rules are executed, and skipped counts by rule are reported.
 
-7. Run a tiny benchmark slice with max-task cap.
+8. Run a tiny benchmark slice with max-task cap.
 
     uv run python experiments/run.py \
       --task medagentbench \
@@ -201,7 +236,7 @@ Expected: only tasks matching selector rules are executed, and skipped counts by
 
 Expected: run directory under `experiments/results/medagentbench/` with `results.jsonl` containing 3 records.
 
-8. Evaluate run outputs.
+9. Evaluate run outputs.
 
     uv run python benchmarks/evaluate.py \
       --task medagentbench \
@@ -209,7 +244,7 @@ Expected: run directory under `experiments/results/medagentbench/` with `results
 
 Expected: printed summary includes `pass_at_1`, category breakdowns, and query/action split.
 
-9. Run quality gates.
+10. Run quality gates.
 
     uv run pytest tests/
     uv run ruff check src/ tests/
@@ -217,7 +252,7 @@ Expected: printed summary includes `pass_at_1`, category breakdowns, and query/a
 
 Expected: tests pass, lint passes, formatter makes no additional changes on second run.
 
-10. Run interactive demo CLI (FHIR server already running).
+11. Run interactive demo CLI (FHIR server already running).
 
     uv run python experiments/demo.py \
       --backend azure_openai \
@@ -278,7 +313,8 @@ Expected key file additions and modifications:
 - `src/ehr_co_scientist/backends/adapter.py`: Provider-neutral backend interface and dispatch layer used by the runner.
 - `src/ehr_co_scientist/backends/azure_openai.py`: Azure OpenAI backend implementation and CLI smoke-test utility used as the default backend.
 - `src/ehr_co_scientist/tools/fhir_client.py`: Typed FHIR HTTP client abstraction for capability checks, search, and resource creation.
-- `src/ehr_co_scientist/tools/fhir_tools.py`: Reusable FHIR tool wrappers (flat, dataset-agnostic tools module) that map agent tool calls to FHIR client operations.
+- `src/ehr_co_scientist/tools/fhir_tools.py`: Reusable FHIR tool wrappers plus schema-first tool definitions that can export OpenAI-compatible function-calling `tools` JSON and resolve exported function names back to runtime handlers.
+- `tests/test_fhir_tools.py`: Unit tests for function-tools schema export, registry/schema consistency, and function-name alias dispatch.
 - `src/ehr_co_scientist/utils/http.py`: Shared HTTP retry/timeout/error-handling helpers used by FHIR and backend integrations.
 - `tests/test_fhir_client.py`: Unit tests for FHIR client request building, response parsing, and retry/error behavior.
 - `tests/test_medagentbench_task_import.py`: Unit tests ensuring deterministic and schema-correct MedAgentBench task import output.
