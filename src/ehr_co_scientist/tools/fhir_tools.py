@@ -1,14 +1,61 @@
-"""Reusable FHIR tool wrappers and function-calling schemas."""
+"""Reusable FHIR tool wrappers, client, and function-calling schemas."""
 
 from __future__ import annotations
 
 import argparse
-import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from ehr_co_scientist.tools.fhir_client import FHIRClient
+from ehr_co_scientist.tools.tooling import (
+    ToolDefinition,
+    build_function_name_alias,
+    build_handler_registry,
+    call_registered_tool,
+    get_openai_function_tools as build_openai_function_tools,
+    resolve_tool_name as resolve_registered_tool_name,
+    write_openai_function_tools_json as write_function_tools_json,
+)
+from ehr_co_scientist.utils.http import JsonHttpClient
+
+
+@dataclass
+class FHIRClient:
+    base_url: str
+    timeout_s: float = 30.0
+    _http: JsonHttpClient = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self.base_url = self.base_url.rstrip("/")
+        self._http = JsonHttpClient(timeout_s=self.timeout_s)
+
+    def capability_statement(self) -> dict[str, Any]:
+        return self._http.request_json(
+            method="GET",
+            url=f"{self.base_url}/metadata",
+            headers={"Accept": "application/fhir+json"},
+        )
+
+    def search(self, resource_type: str, params: dict[str, str]) -> dict[str, Any]:
+        return self._http.request_json(
+            method="GET",
+            url=f"{self.base_url}/{resource_type}",
+            params=params,
+            headers={"Accept": "application/fhir+json"},
+        )
+
+    def create(
+        self, resource_type: str, resource_body: dict[str, Any]
+    ) -> dict[str, Any]:
+        return self._http.request_json(
+            method="POST",
+            url=f"{self.base_url}/{resource_type}",
+            json_body=resource_body,
+            headers={
+                "Accept": "application/fhir+json",
+                "Content-Type": "application/fhir+json",
+            },
+        )
 
 
 def _to_search_params(kwargs: dict[str, Any]) -> dict[str, str]:
@@ -166,15 +213,6 @@ def _create_parameters_schema() -> dict[str, Any]:
     }
 
 
-@dataclass(frozen=True)
-class ToolDefinition:
-    tool_name: str
-    function_name: str
-    description: str
-    parameters: dict[str, Any]
-    handler: Any
-
-
 TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
     "patient.search": ToolDefinition(
         tool_name="patient.search",
@@ -252,46 +290,22 @@ TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
     ),
 }
 
-TOOL_REGISTRY: dict[str, Any] = {
-    name: definition.handler for name, definition in TOOL_DEFINITIONS.items()
-}
-
-FUNCTION_NAME_TO_TOOL_NAME: dict[str, str] = {
-    definition.function_name: name for name, definition in TOOL_DEFINITIONS.items()
-}
+TOOL_REGISTRY = build_handler_registry(TOOL_DEFINITIONS)
+FUNCTION_NAME_TO_TOOL_NAME = build_function_name_alias(TOOL_DEFINITIONS)
 
 
+# Backward-compatible convenience wrappers that bind generic tooling helpers
+# to the FHIR toolset for existing call sites.
 def resolve_tool_name(name: str) -> str:
-    if name in TOOL_REGISTRY:
-        return name
-    mapped = FUNCTION_NAME_TO_TOOL_NAME.get(name)
-    if mapped is not None:
-        return mapped
-    return name
+    return resolve_registered_tool_name(
+        name,
+        registry=TOOL_REGISTRY,
+        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+    )
 
 
 def get_openai_function_tools(tool_names: list[str] | None = None) -> list[dict[str, Any]]:
-    selected = tool_names or sorted(TOOL_DEFINITIONS)
-    tools: list[dict[str, Any]] = []
-    for tool_name in selected:
-        try:
-            definition = TOOL_DEFINITIONS[tool_name]
-        except KeyError as exc:
-            available = ", ".join(sorted(TOOL_DEFINITIONS))
-            raise ValueError(
-                f"Unknown tool name for schema export: {tool_name}. Available: {available}"
-            ) from exc
-        tools.append(
-            {
-                "type": "function",
-                "function": {
-                    "name": definition.function_name,
-                    "description": definition.description,
-                    "parameters": definition.parameters,
-                },
-            }
-        )
-    return tools
+    return build_openai_function_tools(TOOL_DEFINITIONS, tool_names)
 
 
 def write_openai_function_tools_json(
@@ -300,27 +314,22 @@ def write_openai_function_tools_json(
     tool_names: list[str] | None = None,
     wrap_with_tools_key: bool = True,
 ) -> Path:
-    path = Path(output_path)
-    tools = get_openai_function_tools(tool_names)
-    payload: Any = {"tools": tools} if wrap_with_tools_key else tools
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=True), encoding="utf-8")
-    return path
+    return write_function_tools_json(
+        output_path,
+        tool_definitions=TOOL_DEFINITIONS,
+        tool_names=tool_names,
+        wrap_with_tools_key=wrap_with_tools_key,
+    )
 
 
 def call_tool(tool_name: str, client: FHIRClient, **kwargs: Any) -> dict[str, Any]:
-    resolved_name = resolve_tool_name(tool_name)
-    try:
-        fn = TOOL_REGISTRY[resolved_name]
-    except KeyError as exc:  # noqa: PERF203
-        available_internal = ", ".join(sorted(TOOL_REGISTRY))
-        available_function = ", ".join(sorted(FUNCTION_NAME_TO_TOOL_NAME))
-        raise ValueError(
-            "Unknown tool name: "
-            f"{tool_name}. Internal names: {available_internal}. "
-            f"Function names: {available_function}"
-        ) from exc
-    return fn(client, **kwargs)
+    return call_registered_tool(
+        tool_name,
+        client,
+        registry=TOOL_REGISTRY,
+        function_name_to_tool_name=FUNCTION_NAME_TO_TOOL_NAME,
+        kwargs=kwargs,
+    )
 
 
 def _parse_args() -> argparse.Namespace:

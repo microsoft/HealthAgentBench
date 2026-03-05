@@ -26,13 +26,14 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 01:07Z) Implemented Docker Compose-based local FHIR runtime with container healthcheck and compose-managed startup/shutdown scripts.
 - [x] (2026-03-05 01:18Z) Implemented `FHIRClient`, MedAgentBench-aligned FHIR tool wrappers, and shared JSON HTTP retry utilities in `src/ehr_co_scientist/tools/` and `src/ehr_co_scientist/utils/http.py`.
 - [x] (2026-03-05 04:10Z) Imported real MedAgentBench files (`data/medagentbench/test_data_v2.json`, `data/medagentbench/funcs_v1.json`) and grouped 300 tasks into repo task-type folders under `tasks/<task_type>/sources/medagentbench/` using an explicit 6-type alignment map.
-- [x] (2026-03-04 19:30Z) Implemented MedAgentBench runner and evaluator CLIs (`experiments/run.py`, `benchmarks/evaluate.py`, `scripts/medagentbench/evaluator.py`) plus backend adapter and minimal agent loop wiring.
+- [x] (2026-03-04 19:30Z) Implemented MedAgentBench runner and evaluator CLIs (`experiments/run.py`, `scripts/medagentbench/evaluate.py`, `scripts/medagentbench/evaluator.py`) plus backend adapter and minimal agent loop wiring.
 - [x] (2026-03-04 19:33Z) Added unit tests for FHIR client, task import, and evaluator, plus integration smoke test for Dockerized runtime workflow.
 - [x] (2026-03-04 19:34Z) Validated end-to-end on small slices (explicit IDs, selector-based run, and `--max-tasks 3`) and generated summary artifacts.
 - [x] (2026-03-04 21:05Z) Implemented and validated interactive terminal demo CLI (`experiments/demo.py`) for ad-hoc prompt/task execution against a running FHIR server.
 - [x] (2026-03-04 23:19Z) Refactored `src/ehr_co_scientist/tools/fhir_tools.py` to be schema-first (tool definitions + handlers), added OpenAI function-tools JSON export helpers/CLI, and validated with new `tests/test_fhir_tools.py`.
 - [x] (2026-03-05 00:30Z) Switched runtime to preloaded MedAgentBench FHIR image (`jyxsu6/medagentbench:latest`), diagnosed first factual QA failure with `--show-full-trace`, and fixed `patient_search` schema/handler to use MedAgentBench-style `family/given` matching (with full-name fallback).
 - [x] (2026-03-05 08:10Z) Backfilled expected answers (`sol`) in `data/medagentbench/test_data_v2.json` for all query-derived groups supported by `refsol.py` (`task2`, `task4`, `task5`, `task6`, `task7`, `task9`, `task10`) using live FHIR queries against the MedAgentBench server.
+- [x] (2026-03-05 05:22Z) Executed Milestone 7 repo-structure/tooling refactor: moved remaining benchmark artifacts into `scripts/medagentbench/` (including evaluation CLI), merged `FHIRClient` implementation into `fhir_tools.py` with compatibility shim, and extracted tool-agnostic registry/schema/export helpers into `src/ehr_co_scientist/tools/tooling/`.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task3_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task8_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 
@@ -128,7 +129,7 @@ Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBenc
 
 ## Context and Orientation
 
-This repository currently provides a project skeleton for an EHR agent system but not yet a functioning benchmark runtime. The key folders relevant to this plan are `src/ehr_co_scientist/` for shared runtime code, `tasks/` for first-class task-type packages (metadata + task-local adapters + fixtures), `benchmarks/` for cross-task scoring harness logic, `experiments/` for runnable orchestration entry points, and `scripts/` for setup automation. MedAgentBench is an external benchmark with a FHIR-based task environment and de-identified patient data exposed through FHIR APIs. In this plan, “FHIR server” means an HTTP service implementing the HL7 FHIR REST patterns used by MedAgentBench tasks. “Task adapter” means the code that transforms MedAgentBench task JSON into this repository’s internal task execution request shape and routes it to the matching task-type package.
+This repository currently provides a project skeleton for an EHR agent system but not yet a functioning benchmark runtime. The key folders relevant to this plan are `src/ehr_co_scientist/` for shared runtime code, `tasks/` for first-class task-type packages (metadata + task-local adapters + fixtures), `experiments/` for runnable orchestration entry points, and `scripts/` for setup/runtime/evaluation automation. MedAgentBench is an external benchmark with a FHIR-based task environment and de-identified patient data exposed through FHIR APIs. In this plan, “FHIR server” means an HTTP service implementing the HL7 FHIR REST patterns used by MedAgentBench tasks. “Task adapter” means the code that transforms MedAgentBench task JSON into this repository’s internal task execution request shape and routes it to the matching task-type package.
 
 The implementation target is not to re-create MedAgentBench internals. The target is to add a compatible benchmark integration layer that can run MedAgentBench tasks against a configured FHIR endpoint, collect outputs, and score the run with pass@1 and category-level breakdowns. The implementation also must define a stable internal task contract with fields that separate task intent from backend source details so task prompts can later be rebound to non-MedAgentBench datasets.
 
@@ -148,7 +149,7 @@ Create and/or populate task-type packages under `tasks/<task_type>/` (for exampl
 
 Milestone 4 adds evaluation and reporting.
 
-Implement `benchmarks/evaluate.py` with MedAgentBench scorer logic in `scripts/medagentbench/evaluator.py`. Scoring must compute pass@1 overall and per category, and separate query versus action tasks. Persist machine-readable results to `experiments/results/medagentbench/<timestamp>/results.jsonl` and summary metrics to `summary.json` and `summary.md`. Add simple error taxonomy counters for tool schema violations, HTTP failures, and final-answer mismatch.
+Implement `scripts/medagentbench/evaluate.py` with MedAgentBench scorer logic in `scripts/medagentbench/evaluator.py`. Scoring must compute pass@1 overall and per category, and separate query versus action tasks. Persist machine-readable results to `experiments/results/medagentbench/<timestamp>/results.jsonl` and summary metrics to `summary.json` and `summary.md`. Add simple error taxonomy counters for tool schema violations, HTTP failures, and final-answer mismatch.
 
 Milestone 5 hardens quality with tests and smoke runs.
 
@@ -157,6 +158,10 @@ Add unit tests in `tests/test_fhir_client.py`, `tests/test_medagentbench_task_im
 Milestone 6 adds an interactive demo mode for terminal users.
 
 Assuming FHIR runtime is already running, add a CLI entrypoint `experiments/demo.py` that starts an interactive prompt loop in terminal. A user can type an ad-hoc clinical task/prompt, the system runs one task execution flow using existing agent/backend/tool stack, and prints structured output (final answer, rounds used, and tool trace summary). The demo must support `--backend`, `--model`, `--api-version`, and `--fhir-base-url`, and should exit cleanly on `exit`/`quit`/EOF.
+
+Milestone 7 consolidates structure and extracts shared tooling abstractions.
+
+Refactor repository boundaries so all MedAgentBench-specific operational/runtime code lives under `scripts/medagentbench/`, including any remaining benchmark-coupled adapters/assets currently under `benchmarks/`. Refactor `src/ehr_co_scientist/tools/fhir_client.py` into `src/ehr_co_scientist/tools/fhir_tools.py` so FHIR transport/query logic is co-located with FHIR tool implementations. Then extract tool-agnostic helpers (registry, schema definitions, OpenAI tools export helpers such as `get_openai_function_tools`, and common property/normalization utilities) out of `fhir_tools.py` into a new shared non-FHIR module (for example `src/ehr_co_scientist/tools/tooling/`) so future non-FHIR tools can reuse the same framework. Keep backward-compatible wrapper functions during transition, update imports/tests/docs, and remove wrappers only after parity validation.
 
 ## Concrete Steps
 
@@ -238,7 +243,7 @@ Expected: run directory under `experiments/results/medagentbench/` with `results
 
 9. Evaluate run outputs.
 
-    uv run python benchmarks/evaluate.py \
+    uv run python scripts/medagentbench/evaluate.py \
       --task medagentbench \
       --results experiments/results/medagentbench/<run-id>/results.jsonl
 
@@ -264,7 +269,7 @@ Expected: terminal enters interactive mode, accepts free-form task prompts, and 
 
 ## Validation and Acceptance
 
-Acceptance is achieved when a novice can clone the repository, run the MedAgentBench setup script, start the Dockerized FHIR service, execute at least one MedAgentBench split through `experiments/run.py`, execute a filtered subset through selector configuration, and generate scoring outputs through `benchmarks/evaluate.py` without manually editing source files.
+Acceptance is achieved when a novice can clone the repository, run the MedAgentBench setup script, start the Dockerized FHIR service, execute at least one MedAgentBench split through `experiments/run.py`, execute a filtered subset through selector configuration, and generate scoring outputs through `scripts/medagentbench/evaluate.py` without manually editing source files.
 
 The concrete observable checks are:
 
@@ -272,7 +277,7 @@ The concrete observable checks are:
 - `experiments/run.py` produces one JSONL record per attempted task with final answer, tool trace, and success flag.
 - `experiments/run.py` supports task selection by explicit IDs, category filters, and selector file, and records the effective resolved task set in run metadata.
 - `experiments/run.py` records backend call metadata including backend name, model name, endpoint name, and API version for reproducibility.
-- `benchmarks/evaluate.py` writes both machine-readable and human-readable summaries.
+- `scripts/medagentbench/evaluate.py` writes both machine-readable and human-readable summaries.
 - `tests/integration/test_medagentbench_smoke.py` passes when the FHIR service is running.
 - `experiments/demo.py` provides interactive terminal workflow and returns structured outputs for user-entered prompts while FHIR server is running.
 
@@ -306,7 +311,7 @@ Expected key file additions and modifications:
 - `tasks/<task_type>/runner.py`: Task-local execution adapter invoked by top-level experiment runner.
 - `tasks/<task_type>/evaluator.py`: Task-local scoring adapter used by benchmark harness.
 - `experiments/run.py`: Main benchmark runner CLI handling task resolution, agent execution, backend dispatch, and result persistence.
-- `benchmarks/evaluate.py`: Top-level evaluation CLI entrypoint that loads run outputs and writes summary metrics artifacts.
+- `scripts/medagentbench/evaluate.py`: Top-level MedAgentBench evaluation CLI entrypoint that loads run outputs and writes summary metrics artifacts.
 - `experiments/demo.py`: Interactive terminal demo CLI for ad-hoc prompt/task execution using the same backend/tool pipeline.
 - `src/ehr_co_scientist/agent.py`: Agent loop implementation coordinating prompt construction, tool calls, and final answer extraction.
 - `src/ehr_co_scientist/backends/__init__.py`: Backend package exports and registry entrypoint for available backend adapters.

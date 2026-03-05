@@ -51,7 +51,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src", "."]
-include = ["ehr_co_scientist*", "benchmarks*", "scripts*"]
+include = ["ehr_co_scientist*", "scripts*"]
 
 [dependency-groups]
 dev = [

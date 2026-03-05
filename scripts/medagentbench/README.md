@@ -7,7 +7,7 @@ This directory stores MedAgentBench operational scripts, runtime config, and eva
 - `fhir_down.sh`: stops Docker Compose FHIR runtime
 - `import_tasks.py`: converts source task JSON into canonical YAML manifests grouped under `tasks/<task_type>/sources/medagentbench/`
 - `docker-compose.yaml`: Docker Compose runtime definition for local MedAgentBench-compatible FHIR server
-- `evaluator.py`: MedAgentBench result scoring utilities used by `benchmarks/evaluate.py`
+- `evaluator.py`: MedAgentBench result scoring utilities used by `scripts/medagentbench/evaluate.py`
 - `fhir_medagentbench_tools.py`: MedAgentBench compatibility adapter over generic FHIR tools
 
 Canonical source assets are in `data/medagentbench/`:
@@ -69,7 +69,7 @@ uv run python experiments/run.py \
   --fhir-base-url http://localhost:8080/fhir
 
 # 6) Evaluate run outputs
-uv run python benchmarks/evaluate.py \
+uv run python scripts/medagentbench/evaluate.py \
   --task medagentbench \
   --results experiments/results/medagentbench/<run-id>/results.jsonl
 

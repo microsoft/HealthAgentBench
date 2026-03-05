@@ -38,7 +38,7 @@ def test_medagentbench_smoke(tmp_path: Path):
 
         eval_cmd = [
             ".venv/bin/python",
-            "benchmarks/evaluate.py",
+            "scripts/medagentbench/evaluate.py",
             "--task",
             "medagentbench",
             "--results",

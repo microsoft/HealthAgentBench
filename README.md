@@ -83,14 +83,13 @@ ehr-co-scientist/
 │   │   └── task.yaml                 # Task-type metadata/spec
 │   └── report_generation/            # Task-type package
 │       └── task.yaml                 # Task-type metadata/spec
-├── benchmarks/                       # Cross-task evaluation harness + datasets/gold answers
+├── scripts/                          # Setup/export/evaluation utilities organized by integration domain
+│   ├── setup_mimic.sh                # Core MIMIC bootstrap script
+│   └── medagentbench/                # MedAgentBench runtime, import, and evaluation scripts
 ├── experiments/                      # Top-level run CLI, configs, and results
 ├── notebooks/                        # Analysis & paper figures
 ├── paper/                            # LaTeX source for arxiv submission
 ├── design/                           # Design docs, architecture, scope, ideas
-├── scripts/                          # Setup/export utilities organized by integration domain
-│   ├── setup_mimic.sh                # Core MIMIC bootstrap script
-│   └── medagentbench/                # MedAgentBench-specific operational scripts
 └── tests/                            # Tool & agent tests
 ```
 
@@ -117,8 +116,8 @@ bash scripts/setup_mimic.sh
 # Run a task
 python experiments/run.py --task cohort_construction --model claude-4-sonnet
 
-# Evaluate results
-python benchmarks/evaluate.py --task cohort_construction --results experiments/results/
+# Evaluate MedAgentBench results
+python scripts/medagentbench/evaluate.py --task medagentbench --results experiments/results/medagentbench/<run-id>/results.jsonl
 ```
 
 Task-local execution/scoring scripts live under each task-type package in `tasks/<task_type>/`. Benchmark-specific imports (such as MedAgentBench) should map into the relevant task-type package during integration work, rather than creating benchmark-named task roots.

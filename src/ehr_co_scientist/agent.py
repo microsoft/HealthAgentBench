@@ -7,8 +7,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion
-from ehr_co_scientist.tools.fhir_client import FHIRClient
-from ehr_co_scientist.tools.fhir_tools import call_tool
+from ehr_co_scientist.tools.fhir_tools import FHIRClient, call_tool
 
 
 @dataclass(frozen=True)
