@@ -70,7 +70,7 @@ ehr-co-scientist/
 ├── config/
 │   └── agent.yaml                    # Model, tool whitelist, DB connection
 ├── src/ehr_co_scientist/
-│   ├── agent.py                      # Core agent loop
+│   ├── agent/                        # Core agent package (core loop + parsing/policy/tool execution helpers)
 │   ├── prompts/                      # System & task prompt templates
 │   ├── tools/                        # Tool implementations
 │   └── utils/                        # DB, sandbox, logging helpers

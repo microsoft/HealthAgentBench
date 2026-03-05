@@ -16,5 +16,6 @@ TOOL_REGISTRY = build_handler_registry(TOOL_DEFINITIONS)
 
 
 def should_stop_on_call_in_evaluation(tool_name: str) -> bool:
+    """Return True when a tool should terminate task flow in evaluation mode."""
     definition = TOOL_DEFINITIONS.get(tool_name)
     return bool(definition and definition.stop_on_call_in_evaluation)

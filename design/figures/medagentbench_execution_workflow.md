@@ -13,7 +13,7 @@ flowchart TD
     G --> H[experiments/run.py]
     H --> I[Load selectors and resolve task set]
     I --> J[Load task-type package runner from tasks/<task_type>/]
-    J --> K[src/ehr_co_scientist/agent.py loop max 8 rounds]
+    J --> K[src/ehr_co_scientist/agent/core.py loop max 8 rounds]
 
     K --> L[src/ehr_co_scientist/tools/catalog.py]
     L --> M[src/ehr_co_scientist/tools/fhir_tools.py]

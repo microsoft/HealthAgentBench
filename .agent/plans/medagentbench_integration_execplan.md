@@ -40,6 +40,9 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 14:05Z) Standardized canonical tool IDs to function-safe underscore names (for example `patient_search`, `vital_create`) and removed `function_name` alias mapping/translation from shared tooling and agent dispatch.
 - [x] (2026-03-05 14:12Z) Removed unused compatibility adapter `scripts/medagentbench/fhir_medagentbench_tools.py` after verifying no runtime references; updated `scripts/medagentbench/README.md`.
 - [x] (2026-03-05 14:20Z) Consolidated redundant agent/tool tests via parametrization to reduce duplicate fallback/native cases while preserving coverage.
+- [x] (2026-03-05 15:08Z) Decoupled `run_task` from direct FHIR client construction by introducing shared `ToolRuntime`; moved FHIR client instantiation to caller entrypoints (`experiments/run.py`, `experiments/demo.py`) and updated tool handlers/dispatch to consume `tool_runtime`.
+- [x] (2026-03-05 15:16Z) Refactored `run_task` internals with dedicated helper functions for policy checks, termination payloads, and tool execution to reduce core-loop complexity without changing behavior.
+- [x] (2026-03-05 15:32Z) Split monolithic `src/ehr_co_scientist/agent.py` into package modules under `src/ehr_co_scientist/agent/` (`core.py`, `parsing.py`, `policy.py`, `tool_exec.py`) while preserving public imports via `src/ehr_co_scientist/agent/__init__.py`.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task3_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task8_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 
@@ -65,6 +68,9 @@ For MedAgentBench background and design context used when refining this plan, se
 
 - Observation: Non-`task1` expected-answer backfill is partially automatable; `refsol.py` provides query-derived reference logic for `task2/task4/task5/task6/task7/task9/task10`, but `task3` and `task8` are action-validation tasks that do not currently expose a direct query-to-`sol` mapping.
   Evidence: Backfill run updated 210 records and left `task3`/`task8` `sol` empty by design (`non_empty_sol_by_group` includes task groups above, while `empty_sol_by_group` remains `task3:30`, `task8:30`).
+
+- Observation: Creating runtime clients inside `run_task` tightly couples agent orchestration to a specific tool backend and makes multi-runtime task support awkward.
+  Evidence: Prior implementation unconditionally built `FHIRClient` inside `run_task`; refactor introduced `ToolRuntime` so clients are supplied by caller entrypoints.
 
 ## Decision Log
 
@@ -128,6 +134,10 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: Keeps registration mechanics predictable and discoverable while retaining extensibility for future non-FHIR tools.
   Date/Author: 2026-03-05 / User+Codex
 
+- Decision: Pass a generic `ToolRuntime` object into agent/tool dispatch and construct concrete clients at orchestration entrypoints instead of inside `run_task`.
+  Rationale: Keeps the agent loop backend-agnostic for future non-FHIR tasks and cleanly separates orchestration from client wiring.
+  Date/Author: 2026-03-05 / User+Codex
+
 ## Outcomes & Retrospective
 
 Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBench tasks into task-type folders, Dockerized FHIR runtime with health checks, provider-neutral runner/evaluator CLIs, reusable FHIR tool modules, canonicalized tool catalog/dispatch abstractions, and passing unit/integration coverage for the implemented scope. Measured validation evidence:
@@ -167,7 +177,7 @@ Populate `config/agent.yaml` with a concrete model/tool config that includes FHI
 
 Milestone 3 introduces task ingestion, task selection, and execution loop.
 
-Create and/or populate task-type packages under `tasks/<task_type>/` (for example `tasks/cohort_construction/`, `tasks/temporal_reasoning/`) with `task.yaml`, `runner.py`, `evaluator.py`, and canonical manifest files generated from source JSON using `scripts/medagentbench/import_tasks.py`. The import script must map each source task to fields required by this repository (`task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `required_actions`, split labels, and `backend_profile`) and write split manifests under task-type package paths such as `tasks/<task_type>/sources/medagentbench/<split>.yaml`. Add a generic selector file format at `tasks/selectors/*.yaml` with include/exclude rules by `task_id`, category, difficulty, and task type (query or action). Implement `src/ehr_co_scientist/agent.py` with a minimal loop supporting up to 8 tool interaction rounds to align with MedAgentBench protocol. Add `experiments/run.py` CLI accepting `--task medagentbench`, `--split`, `--max-tasks`, `--backend`, `--model`, `--fhir-base-url`, `--task-ids`, `--task-categories`, `--task-selector-file`, `--endpoint-name`, and `--api-version`, where `--backend` defaults to `azure_openai`. Implement backend dispatch in runner through a provider-neutral adapter call (for example `run_chat_completion(backend, config, messages, **kwargs)`) with an Azure-backed implementation for this milestone.
+Create and/or populate task-type packages under `tasks/<task_type>/` (for example `tasks/cohort_construction/`, `tasks/temporal_reasoning/`) with `task.yaml`, `runner.py`, `evaluator.py`, and canonical manifest files generated from source JSON using `scripts/medagentbench/import_tasks.py`. The import script must map each source task to fields required by this repository (`task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `required_actions`, split labels, and `backend_profile`) and write split manifests under task-type package paths such as `tasks/<task_type>/sources/medagentbench/<split>.yaml`. Add a generic selector file format at `tasks/selectors/*.yaml` with include/exclude rules by `task_id`, category, difficulty, and task type (query or action). Implement `src/ehr_co_scientist/agent/core.py` with a minimal loop supporting up to 8 tool interaction rounds to align with MedAgentBench protocol. Add `experiments/run.py` CLI accepting `--task medagentbench`, `--split`, `--max-tasks`, `--backend`, `--model`, `--fhir-base-url`, `--task-ids`, `--task-categories`, `--task-selector-file`, `--endpoint-name`, and `--api-version`, where `--backend` defaults to `azure_openai`. Implement backend dispatch in runner through a provider-neutral adapter call (for example `run_chat_completion(backend, config, messages, **kwargs)`) with an Azure-backed implementation for this milestone.
 
 Milestone 4 adds evaluation and reporting.
 
@@ -334,7 +344,7 @@ Expected key file additions and modifications:
 - `experiments/run.py`: Main benchmark runner CLI handling task resolution, agent execution, backend dispatch, and result persistence.
 - `scripts/medagentbench/evaluate.py`: Top-level MedAgentBench evaluation CLI entrypoint that loads run outputs and writes summary metrics artifacts.
 - `experiments/demo.py`: Interactive terminal demo CLI for ad-hoc prompt/task execution using the same backend/tool pipeline.
-- `src/ehr_co_scientist/agent.py`: Agent loop implementation coordinating prompt construction, tool calls, and final answer extraction.
+- `src/ehr_co_scientist/agent/core.py`: Agent loop implementation coordinating prompt construction, tool calls, and final answer extraction.
 - `src/ehr_co_scientist/backends/__init__.py`: Backend package exports and registry entrypoint for available backend adapters.
 - `src/ehr_co_scientist/backends/adapter.py`: Provider-neutral backend interface and dispatch layer used by the runner.
 - `src/ehr_co_scientist/backends/azure_openai.py`: Azure OpenAI backend implementation and CLI smoke-test utility used as the default backend.

@@ -51,6 +51,7 @@ def register_tool(
 
 
 def collect_registered_tool_definitions() -> dict[str, ToolDefinition]:
+    """Materialize immutable tool definitions from decorator registrations."""
     definitions: dict[str, ToolDefinition] = {}
     for entry in _PENDING_REGISTRATIONS:
         raw_parameters = entry["parameters"]
@@ -70,6 +71,7 @@ def collect_registered_tool_definitions() -> dict[str, ToolDefinition]:
 def build_handler_registry(
     tool_definitions: Mapping[str, ToolDefinition],
 ) -> dict[str, Callable[..., dict[str, Any]]]:
+    """Build runtime dispatch map keyed by canonical tool name."""
     return {name: definition.handler for name, definition in tool_definitions.items()}
 
 
@@ -77,6 +79,7 @@ def get_openai_function_tools(
     tool_definitions: Mapping[str, ToolDefinition],
     tool_names: list[str] | None = None,
 ) -> list[dict[str, Any]]:
+    """Convert internal definitions to OpenAI/Azure `tools` payload format."""
     selected = tool_names or sorted(tool_definitions)
     tools: list[dict[str, Any]] = []
     for tool_name in selected:
@@ -107,6 +110,7 @@ def write_openai_function_tools_json(
     tool_names: list[str] | None = None,
     wrap_with_tools_key: bool = True,
 ) -> Path:
+    """Persist OpenAI/Azure `tools` schema JSON for CLI/backend consumption."""
     path = Path(output_path)
     tools = get_openai_function_tools(tool_definitions, tool_names)
     payload: Any = {"tools": tools} if wrap_with_tools_key else tools
@@ -122,6 +126,7 @@ def call_registered_tool(
     registry: Mapping[str, Callable[..., dict[str, Any]]],
     kwargs: dict[str, Any],
 ) -> dict[str, Any]:
+    """Invoke one registered tool by canonical name using shared runtime context."""
     try:
         fn = registry[tool_name]
     except KeyError as exc:  # noqa: PERF203

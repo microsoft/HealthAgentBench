@@ -10,7 +10,7 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 ## Repository Layout
 
 - `config/agent.yaml` — Model selection, tool whitelist, database connection settings.
-- `src/ehr_co_scientist/agent.py` — Core agent loop.
+- `src/ehr_co_scientist/agent/` — Core agent package (`core.py`, parsing/policy/tool-exec modules).
 - `src/ehr_co_scientist/prompts/` — System and task prompt templates.
 - `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
 - `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
@@ -32,6 +32,7 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 - **Testing** uses `pytest`. Run the full suite with `pytest tests/` from the repo root.
 - **Linting** uses `ruff`. Run `ruff check src/ tests/` before committing.
 - **Formatting** uses `ruff format`. Run `ruff format src/ tests/` before committing.
+- **Docstrings** are required for public modules/functions and non-trivial internal helpers in `src/`; keep them concise and focused on purpose/inputs/outputs.
 - **Scripts layout** should avoid a flat `scripts/` list as integrations grow; place related scripts under subdirectories such as `scripts/medagentbench/`.
 - **Commits** should be small, focused, and have descriptive messages. Prefer one logical change per commit.
 
@@ -45,7 +46,7 @@ When implementing or modifying tools, respect the five-category taxonomy:
 4. **EHR utilities** — FHIR client, ClinicalTrials.gov search, de-identification checker.
 5. **File & format** — CSV/Parquet reader, document parser, schema mapper, web fetcher, bash tools.
 
-Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must expose a consistent interface that the agent loop in `agent.py` can discover and invoke.
+Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must expose a consistent interface that the agent loop in `src/ehr_co_scientist/agent/core.py` can discover and invoke.
 
 ## Tasks
 

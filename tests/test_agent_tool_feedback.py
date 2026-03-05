@@ -25,9 +25,11 @@ def test_run_task_uses_backend_safe_tool_feedback(monkeypatch):
         return {"resourceType": "Bundle", "total": 1}
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agent.run_chat_completion", fake_chat_completion
+        "ehr_co_scientist.agent.core.run_chat_completion", fake_chat_completion
     )
-    monkeypatch.setattr("ehr_co_scientist.agent.call_registered_tool", fake_call_tool)
+    monkeypatch.setattr(
+        "ehr_co_scientist.agent.tool_exec.call_registered_tool", fake_call_tool
+    )
 
     result = run_task(
         task={"instruction": "find patient"},
@@ -81,9 +83,11 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
         return {"resourceType": "Bundle", "total": 1}
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agent.run_chat_completion", fake_chat_completion
+        "ehr_co_scientist.agent.core.run_chat_completion", fake_chat_completion
     )
-    monkeypatch.setattr("ehr_co_scientist.agent.call_registered_tool", fake_call_tool)
+    monkeypatch.setattr(
+        "ehr_co_scientist.agent.tool_exec.call_registered_tool", fake_call_tool
+    )
 
     result = run_task(
         task={"instruction": "find patient"},
@@ -133,9 +137,11 @@ def test_run_task_evaluation_mode_ends_on_write_tool(monkeypatch, native_tool_ca
         raise AssertionError(f"call_tool should not run in evaluation mode: {tool_name}")
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agent.run_chat_completion", fake_chat_completion
+        "ehr_co_scientist.agent.core.run_chat_completion", fake_chat_completion
     )
-    monkeypatch.setattr("ehr_co_scientist.agent.call_registered_tool", fail_call_tool)
+    monkeypatch.setattr(
+        "ehr_co_scientist.agent.tool_exec.call_registered_tool", fail_call_tool
+    )
 
     result = run_task(
         task={"instruction": "record BP"},
@@ -188,9 +194,11 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
         raise AssertionError(f"call_tool should not run for disallowed tool: {tool_name}")
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agent.run_chat_completion", fake_chat_completion
+        "ehr_co_scientist.agent.core.run_chat_completion", fake_chat_completion
     )
-    monkeypatch.setattr("ehr_co_scientist.agent.call_registered_tool", fail_call_tool)
+    monkeypatch.setattr(
+        "ehr_co_scientist.agent.tool_exec.call_registered_tool", fail_call_tool
+    )
 
     result = run_task(
         task={"instruction": "record BP"},
