@@ -40,6 +40,49 @@ ACTION_MED_TASK_TYPES = {
 }
 
 
+def _build_instruction(
+    *,
+    base_instruction: str,
+    context: str,
+    source_group: str,
+) -> str:
+    parts: list[str] = [base_instruction.strip()]
+    if context.strip():
+        parts.append(f"Context: {context.strip()}")
+
+    if source_group == "task1":
+        mentions_not_found = "patient not found" in (base_instruction + context).lower()
+        if mentions_not_found:
+            parts.append(
+                "Final answer format requirement: return only the MRN string "
+                '(for example "S1234567"), or "Patient not found". '
+                "Do not include any extra text."
+            )
+        else:
+            parts.append(
+                "Final answer format requirement: return only the MRN string "
+                '(for example "S1234567"). Do not include any extra text.'
+            )
+    elif source_group in {"task2", "task4", "task6", "task7"}:
+        parts.append(
+            "Final answer format requirement: return only a single numeric value. "
+            "Do not include any extra text."
+        )
+
+    elif source_group == "task10":
+        parts.append(
+            "Final answer format requirement: return [-1] if no qualifying measurement is available; "
+            "otherwise return [value, timestamp]."
+        )
+    elif source_group in {"task5", "task9"}:
+        parts.append(
+            "Final answer format requirement: return only a single numeric value "
+            "(or -1 if no measurement is available). Do not include any extra text."
+        )
+
+    return "\n\n".join(part for part in parts if part)
+
+
 def _load_tasks(path: Path) -> list[dict[str, Any]]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(raw, list):
@@ -106,12 +149,17 @@ def _normalize(
 
     instruction = str(task.get("instruction", ""))
     context = str(task.get("context", "")).strip()
-    if context:
-        instruction = f"{instruction}\n\nContext: {context}"
 
     expected_answer: Any = task.get("sol", "")
     if isinstance(expected_answer, list) and len(expected_answer) == 1:
         expected_answer = expected_answer[0]
+    if group == "task10" and expected_answer == -1:
+        expected_answer = [-1]
+    instruction = _build_instruction(
+        base_instruction=instruction,
+        context=context,
+        source_group=group,
+    )
 
     return {
         "task_id": task_id,

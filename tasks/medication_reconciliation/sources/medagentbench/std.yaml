@@ -7,7 +7,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -20,7 +19,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -50,7 +53,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -63,7 +65,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.0
   required_actions:
   - medication_ordering
@@ -84,7 +90,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -97,7 +102,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.1
   required_actions:
   - medication_ordering
@@ -118,7 +127,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -131,7 +139,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -152,7 +164,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -165,7 +176,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -186,7 +201,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -199,7 +213,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.1
   required_actions:
   - medication_ordering
@@ -220,7 +238,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -233,7 +250,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -254,7 +275,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -267,7 +287,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.0
   required_actions:
   - medication_ordering
@@ -288,7 +312,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -301,7 +324,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.3
   required_actions:
   - medication_ordering
@@ -322,7 +349,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -335,7 +361,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.0
   required_actions:
   - medication_ordering
@@ -356,7 +386,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -369,7 +398,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.2
   required_actions:
   - medication_ordering
@@ -390,7 +423,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -403,7 +435,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -424,7 +460,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -437,7 +472,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -458,7 +497,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -471,7 +509,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 1.8
   required_actions:
   - medication_ordering
@@ -492,7 +534,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -505,7 +546,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -526,7 +571,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -539,7 +583,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -560,7 +608,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -573,7 +620,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -594,7 +645,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -607,7 +657,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 1.9
   required_actions:
   - medication_ordering
@@ -628,7 +682,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -641,7 +694,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -662,7 +719,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -675,7 +731,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.7
   required_actions:
   - medication_ordering
@@ -696,7 +756,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -709,7 +768,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.0
   required_actions:
   - medication_ordering
@@ -730,7 +793,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -743,7 +805,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -764,7 +830,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -777,7 +842,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.0
   required_actions:
   - medication_ordering
@@ -798,7 +867,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -811,7 +879,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -832,7 +904,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -845,7 +916,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -866,7 +941,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -879,7 +953,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -900,7 +978,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -913,7 +990,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.1
   required_actions:
   - medication_ordering
@@ -934,7 +1015,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -947,7 +1027,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 2.1
   required_actions:
   - medication_ordering
@@ -968,7 +1052,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -981,7 +1064,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -1002,7 +1089,6 @@ tasks:
     If no magnesium level has been recorded in the last 24 hours, don''t order anything.
 
 
-
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for magnesium is "MG".
     The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1)
     Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):
@@ -1015,7 +1101,11 @@ tasks:
 
     (3) Severe deficiency (eg, serum magnesium <1 mg/dL):
 
-    IV: 4 g over 4 hours.'
+    IV: 4 g over 4 hours.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: -1
   required_actions:
   - medication_ordering
@@ -1031,14 +1121,20 @@ tasks:
 - task_id: task9_1
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S3241217's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S3241217''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.9
   required_actions:
   - medication_ordering
@@ -1054,14 +1150,20 @@ tasks:
 - task_id: task9_10
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S3084624's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S3084624''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.0
   required_actions:
   - medication_ordering
@@ -1077,14 +1179,20 @@ tasks:
 - task_id: task9_11
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S3213957's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S3213957''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.9
   required_actions:
   - medication_ordering
@@ -1100,14 +1208,20 @@ tasks:
 - task_id: task9_12
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6541353's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6541353''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.0
   required_actions:
   - medication_ordering
@@ -1123,14 +1237,20 @@ tasks:
 - task_id: task9_13
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S3057899's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S3057899''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.5
   required_actions:
   - medication_ordering
@@ -1146,14 +1266,20 @@ tasks:
 - task_id: task9_14
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6547257's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6547257''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.7
   required_actions:
   - medication_ordering
@@ -1169,14 +1295,20 @@ tasks:
 - task_id: task9_15
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S0722219's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S0722219''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.9
   required_actions:
   - medication_ordering
@@ -1192,14 +1324,20 @@ tasks:
 - task_id: task9_16
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S2823623's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S2823623''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.1
   required_actions:
   - medication_ordering
@@ -1215,14 +1353,20 @@ tasks:
 - task_id: task9_17
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6537563's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6537563''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.5
   required_actions:
   - medication_ordering
@@ -1238,14 +1382,20 @@ tasks:
 - task_id: task9_18
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S2450227's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S2450227''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.6
   required_actions:
   - medication_ordering
@@ -1261,14 +1411,20 @@ tasks:
 - task_id: task9_19
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6329254's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6329254''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.5
   required_actions:
   - medication_ordering
@@ -1284,14 +1440,20 @@ tasks:
 - task_id: task9_2
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S1023381's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S1023381''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.8
   required_actions:
   - medication_ordering
@@ -1307,14 +1469,20 @@ tasks:
 - task_id: task9_20
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S3236936's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S3236936''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.8
   required_actions:
   - medication_ordering
@@ -1330,14 +1498,20 @@ tasks:
 - task_id: task9_21
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6426560's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6426560''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.6
   required_actions:
   - medication_ordering
@@ -1353,14 +1527,20 @@ tasks:
 - task_id: task9_22
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6474456's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6474456''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.9
   required_actions:
   - medication_ordering
@@ -1376,14 +1556,20 @@ tasks:
 - task_id: task9_23
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S0869531's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S0869531''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.3
   required_actions:
   - medication_ordering
@@ -1399,14 +1585,20 @@ tasks:
 - task_id: task9_24
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S2090974's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S2090974''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.3
   required_actions:
   - medication_ordering
@@ -1422,14 +1614,20 @@ tasks:
 - task_id: task9_25
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S2704870's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S2704870''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.1
   required_actions:
   - medication_ordering
@@ -1445,14 +1643,20 @@ tasks:
 - task_id: task9_26
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6352985's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6352985''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.1
   required_actions:
   - medication_ordering
@@ -1468,14 +1672,20 @@ tasks:
 - task_id: task9_27
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S1311412's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S1311412''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.5
   required_actions:
   - medication_ordering
@@ -1491,14 +1701,20 @@ tasks:
 - task_id: task9_28
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S3228213's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S3228213''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.7
   required_actions:
   - medication_ordering
@@ -1514,14 +1730,20 @@ tasks:
 - task_id: task9_29
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6500497's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6500497''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.6
   required_actions:
   - medication_ordering
@@ -1537,14 +1759,20 @@ tasks:
 - task_id: task9_3
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6550627's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6550627''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.1
   required_actions:
   - medication_ordering
@@ -1560,14 +1788,20 @@ tasks:
 - task_id: task9_30
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6545016's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6545016''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.8
   required_actions:
   - medication_ordering
@@ -1583,14 +1817,20 @@ tasks:
 - task_id: task9_4
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S1374652's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S1374652''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.2
   required_actions:
   - medication_ordering
@@ -1606,14 +1846,20 @@ tasks:
 - task_id: task9_5
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S1796597's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S1796597''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 5.1
   required_actions:
   - medication_ordering
@@ -1629,14 +1875,20 @@ tasks:
 - task_id: task9_6
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6550473's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6550473''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 4.3
   required_actions:
   - medication_ordering
@@ -1652,14 +1904,20 @@ tasks:
 - task_id: task9_7
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6268253's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6268253''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 5.4
   required_actions:
   - medication_ordering
@@ -1675,14 +1933,20 @@ tasks:
 - task_id: task9_8
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S1635224's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S1635224''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.8
   required_actions:
   - medication_ordering
@@ -1698,14 +1962,20 @@ tasks:
 - task_id: task9_9
   category: medication_reconciliation
   difficulty: medium
-  instruction: "Check patient S6309742's most recent potassium level. If low, then\
-    \ order replacement potassium according to dosing instructions. Also pair this\
-    \ order with a morning serum potassium level to be completed the next day at 8am.\
-    \ \n\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is\
-    \ \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions:\
-    \ for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral\
-    \ repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium\
-    \ level is 2823-3."
+  instruction: 'Check patient S6309742''s most recent potassium level. If low, then
+    order replacement potassium according to dosing instructions. Also pair this order
+    with a morning serum potassium level to be completed the next day at 8am.
+
+
+    Context: It''s 2023-11-13T10:15:00+00:00 now. The code for potassium is "K".The
+    NDC for replacement potassium is 40032-917-01. Dosing instructions: for every
+    0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion)
+    to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is
+    2823-3.
+
+
+    Final answer format requirement: return only a single numeric value (or -1 if
+    no measurement is available). Do not include any extra text.'
   expected_answer: 3.8
   required_actions:
   - medication_ordering

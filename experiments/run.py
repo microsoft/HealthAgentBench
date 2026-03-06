@@ -108,15 +108,6 @@ def _apply_selector(
     return selected, stats
 
 
-def _expected_match(expected: Any, predicted: str) -> bool:
-    if expected in (None, ""):
-        return False
-    if isinstance(expected, list):
-        expected_set = {str(x).strip().lower() for x in expected}
-        return predicted.strip().lower() in expected_set
-    return str(expected).strip().lower() == predicted.strip().lower()
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", required=True)
@@ -235,10 +226,6 @@ def main() -> None:
                 agent_result = {"tool_trace": [], "rounds_used": 0, "error": str(exc)}
                 error_type = "runtime_exception"
 
-            success = _expected_match(task.get("expected_answer"), final_answer)
-            if not success and error_type is None:
-                error_type = "final_answer_mismatch"
-
             row = {
                 "task_id": task_id,
                 "category": task.get("category"),
@@ -248,7 +235,6 @@ def main() -> None:
                 "eval_mrn": task.get("eval_mrn"),
                 "expected_answer": task.get("expected_answer"),
                 "final_answer": final_answer,
-                "success": success,
                 "tool_trace": agent_result.get("tool_trace", []),
                 "rounds_used": agent_result.get("rounds_used", 0),
                 "error_type": error_type,

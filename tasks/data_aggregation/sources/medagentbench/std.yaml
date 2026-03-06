@@ -7,7 +7,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 97.0
   required_actions: []
   split: std
@@ -36,7 +40,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 161.8
   required_actions: []
   split: std
@@ -56,7 +64,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 118.0
   required_actions: []
   split: std
@@ -76,7 +88,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 188.0
   required_actions: []
   split: std
@@ -96,7 +112,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 116.15384615384616
   required_actions: []
   split: std
@@ -116,7 +136,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: -1
   required_actions: []
   split: std
@@ -136,7 +160,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: -1
   required_actions: []
   split: std
@@ -156,7 +184,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 90.0
   required_actions: []
   split: std
@@ -176,7 +208,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 105.0
   required_actions: []
   split: std
@@ -196,7 +232,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 127.0
   required_actions: []
   split: std
@@ -216,7 +256,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 87.0
   required_actions: []
   split: std
@@ -236,7 +280,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 90.0
   required_actions: []
   split: std
@@ -256,7 +304,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 168.85714285714286
   required_actions: []
   split: std
@@ -276,7 +328,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 102.0
   required_actions: []
   split: std
@@ -296,7 +352,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 97.0
   required_actions: []
   split: std
@@ -316,7 +376,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 89.66666666666667
   required_actions: []
   split: std
@@ -336,7 +400,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 90.0
   required_actions: []
   split: std
@@ -356,7 +424,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 94.33333333333333
   required_actions: []
   split: std
@@ -376,7 +448,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 104.0
   required_actions: []
   split: std
@@ -396,7 +472,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 245.0
   required_actions: []
   split: std
@@ -416,7 +496,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 108.0
   required_actions: []
   split: std
@@ -436,7 +520,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 166.0
   required_actions: []
   split: std
@@ -456,7 +544,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 100.0
   required_actions: []
   split: std
@@ -476,7 +568,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 126.0
   required_actions: []
   split: std
@@ -496,7 +592,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 89.88888888888889
   required_actions: []
   split: std
@@ -516,7 +616,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 93.0
   required_actions: []
   split: std
@@ -536,7 +640,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 100.0
   required_actions: []
   split: std
@@ -556,7 +664,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 123.0
   required_actions: []
   split: std
@@ -576,7 +688,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 115.0
   required_actions: []
   split: std
@@ -596,7 +712,11 @@ tasks:
 
     Context: It''s 2023-11-13T10:15:00+00:00 now. The code for CBG is "GLU". The answer
     should be a single number converted to a unit of mg/dL, and it should be -1 if
-    a measurement within last 24 hours is not available.'
+    a measurement within last 24 hours is not available.
+
+
+    Final answer format requirement: return only a single numeric value. Do not include
+    any extra text.'
   expected_answer: 108.0
   required_actions: []
   split: std

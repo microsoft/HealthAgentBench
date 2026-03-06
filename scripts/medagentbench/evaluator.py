@@ -3,21 +3,15 @@
 from __future__ import annotations
 
 import json
-import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Mapping
 
 
-ActionEvalMode = Literal["strict", "balanced"]
-
-_OBSERVATION_CATEGORY_SYSTEM_ALIASES = {
-    "http://hl7.org/fhir/observation-category",
-    "http://terminology.hl7.org/CodeSystem/observation-category",
-}
+ActionEvalMode = str
 
 
-def _load_results(path: Path) -> list[dict[str, Any]]:
+def load_results(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -31,6 +25,23 @@ def _load_results(path: Path) -> list[dict[str, Any]]:
 def _task_group(task_id: str) -> str:
     head = task_id.split("_", 1)[0]
     return head if head.startswith("task") else ""
+
+
+def _expected_match(expected: Any, predicted: Any) -> bool:
+    if expected in (None, ""):
+        return False
+    predicted_num = _to_float(predicted)
+    predicted_text = str(predicted).strip().lower()
+
+    def _matches(value: Any) -> bool:
+        value_num = _to_float(value)
+        if predicted_num is not None and value_num is not None:
+            return predicted_num == value_num
+        return str(value).strip().lower() == predicted_text
+
+    if isinstance(expected, list):
+        return any(_matches(item) for item in expected)
+    return _matches(expected)
 
 
 def _write_calls(row: dict[str, Any]) -> list[dict[str, Any]]:
@@ -77,71 +88,208 @@ def _to_float(value: Any) -> float | None:
     return None
 
 
-def _contains_unavailable_semantics(text: str) -> bool:
-    lowered = text.lower()
-    phrases = (
-        "not available",
-        "not found",
-        "no measurement",
-        "no result",
-        "no lab",
-        "no record",
-        "no serum",
-    )
-    if any(phrase in lowered for phrase in phrases):
-        return True
-    return bool(
-        re.search(r"\bno\b.{0,40}\b(available|result|recorded|measurement|found)\b", lowered)
-    )
+def _first_coding(resource: dict[str, Any], field: str) -> dict[str, Any]:
+    node = resource.get(field, {})
+    if not isinstance(node, dict):
+        return {}
+    codings = _as_list(node.get("coding"))
+    if not codings or not isinstance(codings[0], dict):
+        return {}
+    return codings[0]
 
 
-def _balanced_query_success(row: dict[str, Any]) -> bool | None:
-    if str(row.get("task_type")) != "query":
-        return None
+def _first_dosage_instruction(resource: dict[str, Any]) -> dict[str, Any]:
+    dosages = _as_list(resource.get("dosageInstruction"))
+    if not dosages or not isinstance(dosages[0], dict):
+        return {}
+    return dosages[0]
+
+
+def _first_dose_and_rate(dosage: dict[str, Any]) -> dict[str, Any]:
+    rates = _as_list(dosage.get("doseAndRate"))
+    if not rates or not isinstance(rates[0], dict):
+        return {}
+    return rates[0]
+
+
+def _extract_dose_quantity(rate: dict[str, Any]) -> dict[str, Any]:
+    value = rate.get("doseQuantity")
+    return value if isinstance(value, dict) else {}
+
+
+def _extract_rate_quantity(rate: dict[str, Any]) -> dict[str, Any]:
+    value = rate.get("rateQuantity")
+    return value if isinstance(value, dict) else {}
+
+
+def _expected_numeric(row: dict[str, Any]) -> float | None:
     expected = row.get("expected_answer")
-    final_answer = row.get("final_answer")
-    if final_answer is None:
-        return None
-    final_text = str(final_answer)
-
-    expected_num = _to_float(expected)
-    if expected_num is None:
-        expected_str = str(expected).strip()
-        if not expected_str:
-            return None
-        return expected_str in final_text
-
-    direct = _to_float(final_answer)
-    if direct is not None and abs(direct - expected_num) <= 1e-6:
-        return True
-
-    if expected_num == -1 and _contains_unavailable_semantics(final_text):
-        return True
-
-    numeric_tokens = re.findall(r"[-+]?\d*\.?\d+", final_text)
-    for token in numeric_tokens:
-        try:
-            value = float(token)
-        except ValueError:
-            continue
-        if abs(value - expected_num) <= 1e-6:
-            return True
-    return False
+    return _to_float(expected)
 
 
-def _is_balanced_bp_code(resource: dict[str, Any]) -> bool:
-    code = resource.get("code")
-    if not isinstance(code, dict):
+def _route_text(dosage: dict[str, Any]) -> str:
+    route = dosage.get("route")
+    if isinstance(route, str):
+        return route.strip().lower()
+    if isinstance(route, dict):
+        text = route.get("text")
+        if isinstance(text, str):
+            return text.strip().lower()
+    return ""
+
+
+def _is_task5_no_order_case(expected_value: float | None) -> bool:
+    if expected_value is None:
         return False
-    text = str(code.get("text", "")).strip().lower()
-    if text == "bp":
-        return True
-    return "blood pressure" in text
+    return expected_value == -1 or expected_value > 1.9
 
 
-def _eval_task3_action(
-    row: dict[str, Any], *, mode: ActionEvalMode
-) -> tuple[bool, str | None]:
+def _is_task9_no_order_case(expected_value: float | None) -> bool:
+    if expected_value is None:
+        return False
+    return expected_value == -1 or expected_value >= 3.5
+
+
+def _eval_task5_action(row: dict[str, Any]) -> tuple[bool, str | None]:
+    writes = _write_calls(row)
+    expected_value = _expected_numeric(row)
+    if _is_task5_no_order_case(expected_value):
+        return (len(writes) == 0, None if len(writes) == 0 else "unexpected_write_for_no_order_case")
+
+    if len(writes) != 1:
+        return False, "expected_single_write_call"
+    write = writes[0]
+    if write.get("tool") != "medicationrequest_create":
+        return False, "unexpected_write_tool"
+    resource = _arg_resource(write)
+    if resource is None:
+        return False, "missing_resource_payload"
+    eval_mrn = row.get("eval_mrn")
+    if not isinstance(eval_mrn, str) or not eval_mrn:
+        return False, "missing_eval_mrn"
+    if expected_value is None:
+        return False, "missing_expected_answer"
+
+    try:
+        coding = _first_coding(resource, "medicationCodeableConcept")
+        dosage = _first_dosage_instruction(resource)
+        rate = _first_dose_and_rate(dosage)
+        dose_qty = _extract_dose_quantity(rate)
+        rate_qty = _extract_rate_quantity(rate)
+        route = _route_text(dosage)
+        route_ok = route == "iv"
+
+        if expected_value < 1:
+            expected_dose, expected_rate = 4.0, 4.0
+        elif expected_value < 1.5:
+            expected_dose, expected_rate = 2.0, 2.0
+        else:
+            expected_dose, expected_rate = 1.0, 1.0
+
+        dose_ok = (
+            _to_float(dose_qty.get("value")) is not None
+            and abs(float(dose_qty["value"]) - expected_dose) <= 0.1
+            and str(dose_qty.get("unit", "")).lower() == "g"
+        )
+        rate_ok = (
+            _to_float(rate_qty.get("value")) is not None
+            and abs(float(rate_qty["value"]) - expected_rate) <= 0.1
+            and str(rate_qty.get("unit", "")).lower() in {"h", "hr", "hour"}
+        )
+        authored = str(resource.get("authoredOn", ""))
+        success = (
+            resource.get("resourceType") == "MedicationRequest"
+            and coding.get("system") == "http://hl7.org/fhir/sid/ndc"
+            and coding.get("code") == "0338-1715-40"
+            and "2023-11-13T10:15" in authored
+            and route_ok
+            and dose_ok
+            and rate_ok
+            and resource.get("status") == "active"
+            and resource.get("intent") == "order"
+            and resource.get("subject") == {"reference": f"Patient/{eval_mrn}"}
+        )
+        return (True, None) if success else (False, "task5_payload_mismatch")
+    except Exception:  # noqa: BLE001
+        return False, "task5_payload_exception"
+
+
+def _find_write_call(writes: list[dict[str, Any]], tool_name: str) -> dict[str, Any] | None:
+    for entry in writes:
+        if entry.get("tool") == tool_name:
+            return entry
+    return None
+
+
+def _eval_task9_action(row: dict[str, Any]) -> tuple[bool, str | None]:
+    writes = _write_calls(row)
+    expected_value = _expected_numeric(row)
+    if _is_task9_no_order_case(expected_value):
+        return (len(writes) == 0, None if len(writes) == 0 else "unexpected_write_for_no_order_case")
+
+    if len(writes) != 2:
+        return False, "expected_two_write_calls"
+    med_call = _find_write_call(writes, "medicationrequest_create")
+    svc_call = _find_write_call(writes, "procedure_create")
+    if med_call is None or svc_call is None:
+        return False, "missing_required_write_tools"
+
+    med_resource = _arg_resource(med_call)
+    svc_resource = _arg_resource(svc_call)
+    if med_resource is None or svc_resource is None:
+        return False, "missing_resource_payload"
+    eval_mrn = row.get("eval_mrn")
+    if not isinstance(eval_mrn, str) or not eval_mrn:
+        return False, "missing_eval_mrn"
+    if expected_value is None:
+        return False, "missing_expected_answer"
+
+    try:
+        med_coding = _first_coding(med_resource, "medicationCodeableConcept")
+        med_dosage = _first_dosage_instruction(med_resource)
+        med_rate = _first_dose_and_rate(med_dosage)
+        med_dose_qty = _extract_dose_quantity(med_rate)
+        med_route = _route_text(med_dosage)
+        med_route_ok = med_route == "oral"
+
+        expected_dose = (3.5 - expected_value) / 0.1 * 10.0
+        dose_value = _to_float(med_dose_qty.get("value"))
+        dose_ok = (
+            dose_value is not None
+            and abs(dose_value - expected_dose) <= 0.2
+            and str(med_dose_qty.get("unit", "")).lower() in {"meq", "meq."}
+        )
+
+        svc_coding = _first_coding(svc_resource, "code")
+        svc_priority = str(svc_resource.get("priority", "")).lower()
+        svc_priority_ok = svc_priority == "stat"
+
+        success = (
+            med_resource.get("resourceType") == "MedicationRequest"
+            and med_coding.get("system") == "http://hl7.org/fhir/sid/ndc"
+            and med_coding.get("code") == "40032-917-01"
+            and "2023-11-13T10:15" in str(med_resource.get("authoredOn", ""))
+            and med_route_ok
+            and dose_ok
+            and med_resource.get("status") == "active"
+            and med_resource.get("intent") == "order"
+            and med_resource.get("subject") == {"reference": f"Patient/{eval_mrn}"}
+            and svc_resource.get("resourceType") == "ServiceRequest"
+            and svc_coding.get("system") == "http://loinc.org"
+            and svc_coding.get("code") == "2823-3"
+            and svc_resource.get("authoredOn") == "2023-11-13T10:15:00+00:00"
+            and svc_resource.get("status") == "active"
+            and svc_resource.get("intent") == "order"
+            and svc_priority_ok
+            and svc_resource.get("subject") == {"reference": f"Patient/{eval_mrn}"}
+            and "2023-11-14T08:" in str(svc_resource.get("occurrenceDateTime", ""))
+        )
+        return (True, None) if success else (False, "task9_payload_mismatch")
+    except Exception:  # noqa: BLE001
+        return False, "task9_payload_exception"
+
+
+def _eval_task3_action(row: dict[str, Any]) -> tuple[bool, str | None]:
     writes = _write_calls(row)
     if len(writes) != 1:
         return False, "expected_single_write_call"
@@ -159,13 +307,8 @@ def _eval_task3_action(
         first_category = category_entries[0] if category_entries else {}
         coding_entries = _as_list(first_category.get("coding"))
         category = coding_entries[0] if coding_entries else {}
-        category_system = category.get("system")
-        category_system_ok = category_system == "http://hl7.org/fhir/observation-category"
-        if mode == "balanced":
-            category_system_ok = category_system in _OBSERVATION_CATEGORY_SYSTEM_ALIASES
+        category_system_ok = category.get("system") == "http://hl7.org/fhir/observation-category"
         code_ok = resource.get("code") == {"text": "BP"}
-        if mode == "balanced":
-            code_ok = _is_balanced_bp_code(resource)
 
         success = (
             resource["resourceType"] == "Observation"
@@ -183,9 +326,7 @@ def _eval_task3_action(
         return False, "task3_payload_exception"
 
 
-def _eval_task8_action(
-    row: dict[str, Any], *, mode: ActionEvalMode
-) -> tuple[bool, str | None]:
+def _eval_task8_action(row: dict[str, Any]) -> tuple[bool, str | None]:
     writes = _write_calls(row)
     if len(writes) != 1:
         return False, "expected_single_write_call"
@@ -210,10 +351,7 @@ def _eval_task8_action(
         note_entries = _as_list(resource.get("note"))
         first_note = note_entries[0] if note_entries else {}
         note_text = first_note.get("text", "")
-        priority = resource.get("priority")
-        priority_ok = priority == "stat"
-        if mode == "balanced":
-            priority_ok = priority in {"stat", "urgent", "routine"}
+        priority_ok = resource.get("priority") == "stat"
         success = (
             resource["resourceType"] == "ServiceRequest"
             and coding["system"] == "http://snomed.info/sct"
@@ -230,41 +368,35 @@ def _eval_task8_action(
         return False, "task8_payload_exception"
 
 
-def _override_action_success(
-    row: dict[str, Any], *, mode: ActionEvalMode
-) -> tuple[bool | None, str | None]:
+def _override_action_success(row: dict[str, Any]) -> tuple[bool | None, str | None]:
     group = _task_group(str(row.get("task_id", "")))
     if group == "task3":
-        return _eval_task3_action(row, mode=mode)
+        return _eval_task3_action(row)
+    if group == "task5":
+        return _eval_task5_action(row)
     if group == "task8":
-        return _eval_task8_action(row, mode=mode)
+        return _eval_task8_action(row)
+    if group == "task9":
+        return _eval_task9_action(row)
     return None, None
 
 
-def evaluate_results(
-    results_path: str,
-    task_manifest_path: str | None = None,
-    *,
-    action_eval_mode: ActionEvalMode = "strict",
-) -> dict[str, Any]:
-    del task_manifest_path  # reserved for future schema checks
-
-    rows = _load_results(Path(results_path))
+def _compute_effective_success(
+    rows: list[dict[str, Any]],
+) -> tuple[list[bool], list[bool], list[str | None], int, int]:
     effective_success: list[bool] = []
     override_flags: list[bool] = []
     override_failure_reasons: list[str | None] = []
     action_override_total = 0
     action_override_passed = 0
     for row in rows:
-        override, reason = _override_action_success(row, mode=action_eval_mode)
+        override, reason = _override_action_success(row)
         if override is None:
-            balanced_query = (
-                _balanced_query_success(row) if action_eval_mode == "balanced" else None
+            query_success = _expected_match(
+                row.get("expected_answer"),
+                row.get("final_answer", ""),
             )
-            if balanced_query is None:
-                effective_success.append(bool(row.get("success")))
-            else:
-                effective_success.append(bool(balanced_query))
+            effective_success.append(query_success)
             override_flags.append(False)
             override_failure_reasons.append(None)
             continue
@@ -274,6 +406,89 @@ def evaluate_results(
         if override:
             action_override_passed += 1
         effective_success.append(override)
+
+    return (
+        effective_success,
+        override_flags,
+        override_failure_reasons,
+        action_override_total,
+        action_override_passed,
+    )
+
+
+def get_strict_failure_details(results_path: str) -> list[dict[str, Any]]:
+    rows = load_results(Path(results_path))
+    effective_success, override_flags, override_failure_reasons, _, _ = _compute_effective_success(
+        rows
+    )
+    details: list[dict[str, Any]] = []
+    for idx, row in enumerate(rows):
+        if effective_success[idx]:
+            continue
+        task_id = row.get("task_id")
+        if not isinstance(task_id, str):
+            continue
+        if override_flags[idx]:
+            details.append(
+                {
+                    "task_id": task_id,
+                    "row": row,
+                    "failure_kind": "action_override",
+                    "failure_reason": override_failure_reasons[idx] or "unknown_action_trace_mismatch",
+                }
+            )
+        else:
+            default_reason = "final_answer_mismatch"
+            if row.get("error_type"):
+                default_reason = str(row.get("error_type"))
+            details.append(
+                {
+                    "task_id": task_id,
+                    "row": row,
+                    "failure_kind": "error_type",
+                    "failure_reason": default_reason,
+                }
+            )
+    return details
+
+
+def get_failed_task_ids(
+    results_path: str,
+) -> list[str]:
+    return [entry["task_id"] for entry in get_strict_failure_details(results_path)]
+
+
+def evaluate_results(
+    results_path: str,
+    task_manifest_path: str | None = None,
+    *,
+    success_overrides: Mapping[str, bool] | None = None,
+) -> dict[str, Any]:
+    del task_manifest_path  # reserved for future schema checks
+
+    rows = load_results(Path(results_path))
+    (
+        effective_success,
+        override_flags,
+        override_failure_reasons,
+        action_override_total,
+        action_override_passed,
+    ) = _compute_effective_success(rows)
+
+    llm_override_total = 0
+    llm_override_passed = 0
+    if success_overrides:
+        for idx, row in enumerate(rows):
+            task_id = row.get("task_id")
+            if not isinstance(task_id, str):
+                continue
+            if task_id not in success_overrides:
+                continue
+            llm_override_total += 1
+            decision = bool(success_overrides[task_id])
+            if decision:
+                llm_override_passed += 1
+            effective_success[idx] = decision
 
     total = len(rows)
     passed = sum(1 for value in effective_success if value)
@@ -304,6 +519,8 @@ def evaluate_results(
                 action_override_failures[reason] += 1
             elif error_type:
                 error_taxonomy[str(error_type)] += 1
+            else:
+                error_taxonomy["final_answer_mismatch"] += 1
 
     by_category = {
         key: {
@@ -327,10 +544,15 @@ def evaluate_results(
         "pass_at_1": pass_at_1,
         "total_tasks": total,
         "passed_tasks": passed,
+        "llm_override": {
+            "total": llm_override_total,
+            "passed": llm_override_passed,
+            "mode": "none" if not success_overrides else "llm_assisted",
+        },
         "action_override": {
             "total": action_override_total,
             "passed": action_override_passed,
-            "mode": action_eval_mode,
+            "mode": "strict",
             "failure_reasons": dict(sorted(action_override_failures.items())),
         },
         "by_category": by_category,

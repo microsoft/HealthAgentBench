@@ -46,9 +46,14 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 16:05Z) Implemented action-trace evaluation overrides for MedAgentBench writing tasks `task3_*` and `task8_*` in `scripts/medagentbench/evaluator.py`, aligned with `data/medagentbench/refsol.py` semantics (tool/payload validation over final-answer matching).
 - [x] (2026-03-05 23:01Z) Sampled and executed two writing tasks (`task3_1`, `task8_1`) with actual backend + FHIR runtime, analyzed payload-shape mismatches, tightened write-call guidance, and updated evaluator normalization (list/dict shape compatibility) so both tasks now pass under action-trace scoring.
 - [x] (2026-03-06 01:06Z) Removed schema post-processing and switched to strict-native tool schemas directly in `src/ehr_co_scientist/tools/fhir_tools.py` (nullable optional fields + explicit `required` + `additionalProperties: false` on object nodes), then revalidated writing-task tool invocation with `gpt-5.2`.
-- [x] (2026-03-06 01:20Z) Added evaluator strictness modes (`strict` + `balanced`) with explicit action-trace diagnostics; balanced mode now accepts semantically equivalent payload variants (for example observation-category URI alias and non-`stat` but clinically acceptable ServiceRequest priorities).
+- [x] (2026-03-06 01:20Z) Added deterministic action-trace evaluation overrides for writing-task groups and diagnostics, then simplified evaluator modes to keep strict deterministic scoring as baseline.
+- [x] (2026-03-06 03:58Z) Added `llm_assisted` evaluator mode with batched strict-failure adjudication via Azure backend reuse (`o4-mini` default), including batch-size controls, split-retry fallback, and `llm_judgments.jsonl` audit artifacts.
+- [x] (2026-03-06 04:25Z) Removed `balanced` mode to reduce heuristic rule sprawl; evaluator now supports `strict` and `llm_assisted` only, with default LLM judge endpoint set to `hanover-openai-east`.
 - [x] (2026-03-06 01:30Z) Added expected-answer (`sol`) derivation pathway for `task3_*` records via action/payload validation semantics in evaluator/runtime flow (non-final-answer scoring path).
 - [x] (2026-03-06 01:30Z) Added expected-answer (`sol`) derivation pathway for `task8_*` records via action/payload validation semantics in evaluator/runtime flow (non-final-answer scoring path).
+- [x] (2026-03-06 22:47Z) Refactored benchmark flow to keep `experiments/run.py` generation-only: removed in-run expected-answer scoring (`success`/`final_answer_mismatch`) and centralized query success computation in `scripts/medagentbench/evaluator.py`.
+- [x] (2026-03-06 22:49Z) Updated evaluator matching to treat numeric-like strings as numeric values during expected-answer comparison (for example `1`, `1.0`, `-1.0`), reducing false negatives for query tasks.
+- [x] (2026-03-06 22:50Z) Re-ran strict evaluation on 20-task sample (`sample_2_per_type_20260306_escalated`) and regenerated strict error-summary JSON (`error_summary_strict.json`): `pass@1=0.60`, `12/20` passed, `8` failures.
 
 ## Surprises & Discoveries
 
@@ -146,6 +151,14 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: Makes schema behavior explicit, auditable, and stable across tooling/export paths.
   Date/Author: 2026-03-06 / User+Codex
 
+- Decision: Keep evaluator surface minimal (`strict` + `llm_assisted`) and remove `balanced`.
+  Rationale: `balanced` required growing hand-crafted heuristics; batched LLM adjudication provides cleaner secondary scoring for strict failures with auditable artifacts.
+  Date/Author: 2026-03-06 / User+Codex
+
+- Decision: Keep `experiments/run.py` strictly as inference/generation and move all success/failure determination into evaluator code.
+  Rationale: Single source of truth for scoring prevents drift and keeps run artifacts backend-agnostic.
+  Date/Author: 2026-03-06 / User+Codex
+
 ## Outcomes & Retrospective
 
 Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBench tasks into task-type folders, Dockerized FHIR runtime with health checks, provider-neutral runner/evaluator CLIs, reusable FHIR tool modules, canonicalized tool catalog/dispatch abstractions, and passing unit/integration coverage for the implemented scope. Measured validation evidence:
@@ -166,6 +179,14 @@ Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBenc
   - After switching to `jyxsu6/medagentbench:latest`, `Patient?identifier=S6534835` returned `total: 1`.
   - Full-trace demo run with first factual task initially failed due to `name`-based search (`total: 0`), then succeeded after schema/handler fix.
   - `printf '<task1_1 prompt>\nquit\n' | uv run python experiments/demo.py ... --show-full-trace` now returns final answer `S6534835`.
+- Evaluator mode simplification + LLM batch adjudication validation on 2026-03-06:
+  - Strict-mode baseline over 100-sample slice: `pass@1 = 0.30`.
+  - LLM-assisted mode (`o4-mini`, batch size 20, endpoint `hanover-openai-east`) over same slice: `pass@1 = 0.76`.
+  - Audit traces emitted to `experiments/results/medagentbench/<run>/llm_judgments.jsonl`.
+- Generation/evaluation boundary refactor validation on 2026-03-06:
+  - `experiments/run.py` output rows no longer include `success`; evaluator derives query/action outcomes from `expected_answer`, `final_answer`, and action traces.
+  - Re-evaluated `experiments/results/medagentbench/sample_2_per_type_20260306_escalated/results.jsonl` (strict): `pass@1 = 0.60` (`12/20`), `query 8/10`, `action 4/10`.
+  - Regenerated strict failure artifact at `experiments/results/medagentbench/sample_2_per_type_20260306_escalated/error_summary_strict.json` with `total_failed_rows = 8`.
 
 ## Context and Orientation
 
