@@ -23,6 +23,7 @@ tasks:
   - procedure_search
   - vital_create
   - vital_search
+
 - task_id: task1_10
   category: factual_qa
   difficulty: easy
@@ -38,6 +39,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6264184
   allowed_tools: *id001
+
 - task_id: task1_11
   category: factual_qa
   difficulty: easy
@@ -53,6 +55,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6521727
   allowed_tools: *id001
+
 - task_id: task1_12
   category: factual_qa
   difficulty: easy
@@ -68,6 +71,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S0789363
   allowed_tools: *id001
+
 - task_id: task1_13
   category: factual_qa
   difficulty: easy
@@ -83,6 +87,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2154941
   allowed_tools: *id001
+
 - task_id: task1_14
   category: factual_qa
   difficulty: easy
@@ -98,6 +103,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2197736
   allowed_tools: *id001
+
 - task_id: task1_15
   category: factual_qa
   difficulty: easy
@@ -113,6 +119,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S3228213
   allowed_tools: *id001
+
 - task_id: task1_16
   category: factual_qa
   difficulty: easy
@@ -128,6 +135,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6551923
   allowed_tools: *id001
+
 - task_id: task1_17
   category: factual_qa
   difficulty: easy
@@ -143,6 +151,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2119664
   allowed_tools: *id001
+
 - task_id: task1_18
   category: factual_qa
   difficulty: easy
@@ -158,6 +167,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2863714
   allowed_tools: *id001
+
 - task_id: task1_19
   category: factual_qa
   difficulty: easy
@@ -173,6 +183,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6192632
   allowed_tools: *id001
+
 - task_id: task1_2
   category: factual_qa
   difficulty: easy
@@ -188,6 +199,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6426560
   allowed_tools: *id001
+
 - task_id: task1_20
   category: factual_qa
   difficulty: easy
@@ -203,6 +215,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S0658561
   allowed_tools: *id001
+
 - task_id: task1_21
   category: factual_qa
   difficulty: easy
@@ -218,6 +231,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S0547588
   allowed_tools: *id001
+
 - task_id: task1_22
   category: factual_qa
   difficulty: easy
@@ -233,6 +247,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S0722219
   allowed_tools: *id001
+
 - task_id: task1_23
   category: factual_qa
   difficulty: easy
@@ -248,6 +263,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S3057899
   allowed_tools: *id001
+
 - task_id: task1_24
   category: factual_qa
   difficulty: easy
@@ -263,6 +279,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6538722
   allowed_tools: *id001
+
 - task_id: task1_25
   category: factual_qa
   difficulty: easy
@@ -278,6 +295,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6545016
   allowed_tools: *id001
+
 - task_id: task1_26
   category: factual_qa
   difficulty: easy
@@ -293,6 +311,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S3236936
   allowed_tools: *id001
+
 - task_id: task1_27
   category: factual_qa
   difficulty: easy
@@ -308,6 +327,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S3213957
   allowed_tools: *id001
+
 - task_id: task1_28
   category: factual_qa
   difficulty: easy
@@ -323,6 +343,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2704870
   allowed_tools: *id001
+
 - task_id: task1_29
   category: factual_qa
   difficulty: easy
@@ -338,6 +359,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: null
   allowed_tools: *id001
+
 - task_id: task1_3
   category: factual_qa
   difficulty: easy
@@ -353,6 +375,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S1986380
   allowed_tools: *id001
+
 - task_id: task1_30
   category: factual_qa
   difficulty: easy
@@ -368,6 +391,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: null
   allowed_tools: *id001
+
 - task_id: task1_4
   category: factual_qa
   difficulty: easy
@@ -383,6 +407,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6484983
   allowed_tools: *id001
+
 - task_id: task1_5
   category: factual_qa
   difficulty: easy
@@ -398,6 +423,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2703270
   allowed_tools: *id001
+
 - task_id: task1_6
   category: factual_qa
   difficulty: easy
@@ -413,6 +439,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2874099
   allowed_tools: *id001
+
 - task_id: task1_7
   category: factual_qa
   difficulty: easy
@@ -428,6 +455,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6200102
   allowed_tools: *id001
+
 - task_id: task1_8
   category: factual_qa
   difficulty: easy
@@ -443,6 +471,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6530532
   allowed_tools: *id001
+
 - task_id: task1_9
   category: factual_qa
   difficulty: easy
@@ -458,6 +487,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6539215
   allowed_tools: *id001
+
 - task_id: task2_1
   category: factual_qa
   difficulty: easy
@@ -476,6 +506,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2874099
   allowed_tools: *id001
+
 - task_id: task2_10
   category: factual_qa
   difficulty: easy
@@ -494,6 +525,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S3070524
   allowed_tools: *id001
+
 - task_id: task2_11
   category: factual_qa
   difficulty: easy
@@ -512,6 +544,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S0636132
   allowed_tools: *id001
+
 - task_id: task2_12
   category: factual_qa
   difficulty: easy
@@ -530,6 +563,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6534835
   allowed_tools: *id001
+
 - task_id: task2_13
   category: factual_qa
   difficulty: easy
@@ -548,6 +582,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2154941
   allowed_tools: *id001
+
 - task_id: task2_14
   category: factual_qa
   difficulty: easy
@@ -566,6 +601,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2450227
   allowed_tools: *id001
+
 - task_id: task2_15
   category: factual_qa
   difficulty: easy
@@ -584,6 +620,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S1152319
   allowed_tools: *id001
+
 - task_id: task2_16
   category: factual_qa
   difficulty: easy
@@ -602,6 +639,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2119664
   allowed_tools: *id001
+
 - task_id: task2_17
   category: factual_qa
   difficulty: easy
@@ -620,6 +658,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S0611496
   allowed_tools: *id001
+
 - task_id: task2_18
   category: factual_qa
   difficulty: easy
@@ -638,6 +677,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S3195056
   allowed_tools: *id001
+
 - task_id: task2_19
   category: factual_qa
   difficulty: easy
@@ -656,6 +696,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6542579
   allowed_tools: *id001
+
 - task_id: task2_2
   category: factual_qa
   difficulty: easy
@@ -674,6 +715,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6538722
   allowed_tools: *id001
+
 - task_id: task2_20
   category: factual_qa
   difficulty: easy
@@ -692,6 +734,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2075210
   allowed_tools: *id001
+
 - task_id: task2_21
   category: factual_qa
   difficulty: easy
@@ -710,6 +753,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6539215
   allowed_tools: *id001
+
 - task_id: task2_22
   category: factual_qa
   difficulty: easy
@@ -728,6 +772,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6537563
   allowed_tools: *id001
+
 - task_id: task2_23
   category: factual_qa
   difficulty: easy
@@ -746,6 +791,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6550627
   allowed_tools: *id001
+
 - task_id: task2_24
   category: factual_qa
   difficulty: easy
@@ -764,6 +810,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S1796597
   allowed_tools: *id001
+
 - task_id: task2_25
   category: factual_qa
   difficulty: easy
@@ -782,6 +829,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2823623
   allowed_tools: *id001
+
 - task_id: task2_26
   category: factual_qa
   difficulty: easy
@@ -800,6 +848,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6530532
   allowed_tools: *id001
+
 - task_id: task2_27
   category: factual_qa
   difficulty: easy
@@ -818,6 +867,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S1311412
   allowed_tools: *id001
+
 - task_id: task2_28
   category: factual_qa
   difficulty: easy
@@ -836,6 +886,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2863714
   allowed_tools: *id001
+
 - task_id: task2_29
   category: factual_qa
   difficulty: easy
@@ -854,6 +905,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2016972
   allowed_tools: *id001
+
 - task_id: task2_3
   category: factual_qa
   difficulty: easy
@@ -872,6 +924,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6541609
   allowed_tools: *id001
+
 - task_id: task2_30
   category: factual_qa
   difficulty: easy
@@ -890,6 +943,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2703270
   allowed_tools: *id001
+
 - task_id: task2_4
   category: factual_qa
   difficulty: easy
@@ -908,6 +962,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6549951
   allowed_tools: *id001
+
 - task_id: task2_5
   category: factual_qa
   difficulty: easy
@@ -926,6 +981,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6227720
   allowed_tools: *id001
+
 - task_id: task2_6
   category: factual_qa
   difficulty: easy
@@ -944,6 +1000,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S1733937
   allowed_tools: *id001
+
 - task_id: task2_7
   category: factual_qa
   difficulty: easy
@@ -962,6 +1019,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S6307599
   allowed_tools: *id001
+
 - task_id: task2_8
   category: factual_qa
   difficulty: easy
@@ -980,6 +1038,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S2111822
   allowed_tools: *id001
+
 - task_id: task2_9
   category: factual_qa
   difficulty: easy
@@ -998,6 +1057,7 @@ tasks:
   source_task_type: patient_information_retrieval
   eval_mrn: S0722219
   allowed_tools: *id001
+
 - task_id: task4_1
   category: factual_qa
   difficulty: easy
@@ -1018,6 +1078,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S3032536
   allowed_tools: *id001
+
 - task_id: task4_10
   category: factual_qa
   difficulty: easy
@@ -1038,6 +1099,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S3213957
   allowed_tools: *id001
+
 - task_id: task4_11
   category: factual_qa
   difficulty: easy
@@ -1058,6 +1120,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1754095
   allowed_tools: *id001
+
 - task_id: task4_12
   category: factual_qa
   difficulty: easy
@@ -1078,6 +1141,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1777769
   allowed_tools: *id001
+
 - task_id: task4_13
   category: factual_qa
   difficulty: easy
@@ -1098,6 +1162,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S3114648
   allowed_tools: *id001
+
 - task_id: task4_14
   category: factual_qa
   difficulty: easy
@@ -1118,6 +1183,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6530532
   allowed_tools: *id001
+
 - task_id: task4_15
   category: factual_qa
   difficulty: easy
@@ -1138,6 +1204,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S3057899
   allowed_tools: *id001
+
 - task_id: task4_16
   category: factual_qa
   difficulty: easy
@@ -1158,6 +1225,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1635224
   allowed_tools: *id001
+
 - task_id: task4_17
   category: factual_qa
   difficulty: easy
@@ -1178,6 +1246,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2154941
   allowed_tools: *id001
+
 - task_id: task4_18
   category: factual_qa
   difficulty: easy
@@ -1198,6 +1267,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2199765
   allowed_tools: *id001
+
 - task_id: task4_19
   category: factual_qa
   difficulty: easy
@@ -1218,6 +1288,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6550473
   allowed_tools: *id001
+
 - task_id: task4_2
   category: factual_qa
   difficulty: easy
@@ -1238,6 +1309,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2863714
   allowed_tools: *id001
+
 - task_id: task4_20
   category: factual_qa
   difficulty: easy
@@ -1258,6 +1330,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S0636132
   allowed_tools: *id001
+
 - task_id: task4_21
   category: factual_qa
   difficulty: easy
@@ -1278,6 +1351,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1521703
   allowed_tools: *id001
+
 - task_id: task4_22
   category: factual_qa
   difficulty: easy
@@ -1298,6 +1372,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6200102
   allowed_tools: *id001
+
 - task_id: task4_23
   category: factual_qa
   difficulty: easy
@@ -1318,6 +1393,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1876702
   allowed_tools: *id001
+
 - task_id: task4_24
   category: factual_qa
   difficulty: easy
@@ -1338,6 +1414,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2197736
   allowed_tools: *id001
+
 - task_id: task4_25
   category: factual_qa
   difficulty: easy
@@ -1358,6 +1435,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2703270
   allowed_tools: *id001
+
 - task_id: task4_26
   category: factual_qa
   difficulty: easy
@@ -1378,6 +1456,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1311412
   allowed_tools: *id001
+
 - task_id: task4_27
   category: factual_qa
   difficulty: easy
@@ -1398,6 +1477,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6227720
   allowed_tools: *id001
+
 - task_id: task4_28
   category: factual_qa
   difficulty: easy
@@ -1418,6 +1498,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S0674240
   allowed_tools: *id001
+
 - task_id: task4_29
   category: factual_qa
   difficulty: easy
@@ -1438,6 +1519,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6309742
   allowed_tools: *id001
+
 - task_id: task4_3
   category: factual_qa
   difficulty: easy
@@ -1458,6 +1540,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6547257
   allowed_tools: *id001
+
 - task_id: task4_30
   category: factual_qa
   difficulty: easy
@@ -1478,6 +1561,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6312049
   allowed_tools: *id001
+
 - task_id: task4_4
   category: factual_qa
   difficulty: easy
@@ -1498,6 +1582,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6474456
   allowed_tools: *id001
+
 - task_id: task4_5
   category: factual_qa
   difficulty: easy
@@ -1518,6 +1603,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2161163
   allowed_tools: *id001
+
 - task_id: task4_6
   category: factual_qa
   difficulty: easy
@@ -1538,6 +1624,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1733937
   allowed_tools: *id001
+
 - task_id: task4_7
   category: factual_qa
   difficulty: easy
@@ -1558,6 +1645,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2937751
   allowed_tools: *id001
+
 - task_id: task4_8
   category: factual_qa
   difficulty: easy
@@ -1578,6 +1666,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6330912
   allowed_tools: *id001
+
 - task_id: task4_9
   category: factual_qa
   difficulty: easy
@@ -1598,6 +1687,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6468480
   allowed_tools: *id001
+
 - task_id: task7_1
   category: factual_qa
   difficulty: easy
@@ -1615,6 +1705,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2823623
   allowed_tools: *id001
+
 - task_id: task7_10
   category: factual_qa
   difficulty: easy
@@ -1632,6 +1723,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S0674240
   allowed_tools: *id001
+
 - task_id: task7_11
   category: factual_qa
   difficulty: easy
@@ -1649,6 +1741,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S0658561
   allowed_tools: *id001
+
 - task_id: task7_12
   category: factual_qa
   difficulty: easy
@@ -1666,6 +1759,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1891852
   allowed_tools: *id001
+
 - task_id: task7_13
   category: factual_qa
   difficulty: easy
@@ -1683,6 +1777,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S3213957
   allowed_tools: *id001
+
 - task_id: task7_14
   category: factual_qa
   difficulty: easy
@@ -1700,6 +1795,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6539215
   allowed_tools: *id001
+
 - task_id: task7_15
   category: factual_qa
   difficulty: easy
@@ -1717,6 +1813,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6550473
   allowed_tools: *id001
+
 - task_id: task7_16
   category: factual_qa
   difficulty: easy
@@ -1734,6 +1831,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6547257
   allowed_tools: *id001
+
 - task_id: task7_17
   category: factual_qa
   difficulty: easy
@@ -1751,6 +1849,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1353305
   allowed_tools: *id001
+
 - task_id: task7_18
   category: factual_qa
   difficulty: easy
@@ -1768,6 +1867,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6521727
   allowed_tools: *id001
+
 - task_id: task7_19
   category: factual_qa
   difficulty: easy
@@ -1785,6 +1885,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6426560
   allowed_tools: *id001
+
 - task_id: task7_2
   category: factual_qa
   difficulty: easy
@@ -1802,6 +1903,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2197736
   allowed_tools: *id001
+
 - task_id: task7_20
   category: factual_qa
   difficulty: easy
@@ -1819,6 +1921,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2380121
   allowed_tools: *id001
+
 - task_id: task7_21
   category: factual_qa
   difficulty: easy
@@ -1836,6 +1939,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2874099
   allowed_tools: *id001
+
 - task_id: task7_22
   category: factual_qa
   difficulty: easy
@@ -1853,6 +1957,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6474456
   allowed_tools: *id001
+
 - task_id: task7_23
   category: factual_qa
   difficulty: easy
@@ -1870,6 +1975,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6550627
   allowed_tools: *id001
+
 - task_id: task7_24
   category: factual_qa
   difficulty: easy
@@ -1887,6 +1993,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2075210
   allowed_tools: *id001
+
 - task_id: task7_25
   category: factual_qa
   difficulty: easy
@@ -1904,6 +2011,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S0789363
   allowed_tools: *id001
+
 - task_id: task7_26
   category: factual_qa
   difficulty: easy
@@ -1921,6 +2029,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S2199765
   allowed_tools: *id001
+
 - task_id: task7_27
   category: factual_qa
   difficulty: easy
@@ -1938,6 +2047,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1698248
   allowed_tools: *id001
+
 - task_id: task7_28
   category: factual_qa
   difficulty: easy
@@ -1955,6 +2065,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6534835
   allowed_tools: *id001
+
 - task_id: task7_29
   category: factual_qa
   difficulty: easy
@@ -1972,6 +2083,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S1374652
   allowed_tools: *id001
+
 - task_id: task7_3
   category: factual_qa
   difficulty: easy
@@ -1989,6 +2101,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6265496
   allowed_tools: *id001
+
 - task_id: task7_30
   category: factual_qa
   difficulty: easy
@@ -2006,6 +2119,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6531922
   allowed_tools: *id001
+
 - task_id: task7_4
   category: factual_qa
   difficulty: easy
@@ -2023,6 +2137,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6530532
   allowed_tools: *id001
+
 - task_id: task7_5
   category: factual_qa
   difficulty: easy
@@ -2040,6 +2155,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6542579
   allowed_tools: *id001
+
 - task_id: task7_6
   category: factual_qa
   difficulty: easy
@@ -2057,6 +2173,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S0611496
   allowed_tools: *id001
+
 - task_id: task7_7
   category: factual_qa
   difficulty: easy
@@ -2074,6 +2191,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S3084624
   allowed_tools: *id001
+
 - task_id: task7_8
   category: factual_qa
   difficulty: easy
@@ -2091,6 +2209,7 @@ tasks:
   source_task_type: lab_result_retrieval
   eval_mrn: S6307599
   allowed_tools: *id001
+
 - task_id: task7_9
   category: factual_qa
   difficulty: easy

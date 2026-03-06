@@ -196,14 +196,15 @@ def _patient_search_parameters_schema() -> dict[str, Any]:
     return {
         "type": "object",
         "properties": {
-            "_id": {"type": "string"},
-            "identifier": {"type": "string"},
-            "family": {"type": "string"},
-            "given": {"type": "string"},
-            "birthdate": {"type": "string"},
-            "gender": {"type": "string"},
-            "_count": {"type": "string"},
+            "_id": {"type": ["string", "null"]},
+            "identifier": {"type": ["string", "null"]},
+            "family": {"type": ["string", "null"]},
+            "given": {"type": ["string", "null"]},
+            "birthdate": {"type": ["string", "null"]},
+            "gender": {"type": ["string", "null"]},
+            "_count": {"type": ["string", "null"]},
         },
+        "required": ["_id", "identifier", "family", "given", "birthdate", "gender", "_count"],
         "additionalProperties": False,
     }
 
@@ -213,9 +214,9 @@ def _condition_search_parameters_schema() -> dict[str, Any]:
         "type": "object",
         "properties": {
             "patient": {"type": "string"},
-            "category": {"type": "string"},
+            "category": {"type": ["string", "null"]},
         },
-        "required": ["patient"],
+        "required": ["patient", "category"],
         "additionalProperties": False,
     }
 
@@ -226,9 +227,9 @@ def _lab_search_parameters_schema() -> dict[str, Any]:
         "properties": {
             "patient": {"type": "string"},
             "code": {"type": "string"},
-            "date": {"type": "string"},
+            "date": {"type": ["string", "null"]},
         },
-        "required": ["patient", "code"],
+        "required": ["patient", "code", "date"],
         "additionalProperties": False,
     }
 
@@ -239,12 +240,12 @@ def _vital_search_parameters_schema() -> dict[str, Any]:
         "properties": {
             "patient": {"type": "string"},
             "category": {
-                "type": "string",
-                "enum": ["vital-signs"],
+                "type": ["string", "null"],
+                "enum": ["vital-signs", None],
             },
-            "date": {"type": "string"},
+            "date": {"type": ["string", "null"]},
         },
-        "required": ["patient"],
+        "required": ["patient", "category", "date"],
         "additionalProperties": False,
     }
 
@@ -255,9 +256,9 @@ def _procedure_search_parameters_schema() -> dict[str, Any]:
         "properties": {
             "patient": {"type": "string"},
             "date": {"type": "string"},
-            "code": {"type": "string"},
+            "code": {"type": ["string", "null"]},
         },
-        "required": ["patient", "date"],
+        "required": ["patient", "date", "code"],
         "additionalProperties": False,
     }
 
@@ -267,11 +268,11 @@ def _medicationrequest_search_parameters_schema() -> dict[str, Any]:
         "type": "object",
         "properties": {
             "patient": {"type": "string"},
-            "category": {"type": "string"},
-            "date": {"type": "string"},
-            "status": {"type": "string"},
+            "category": {"type": ["string", "null"]},
+            "date": {"type": ["string", "null"]},
+            "status": {"type": ["string", "null"]},
         },
-        "required": ["patient"],
+        "required": ["patient", "category", "date", "status"],
         "additionalProperties": False,
     }
 
@@ -298,9 +299,13 @@ def _vital_create_resource_schema() -> dict[str, Any]:
                                     "code": {"type": "string"},
                                     "display": {"type": "string"},
                                 },
+                                "required": ["system", "code", "display"],
+                                "additionalProperties": False,
                             },
                         }
                     },
+                    "required": ["coding"],
+                    "additionalProperties": False,
                 },
             },
             "code": {
@@ -311,6 +316,8 @@ def _vital_create_resource_schema() -> dict[str, Any]:
                         "description": "What is being measured.",
                     }
                 },
+                "required": ["text"],
+                "additionalProperties": False,
             },
             "effectiveDateTime": {"type": "string"},
             "status": {"type": "string"},
@@ -318,6 +325,8 @@ def _vital_create_resource_schema() -> dict[str, Any]:
             "subject": {
                 "type": "object",
                 "properties": {"reference": {"type": "string"}},
+                "required": ["reference"],
+                "additionalProperties": False,
             },
         },
         "required": [
@@ -329,6 +338,7 @@ def _vital_create_resource_schema() -> dict[str, Any]:
             "valueString",
             "subject",
         ],
+        "additionalProperties": False,
     }
 
 
@@ -349,21 +359,32 @@ def _medicationrequest_create_resource_schema() -> dict[str, Any]:
                                 "code": {"type": "string"},
                                 "display": {"type": "string"},
                             },
+                            "required": ["system", "code", "display"],
+                            "additionalProperties": False,
                         },
                     },
-                    "text": {"type": "string"},
+                    "text": {"type": ["string", "null"]},
                 },
+                "required": ["coding", "text"],
+                "additionalProperties": False,
             },
             "authoredOn": {"type": "string"},
             "dosageInstruction": {
                 "type": "array",
-                "items": {"type": "object"},
+                "items": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": False,
+                },
             },
             "status": {"type": "string"},
             "intent": {"type": "string"},
             "subject": {
                 "type": "object",
                 "properties": {"reference": {"type": "string"}},
+                "required": ["reference"],
+                "additionalProperties": False,
             },
         },
         "required": [
@@ -375,6 +396,7 @@ def _medicationrequest_create_resource_schema() -> dict[str, Any]:
             "intent",
             "subject",
         ],
+        "additionalProperties": False,
     }
 
 
@@ -395,9 +417,13 @@ def _servicerequest_create_resource_schema() -> dict[str, Any]:
                                 "code": {"type": "string"},
                                 "display": {"type": "string"},
                             },
+                            "required": ["system", "code", "display"],
+                            "additionalProperties": False,
                         },
                     }
                 },
+                "required": ["coding"],
+                "additionalProperties": False,
             },
             "authoredOn": {"type": "string"},
             "status": {"type": "string"},
@@ -406,12 +432,16 @@ def _servicerequest_create_resource_schema() -> dict[str, Any]:
             "subject": {
                 "type": "object",
                 "properties": {"reference": {"type": "string"}},
+                "required": ["reference"],
+                "additionalProperties": False,
             },
             "note": {
-                "type": "object",
+                "type": ["object", "null"],
                 "properties": {"text": {"type": "string"}},
+                "required": ["text"],
+                "additionalProperties": False,
             },
-            "occurrenceDateTime": {"type": "string"},
+            "occurrenceDateTime": {"type": ["string", "null"]},
         },
         "required": [
             "resourceType",
@@ -421,7 +451,10 @@ def _servicerequest_create_resource_schema() -> dict[str, Any]:
             "intent",
             "priority",
             "subject",
+            "note",
+            "occurrenceDateTime",
         ],
+        "additionalProperties": False,
     }
 
 

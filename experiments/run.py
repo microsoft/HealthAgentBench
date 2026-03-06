@@ -245,6 +245,7 @@ def main() -> None:
                 "task_type": task.get("task_type"),
                 "difficulty": task.get("difficulty"),
                 "instruction": task.get("instruction"),
+                "eval_mrn": task.get("eval_mrn"),
                 "expected_answer": task.get("expected_answer"),
                 "final_answer": final_answer,
                 "success": success,

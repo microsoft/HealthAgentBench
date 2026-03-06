@@ -43,6 +43,10 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 15:08Z) Decoupled `run_task` from direct FHIR client construction by introducing shared `ToolRuntime`; moved FHIR client instantiation to caller entrypoints (`experiments/run.py`, `experiments/demo.py`) and updated tool handlers/dispatch to consume `tool_runtime`.
 - [x] (2026-03-05 15:16Z) Refactored `run_task` internals with dedicated helper functions for policy checks, termination payloads, and tool execution to reduce core-loop complexity without changing behavior.
 - [x] (2026-03-05 15:32Z) Split monolithic `src/ehr_co_scientist/agent.py` into package modules under `src/ehr_co_scientist/agent/` (`core.py`, `parsing.py`, `policy.py`, `tool_exec.py`) while preserving public imports via `src/ehr_co_scientist/agent/__init__.py`.
+- [x] (2026-03-05 16:05Z) Implemented action-trace evaluation overrides for MedAgentBench writing tasks `task3_*` and `task8_*` in `scripts/medagentbench/evaluator.py`, aligned with `data/medagentbench/refsol.py` semantics (tool/payload validation over final-answer matching).
+- [x] (2026-03-05 23:01Z) Sampled and executed two writing tasks (`task3_1`, `task8_1`) with actual backend + FHIR runtime, analyzed payload-shape mismatches, tightened write-call guidance, and updated evaluator normalization (list/dict shape compatibility) so both tasks now pass under action-trace scoring.
+- [x] (2026-03-06 01:06Z) Removed schema post-processing and switched to strict-native tool schemas directly in `src/ehr_co_scientist/tools/fhir_tools.py` (nullable optional fields + explicit `required` + `additionalProperties: false` on object nodes), then revalidated writing-task tool invocation with `gpt-5.2`.
+- [ ] TODO: Add evaluator strictness modes (`strict` + `balanced`) so semantically equivalent action payloads (for example URI aliases and clinically acceptable priority variants) can pass in balanced mode with explicit diagnostics.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task3_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 - [ ] TODO: Add expected-answer (`sol`) derivation for `task8_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
 
@@ -137,6 +141,10 @@ For MedAgentBench background and design context used when refining this plan, se
 - Decision: Pass a generic `ToolRuntime` object into agent/tool dispatch and construct concrete clients at orchestration entrypoints instead of inside `run_task`.
   Rationale: Keeps the agent loop backend-agnostic for future non-FHIR tasks and cleanly separates orchestration from client wiring.
   Date/Author: 2026-03-05 / User+Codex
+
+- Decision: Prefer strict-native OpenAI function schemas in source definitions (`fhir_tools.py`) instead of runtime schema mutation.
+  Rationale: Makes schema behavior explicit, auditable, and stable across tooling/export paths.
+  Date/Author: 2026-03-06 / User+Codex
 
 ## Outcomes & Retrospective
 

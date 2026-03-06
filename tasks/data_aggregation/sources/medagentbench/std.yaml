@@ -27,6 +27,7 @@ tasks:
   - procedure_search
   - vital_create
   - vital_search
+
 - task_id: task6_10
   category: data_aggregation
   difficulty: easy
@@ -46,6 +47,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6268253
   allowed_tools: *id001
+
 - task_id: task6_11
   category: data_aggregation
   difficulty: easy
@@ -65,6 +67,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6540602
   allowed_tools: *id001
+
 - task_id: task6_12
   category: data_aggregation
   difficulty: easy
@@ -84,6 +87,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6222362
   allowed_tools: *id001
+
 - task_id: task6_13
   category: data_aggregation
   difficulty: easy
@@ -103,6 +107,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S2075210
   allowed_tools: *id001
+
 - task_id: task6_14
   category: data_aggregation
   difficulty: easy
@@ -122,6 +127,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S3032536
   allowed_tools: *id001
+
 - task_id: task6_15
   category: data_aggregation
   difficulty: easy
@@ -141,6 +147,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S1777769
   allowed_tools: *id001
+
 - task_id: task6_16
   category: data_aggregation
   difficulty: easy
@@ -160,6 +167,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6549951
   allowed_tools: *id001
+
 - task_id: task6_17
   category: data_aggregation
   difficulty: easy
@@ -179,6 +187,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S1311412
   allowed_tools: *id001
+
 - task_id: task6_18
   category: data_aggregation
   difficulty: easy
@@ -198,6 +207,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S1478444
   allowed_tools: *id001
+
 - task_id: task6_19
   category: data_aggregation
   difficulty: easy
@@ -217,6 +227,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S2197736
   allowed_tools: *id001
+
 - task_id: task6_2
   category: data_aggregation
   difficulty: easy
@@ -236,6 +247,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6539215
   allowed_tools: *id001
+
 - task_id: task6_20
   category: data_aggregation
   difficulty: easy
@@ -255,6 +267,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6426560
   allowed_tools: *id001
+
 - task_id: task6_21
   category: data_aggregation
   difficulty: easy
@@ -274,6 +287,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6488980
   allowed_tools: *id001
+
 - task_id: task6_22
   category: data_aggregation
   difficulty: easy
@@ -293,6 +307,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6530813
   allowed_tools: *id001
+
 - task_id: task6_23
   category: data_aggregation
   difficulty: easy
@@ -312,6 +327,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S0674240
   allowed_tools: *id001
+
 - task_id: task6_24
   category: data_aggregation
   difficulty: easy
@@ -331,6 +347,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S0581164
   allowed_tools: *id001
+
 - task_id: task6_25
   category: data_aggregation
   difficulty: easy
@@ -350,6 +367,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S1754095
   allowed_tools: *id001
+
 - task_id: task6_26
   category: data_aggregation
   difficulty: easy
@@ -369,6 +387,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S3228213
   allowed_tools: *id001
+
 - task_id: task6_27
   category: data_aggregation
   difficulty: easy
@@ -388,6 +407,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S2402518
   allowed_tools: *id001
+
 - task_id: task6_28
   category: data_aggregation
   difficulty: easy
@@ -407,6 +427,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6542579
   allowed_tools: *id001
+
 - task_id: task6_29
   category: data_aggregation
   difficulty: easy
@@ -426,6 +447,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6330912
   allowed_tools: *id001
+
 - task_id: task6_3
   category: data_aggregation
   difficulty: easy
@@ -445,6 +467,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S2863714
   allowed_tools: *id001
+
 - task_id: task6_30
   category: data_aggregation
   difficulty: easy
@@ -464,6 +487,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S3241217
   allowed_tools: *id001
+
 - task_id: task6_4
   category: data_aggregation
   difficulty: easy
@@ -483,6 +507,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6541609
   allowed_tools: *id001
+
 - task_id: task6_5
   category: data_aggregation
   difficulty: easy
@@ -502,6 +527,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6541353
   allowed_tools: *id001
+
 - task_id: task6_6
   category: data_aggregation
   difficulty: easy
@@ -521,6 +547,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S3070524
   allowed_tools: *id001
+
 - task_id: task6_7
   category: data_aggregation
   difficulty: easy
@@ -540,6 +567,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S1152319
   allowed_tools: *id001
+
 - task_id: task6_8
   category: data_aggregation
   difficulty: easy
@@ -559,6 +587,7 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S2450227
   allowed_tools: *id001
+
 - task_id: task6_9
   category: data_aggregation
   difficulty: easy

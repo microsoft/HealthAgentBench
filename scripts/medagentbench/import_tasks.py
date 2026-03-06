@@ -139,10 +139,12 @@ def _task_type_slug(value: str) -> str:
 def _write_manifest(path: Path, tasks: list[dict[str, Any]]) -> None:
     payload = {"tasks": tasks}
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        yaml.safe_dump(payload, sort_keys=False, allow_unicode=True),
-        encoding="utf-8",
-    )
+    rendered = yaml.safe_dump(payload, sort_keys=False, allow_unicode=True)
+    # Improve readability by separating top-level task entries with a blank line.
+    parts = rendered.split("\n- task_id: ")
+    if len(parts) > 1:
+        rendered = parts[0] + "\n- task_id: " + "\n\n- task_id: ".join(parts[1:])
+    path.write_text(rendered, encoding="utf-8")
 
 
 def main() -> None:

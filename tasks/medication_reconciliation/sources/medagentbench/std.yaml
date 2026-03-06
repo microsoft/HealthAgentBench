@@ -41,6 +41,7 @@ tasks:
   - procedure_search
   - vital_create
   - vital_search
+
 - task_id: task5_10
   category: medication_reconciliation
   difficulty: medium
@@ -74,6 +75,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2874099
   allowed_tools: *id001
+
 - task_id: task5_11
   category: medication_reconciliation
   difficulty: medium
@@ -107,6 +109,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6537563
   allowed_tools: *id001
+
 - task_id: task5_12
   category: medication_reconciliation
   difficulty: medium
@@ -140,6 +143,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2016972
   allowed_tools: *id001
+
 - task_id: task5_13
   category: medication_reconciliation
   difficulty: medium
@@ -173,6 +177,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6521727
   allowed_tools: *id001
+
 - task_id: task5_14
   category: medication_reconciliation
   difficulty: medium
@@ -206,6 +211,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S0658561
   allowed_tools: *id001
+
 - task_id: task5_15
   category: medication_reconciliation
   difficulty: medium
@@ -239,6 +245,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1733937
   allowed_tools: *id001
+
 - task_id: task5_16
   category: medication_reconciliation
   difficulty: medium
@@ -272,6 +279,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1023381
   allowed_tools: *id001
+
 - task_id: task5_17
   category: medication_reconciliation
   difficulty: medium
@@ -305,6 +313,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6192632
   allowed_tools: *id001
+
 - task_id: task5_18
   category: medication_reconciliation
   difficulty: medium
@@ -338,6 +347,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6534835
   allowed_tools: *id001
+
 - task_id: task5_19
   category: medication_reconciliation
   difficulty: medium
@@ -371,6 +381,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3057899
   allowed_tools: *id001
+
 - task_id: task5_2
   category: medication_reconciliation
   difficulty: medium
@@ -404,6 +415,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6541353
   allowed_tools: *id001
+
 - task_id: task5_20
   category: medication_reconciliation
   difficulty: medium
@@ -437,6 +449,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1715871
   allowed_tools: *id001
+
 - task_id: task5_21
   category: medication_reconciliation
   difficulty: medium
@@ -470,6 +483,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3084624
   allowed_tools: *id001
+
 - task_id: task5_22
   category: medication_reconciliation
   difficulty: medium
@@ -503,6 +517,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1698248
   allowed_tools: *id001
+
 - task_id: task5_23
   category: medication_reconciliation
   difficulty: medium
@@ -536,6 +551,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2402518
   allowed_tools: *id001
+
 - task_id: task5_24
   category: medication_reconciliation
   difficulty: medium
@@ -569,6 +585,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6549951
   allowed_tools: *id001
+
 - task_id: task5_25
   category: medication_reconciliation
   difficulty: medium
@@ -602,6 +619,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6542579
   allowed_tools: *id001
+
 - task_id: task5_26
   category: medication_reconciliation
   difficulty: medium
@@ -635,6 +653,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1478444
   allowed_tools: *id001
+
 - task_id: task5_27
   category: medication_reconciliation
   difficulty: medium
@@ -668,6 +687,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6547257
   allowed_tools: *id001
+
 - task_id: task5_28
   category: medication_reconciliation
   difficulty: medium
@@ -701,6 +721,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2703270
   allowed_tools: *id001
+
 - task_id: task5_29
   category: medication_reconciliation
   difficulty: medium
@@ -734,6 +755,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2937751
   allowed_tools: *id001
+
 - task_id: task5_3
   category: medication_reconciliation
   difficulty: medium
@@ -767,6 +789,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S0636132
   allowed_tools: *id001
+
 - task_id: task5_30
   category: medication_reconciliation
   difficulty: medium
@@ -800,6 +823,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6484983
   allowed_tools: *id001
+
 - task_id: task5_4
   category: medication_reconciliation
   difficulty: medium
@@ -833,6 +857,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6468480
   allowed_tools: *id001
+
 - task_id: task5_5
   category: medication_reconciliation
   difficulty: medium
@@ -866,6 +891,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6530813
   allowed_tools: *id001
+
 - task_id: task5_6
   category: medication_reconciliation
   difficulty: medium
@@ -899,6 +925,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2075210
   allowed_tools: *id001
+
 - task_id: task5_7
   category: medication_reconciliation
   difficulty: medium
@@ -932,6 +959,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S0581164
   allowed_tools: *id001
+
 - task_id: task5_8
   category: medication_reconciliation
   difficulty: medium
@@ -965,6 +993,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1891852
   allowed_tools: *id001
+
 - task_id: task5_9
   category: medication_reconciliation
   difficulty: medium
@@ -998,6 +1027,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3195056
   allowed_tools: *id001
+
 - task_id: task9_1
   category: medication_reconciliation
   difficulty: medium
@@ -1020,6 +1050,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3241217
   allowed_tools: *id001
+
 - task_id: task9_10
   category: medication_reconciliation
   difficulty: medium
@@ -1042,6 +1073,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3084624
   allowed_tools: *id001
+
 - task_id: task9_11
   category: medication_reconciliation
   difficulty: medium
@@ -1064,6 +1096,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3213957
   allowed_tools: *id001
+
 - task_id: task9_12
   category: medication_reconciliation
   difficulty: medium
@@ -1086,6 +1119,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6541353
   allowed_tools: *id001
+
 - task_id: task9_13
   category: medication_reconciliation
   difficulty: medium
@@ -1108,6 +1142,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3057899
   allowed_tools: *id001
+
 - task_id: task9_14
   category: medication_reconciliation
   difficulty: medium
@@ -1130,6 +1165,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6547257
   allowed_tools: *id001
+
 - task_id: task9_15
   category: medication_reconciliation
   difficulty: medium
@@ -1152,6 +1188,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S0722219
   allowed_tools: *id001
+
 - task_id: task9_16
   category: medication_reconciliation
   difficulty: medium
@@ -1174,6 +1211,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2823623
   allowed_tools: *id001
+
 - task_id: task9_17
   category: medication_reconciliation
   difficulty: medium
@@ -1196,6 +1234,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6537563
   allowed_tools: *id001
+
 - task_id: task9_18
   category: medication_reconciliation
   difficulty: medium
@@ -1218,6 +1257,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2450227
   allowed_tools: *id001
+
 - task_id: task9_19
   category: medication_reconciliation
   difficulty: medium
@@ -1240,6 +1280,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6329254
   allowed_tools: *id001
+
 - task_id: task9_2
   category: medication_reconciliation
   difficulty: medium
@@ -1262,6 +1303,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1023381
   allowed_tools: *id001
+
 - task_id: task9_20
   category: medication_reconciliation
   difficulty: medium
@@ -1284,6 +1326,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3236936
   allowed_tools: *id001
+
 - task_id: task9_21
   category: medication_reconciliation
   difficulty: medium
@@ -1306,6 +1349,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6426560
   allowed_tools: *id001
+
 - task_id: task9_22
   category: medication_reconciliation
   difficulty: medium
@@ -1328,6 +1372,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6474456
   allowed_tools: *id001
+
 - task_id: task9_23
   category: medication_reconciliation
   difficulty: medium
@@ -1350,6 +1395,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S0869531
   allowed_tools: *id001
+
 - task_id: task9_24
   category: medication_reconciliation
   difficulty: medium
@@ -1372,6 +1418,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2090974
   allowed_tools: *id001
+
 - task_id: task9_25
   category: medication_reconciliation
   difficulty: medium
@@ -1394,6 +1441,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S2704870
   allowed_tools: *id001
+
 - task_id: task9_26
   category: medication_reconciliation
   difficulty: medium
@@ -1416,6 +1464,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6352985
   allowed_tools: *id001
+
 - task_id: task9_27
   category: medication_reconciliation
   difficulty: medium
@@ -1438,6 +1487,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1311412
   allowed_tools: *id001
+
 - task_id: task9_28
   category: medication_reconciliation
   difficulty: medium
@@ -1460,6 +1510,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S3228213
   allowed_tools: *id001
+
 - task_id: task9_29
   category: medication_reconciliation
   difficulty: medium
@@ -1482,6 +1533,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6500497
   allowed_tools: *id001
+
 - task_id: task9_3
   category: medication_reconciliation
   difficulty: medium
@@ -1504,6 +1556,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6550627
   allowed_tools: *id001
+
 - task_id: task9_30
   category: medication_reconciliation
   difficulty: medium
@@ -1526,6 +1579,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6545016
   allowed_tools: *id001
+
 - task_id: task9_4
   category: medication_reconciliation
   difficulty: medium
@@ -1548,6 +1602,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1374652
   allowed_tools: *id001
+
 - task_id: task9_5
   category: medication_reconciliation
   difficulty: medium
@@ -1570,6 +1625,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1796597
   allowed_tools: *id001
+
 - task_id: task9_6
   category: medication_reconciliation
   difficulty: medium
@@ -1592,6 +1648,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6550473
   allowed_tools: *id001
+
 - task_id: task9_7
   category: medication_reconciliation
   difficulty: medium
@@ -1614,6 +1671,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S6268253
   allowed_tools: *id001
+
 - task_id: task9_8
   category: medication_reconciliation
   difficulty: medium
@@ -1636,6 +1694,7 @@ tasks:
   source_task_type: medication_ordering
   eval_mrn: S1635224
   allowed_tools: *id001
+
 - task_id: task9_9
   category: medication_reconciliation
   difficulty: medium

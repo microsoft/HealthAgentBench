@@ -97,6 +97,7 @@ def get_openai_function_tools(
                     "name": definition.tool_name,
                     "description": definition.description,
                     "parameters": definition.parameters,
+                    "strict": True,
                 },
             }
         )

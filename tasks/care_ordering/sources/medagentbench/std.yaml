@@ -27,6 +27,7 @@ tasks:
   - procedure_search
   - vital_create
   - vital_search
+
 - task_id: task10_10
   category: care_ordering
   difficulty: medium
@@ -46,6 +47,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6488980
   allowed_tools: *id001
+
 - task_id: task10_11
   category: care_ordering
   difficulty: medium
@@ -65,6 +67,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2033286
   allowed_tools: *id001
+
 - task_id: task10_12
   category: care_ordering
   difficulty: medium
@@ -84,6 +87,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6550627
   allowed_tools: *id001
+
 - task_id: task10_13
   category: care_ordering
   difficulty: medium
@@ -105,6 +109,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6521727
   allowed_tools: *id001
+
 - task_id: task10_14
   category: care_ordering
   difficulty: medium
@@ -126,6 +131,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6541609
   allowed_tools: *id001
+
 - task_id: task10_15
   category: care_ordering
   difficulty: medium
@@ -147,6 +153,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6545016
   allowed_tools: *id001
+
 - task_id: task10_16
   category: care_ordering
   difficulty: medium
@@ -166,6 +173,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2016972
   allowed_tools: *id001
+
 - task_id: task10_17
   category: care_ordering
   difficulty: medium
@@ -187,6 +195,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2823623
   allowed_tools: *id001
+
 - task_id: task10_18
   category: care_ordering
   difficulty: medium
@@ -208,6 +217,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1311412
   allowed_tools: *id001
+
 - task_id: task10_19
   category: care_ordering
   difficulty: medium
@@ -229,6 +239,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2154941
   allowed_tools: *id001
+
 - task_id: task10_2
   category: care_ordering
   difficulty: medium
@@ -250,6 +261,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1635224
   allowed_tools: *id001
+
 - task_id: task10_20
   category: care_ordering
   difficulty: medium
@@ -271,6 +283,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S0722219
   allowed_tools: *id001
+
 - task_id: task10_21
   category: care_ordering
   difficulty: medium
@@ -290,6 +303,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S0789363
   allowed_tools: *id001
+
 - task_id: task10_22
   category: care_ordering
   difficulty: medium
@@ -309,6 +323,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2090974
   allowed_tools: *id001
+
 - task_id: task10_23
   category: care_ordering
   difficulty: medium
@@ -328,6 +343,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S3070524
   allowed_tools: *id001
+
 - task_id: task10_24
   category: care_ordering
   difficulty: medium
@@ -349,6 +365,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6500497
   allowed_tools: *id001
+
 - task_id: task10_25
   category: care_ordering
   difficulty: medium
@@ -368,6 +385,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1152319
   allowed_tools: *id001
+
 - task_id: task10_26
   category: care_ordering
   difficulty: medium
@@ -387,6 +405,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6352985
   allowed_tools: *id001
+
 - task_id: task10_27
   category: care_ordering
   difficulty: medium
@@ -408,6 +427,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S0658561
   allowed_tools: *id001
+
 - task_id: task10_28
   category: care_ordering
   difficulty: medium
@@ -429,6 +449,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6530532
   allowed_tools: *id001
+
 - task_id: task10_29
   category: care_ordering
   difficulty: medium
@@ -450,6 +471,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2703270
   allowed_tools: *id001
+
 - task_id: task10_3
   category: care_ordering
   difficulty: medium
@@ -469,6 +491,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6474456
   allowed_tools: *id001
+
 - task_id: task10_30
   category: care_ordering
   difficulty: medium
@@ -490,6 +513,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1876702
   allowed_tools: *id001
+
 - task_id: task10_4
   category: care_ordering
   difficulty: medium
@@ -511,6 +535,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2161163
   allowed_tools: *id001
+
 - task_id: task10_5
   category: care_ordering
   difficulty: medium
@@ -532,6 +557,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S0547588
   allowed_tools: *id001
+
 - task_id: task10_6
   category: care_ordering
   difficulty: medium
@@ -551,6 +577,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2111822
   allowed_tools: *id001
+
 - task_id: task10_7
   category: care_ordering
   difficulty: medium
@@ -570,6 +597,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1891852
   allowed_tools: *id001
+
 - task_id: task10_8
   category: care_ordering
   difficulty: medium
@@ -591,6 +619,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S3114648
   allowed_tools: *id001
+
 - task_id: task10_9
   category: care_ordering
   difficulty: medium
@@ -612,6 +641,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1698248
   allowed_tools: *id001
+
 - task_id: task8_1
   category: care_ordering
   difficulty: medium
@@ -634,6 +664,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2016972
   allowed_tools: *id001
+
 - task_id: task8_10
   category: care_ordering
   difficulty: medium
@@ -656,6 +687,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6415739
   allowed_tools: *id001
+
 - task_id: task8_11
   category: care_ordering
   difficulty: medium
@@ -678,6 +710,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S3114648
   allowed_tools: *id001
+
 - task_id: task8_12
   category: care_ordering
   difficulty: medium
@@ -700,6 +733,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1521703
   allowed_tools: *id001
+
 - task_id: task8_13
   category: care_ordering
   difficulty: medium
@@ -722,6 +756,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6547257
   allowed_tools: *id001
+
 - task_id: task8_14
   category: care_ordering
   difficulty: medium
@@ -744,6 +779,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S3241217
   allowed_tools: *id001
+
 - task_id: task8_15
   category: care_ordering
   difficulty: medium
@@ -766,6 +802,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6227720
   allowed_tools: *id001
+
 - task_id: task8_16
   category: care_ordering
   difficulty: medium
@@ -788,6 +825,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6541609
   allowed_tools: *id001
+
 - task_id: task8_17
   category: care_ordering
   difficulty: medium
@@ -810,6 +848,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2111822
   allowed_tools: *id001
+
 - task_id: task8_18
   category: care_ordering
   difficulty: medium
@@ -832,6 +871,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6426560
   allowed_tools: *id001
+
 - task_id: task8_19
   category: care_ordering
   difficulty: medium
@@ -854,6 +894,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6530813
   allowed_tools: *id001
+
 - task_id: task8_2
   category: care_ordering
   difficulty: medium
@@ -876,6 +917,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1986380
   allowed_tools: *id001
+
 - task_id: task8_20
   category: care_ordering
   difficulty: medium
@@ -898,6 +940,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2197736
   allowed_tools: *id001
+
 - task_id: task8_21
   category: care_ordering
   difficulty: medium
@@ -920,6 +963,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6330912
   allowed_tools: *id001
+
 - task_id: task8_22
   category: care_ordering
   difficulty: medium
@@ -942,6 +986,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1715871
   allowed_tools: *id001
+
 - task_id: task8_23
   category: care_ordering
   difficulty: medium
@@ -964,6 +1009,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6545016
   allowed_tools: *id001
+
 - task_id: task8_24
   category: care_ordering
   difficulty: medium
@@ -986,6 +1032,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S3032536
   allowed_tools: *id001
+
 - task_id: task8_25
   category: care_ordering
   difficulty: medium
@@ -1008,6 +1055,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6192632
   allowed_tools: *id001
+
 - task_id: task8_26
   category: care_ordering
   difficulty: medium
@@ -1030,6 +1078,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6549951
   allowed_tools: *id001
+
 - task_id: task8_27
   category: care_ordering
   difficulty: medium
@@ -1052,6 +1101,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1579803
   allowed_tools: *id001
+
 - task_id: task8_28
   category: care_ordering
   difficulty: medium
@@ -1074,6 +1124,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S3236936
   allowed_tools: *id001
+
 - task_id: task8_29
   category: care_ordering
   difficulty: medium
@@ -1096,6 +1147,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6307599
   allowed_tools: *id001
+
 - task_id: task8_3
   category: care_ordering
   difficulty: medium
@@ -1118,6 +1170,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S1478444
   allowed_tools: *id001
+
 - task_id: task8_30
   category: care_ordering
   difficulty: medium
@@ -1140,6 +1193,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S0722219
   allowed_tools: *id001
+
 - task_id: task8_4
   category: care_ordering
   difficulty: medium
@@ -1162,6 +1216,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2748981
   allowed_tools: *id001
+
 - task_id: task8_5
   category: care_ordering
   difficulty: medium
@@ -1184,6 +1239,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6550627
   allowed_tools: *id001
+
 - task_id: task8_6
   category: care_ordering
   difficulty: medium
@@ -1206,6 +1262,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6212774
   allowed_tools: *id001
+
 - task_id: task8_7
   category: care_ordering
   difficulty: medium
@@ -1228,6 +1285,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S2863714
   allowed_tools: *id001
+
 - task_id: task8_8
   category: care_ordering
   difficulty: medium
@@ -1250,6 +1308,7 @@ tasks:
   source_task_type: test_ordering
   eval_mrn: S6534835
   allowed_tools: *id001
+
 - task_id: task8_9
   category: care_ordering
   difficulty: medium

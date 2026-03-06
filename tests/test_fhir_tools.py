@@ -80,11 +80,15 @@ def test_search_tool_required_fields_align_with_medagentbench():
         tool["function"]["name"]: tool["function"]["parameters"]
         for tool in get_openai_function_tools(TOOL_DEFINITIONS)
     }
-    assert tools["condition_search"].get("required") == ["patient"]
-    assert tools["lab_search"].get("required") == ["patient", "code"]
-    assert tools["vital_search"].get("required") == ["patient"]
-    assert tools["medicationrequest_search"].get("required") == ["patient"]
-    assert tools["procedure_search"].get("required") == ["patient", "date"]
+    assert "patient" in tools["condition_search"].get("required", [])
+    assert {"patient", "code"}.issubset(set(tools["lab_search"].get("required", [])))
+    assert "patient" in tools["vital_search"].get("required", [])
+    assert "patient" in tools["medicationrequest_search"].get("required", [])
+    assert {"patient", "date"}.issubset(
+        set(tools["procedure_search"].get("required", []))
+    )
+    assert tools["condition_search"].get("additionalProperties") is False
+    assert tools["lab_search"].get("additionalProperties") is False
 
 
 def test_create_tool_schemas_are_resource_specific():
@@ -115,7 +119,7 @@ def test_create_tool_schemas_are_resource_specific():
         "intent",
         "subject",
     ]
-    assert procedure_required == [
+    assert {
         "resourceType",
         "code",
         "authoredOn",
@@ -123,7 +127,7 @@ def test_create_tool_schemas_are_resource_specific():
         "intent",
         "priority",
         "subject",
-    ]
+    }.issubset(set(procedure_required))
 
 
 def test_procedure_create_posts_service_request():
