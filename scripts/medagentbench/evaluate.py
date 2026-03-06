@@ -53,13 +53,19 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", required=True)
     parser.add_argument("--results", required=True)
+    parser.add_argument(
+        "--action-eval-mode",
+        choices=["strict", "balanced"],
+        default="strict",
+        help="How strictly to validate writing-task action payload traces.",
+    )
     args = parser.parse_args()
 
     if args.task != "medagentbench":
         raise SystemExit("Only --task medagentbench is supported in this milestone.")
 
     results_path = Path(args.results)
-    summary = evaluate_results(str(results_path))
+    summary = evaluate_results(str(results_path), action_eval_mode=args.action_eval_mode)
 
     out_dir = results_path.parent
     summary_json_path = out_dir / "summary.json"

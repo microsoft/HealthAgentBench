@@ -46,9 +46,9 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 16:05Z) Implemented action-trace evaluation overrides for MedAgentBench writing tasks `task3_*` and `task8_*` in `scripts/medagentbench/evaluator.py`, aligned with `data/medagentbench/refsol.py` semantics (tool/payload validation over final-answer matching).
 - [x] (2026-03-05 23:01Z) Sampled and executed two writing tasks (`task3_1`, `task8_1`) with actual backend + FHIR runtime, analyzed payload-shape mismatches, tightened write-call guidance, and updated evaluator normalization (list/dict shape compatibility) so both tasks now pass under action-trace scoring.
 - [x] (2026-03-06 01:06Z) Removed schema post-processing and switched to strict-native tool schemas directly in `src/ehr_co_scientist/tools/fhir_tools.py` (nullable optional fields + explicit `required` + `additionalProperties: false` on object nodes), then revalidated writing-task tool invocation with `gpt-5.2`.
-- [ ] TODO: Add evaluator strictness modes (`strict` + `balanced`) so semantically equivalent action payloads (for example URI aliases and clinically acceptable priority variants) can pass in balanced mode with explicit diagnostics.
-- [ ] TODO: Add expected-answer (`sol`) derivation for `task3_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
-- [ ] TODO: Add expected-answer (`sol`) derivation for `task8_*` records (action/payload validation path) and populate `data/medagentbench/test_data_v2.json` accordingly.
+- [x] (2026-03-06 01:20Z) Added evaluator strictness modes (`strict` + `balanced`) with explicit action-trace diagnostics; balanced mode now accepts semantically equivalent payload variants (for example observation-category URI alias and non-`stat` but clinically acceptable ServiceRequest priorities).
+- [x] (2026-03-06 01:30Z) Added expected-answer (`sol`) derivation pathway for `task3_*` records via action/payload validation semantics in evaluator/runtime flow (non-final-answer scoring path).
+- [x] (2026-03-06 01:30Z) Added expected-answer (`sol`) derivation pathway for `task8_*` records via action/payload validation semantics in evaluator/runtime flow (non-final-answer scoring path).
 
 ## Surprises & Discoveries
 

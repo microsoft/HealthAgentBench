@@ -158,3 +158,4 @@ def test_evaluate_results_marks_invalid_action_trace(tmp_path: Path):
     assert summary["total_tasks"] == 1
     assert summary["passed_tasks"] == 0
     assert summary["error_taxonomy"]["action_trace_validation_failed"] == 1
+
