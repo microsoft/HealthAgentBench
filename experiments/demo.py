@@ -6,7 +6,10 @@ from __future__ import annotations
 import argparse
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
+
+import yaml
 
 from ehr_co_scientist.agent import AgentConfig, run_task
 from ehr_co_scientist.backends.adapter import BackendConfig
@@ -24,6 +27,16 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--fhir-base-url", default="http://localhost:8080/fhir")
     parser.add_argument("--endpoint-name", default=None)
     parser.add_argument("--max-rounds", type=int, default=8)
+    parser.add_argument(
+        "--task-id",
+        default=None,
+        help="Load one task by ID from tasks/*/sources/medagentbench/<split>.yaml.",
+    )
+    parser.add_argument(
+        "--split",
+        default="std",
+        help="Task split to use when --task-id is provided.",
+    )
     parser.add_argument(
         "--evaluation-mode",
         action="store_true",
@@ -46,6 +59,17 @@ def _build_parser() -> argparse.ArgumentParser:
         ),
     )
     return parser
+
+
+def _load_manifest_task(task_id: str, split: str) -> dict[str, Any]:
+    manifests = sorted(Path("tasks").glob(f"*/sources/medagentbench/{split}.yaml"))
+    for manifest in manifests:
+        payload = yaml.safe_load(manifest.read_text(encoding="utf-8")) or {}
+        task_rows = payload.get("tasks", [])
+        for row in task_rows:
+            if isinstance(row, dict) and str(row.get("task_id", "")) == task_id:
+                return row
+    raise ValueError(f"Task ID not found in split '{split}': {task_id}")
 
 
 def _result_payload(
@@ -100,30 +124,45 @@ def main() -> None:
         chat_kwargs["parallel_tool_calls"] = False
 
     print("EHR Co-Scientist Demo")
-    print("Type a prompt and press Enter. Type 'quit' or 'exit' to stop.")
+    if args.task_id:
+        print(f"Running task {args.task_id} from split '{args.split}'.")
+    else:
+        print("Type a prompt and press Enter. Type 'quit' or 'exit' to stop.")
 
     counter = 0
     while True:
-        try:
-            prompt = input("demo> ").strip()
-        except EOFError:
-            print("\nExiting demo.")
-            break
+        if args.task_id:
+            selected_task = _load_manifest_task(args.task_id, args.split)
+            prompt = str(selected_task.get("instruction", "")).strip()
+            task_id = str(selected_task.get("task_id", args.task_id))
+        else:
+            try:
+                prompt = input("demo> ").strip()
+            except EOFError:
+                print("\nExiting demo.")
+                break
 
-        if not prompt:
-            continue
-        if prompt.lower() in {"quit", "exit"}:
-            print("Exiting demo.")
-            break
+            if not prompt:
+                continue
+            if prompt.lower() in {"quit", "exit"}:
+                print("Exiting demo.")
+                break
 
-        counter += 1
-        task_id = f"demo_{counter}"
+            counter += 1
+            task_id = f"demo_{counter}"
+
         task = {
             "task_id": task_id,
             "instruction": prompt,
-            "category": "interactive_demo",
-            "task_type": "query",
-            "difficulty": "unknown",
+            "category": selected_task.get("category", "interactive_demo")
+            if args.task_id
+            else "interactive_demo",
+            "task_type": selected_task.get("task_type", "query")
+            if args.task_id
+            else "query",
+            "difficulty": selected_task.get("difficulty", "unknown")
+            if args.task_id
+            else "unknown",
         }
 
         started = datetime.now(timezone.utc)
@@ -156,6 +195,9 @@ def main() -> None:
                     ensure_ascii=True,
                 )
             )
+
+        if args.task_id:
+            break
 
 
 if __name__ == "__main__":
