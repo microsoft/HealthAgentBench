@@ -67,8 +67,6 @@ ehr-co-scientist/
 ├── .claude/                          # Claude Code settings, commands, skills
 ├── .codex/                           # Codex-specific config
 ├── .agent/plans/                     # Individual ExecPlan files
-├── config/
-│   └── agent.yaml                    # Model, tool whitelist, DB connection
 ├── src/ehr_co_scientist/
 │   ├── agent/                        # Core agent package (core loop + parsing/policy/tool execution helpers)
 │   ├── prompts/                      # System & task prompt templates
@@ -83,10 +81,12 @@ ehr-co-scientist/
 │   │   └── task.yaml                 # Task-type metadata/spec
 │   └── report_generation/            # Task-type package
 │       └── task.yaml                 # Task-type metadata/spec
+├── run.py                            # Top-level benchmark runner CLI
+├── demo.py                           # Interactive terminal demo CLI
 ├── scripts/                          # Setup/export/evaluation utilities organized by integration domain
 │   ├── setup_mimic.sh                # Core MIMIC bootstrap script
 │   └── medagentbench/                # MedAgentBench runtime, import, and evaluation scripts
-├── experiments/                      # Top-level run CLI, configs, and results
+├── results/                          # Run/evaluation artifacts (gitignored)
 ├── notebooks/                        # Analysis & paper figures
 ├── paper/                            # LaTeX source for arxiv submission
 ├── design/                           # Design docs, architecture, scope, ideas
@@ -114,10 +114,10 @@ bash scripts/setup_mimic.sh
 
 ```bash
 # Run a task
-python experiments/run.py --task medagentbench --split std --max-tasks 3 --model gpt-5.2
+python run.py --task medagentbench --split std --max-tasks 3 --model gpt-5.2
 
 # Evaluate MedAgentBench results
-python scripts/medagentbench/evaluate.py --task medagentbench --results experiments/results/medagentbench/<run-id>/results.jsonl
+python scripts/medagentbench/evaluate.py --task medagentbench --results results/medagentbench/<run-id>/results.jsonl
 ```
 
 Task-local execution/scoring scripts live under each task-type package in `tasks/<task_type>/`. Benchmark-specific imports (such as MedAgentBench) should map into the relevant task-type package during integration work, rather than creating benchmark-named task roots.

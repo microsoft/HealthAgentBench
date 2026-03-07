@@ -15,7 +15,7 @@ def test_medagentbench_smoke(tmp_path: Path):
     try:
         run_cmd = [
             ".venv/bin/python",
-            "experiments/run.py",
+            "run.py",
             "--task",
             "medagentbench",
             "--split",

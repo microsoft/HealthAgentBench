@@ -9,14 +9,14 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 
 ## Repository Layout
 
-- `config/agent.yaml` — Model selection, tool whitelist, database connection settings.
 - `src/ehr_co_scientist/agent/` — Core agent package (`core.py`, parsing/policy/tool-exec modules).
 - `src/ehr_co_scientist/prompts/` — System and task prompt templates.
 - `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
 - `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
 - `tasks/` — Task suite package organized by task type (task specs, task-local runners/evaluators, prompts, fixtures, selectors, and registry).
 - `scripts/medagentbench/` — MedAgentBench runtime orchestration, import, and evaluation utilities.
-- `experiments/` — Top-level run configurations, orchestration CLI entry points, and result artifacts.
+- `run.py` / `demo.py` — Top-level orchestration CLIs for benchmark runs and interactive demos.
+- `results/` — Top-level run/evaluation artifacts directory (gitignored).
 - `notebooks/` — Jupyter notebooks for analysis and paper figures.
 - `paper/` — LaTeX source for the arxiv submission.
 - `scripts/` — Setup and export utilities organized by integration/domain (e.g., `setup_mimic.sh`, `medagentbench/`).
@@ -50,7 +50,7 @@ Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must e
 
 ## Tasks
 
-The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with task metadata (`task.yaml`) plus optional task-local execution/scoring modules (`runner.py`, `evaluator.py`), prompts, and fixtures. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep top-level CLIs in `experiments/` plus integration-specific scripts (for example `scripts/medagentbench/evaluate.py`) responsible for consistent execution.
+The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with task metadata (`task.yaml`) plus optional task-local execution/scoring modules (`runner.py`, `evaluator.py`), prompts, and fixtures. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep top-level CLIs in `run.py`/`demo.py` plus integration-specific scripts (for example `scripts/medagentbench/evaluate.py`) responsible for consistent execution.
 
 ## ExecPlans
 
@@ -82,10 +82,10 @@ cp .env.example .env
 bash scripts/setup_mimic.sh
 
 # Run a task
-python experiments/run.py --task medagentbench --split std --max-tasks 3 --model gpt-5.2
+python run.py --task medagentbench --split std --max-tasks 3 --model gpt-5.2
 
 # Evaluate MedAgentBench results
-python scripts/medagentbench/evaluate.py --task medagentbench --results experiments/results/medagentbench/<run-id>/results.jsonl
+python scripts/medagentbench/evaluate.py --task medagentbench --results results/medagentbench/<run-id>/results.jsonl
 
 # Run tests
 pytest tests/

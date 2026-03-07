@@ -26,21 +26,21 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 01:07Z) Implemented Docker Compose-based local FHIR runtime with container healthcheck and compose-managed startup/shutdown scripts.
 - [x] (2026-03-05 01:18Z) Implemented `FHIRClient`, MedAgentBench-aligned FHIR tool wrappers, and shared JSON HTTP retry utilities in `src/ehr_co_scientist/tools/` and `src/ehr_co_scientist/utils/http.py`.
 - [x] (2026-03-05 04:10Z) Imported real MedAgentBench files (`data/medagentbench/test_data_v2.json`, `data/medagentbench/funcs_v1.json`) and grouped 300 tasks into repo task-type folders under `tasks/<task_type>/sources/medagentbench/` using an explicit 6-type alignment map.
-- [x] (2026-03-04 19:30Z) Implemented MedAgentBench runner and evaluator CLIs (`experiments/run.py`, `scripts/medagentbench/evaluate.py`, `scripts/medagentbench/evaluator.py`) plus backend adapter and minimal agent loop wiring.
+- [x] (2026-03-04 19:30Z) Implemented MedAgentBench runner and evaluator CLIs (`run.py`, `scripts/medagentbench/evaluate.py`, `scripts/medagentbench/evaluator.py`) plus backend adapter and minimal agent loop wiring.
 - [x] (2026-03-04 19:33Z) Added unit tests for FHIR client, task import, and evaluator, plus integration smoke test for Dockerized runtime workflow.
 - [x] (2026-03-04 19:34Z) Validated end-to-end on small slices (explicit IDs, selector-based run, and `--max-tasks 3`) and generated summary artifacts.
-- [x] (2026-03-04 21:05Z) Implemented and validated interactive terminal demo CLI (`experiments/demo.py`) for ad-hoc prompt/task execution against a running FHIR server.
+- [x] (2026-03-04 21:05Z) Implemented and validated interactive terminal demo CLI (`demo.py`) for ad-hoc prompt/task execution against a running FHIR server.
 - [x] (2026-03-04 23:19Z) Refactored `src/ehr_co_scientist/tools/fhir_tools.py` to be schema-first (tool definitions + handlers), added OpenAI function-tools JSON export helpers/CLI, and validated with new `tests/test_fhir_tools.py`.
 - [x] (2026-03-05 00:30Z) Switched runtime to preloaded MedAgentBench FHIR image (`jyxsu6/medagentbench:latest`), diagnosed first factual QA failure with `--show-full-trace`, and fixed `patient_search` schema/handler to use MedAgentBench-style `family/given` matching (with full-name fallback).
 - [x] (2026-03-05 08:10Z) Backfilled expected answers (`sol`) in `data/medagentbench/test_data_v2.json` for all query-derived groups supported by `refsol.py` (`task2`, `task4`, `task5`, `task6`, `task7`, `task9`, `task10`) using live FHIR queries against the MedAgentBench server.
 - [x] (2026-03-05 05:22Z) Executed Milestone 7 repo-structure/tooling refactor: moved remaining benchmark artifacts into `scripts/medagentbench/` (including evaluation CLI), merged `FHIRClient` implementation into `fhir_tools.py` with compatibility shim, and extracted tool-agnostic registry/schema/export helpers into `src/ehr_co_scientist/tools/tooling/`.
-- [x] (2026-03-05 10:22Z) Added evaluation-mode write-tool short-circuit: when `--evaluation-mode` is enabled, `run_task` now terminates immediately on write-tool calls (`vital_create`, `procedure_create`, `medicationrequest_create`) without executing HTTP writes; wired through both `experiments/run.py` and `experiments/demo.py` flags and validated with new agent/tool tests.
-- [x] (2026-03-05 11:05Z) Enforced per-task `allowed_tools` in benchmark runs: `experiments/run.py` now passes task-scoped OpenAI tool schemas and `allowed_tools` policy into `run_task`, and `run_task` now blocks/terminates on disallowed tool calls (`blocked_not_allowed`) for both native function-calling and fallback tool-call paths.
+- [x] (2026-03-05 10:22Z) Added evaluation-mode write-tool short-circuit: when `--evaluation-mode` is enabled, `run_task` now terminates immediately on write-tool calls (`vital_create`, `procedure_create`, `medicationrequest_create`) without executing HTTP writes; wired through both `run.py` and `demo.py` flags and validated with new agent/tool tests.
+- [x] (2026-03-05 11:05Z) Enforced per-task `allowed_tools` in benchmark runs: `run.py` now passes task-scoped OpenAI tool schemas and `allowed_tools` policy into `run_task`, and `run_task` now blocks/terminates on disallowed tool calls (`blocked_not_allowed`) for both native function-calling and fallback tool-call paths.
 - [x] (2026-03-05 13:45Z) Refactored tool registration to a central decorator-backed catalog (`src/ehr_co_scientist/tools/catalog.py`) with explicit module imports, and removed transitional wrapper usage from `fhir_tools.py`.
 - [x] (2026-03-05 14:05Z) Standardized canonical tool IDs to function-safe underscore names (for example `patient_search`, `vital_create`) and removed `function_name` alias mapping/translation from shared tooling and agent dispatch.
 - [x] (2026-03-05 14:12Z) Removed unused compatibility adapter `scripts/medagentbench/fhir_medagentbench_tools.py` after verifying no runtime references; updated `scripts/medagentbench/README.md`.
 - [x] (2026-03-05 14:20Z) Consolidated redundant agent/tool tests via parametrization to reduce duplicate fallback/native cases while preserving coverage.
-- [x] (2026-03-05 15:08Z) Decoupled `run_task` from direct FHIR client construction by introducing shared `ToolRuntime`; moved FHIR client instantiation to caller entrypoints (`experiments/run.py`, `experiments/demo.py`) and updated tool handlers/dispatch to consume `tool_runtime`.
+- [x] (2026-03-05 15:08Z) Decoupled `run_task` from direct FHIR client construction by introducing shared `ToolRuntime`; moved FHIR client instantiation to caller entrypoints (`run.py`, `demo.py`) and updated tool handlers/dispatch to consume `tool_runtime`.
 - [x] (2026-03-05 15:16Z) Refactored `run_task` internals with dedicated helper functions for policy checks, termination payloads, and tool execution to reduce core-loop complexity without changing behavior.
 - [x] (2026-03-05 15:32Z) Split monolithic `src/ehr_co_scientist/agent.py` into package modules under `src/ehr_co_scientist/agent/` (`core.py`, `parsing.py`, `policy.py`, `tool_exec.py`) while preserving public imports via `src/ehr_co_scientist/agent/__init__.py`.
 - [x] (2026-03-05 16:05Z) Implemented action-trace evaluation overrides for MedAgentBench writing tasks `task3_*` and `task8_*` in `scripts/medagentbench/evaluator.py`, aligned with `data/medagentbench/refsol.py` semantics (tool/payload validation over final-answer matching).
@@ -51,7 +51,7 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-06 04:25Z) Removed `balanced` mode to reduce heuristic rule sprawl; evaluator now supports `strict` and `llm_assisted` only, with default LLM judge endpoint set to `hanover-openai-east`.
 - [x] (2026-03-06 01:30Z) Added expected-answer (`sol`) derivation pathway for `task3_*` records via action/payload validation semantics in evaluator/runtime flow (non-final-answer scoring path).
 - [x] (2026-03-06 01:30Z) Added expected-answer (`sol`) derivation pathway for `task8_*` records via action/payload validation semantics in evaluator/runtime flow (non-final-answer scoring path).
-- [x] (2026-03-06 22:47Z) Refactored benchmark flow to keep `experiments/run.py` generation-only: removed in-run expected-answer scoring (`success`/`final_answer_mismatch`) and centralized query success computation in `scripts/medagentbench/evaluator.py`.
+- [x] (2026-03-06 22:47Z) Refactored benchmark flow to keep `run.py` generation-only: removed in-run expected-answer scoring (`success`/`final_answer_mismatch`) and centralized query success computation in `scripts/medagentbench/evaluator.py`.
 - [x] (2026-03-06 22:49Z) Updated evaluator matching to treat numeric-like strings as numeric values during expected-answer comparison (for example `1`, `1.0`, `-1.0`), reducing false negatives for query tasks.
 - [x] (2026-03-06 22:50Z) Re-ran strict evaluation on 20-task sample (`sample_2_per_type_20260306_escalated`) and regenerated strict error-summary JSON (`error_summary_strict.json`): `pass@1=0.60`, `12/20` passed, `8` failures.
 - [x] (2026-03-06 23:35Z) Replaced evaluation-mode write-tool early termination with simulated tool feedback in agent loop; write tools now append `"The action has been taken. Please return the final answer."` and continue generation without executing writes.
@@ -59,15 +59,15 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-07 00:10Z) Added task-group-aware query matcher in evaluator (`task1` string MRN, `task2/4/5/6/7/9` numeric, `task10` list `[value,timestamp]` or `[-1]`) and reran sampled pipelines.
 - [x] (2026-03-07 00:16Z) Re-sampled 2 tasks per `task1..task10` and reran full pipeline with elevated permissions (`sample_2_per_type_20260306_161445_escalated`): strict `pass@1=0.90` (`18/20`), action `10/10`, query `8/10`; strict error summary now has 4 failures.
 - [x] (2026-03-07 03:58Z) Implemented async backend path (`run_chat_completion_async` adapter + Azure async direct call helper with retry/optional limiter) and added queue-driven `run_async_tasks` in `agent/core.py` to re-enqueue tasks after tool outputs until final answer/max rounds.
-- [x] (2026-03-07 04:12Z) Switched `experiments/run.py` to async execution by default with per-task tool schemas/allowlists preserved, plus async controls (`--max-concurrency`, `--requests-per-minute`, `--retry-attempts`).
+- [x] (2026-03-07 04:12Z) Switched `run.py` to async execution by default with per-task tool schemas/allowlists preserved, plus async controls (`--max-concurrency`, `--requests-per-minute`, `--retry-attempts`).
 - [x] (2026-03-07 04:20Z) Added default-on async progress monitoring (`requests` + `tasks` tqdm bars) with `--no-progress` opt-out.
 - [x] (2026-03-07 04:30Z) Refactored async internals from `agent/core.py` into `agent/async_runtime.py`, keeping `run_async_tasks` in `core.py` as a thin orchestrator.
 - [x] (2026-03-07 04:12Z) Validated async pipeline on sampled runs: 50-task sample (`sample_5_per_type_20260306_195925_async_progress`) achieved strict `pass@1=0.94` (`47/50`), and 20-task sample (`sample_2_per_type_20260306_201142_async_refactor`) achieved strict `pass@1=0.90` (`18/20`).
 
 ## Surprises & Discoveries
 
-- Observation: The current repository is still largely a scaffold: `src/ehr_co_scientist/agent.py` and `config/agent.yaml` are empty, and there are very few task/benchmark/test/runtime files; however, a non-empty Azure backend module now exists.
-  Evidence: `wc -c src/ehr_co_scientist/agent.py config/agent.yaml` reported `0` bytes for both files, while `src/ehr_co_scientist/backends/azure_openai.py` is present and non-empty as of 2026-03-04.
+- Observation: The repository initially contained mostly scaffold runtime wiring and minimal executable surfaces; integration work therefore needed to establish concrete runner/evaluator/tool paths from scratch.
+  Evidence: Early 2026-03-04 inspection showed near-empty core surfaces while backend implementation existed under `src/ehr_co_scientist/backends/azure_openai.py`.
 
 - Observation: The mostly scaffold status means integration work must include first implementations for runner/evaluator abstractions instead of only adding MedAgentBench-specific glue.
   Evidence: `rg --files src tests tasks benchmarks experiments` returned only a small set of files (core package stubs, one backend module, and one CLI examples test) on 2026-03-04.
@@ -170,7 +170,7 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: `balanced` required growing hand-crafted heuristics; batched LLM adjudication provides cleaner secondary scoring for strict failures with auditable artifacts.
   Date/Author: 2026-03-06 / User+Codex
 
-- Decision: Keep `experiments/run.py` strictly as inference/generation and move all success/failure determination into evaluator code.
+- Decision: Keep `run.py` strictly as inference/generation and move all success/failure determination into evaluator code.
   Rationale: Single source of truth for scoring prevents drift and keeps run artifacts backend-agnostic.
   Date/Author: 2026-03-06 / User+Codex
 
@@ -188,40 +188,40 @@ Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBenc
 
 - `uv run pytest tests/ -q` -> `20 passed, 2 skipped`.
 - `RUN_MEDAGENTBENCH_SMOKE=1 pytest tests/integration/test_medagentbench_smoke.py -q` -> `1 passed`.
-- Run artifacts generated under `experiments/results/medagentbench/20260304T191914Z`, `...191921Z`, and `...191930Z`.
-- Evaluation artifacts generated: `experiments/results/medagentbench/20260304T191930Z/summary.json` and `summary.md`.
+- Run artifacts generated under `results/medagentbench/20260304T191914Z`, `...191921Z`, and `...191930Z`.
+- Evaluation artifacts generated: `results/medagentbench/20260304T191930Z/summary.json` and `summary.md`.
 - Azure backend rerun without `--endpoint-name` succeeded on 2026-03-04:
   - `uv run ehr-azure-openai --example direct --model gpt-5.2 --prompt "Reply with exactly: backend_ok"` returned `backend_ok`.
-  - Additional run IDs with actual backend: `20260304T193527Z`, `20260304T193547Z`, `20260304T194005Z`; evaluation artifact at `experiments/results/medagentbench/20260304T194005Z/summary.json`.
+  - Additional run IDs with actual backend: `20260304T193527Z`, `20260304T193547Z`, `20260304T194005Z`; evaluation artifact at `results/medagentbench/20260304T194005Z/summary.json`.
 - Interactive demo validation on 2026-03-04:
-- `printf 'For patient S2874099, summarize known conditions.\nquit\n' | uv run python experiments/demo.py --backend azure_openai --model gpt-5.2 --api-version 2025-03-01-preview --fhir-base-url http://localhost:8080/fhir` executed successfully and returned structured JSON output with `task_id`, `final_answer`, `rounds_used`, and tool trace summary fields.
+- `printf 'For patient S2874099, summarize known conditions.\nquit\n' | uv run python demo.py --backend azure_openai --model gpt-5.2 --api-version 2025-03-01-preview --fhir-base-url http://localhost:8080/fhir` executed successfully and returned structured JSON output with `task_id`, `final_answer`, `rounds_used`, and tool trace summary fields.
 - Function-tools schema export and dispatch alignment validation on 2026-03-04:
   - `uv run pytest tests/test_fhir_tools.py tests/test_fhir_client.py tests/test_medagentbench_task_import.py -q` -> `10 passed`.
   - `uv run ruff check src/ehr_co_scientist/tools/fhir_tools.py tests/test_fhir_tools.py` -> `All checks passed`.
 - Real dataset runtime + first-task validation on 2026-03-05:
   - After switching to `jyxsu6/medagentbench:latest`, `Patient?identifier=S6534835` returned `total: 1`.
   - Full-trace demo run with first factual task initially failed due to `name`-based search (`total: 0`), then succeeded after schema/handler fix.
-  - `printf '<task1_1 prompt>\nquit\n' | uv run python experiments/demo.py ... --show-full-trace` now returns final answer `S6534835`.
+  - `printf '<task1_1 prompt>\nquit\n' | uv run python demo.py ... --show-full-trace` now returns final answer `S6534835`.
 - Evaluator mode simplification + LLM batch adjudication validation on 2026-03-06:
   - Strict-mode baseline over 100-sample slice: `pass@1 = 0.30`.
   - LLM-assisted mode (`o4-mini`, batch size 20, endpoint `hanover-openai-east`) over same slice: `pass@1 = 0.76`.
-  - Audit traces emitted to `experiments/results/medagentbench/<run>/llm_judgments.jsonl`.
+  - Audit traces emitted to `results/medagentbench/<run>/llm_judgments.jsonl`.
 - Generation/evaluation boundary refactor validation on 2026-03-06:
-  - `experiments/run.py` output rows no longer include `success`; evaluator derives query/action outcomes from `expected_answer`, `final_answer`, and action traces.
-  - Re-evaluated `experiments/results/medagentbench/sample_2_per_type_20260306_escalated/results.jsonl` (strict): `pass@1 = 0.60` (`12/20`), `query 8/10`, `action 4/10`.
-  - Regenerated strict failure artifact at `experiments/results/medagentbench/sample_2_per_type_20260306_escalated/error_summary_strict.json` with `total_failed_rows = 8`.
+  - `run.py` output rows no longer include `success`; evaluator derives query/action outcomes from `expected_answer`, `final_answer`, and action traces.
+  - Re-evaluated `results/medagentbench/sample_2_per_type_20260306_escalated/results.jsonl` (strict): `pass@1 = 0.60` (`12/20`), `query 8/10`, `action 4/10`.
+  - Regenerated strict failure artifact at `results/medagentbench/sample_2_per_type_20260306_escalated/error_summary_strict.json` with `total_failed_rows = 8`.
 - Evaluation-mode simulation + task-aware matcher validation on 2026-03-07:
   - Agent evaluation mode now simulates write-tool output text and continues generation; no HTTP writes are executed.
-  - Re-sampled 20-task run (`experiments/results/medagentbench/sample_2_per_type_20260306_161445_escalated/results.jsonl`) re-evaluated to `pass@1 = 0.90` (`18/20`), with `action 10/10` and `query 8/10`.
-  - Strict failure artifact regenerated at `experiments/results/medagentbench/sample_2_per_type_20260306_161445_escalated/error_summary_strict.json` (`4` failed rows: `2` payload mismatch, `2` final answer mismatch).
+  - Re-sampled 20-task run (`results/medagentbench/sample_2_per_type_20260306_161445_escalated/results.jsonl`) re-evaluated to `pass@1 = 0.90` (`18/20`), with `action 10/10` and `query 8/10`.
+  - Strict failure artifact regenerated at `results/medagentbench/sample_2_per_type_20260306_161445_escalated/error_summary_strict.json` (`4` failed rows: `2` payload mismatch, `2` final answer mismatch).
 - Async runner and progress validation on 2026-03-07:
-  - `experiments/run.py` now uses `run_async_tasks` with per-task tool schemas/allowlists and optional RPM throttling.
-  - 50-task async progress run (`experiments/results/medagentbench/sample_5_per_type_20260306_195925_async_progress/results.jsonl`) produced strict `pass@1 = 0.94` (`47/50`) and query/action split `22/25`, `25/25`.
-  - 20-task async-refactor validation run (`experiments/results/medagentbench/sample_2_per_type_20260306_201142_async_refactor/results.jsonl`) produced strict `pass@1 = 0.90` (`18/20`) with only `2` final-answer mismatches.
+  - `run.py` now uses `run_async_tasks` with per-task tool schemas/allowlists and optional RPM throttling.
+  - 50-task async progress run (`results/medagentbench/sample_5_per_type_20260306_195925_async_progress/results.jsonl`) produced strict `pass@1 = 0.94` (`47/50`) and query/action split `22/25`, `25/25`.
+  - 20-task async-refactor validation run (`results/medagentbench/sample_2_per_type_20260306_201142_async_refactor/results.jsonl`) produced strict `pass@1 = 0.90` (`18/20`) with only `2` final-answer mismatches.
 
 ## Context and Orientation
 
-This repository currently provides a project skeleton for an EHR agent system but not yet a functioning benchmark runtime. The key folders relevant to this plan are `src/ehr_co_scientist/` for shared runtime code, `tasks/` for first-class task-type packages (metadata + task-local adapters + fixtures), `experiments/` for runnable orchestration entry points, and `scripts/` for setup/runtime/evaluation automation. MedAgentBench is an external benchmark with a FHIR-based task environment and de-identified patient data exposed through FHIR APIs. In this plan, “FHIR server” means an HTTP service implementing the HL7 FHIR REST patterns used by MedAgentBench tasks. “Task adapter” means the code that transforms MedAgentBench task JSON into this repository’s internal task execution request shape and routes it to the matching task-type package.
+This repository currently provides a project skeleton for an EHR agent system but not yet a functioning benchmark runtime. The key folders relevant to this plan are `src/ehr_co_scientist/` for shared runtime code, `tasks/` for first-class task-type packages (metadata + task-local adapters + fixtures), `run.py`/`demo.py` for runnable orchestration entry points, and `scripts/` for setup/runtime/evaluation automation. MedAgentBench is an external benchmark with a FHIR-based task environment and de-identified patient data exposed through FHIR APIs. In this plan, “FHIR server” means an HTTP service implementing the HL7 FHIR REST patterns used by MedAgentBench tasks. “Task adapter” means the code that transforms MedAgentBench task JSON into this repository’s internal task execution request shape and routes it to the matching task-type package.
 
 The implementation target is not to re-create MedAgentBench internals. The target is to add a compatible benchmark integration layer that can run MedAgentBench tasks against a configured FHIR endpoint, collect outputs, and score the run with pass@1 and category-level breakdowns. The implementation also must define a stable internal task contract with fields that separate task intent from backend source details so task prompts can later be rebound to non-MedAgentBench datasets.
 
@@ -233,15 +233,15 @@ Create `scripts/medagentbench/setup.sh` to download or verify required MedAgentB
 
 Milestone 2 adds foundational runtime config and FHIR client tools.
 
-Populate `config/agent.yaml` with a concrete model/tool config that includes FHIR query and action tools, sets backend `azure_openai`, and uses default model `gpt-5.2` unless overridden by CLI. Implement a typed FHIR client class (now co-located in `src/ehr_co_scientist/tools/fhir_tools.py`) that supports: search (`GET /<Resource>?...`), create (`POST /<Resource>`), and capability check (`GET /metadata`). Implement reusable FHIR tool wrappers in `src/ehr_co_scientist/tools/fhir_tools.py` (`patient_search`, `lab_search`, `condition_search`, `procedure_search`, `medicationrequest_search`, plus create endpoints used by action tasks). Keep these tools dataset-agnostic so they can be reused across MedAgentBench and future task suites. Add shared request/retry utilities in `src/ehr_co_scientist/utils/http.py`.
+Define concrete runtime defaults through CLI/env-backed configuration (backend `azure_openai`, model `gpt-5.2` unless overridden), and implement a typed FHIR client class (now co-located in `src/ehr_co_scientist/tools/fhir_tools.py`) that supports: search (`GET /<Resource>?...`), create (`POST /<Resource>`), and capability check (`GET /metadata`). Implement reusable FHIR tool wrappers in `src/ehr_co_scientist/tools/fhir_tools.py` (`patient_search`, `lab_search`, `condition_search`, `procedure_search`, `medicationrequest_search`, plus create endpoints used by action tasks). Keep these tools dataset-agnostic so they can be reused across MedAgentBench and future task suites. Add shared request/retry utilities in `src/ehr_co_scientist/utils/http.py`.
 
 Milestone 3 introduces task ingestion, task selection, and execution loop.
 
-Create and/or populate task-type packages under `tasks/<task_type>/` (for example `tasks/cohort_construction/`, `tasks/temporal_reasoning/`) with `task.yaml`, `runner.py`, `evaluator.py`, and canonical manifest files generated from source JSON using `scripts/medagentbench/import_tasks.py`. The import script must map each source task to fields required by this repository (`task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `required_actions`, split labels, and `backend_profile`) and write split manifests under task-type package paths such as `tasks/<task_type>/sources/medagentbench/<split>.yaml`. Add a generic selector file format at `tasks/selectors/*.yaml` with include/exclude rules by `task_id`, category, difficulty, and task type (query or action). Implement `src/ehr_co_scientist/agent/core.py` with a minimal loop supporting up to 8 tool interaction rounds to align with MedAgentBench protocol. Add `experiments/run.py` CLI accepting `--task medagentbench`, `--split`, `--max-tasks`, `--backend`, `--model`, `--fhir-base-url`, `--task-ids`, `--task-categories`, `--task-selector-file`, `--endpoint-name`, and `--api-version`, where `--backend` defaults to `azure_openai`. Implement backend dispatch in runner through a provider-neutral adapter call (for example `run_chat_completion(backend, config, messages, **kwargs)`) with an Azure-backed implementation for this milestone.
+Create and/or populate task-type packages under `tasks/<task_type>/` (for example `tasks/cohort_construction/`, `tasks/temporal_reasoning/`) with `task.yaml`, `runner.py`, `evaluator.py`, and canonical manifest files generated from source JSON using `scripts/medagentbench/import_tasks.py`. The import script must map each source task to fields required by this repository (`task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `required_actions`, split labels, and `backend_profile`) and write split manifests under task-type package paths such as `tasks/<task_type>/sources/medagentbench/<split>.yaml`. Add a generic selector file format at `tasks/selectors/*.yaml` with include/exclude rules by `task_id`, category, difficulty, and task type (query or action). Implement `src/ehr_co_scientist/agent/core.py` with a minimal loop supporting up to 8 tool interaction rounds to align with MedAgentBench protocol. Add `run.py` CLI accepting `--task medagentbench`, `--split`, `--max-tasks`, `--backend`, `--model`, `--fhir-base-url`, `--task-ids`, `--task-categories`, `--task-selector-file`, `--endpoint-name`, and `--api-version`, where `--backend` defaults to `azure_openai`. Implement backend dispatch in runner through a provider-neutral adapter call (for example `run_chat_completion(backend, config, messages, **kwargs)`) with an Azure-backed implementation for this milestone.
 
 Milestone 4 adds evaluation and reporting.
 
-Implement `scripts/medagentbench/evaluate.py` with MedAgentBench scorer logic in `scripts/medagentbench/evaluator.py`. Scoring must compute pass@1 overall and per category, and separate query versus action tasks. Persist machine-readable results to `experiments/results/medagentbench/<timestamp>/results.jsonl` and summary metrics to `summary.json` and `summary.md`. Add simple error taxonomy counters for tool schema violations, HTTP failures, and final-answer mismatch.
+Implement `scripts/medagentbench/evaluate.py` with MedAgentBench scorer logic in `scripts/medagentbench/evaluator.py`. Scoring must compute pass@1 overall and per category, and separate query versus action tasks. Persist machine-readable results to `results/medagentbench/<timestamp>/results.jsonl` and summary metrics to `summary.json` and `summary.md`. Add simple error taxonomy counters for tool schema violations, HTTP failures, and final-answer mismatch.
 
 Milestone 5 hardens quality with tests and smoke runs.
 
@@ -249,7 +249,7 @@ Add unit tests in `tests/test_fhir_client.py`, `tests/test_medagentbench_task_im
 
 Milestone 6 adds an interactive demo mode for terminal users.
 
-Assuming FHIR runtime is already running, add a CLI entrypoint `experiments/demo.py` that starts an interactive prompt loop in terminal. A user can type an ad-hoc clinical task/prompt, the system runs one task execution flow using existing agent/backend/tool stack, and prints structured output (final answer, rounds used, and tool trace summary). The demo must support `--backend`, `--model`, `--api-version`, and `--fhir-base-url`, and should exit cleanly on `exit`/`quit`/EOF.
+Assuming FHIR runtime is already running, add a CLI entrypoint `demo.py` that starts an interactive prompt loop in terminal. A user can type an ad-hoc clinical task/prompt, the system runs one task execution flow using existing agent/backend/tool stack, and prints structured output (final answer, rounds used, and tool trace summary). The demo must support `--backend`, `--model`, `--api-version`, and `--fhir-base-url`, and should exit cleanly on `exit`/`quit`/EOF.
 
 Milestone 7 consolidates structure and extracts shared tooling abstractions.
 
@@ -299,7 +299,7 @@ Expected: command returns a direct chat completion payload from Azure OpenAI and
 
 6. Run a filtered benchmark slice by explicit task IDs.
 
-    uv run python experiments/run.py \
+    uv run python run.py \
       --task medagentbench \
       --split std \
       --task-ids task1_1,task4_1,task9_1 \
@@ -311,7 +311,7 @@ Expected: run executes exactly those task IDs, and the run metadata file records
 
 7. Run a filtered benchmark slice by selector file.
 
-    uv run python experiments/run.py \
+    uv run python run.py \
       --task medagentbench \
       --split std \
       --task-selector-file tasks/selectors/medagentbench_query_easy.yaml \
@@ -323,7 +323,7 @@ Expected: only tasks matching selector rules are executed, and skipped counts by
 
 8. Run a tiny benchmark slice with max-task cap.
 
-    uv run python experiments/run.py \
+    uv run python run.py \
       --task medagentbench \
       --split std \
       --max-tasks 3 \
@@ -331,13 +331,13 @@ Expected: only tasks matching selector rules are executed, and skipped counts by
       --api-version 2025-03-01-preview \
       --fhir-base-url http://localhost:8080/fhir
 
-Expected: run directory under `experiments/results/medagentbench/` with `results.jsonl` containing 3 records.
+Expected: run directory under `results/medagentbench/` with `results.jsonl` containing 3 records.
 
 9. Evaluate run outputs.
 
     uv run python scripts/medagentbench/evaluate.py \
       --task medagentbench \
-      --results experiments/results/medagentbench/<run-id>/results.jsonl
+      --results results/medagentbench/<run-id>/results.jsonl
 
 Expected: printed summary includes `pass_at_1`, category breakdowns, and query/action split.
 
@@ -351,7 +351,7 @@ Expected: tests pass, lint passes, formatter makes no additional changes on seco
 
 11. Run interactive demo CLI (FHIR server already running).
 
-    uv run python experiments/demo.py \
+    uv run python demo.py \
       --backend azure_openai \
       --model gpt-5.2 \
       --api-version 2025-03-01-preview \
@@ -361,23 +361,23 @@ Expected: terminal enters interactive mode, accepts free-form task prompts, and 
 
 ## Validation and Acceptance
 
-Acceptance is achieved when a novice can clone the repository, run the MedAgentBench setup script, start the Dockerized FHIR service, execute at least one MedAgentBench split through `experiments/run.py`, execute a filtered subset through selector configuration, and generate scoring outputs through `scripts/medagentbench/evaluate.py` without manually editing source files.
+Acceptance is achieved when a novice can clone the repository, run the MedAgentBench setup script, start the Dockerized FHIR service, execute at least one MedAgentBench split through `run.py`, execute a filtered subset through selector configuration, and generate scoring outputs through `scripts/medagentbench/evaluate.py` without manually editing source files.
 
 The concrete observable checks are:
 
 - `GET http://localhost:8080/fhir/metadata` succeeds while Docker service is up.
-- `experiments/run.py` produces one JSONL record per attempted task with final answer, tool trace, and success flag.
-- `experiments/run.py` supports task selection by explicit IDs, category filters, and selector file, and records the effective resolved task set in run metadata.
-- `experiments/run.py` records backend call metadata including backend name, model name, endpoint name, and API version for reproducibility.
+- `run.py` produces one JSONL record per attempted task with final answer, tool trace, and success flag.
+- `run.py` supports task selection by explicit IDs, category filters, and selector file, and records the effective resolved task set in run metadata.
+- `run.py` records backend call metadata including backend name, model name, endpoint name, and API version for reproducibility.
 - `scripts/medagentbench/evaluate.py` writes both machine-readable and human-readable summaries.
 - `tests/integration/test_medagentbench_smoke.py` passes when the FHIR service is running.
-- `experiments/demo.py` provides interactive terminal workflow and returns structured outputs for user-entered prompts while FHIR server is running.
+- `demo.py` provides interactive terminal workflow and returns structured outputs for user-entered prompts while FHIR server is running.
 
 ## Idempotence and Recovery
 
 The setup scripts must be idempotent. Re-running `scripts/medagentbench/setup.sh` should only re-download missing or checksum-mismatched assets under `data/medagentbench/`. Re-running `scripts/medagentbench/fhir_up.sh` should either report the existing running service or restart cleanly. If container startup fails due to a stale container, `scripts/medagentbench/fhir_down.sh` followed by `scripts/medagentbench/fhir_up.sh` must recover. Task import must overwrite outputs deterministically so repeated imports do not create drift.
 
-No destructive operations on unrelated repository files are allowed. All generated run artifacts must stay under `experiments/results/medagentbench/`.
+No destructive operations on unrelated repository files are allowed. All generated run artifacts must stay under `results/medagentbench/`.
 
 ## Artifacts and Notes
 
@@ -401,9 +401,9 @@ Expected key file additions and modifications:
 - `tasks/care_ordering/task.yaml`: New task type package metadata for non-medication ordering/referral tasks.
 - `tasks/<task_type>/runner.py`: Task-local execution adapter invoked by top-level experiment runner.
 - `tasks/<task_type>/evaluator.py`: Task-local scoring adapter used by benchmark harness.
-- `experiments/run.py`: Main benchmark runner CLI handling task resolution, agent execution, backend dispatch, and result persistence.
+- `run.py`: Main benchmark runner CLI handling task resolution, agent execution, backend dispatch, and result persistence.
 - `scripts/medagentbench/evaluate.py`: Top-level MedAgentBench evaluation CLI entrypoint that loads run outputs and writes summary metrics artifacts.
-- `experiments/demo.py`: Interactive terminal demo CLI for ad-hoc prompt/task execution using the same backend/tool pipeline.
+- `demo.py`: Interactive terminal demo CLI for ad-hoc prompt/task execution using the same backend/tool pipeline.
 - `src/ehr_co_scientist/agent/core.py`: Agent loop implementation coordinating prompt construction, tool calls, and final answer extraction.
 - `src/ehr_co_scientist/backends/__init__.py`: Backend package exports and registry entrypoint for available backend adapters.
 - `src/ehr_co_scientist/backends/adapter.py`: Provider-neutral backend interface and dispatch layer used by the runner.
@@ -417,7 +417,7 @@ Expected key file additions and modifications:
 - `tests/test_medagentbench_evaluator.py`: Unit tests for evaluator metrics, category splits, and error taxonomy accounting.
 - `tests/integration/test_medagentbench_smoke.py`: Integration smoke test covering minimal end-to-end execution against a running local FHIR service.
 - `README.md`: Project-level documentation updates adding MedAgentBench quickstart and command references.
-- `config/agent.yaml`: Default runtime configuration for backend/model/tool wiring used by MedAgentBench runs.
+- CLI/env runtime configuration: backend/model/tool wiring used by MedAgentBench runs.
 
 When implementing this plan, append short command transcripts and metric snippets here as evidence, keeping only output that proves milestone completion.
 
@@ -446,7 +446,7 @@ In `src/ehr_co_scientist/tools/fhir_tools.py`, define:
     def procedure_create(client: FHIRClient, resource: dict) -> dict: ...
     def medicationrequest_create(client: FHIRClient, resource: dict) -> dict: ...
 
-In `experiments/run.py`, define CLI entrypoint:
+In `run.py`, define CLI entrypoint:
 
     def main() -> None: ...
 
@@ -484,7 +484,7 @@ In `tasks/selectors/*.yaml`, define selector schema:
       difficulties: []
       task_types: []
 
-In `experiments/run.py`, selector precedence must be deterministic:
+In `run.py`, selector precedence must be deterministic:
 
 - `--task-ids` has highest priority.
 - `--task-selector-file` is applied next.

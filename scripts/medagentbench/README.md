@@ -22,7 +22,7 @@ Canonical source assets are in `data/medagentbench/`:
 ```bash
 # from repo root
 bash scripts/medagentbench/fhir_up.sh
-uv run python experiments/demo.py \
+uv run python demo.py \
   --backend azure_openai \
   --model gpt-5.2 \
   --api-version 2025-03-01-preview \
@@ -58,7 +58,7 @@ uv run python scripts/medagentbench/import_tasks.py \
   --split std
 
 # 5) Run a small benchmark slice
-uv run python experiments/run.py \
+uv run python run.py \
   --task medagentbench \
   --split std \
   --max-tasks 3 \
@@ -70,7 +70,7 @@ uv run python experiments/run.py \
 # 6) Evaluate run outputs
 uv run python scripts/medagentbench/evaluate.py \
   --task medagentbench \
-  --results experiments/results/medagentbench/<run-id>/results.jsonl
+  --results results/medagentbench/<run-id>/results.jsonl
 
 # 7) Stop runtime
 bash scripts/medagentbench/fhir_down.sh

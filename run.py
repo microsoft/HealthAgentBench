@@ -199,7 +199,7 @@ def main() -> None:
     output_dir = (
         Path(args.output_dir)
         if args.output_dir
-        else Path("experiments/results/medagentbench") / run_id
+        else Path("results/medagentbench") / run_id
     )
     output_dir.mkdir(parents=True, exist_ok=True)
 

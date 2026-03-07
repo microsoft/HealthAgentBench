@@ -10,7 +10,7 @@ wheels/
 .venv
 
 # Experiment artifacts
-experiments/results/
+results/
 
 # MedAgentBench intermediate data assets (downloaded/generated)
 data/medagentbench/*
