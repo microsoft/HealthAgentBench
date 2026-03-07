@@ -12,6 +12,7 @@ import base64
 import json
 import logging
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
@@ -190,6 +191,75 @@ def run_direct_chat_completion(
         )
     finally:
         client.close()
+
+
+@asynccontextmanager
+async def _optional_limiter(limiter: aiolimiter.AsyncLimiter | None):
+    if limiter is None:
+        yield
+        return
+    async with limiter:
+        yield
+
+
+async def run_direct_chat_completion_async(
+    *,
+    model: str,
+    messages: list[dict[str, Any]],
+    api_version: str = API_VERSION,
+    endpoint_name: str | None = None,
+    api_key: str | None = None,
+    retry_attempts: int = 3,
+    limiter: aiolimiter.AsyncLimiter | None = None,
+    tools: list[dict[str, Any]] | None = None,
+    **kwargs: Any,
+) -> ChatCompletion:
+    """Run one async Azure OpenAI chat completion with retries and optional rate limiting."""
+    target_endpoint, target_deployment, token_provider, resolved_api_key = (
+        resolve_endpoint_config(
+            model=model,
+            endpoint_name=endpoint_name,
+            api_key=api_key,
+        )
+    )
+    request_kwargs = _normalize_chat_kwargs(model=model, kwargs=kwargs)
+    request_kwargs["tools"] = list(tools or [])
+    await _load_local_images_in_messages(messages)
+
+    if resolved_api_key:
+        client = openai.AsyncAzureOpenAI(
+            azure_endpoint=target_endpoint,
+            api_version=api_version,
+            api_key=resolved_api_key,
+        )
+    else:
+        client = openai.AsyncAzureOpenAI(
+            azure_endpoint=target_endpoint,
+            api_version=api_version,
+            azure_ad_token_provider=token_provider,
+        )
+
+    retry_policy = AsyncRetrying(
+        stop=stop_after_attempt(retry_attempts),
+        wait=wait_exponential_jitter(initial=1, max=20),
+        retry=retry_if_exception(_is_retryable_openai_error),
+        before_sleep=before_sleep_log(LOG, logging.WARNING),
+        reraise=True,
+    )
+    try:
+        async with _optional_limiter(limiter):
+            async for attempt in retry_policy:
+                with attempt:
+                    return await client.chat.completions.create(
+                        model=target_deployment,
+                        messages=messages,
+                        **request_kwargs,
+                    )
+        raise RuntimeError(
+            "Unexpected retry flow termination for async direct chat completion."
+        )
+    finally:
+        await client.close()
 
 
 def _encode_local_image_path(path: Path) -> str:

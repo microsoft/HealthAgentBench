@@ -2,13 +2,22 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from dataclasses import dataclass
 from typing import Any
 
+import aiolimiter
+from tqdm import tqdm
+
 from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion
 from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
 
+from .async_runtime import (
+    advance_task_state,
+    new_task_state,
+    to_result_payload,
+)
 from .parsing import extract_native_tool_calls, parse_tool_call
 from .policy import check_tool_policy, should_simulate_tool_call_in_evaluation
 from .tool_exec import execute_tool_call, simulate_tool_call_in_evaluation
@@ -178,3 +187,105 @@ def run_task(
         "terminated_early": False,
         "termination_reason": None,
     }
+
+
+async def run_async_tasks(
+    *,
+    tasks: list[dict[str, Any]],
+    backend_config: BackendConfig,
+    tool_runtime: ToolRuntime | None = None,
+    config: AgentConfig | None = None,
+    chat_kwargs: dict[str, Any] | None = None,
+    chat_kwargs_by_task_id: dict[str, dict[str, Any] | None] | None = None,
+    allowed_tools_by_task_id: dict[str, set[str]] | None = None,
+    max_concurrency: int = 16,
+    requests_per_minute: int | None = None,
+    retry_attempts: int = 3,
+    show_progress: bool = True,
+) -> list[dict[str, Any]]:
+    """Run multiple tasks concurrently with step-wise requeue after tool calls.
+
+    Each backend response advances one task step; when a tool call is returned,
+    tool output is appended to that task's message history and the task is put
+    back on the queue for another backend turn.
+    """
+    cfg = config or AgentConfig()
+    tool_runtime_obj = tool_runtime or ToolRuntime()
+    states = [new_task_state(task, _system_prompt()) for task in tasks]
+    queue: asyncio.Queue[int | None] = asyncio.Queue()
+    for idx in range(len(states)):
+        queue.put_nowait(idx)
+
+    limiter = (
+        aiolimiter.AsyncLimiter(requests_per_minute)
+        if requests_per_minute is not None and requests_per_minute > 0
+        else None
+    )
+    progress_lock = asyncio.Lock()
+    steps_bar = (
+        tqdm(desc="requests", unit="req", leave=True, dynamic_ncols=True)
+        if show_progress
+        else None
+    )
+    tasks_bar = (
+        tqdm(total=len(states), desc="tasks", unit="task", leave=True, dynamic_ncols=True)
+        if show_progress
+        else None
+    )
+
+    async def _worker() -> None:
+        while True:
+            idx = await queue.get()
+            if idx is None:
+                queue.task_done()
+                break
+            state = states[idx]
+            task_id = str(state.task.get("task_id", ""))
+            allowed_tools = (
+                (allowed_tools_by_task_id or {}).get(task_id)
+                if allowed_tools_by_task_id is not None
+                else None
+            )
+            resolved_chat_kwargs = (
+                (chat_kwargs_by_task_id or {}).get(task_id)
+                if chat_kwargs_by_task_id is not None
+                else chat_kwargs
+            )
+            await advance_task_state(
+                state=state,
+                backend_config=backend_config,
+                max_rounds=cfg.max_rounds,
+                evaluation_mode=cfg.evaluation_mode,
+                chat_kwargs=resolved_chat_kwargs,
+                allowed_tools=allowed_tools,
+                tool_runtime_obj=tool_runtime_obj,
+                limiter=limiter,
+                retry_attempts=retry_attempts,
+            )
+            async with progress_lock:
+                if steps_bar is not None:
+                    steps_bar.update(1)
+            if not state.done and state.rounds_used < cfg.max_rounds:
+                await queue.put(idx)
+            elif not state.done and state.rounds_used >= cfg.max_rounds:
+                state.error = state.error or "max_rounds_exceeded"
+                state.done = True
+            if state.done and not state.completion_recorded:
+                async with progress_lock:
+                    if tasks_bar is not None:
+                        tasks_bar.update(1)
+                state.completion_recorded = True
+            queue.task_done()
+
+    worker_count = max(1, min(max_concurrency, len(states) or 1))
+    workers = [asyncio.create_task(_worker()) for _ in range(worker_count)]
+    await queue.join()
+    for _ in workers:
+        queue.put_nowait(None)
+    await asyncio.gather(*workers)
+    if steps_bar is not None:
+        steps_bar.close()
+    if tasks_bar is not None:
+        tasks_bar.close()
+
+    return [to_result_payload(state, cfg.max_rounds) for state in states]

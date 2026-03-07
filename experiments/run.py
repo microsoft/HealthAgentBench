@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import argparse
 import json
 from dataclasses import asdict
@@ -12,7 +13,7 @@ from typing import Any
 
 import yaml
 
-from ehr_co_scientist.agent import AgentConfig, run_task
+from ehr_co_scientist.agent import AgentConfig, run_async_tasks
 from ehr_co_scientist.backends.adapter import BackendConfig
 from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
 from ehr_co_scientist.tools.fhir_tools import FHIRClient
@@ -123,6 +124,29 @@ def main() -> None:
     parser.add_argument("--api-version", default="2025-03-01-preview")
     parser.add_argument("--output-dir")
     parser.add_argument(
+        "--max-concurrency",
+        type=int,
+        default=16,
+        help="Maximum number of tasks to advance concurrently in async mode.",
+    )
+    parser.add_argument(
+        "--requests-per-minute",
+        type=int,
+        default=None,
+        help="Optional global backend request rate limit for async mode.",
+    )
+    parser.add_argument(
+        "--retry-attempts",
+        type=int,
+        default=3,
+        help="Retry attempts for each backend step in async mode.",
+    )
+    parser.add_argument(
+        "--no-progress",
+        action="store_true",
+        help="Disable async run progress bars.",
+    )
+    parser.add_argument(
         "--evaluation-mode",
         action="store_true",
         help=(
@@ -190,42 +214,54 @@ def main() -> None:
     )
     tool_runtime = ToolRuntime(fhir=FHIRClient(base_url=args.fhir_base_url))
 
-    with results_path.open("w", encoding="utf-8") as out:
-        for task in selected:
-            task_id = str(task.get("task_id", ""))
-            error_type: str | None = None
-            task_allowed_tools = list(task.get("allowed_tools", []) or [])
-            allowed_tool_set = set(task_allowed_tools) if task_allowed_tools else None
-            chat_kwargs: dict[str, Any] = {}
-            if task_allowed_tools:
-                chat_kwargs = {
-                    "tools": get_openai_function_tools(
-                        TOOL_DEFINITIONS, task_allowed_tools
-                    ),
-                    "tool_choice": "auto",
-                    "parallel_tool_calls": False,
-                }
-            try:
-                agent_result = run_task(
-                    task=task,
-                    backend_config=backend_config,
-                    tool_runtime=tool_runtime,
-                    config=AgentConfig(
-                        max_rounds=8,
-                        evaluation_mode=args.evaluation_mode,
-                    ),
-                    chat_kwargs=chat_kwargs if chat_kwargs else None,
-                    allowed_tools=allowed_tool_set,
-                )
-                final_answer = str(agent_result.get("final_answer", ""))
-                error_text = agent_result.get("error")
-                if error_text:
-                    error_type = "tool_or_runtime_error"
-            except Exception as exc:  # noqa: BLE001
-                final_answer = ""
-                agent_result = {"tool_trace": [], "rounds_used": 0, "error": str(exc)}
-                error_type = "runtime_exception"
+    allowed_tools_by_task_id: dict[str, set[str]] = {}
+    chat_kwargs_by_task_id: dict[str, dict[str, Any] | None] = {}
+    for task in selected:
+        task_id = str(task.get("task_id", ""))
+        task_allowed_tools = list(task.get("allowed_tools", []) or [])
+        if task_allowed_tools:
+            allowed_tools_by_task_id[task_id] = set(task_allowed_tools)
+            chat_kwargs_by_task_id[task_id] = {
+                "tools": get_openai_function_tools(TOOL_DEFINITIONS, task_allowed_tools),
+                "tool_choice": "auto",
+                "parallel_tool_calls": False,
+            }
+        else:
+            chat_kwargs_by_task_id[task_id] = None
 
+    agent_results = asyncio.run(
+        run_async_tasks(
+            tasks=selected,
+            backend_config=backend_config,
+            tool_runtime=tool_runtime,
+            config=AgentConfig(
+                max_rounds=8,
+                evaluation_mode=args.evaluation_mode,
+            ),
+            chat_kwargs_by_task_id=chat_kwargs_by_task_id,
+            allowed_tools_by_task_id=allowed_tools_by_task_id,
+            max_concurrency=args.max_concurrency,
+            requests_per_minute=args.requests_per_minute,
+            retry_attempts=args.retry_attempts,
+            show_progress=not args.no_progress,
+        )
+    )
+
+    with results_path.open("w", encoding="utf-8") as out:
+        for task, agent_result in zip(selected, agent_results, strict=True):
+            task_id = str(task.get("task_id", ""))
+            task_allowed_tools = list(task.get("allowed_tools", []) or [])
+            error_type: str | None = None
+            final_answer = str(agent_result.get("final_answer", ""))
+            if agent_result.get("error"):
+                trace = agent_result.get("tool_trace", [])
+                has_tool_error = isinstance(trace, list) and any(
+                    isinstance(entry, dict) and entry.get("status") == "error"
+                    for entry in trace
+                )
+                error_type = (
+                    "tool_or_runtime_error" if has_tool_error else "runtime_exception"
+                )
             row = {
                 "task_id": task_id,
                 "category": task.get("category"),
@@ -258,6 +294,10 @@ def main() -> None:
         "task_count": len(selected),
         "backend_config": asdict(backend_config),
         "evaluation_mode": args.evaluation_mode,
+        "max_concurrency": args.max_concurrency,
+        "requests_per_minute": args.requests_per_minute,
+        "retry_attempts": args.retry_attempts,
+        "show_progress": not args.no_progress,
         "enforce_allowed_tools": True,
         "fhir_base_url": args.fhir_base_url,
         "results_path": str(results_path),

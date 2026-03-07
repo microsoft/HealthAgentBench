@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 import pytest
 
-from ehr_co_scientist.agent import AgentConfig, run_task
+from ehr_co_scientist.agent import AgentConfig, run_async_tasks, run_task
 from ehr_co_scientist.backends.adapter import BackendConfig
 
 
@@ -233,3 +234,51 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
     assert result["terminated_early"] is True
     assert result["termination_reason"] == "tool_not_allowed"
     assert result["tool_trace"][0]["status"] == "blocked_not_allowed"
+
+
+def test_run_async_tasks_requeues_after_tool_output(monkeypatch):
+    async def fake_chat_completion_async(*, config, messages, **kwargs):  # noqa: ANN001
+        instruction = str(messages[1].get("content", ""))
+        if instruction == "task-a":
+            has_tool_feedback = any(
+                m.get("role") == "user" and "tool_output" in str(m.get("content", ""))
+                for m in messages
+            )
+            if not has_tool_feedback:
+                return {
+                    "assistant_text": '{"tool":"patient_search","args":{"name":"Alice"}}'
+                }
+            return {"assistant_text": "done-a"}
+        return {"assistant_text": "done-b"}
+
+    def fake_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
+        assert tool_name == "patient_search"
+        return {"resourceType": "Bundle", "total": 1}
+
+    monkeypatch.setattr(
+        "ehr_co_scientist.agent.async_runtime.run_chat_completion_async",
+        fake_chat_completion_async,
+    )
+    monkeypatch.setattr(
+        "ehr_co_scientist.agent.tool_exec.call_registered_tool",
+        fake_call_tool,
+    )
+
+    results = asyncio.run(
+        run_async_tasks(
+            tasks=[
+                {"task_id": "a", "instruction": "task-a"},
+                {"task_id": "b", "instruction": "task-b"},
+            ],
+            backend_config=BackendConfig(backend="mock", model="m"),
+            config=AgentConfig(max_rounds=4),
+            max_concurrency=2,
+        )
+    )
+
+    assert len(results) == 2
+    assert results[0]["final_answer"] == "done-a"
+    assert results[0]["rounds_used"] == 2
+    assert results[0]["tool_trace"][0]["tool"] == "patient_search"
+    assert results[1]["final_answer"] == "done-b"
+    assert results[1]["rounds_used"] == 1

@@ -58,6 +58,11 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-06 23:40Z) Renamed tool policy metadata from `stop_on_call_in_evaluation` to `pretend_on_call_in_evaluation` and updated catalog/policy helpers plus tests accordingly.
 - [x] (2026-03-07 00:10Z) Added task-group-aware query matcher in evaluator (`task1` string MRN, `task2/4/5/6/7/9` numeric, `task10` list `[value,timestamp]` or `[-1]`) and reran sampled pipelines.
 - [x] (2026-03-07 00:16Z) Re-sampled 2 tasks per `task1..task10` and reran full pipeline with elevated permissions (`sample_2_per_type_20260306_161445_escalated`): strict `pass@1=0.90` (`18/20`), action `10/10`, query `8/10`; strict error summary now has 4 failures.
+- [x] (2026-03-07 03:58Z) Implemented async backend path (`run_chat_completion_async` adapter + Azure async direct call helper with retry/optional limiter) and added queue-driven `run_async_tasks` in `agent/core.py` to re-enqueue tasks after tool outputs until final answer/max rounds.
+- [x] (2026-03-07 04:12Z) Switched `experiments/run.py` to async execution by default with per-task tool schemas/allowlists preserved, plus async controls (`--max-concurrency`, `--requests-per-minute`, `--retry-attempts`).
+- [x] (2026-03-07 04:20Z) Added default-on async progress monitoring (`requests` + `tasks` tqdm bars) with `--no-progress` opt-out.
+- [x] (2026-03-07 04:30Z) Refactored async internals from `agent/core.py` into `agent/async_runtime.py`, keeping `run_async_tasks` in `core.py` as a thin orchestrator.
+- [x] (2026-03-07 04:12Z) Validated async pipeline on sampled runs: 50-task sample (`sample_5_per_type_20260306_195925_async_progress`) achieved strict `pass@1=0.94` (`47/50`), and 20-task sample (`sample_2_per_type_20260306_201142_async_refactor`) achieved strict `pass@1=0.90` (`18/20`).
 
 ## Surprises & Discoveries
 
@@ -87,6 +92,9 @@ For MedAgentBench background and design context used when refining this plan, se
 
 - Observation: Non-elevated sandbox runs can fail Azure identity flows due to write permissions on Azure CLI session files, causing widespread `runtime_exception` noise in benchmark results.
   Evidence: Repeated permission errors for `/home/shezhan/.azure/az.sess` were observed during non-escalated runs; rerunning with elevated permissions restored normal scoring behavior.
+
+- Observation: In async orchestration, counting backend steps and completed tasks separately is useful to distinguish API throughput from task convergence when tool-loop depth varies across tasks.
+  Evidence: Added live `requests` and `tasks` tqdm bars; 20-task validation run completed in 44 backend steps while reaching 20/20 task completion.
 
 ## Decision Log
 
@@ -166,6 +174,14 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: Single source of truth for scoring prevents drift and keeps run artifacts backend-agnostic.
   Date/Author: 2026-03-06 / User+Codex
 
+- Decision: Use a queue-driven async task scheduler that advances one backend turn per dequeue and re-enqueues tasks after tool outputs.
+  Rationale: Tool-calling tasks require variable numbers of backend turns; step-wise scheduling keeps fairness and supports dynamic convergence without blocking shorter tasks.
+  Date/Author: 2026-03-07 / User+Codex
+
+- Decision: Keep async runtime internals in a dedicated module (`agent/async_runtime.py`) while retaining `run_async_tasks` in `agent/core.py`.
+  Rationale: Preserves a short, readable `core.py` API surface while isolating state-machine details.
+  Date/Author: 2026-03-07 / User+Codex
+
 ## Outcomes & Retrospective
 
 Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBench tasks into task-type folders, Dockerized FHIR runtime with health checks, provider-neutral runner/evaluator CLIs, reusable FHIR tool modules, canonicalized tool catalog/dispatch abstractions, and passing unit/integration coverage for the implemented scope. Measured validation evidence:
@@ -198,6 +214,10 @@ Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBenc
   - Agent evaluation mode now simulates write-tool output text and continues generation; no HTTP writes are executed.
   - Re-sampled 20-task run (`experiments/results/medagentbench/sample_2_per_type_20260306_161445_escalated/results.jsonl`) re-evaluated to `pass@1 = 0.90` (`18/20`), with `action 10/10` and `query 8/10`.
   - Strict failure artifact regenerated at `experiments/results/medagentbench/sample_2_per_type_20260306_161445_escalated/error_summary_strict.json` (`4` failed rows: `2` payload mismatch, `2` final answer mismatch).
+- Async runner and progress validation on 2026-03-07:
+  - `experiments/run.py` now uses `run_async_tasks` with per-task tool schemas/allowlists and optional RPM throttling.
+  - 50-task async progress run (`experiments/results/medagentbench/sample_5_per_type_20260306_195925_async_progress/results.jsonl`) produced strict `pass@1 = 0.94` (`47/50`) and query/action split `22/25`, `25/25`.
+  - 20-task async-refactor validation run (`experiments/results/medagentbench/sample_2_per_type_20260306_201142_async_refactor/results.jsonl`) produced strict `pass@1 = 0.90` (`18/20`) with only `2` final-answer mismatches.
 
 ## Context and Orientation
 

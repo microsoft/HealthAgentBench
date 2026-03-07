@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+import aiolimiter
+
 from ehr_co_scientist.backends import azure_openai
 
 
@@ -52,6 +54,56 @@ def run_chat_completion(
             endpoint_name=config.endpoint_name,
             api_version=config.api_version or azure_openai.API_VERSION,
             api_key=config.api_key,
+            **kwargs,
+        )
+        if hasattr(response, "model_dump"):
+            payload = response.model_dump()
+        elif hasattr(response, "to_dict"):
+            payload = response.to_dict()
+        else:
+            raise TypeError(
+                "Unsupported chat completion response type from azure backend."
+            )
+    else:
+        raise ValueError(f"Unsupported backend: {config.backend}")
+
+    return {
+        "backend": config.backend,
+        "model": config.model,
+        "endpoint_name": config.endpoint_name,
+        "api_version": config.api_version,
+        "assistant_text": _extract_assistant_text(payload),
+        "raw": payload,
+    }
+
+
+async def run_chat_completion_async(
+    *,
+    config: BackendConfig,
+    messages: list[dict[str, Any]],
+    limiter: aiolimiter.AsyncLimiter | None = None,
+    retry_attempts: int = 3,
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Run an async chat completion and normalize the response envelope."""
+    backend = config.backend.lower()
+
+    if backend == "mock":
+        text = kwargs.pop("mock_response", "mock_response")
+        payload: dict[str, Any] = {
+            "choices": [{"message": {"role": "assistant", "content": text}}],
+            "model": config.model,
+            "id": "mock-0",
+        }
+    elif backend == "azure_openai":
+        response = await azure_openai.run_direct_chat_completion_async(
+            model=config.model,
+            messages=messages,
+            endpoint_name=config.endpoint_name,
+            api_version=config.api_version or azure_openai.API_VERSION,
+            api_key=config.api_key,
+            retry_attempts=retry_attempts,
+            limiter=limiter,
             **kwargs,
         )
         if hasattr(response, "model_dump"):
