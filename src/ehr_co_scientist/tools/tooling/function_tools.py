@@ -16,7 +16,7 @@ class ToolDefinition:
     description: str
     parameters: dict[str, Any]
     handler: Callable[..., dict[str, Any]]
-    stop_on_call_in_evaluation: bool = False
+    pretend_on_call_in_evaluation: bool = False
 
 
 _PENDING_REGISTRATIONS: list[dict[str, Any]] = []
@@ -28,7 +28,7 @@ def register_tool(
     tool_name: str,
     description: str,
     parameters: dict[str, Any] | Callable[[], dict[str, Any]],
-    stop_on_call_in_evaluation: bool = False,
+    pretend_on_call_in_evaluation: bool = False,
 ):
     """Decorator to register a tool handler for catalog materialization."""
 
@@ -42,7 +42,7 @@ def register_tool(
                 "description": description,
                 "parameters": parameters,
                 "handler": fn,
-                "stop_on_call_in_evaluation": stop_on_call_in_evaluation,
+                "pretend_on_call_in_evaluation": pretend_on_call_in_evaluation,
             }
         )
         return fn
@@ -63,7 +63,7 @@ def collect_registered_tool_definitions() -> dict[str, ToolDefinition]:
             description=entry["description"],
             parameters=resolved_parameters,
             handler=entry["handler"],
-            stop_on_call_in_evaluation=entry["stop_on_call_in_evaluation"],
+            pretend_on_call_in_evaluation=entry["pretend_on_call_in_evaluation"],
         )
     return definitions
 

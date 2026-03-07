@@ -10,8 +10,8 @@ from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion
 from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
 
 from .parsing import extract_native_tool_calls, parse_tool_call
-from .policy import check_tool_policy
-from .tool_exec import execute_tool_call
+from .policy import check_tool_policy, should_simulate_tool_call_in_evaluation
+from .tool_exec import execute_tool_call, simulate_tool_call_in_evaluation
 
 
 @dataclass(frozen=True)
@@ -93,11 +93,21 @@ def run_task(
                     args=parsed_args,
                     backend_result=backend_result,
                     allowed_tools=allowed_tools,
-                    evaluation_mode=cfg.evaluation_mode,
-                    last_error=last_error,
                 )
                 if policy_result is not None:
                     return policy_result
+                if should_simulate_tool_call_in_evaluation(
+                    evaluation_mode=cfg.evaluation_mode,
+                    tool_name=function_name,
+                ):
+                    simulate_tool_call_in_evaluation(
+                        tool_name=function_name,
+                        args=parsed_args,
+                        tool_trace=tool_trace,
+                        messages=messages,
+                        tool_call_id=tool_call.get("id"),
+                    )
+                    continue
                 execution_error = execute_tool_call(
                     tool_name=function_name,
                     args=parsed_args,
@@ -133,11 +143,21 @@ def run_task(
             args=args,
             backend_result=backend_result,
             allowed_tools=allowed_tools,
-            evaluation_mode=cfg.evaluation_mode,
-            last_error=last_error,
         )
         if policy_result is not None:
             return policy_result
+        if should_simulate_tool_call_in_evaluation(
+            evaluation_mode=cfg.evaluation_mode,
+            tool_name=tool_name,
+        ):
+            simulate_tool_call_in_evaluation(
+                tool_name=tool_name,
+                args=args,
+                tool_trace=tool_trace,
+                messages=messages,
+                tool_call_id=None,
+            )
+            continue
         execution_error = execute_tool_call(
             tool_name=tool_name,
             args=args,

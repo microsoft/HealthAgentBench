@@ -126,8 +126,8 @@ def main() -> None:
         "--evaluation-mode",
         action="store_true",
         help=(
-            "Do not execute write tools in evaluation mode; terminate task early "
-            "when a write tool is called."
+            "Do not execute write tools in evaluation mode; simulate tool success "
+            "and ask the model to return a final answer."
         ),
     )
     args = parser.parse_args()

@@ -54,6 +54,10 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-06 22:47Z) Refactored benchmark flow to keep `experiments/run.py` generation-only: removed in-run expected-answer scoring (`success`/`final_answer_mismatch`) and centralized query success computation in `scripts/medagentbench/evaluator.py`.
 - [x] (2026-03-06 22:49Z) Updated evaluator matching to treat numeric-like strings as numeric values during expected-answer comparison (for example `1`, `1.0`, `-1.0`), reducing false negatives for query tasks.
 - [x] (2026-03-06 22:50Z) Re-ran strict evaluation on 20-task sample (`sample_2_per_type_20260306_escalated`) and regenerated strict error-summary JSON (`error_summary_strict.json`): `pass@1=0.60`, `12/20` passed, `8` failures.
+- [x] (2026-03-06 23:35Z) Replaced evaluation-mode write-tool early termination with simulated tool feedback in agent loop; write tools now append `"The action has been taken. Please return the final answer."` and continue generation without executing writes.
+- [x] (2026-03-06 23:40Z) Renamed tool policy metadata from `stop_on_call_in_evaluation` to `pretend_on_call_in_evaluation` and updated catalog/policy helpers plus tests accordingly.
+- [x] (2026-03-07 00:10Z) Added task-group-aware query matcher in evaluator (`task1` string MRN, `task2/4/5/6/7/9` numeric, `task10` list `[value,timestamp]` or `[-1]`) and reran sampled pipelines.
+- [x] (2026-03-07 00:16Z) Re-sampled 2 tasks per `task1..task10` and reran full pipeline with elevated permissions (`sample_2_per_type_20260306_161445_escalated`): strict `pass@1=0.90` (`18/20`), action `10/10`, query `8/10`; strict error summary now has 4 failures.
 
 ## Surprises & Discoveries
 
@@ -80,6 +84,9 @@ For MedAgentBench background and design context used when refining this plan, se
 
 - Observation: Creating runtime clients inside `run_task` tightly couples agent orchestration to a specific tool backend and makes multi-runtime task support awkward.
   Evidence: Prior implementation unconditionally built `FHIRClient` inside `run_task`; refactor introduced `ToolRuntime` so clients are supplied by caller entrypoints.
+
+- Observation: Non-elevated sandbox runs can fail Azure identity flows due to write permissions on Azure CLI session files, causing widespread `runtime_exception` noise in benchmark results.
+  Evidence: Repeated permission errors for `/home/shezhan/.azure/az.sess` were observed during non-escalated runs; rerunning with elevated permissions restored normal scoring behavior.
 
 ## Decision Log
 
@@ -127,9 +134,9 @@ For MedAgentBench background and design context used when refining this plan, se
   Rationale: The generic HAPI image has no benchmark patient data; the preloaded image includes the benchmark dataset and supports real task validation.
   Date/Author: 2026-03-05 / User+Codex
 
-- Decision: In evaluation mode, end tasks immediately when a write tool is called rather than executing writes or returning synthetic write outputs.
-  Rationale: MedAgentBench action-task grading logic validates called tool name and payload shape; skipping write execution avoids mutating shared runtime state and keeps evaluation deterministic.
-  Date/Author: 2026-03-05 / User+Codex
+- Decision: In evaluation mode, simulate write-tool success and continue the loop instead of terminating immediately.
+  Rationale: Returning a synthetic tool output lets the model produce a final answer while still avoiding DB mutation; this improves alignment with full turn-taking tool-call flows.
+  Date/Author: 2026-03-06 / User+Codex
 
 - Decision: Treat `allowed_tools` in task manifests as an enforced execution policy (not metadata-only) by restricting advertised function schemas per task and blocking disallowed tool calls at runtime.
   Rationale: Defense-in-depth avoids policy bypass when models emit unadvertised tools and keeps benchmark behavior aligned with task manifests.
@@ -187,6 +194,10 @@ Implemented outcomes now include: grouped ingestion of all 300 real MedAgentBenc
   - `experiments/run.py` output rows no longer include `success`; evaluator derives query/action outcomes from `expected_answer`, `final_answer`, and action traces.
   - Re-evaluated `experiments/results/medagentbench/sample_2_per_type_20260306_escalated/results.jsonl` (strict): `pass@1 = 0.60` (`12/20`), `query 8/10`, `action 4/10`.
   - Regenerated strict failure artifact at `experiments/results/medagentbench/sample_2_per_type_20260306_escalated/error_summary_strict.json` with `total_failed_rows = 8`.
+- Evaluation-mode simulation + task-aware matcher validation on 2026-03-07:
+  - Agent evaluation mode now simulates write-tool output text and continues generation; no HTTP writes are executed.
+  - Re-sampled 20-task run (`experiments/results/medagentbench/sample_2_per_type_20260306_161445_escalated/results.jsonl`) re-evaluated to `pass@1 = 0.90` (`18/20`), with `action 10/10` and `query 8/10`.
+  - Strict failure artifact regenerated at `experiments/results/medagentbench/sample_2_per_type_20260306_161445_escalated/error_summary_strict.json` (`4` failed rows: `2` payload mismatch, `2` final answer mismatch).
 
 ## Context and Orientation
 

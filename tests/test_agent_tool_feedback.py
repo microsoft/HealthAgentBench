@@ -102,12 +102,12 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
 
 
 @pytest.mark.parametrize("native_tool_call", [False, True])
-def test_run_task_evaluation_mode_ends_on_write_tool(monkeypatch, native_tool_call):
+def test_run_task_evaluation_mode_simulates_write_tool(monkeypatch, native_tool_call):
     calls: list[list[dict[str, Any]]] = []
 
     def fake_chat_completion(*, config, messages, **kwargs):  # noqa: ANN001
         calls.append(messages)
-        if native_tool_call:
+        if len(calls) == 1 and native_tool_call:
             return {
                 "assistant_text": "",
                 "raw": {
@@ -131,7 +131,9 @@ def test_run_task_evaluation_mode_ends_on_write_tool(monkeypatch, native_tool_ca
                     ]
                 },
             }
-        return {"assistant_text": '{"tool":"vital_create","args":{"resource":{"resourceType":"Observation"}}}'}
+        if len(calls) == 1:
+            return {"assistant_text": '{"tool":"vital_create","args":{"resource":{"resourceType":"Observation"}}}'}
+        return {"assistant_text": "final response"}
 
     def fail_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
         raise AssertionError(f"call_tool should not run in evaluation mode: {tool_name}")
@@ -154,11 +156,27 @@ def test_run_task_evaluation_mode_ends_on_write_tool(monkeypatch, native_tool_ca
         ),
     )
 
-    assert result["terminated_early"] is True
-    assert result["termination_reason"] == "evaluation_mode_write_tool_called"
-    assert result["final_answer"] == ""
+    assert result["terminated_early"] is False
+    assert result["termination_reason"] is None
+    assert result["final_answer"] == "final response"
     assert result["tool_trace"][0]["tool"] == "vital_create"
-    assert result["tool_trace"][0]["status"] == "skipped_evaluation_mode"
+    assert result["tool_trace"][0]["status"] == "simulated_evaluation_mode"
+
+    second_round_messages = calls[1]
+    if native_tool_call:
+        assert any(
+            m.get("role") == "tool"
+            and m.get("content")
+            == '{"message": "The action has been taken. Please return the final answer."}'
+            for m in second_round_messages
+        )
+    else:
+        assert any(
+            m.get("role") == "user"
+            and "The action has been taken. Please return the final answer."
+            in str(m.get("content", ""))
+            for m in second_round_messages
+        )
 
 
 @pytest.mark.parametrize("native_tool_call", [False, True])

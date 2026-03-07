@@ -157,7 +157,7 @@ def medicationrequest_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[s
     tool_name="vital_create",
     description="Create a new Observation resource (typically a vital sign).",
     parameters=lambda: _wrap_resource_schema(_vital_create_resource_schema()),
-    stop_on_call_in_evaluation=True,
+    pretend_on_call_in_evaluation=True,
 )
 def vital_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dict[str, Any]:
     """Create Observation resource used for vital-sign write tasks."""
@@ -169,7 +169,7 @@ def vital_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dict[st
     tool_name="procedure_create",
     description="Create a new ServiceRequest resource.",
     parameters=lambda: _wrap_resource_schema(_servicerequest_create_resource_schema()),
-    stop_on_call_in_evaluation=True,
+    pretend_on_call_in_evaluation=True,
 )
 def procedure_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dict[str, Any]:
     """Create ServiceRequest resource used for procedure/order tasks."""
@@ -182,7 +182,7 @@ def procedure_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dic
     tool_name="medicationrequest_create",
     description="Create a new MedicationRequest resource.",
     parameters=lambda: _wrap_resource_schema(_medicationrequest_create_resource_schema()),
-    stop_on_call_in_evaluation=True,
+    pretend_on_call_in_evaluation=True,
 )
 def medicationrequest_create(
     tool_runtime: ToolRuntime, resource: dict[str, Any]

@@ -3,7 +3,7 @@ import json
 from ehr_co_scientist.tools.catalog import (
     TOOL_DEFINITIONS,
     TOOL_REGISTRY,
-    should_stop_on_call_in_evaluation,
+    should_pretend_on_call_in_evaluation,
 )
 from ehr_co_scientist.tools.tooling.function_tools import (
     call_registered_tool,
@@ -142,8 +142,8 @@ def test_procedure_create_posts_service_request():
     assert client.calls == [("create", "ServiceRequest", payload)]
 
 
-def test_write_tools_stop_in_evaluation_mode():
-    assert should_stop_on_call_in_evaluation("vital_create") is True
-    assert should_stop_on_call_in_evaluation("procedure_create") is True
-    assert should_stop_on_call_in_evaluation("medicationrequest_create") is True
-    assert should_stop_on_call_in_evaluation("patient_search") is False
+def test_write_tools_pretend_in_evaluation_mode():
+    assert should_pretend_on_call_in_evaluation("vital_create") is True
+    assert should_pretend_on_call_in_evaluation("procedure_create") is True
+    assert should_pretend_on_call_in_evaluation("medicationrequest_create") is True
+    assert should_pretend_on_call_in_evaluation("patient_search") is False

@@ -69,3 +69,33 @@ def execute_tool_call(
         else:
             messages.append(tool_feedback_message(tool_name, {"error": last_error}))
         return last_error
+
+
+def simulate_tool_call_in_evaluation(
+    *,
+    tool_name: str,
+    args: dict[str, Any],
+    tool_trace: list[dict[str, Any]],
+    messages: list[dict[str, Any]],
+    tool_call_id: str | None,
+) -> None:
+    """Append simulated tool output for evaluation-mode write tools."""
+    simulated_output = "The action has been taken. Please return the final answer."
+    tool_trace.append(
+        {
+            "tool": tool_name,
+            "args": args,
+            "result": {"simulated": True, "message": simulated_output},
+            "status": "simulated_evaluation_mode",
+        }
+    )
+    if tool_call_id is not None:
+        messages.append(
+            {
+                "role": "tool",
+                "tool_call_id": tool_call_id,
+                "content": json.dumps({"message": simulated_output}, ensure_ascii=True),
+            }
+        )
+    else:
+        messages.append(tool_feedback_message(tool_name, {"message": simulated_output}))
