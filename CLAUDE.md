@@ -9,7 +9,7 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 
 ## Repository Layout
 
-- `src/ehr_co_scientist/agent/` — Core agent package (`core.py`, parsing/policy/tool-exec modules).
+- `src/ehr_co_scientist/agents/oai_agent/` — Core OpenAI-style agent package (`core.py`, parsing/policy/tool-exec modules).
 - `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
 - `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
 - `tasks/` — Task suite package organized by task type (benchmark manifests, prompts, fixtures, selectors, and task-local docs).
@@ -45,7 +45,7 @@ When implementing or modifying tools, respect the five-category taxonomy:
 4. **EHR utilities** — FHIR client, ClinicalTrials.gov search, de-identification checker.
 5. **File & format** — CSV/Parquet reader, document parser, schema mapper, web fetcher, bash tools.
 
-Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must expose a consistent interface that the agent loop in `src/ehr_co_scientist/agent/core.py` can discover and invoke.
+Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must expose a consistent interface that the agent loop in `src/ehr_co_scientist/agents/oai_agent/core.py` can discover and invoke.
 
 ## Tasks
 
