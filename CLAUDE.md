@@ -10,16 +10,15 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 ## Repository Layout
 
 - `src/ehr_co_scientist/agent/` — Core agent package (`core.py`, parsing/policy/tool-exec modules).
-- `src/ehr_co_scientist/prompts/` — System and task prompt templates.
 - `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
 - `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
-- `tasks/` — Task suite package organized by task type (task specs, task-local runners/evaluators, prompts, fixtures, selectors, and registry).
+- `tasks/` — Task suite package organized by task type (benchmark manifests, prompts, fixtures, selectors, and task-local docs).
 - `scripts/medagentbench/` — MedAgentBench runtime orchestration, import, and evaluation utilities.
 - `run.py` / `demo.py` — Top-level orchestration CLIs for benchmark runs and interactive demos.
 - `results/` — Top-level run/evaluation artifacts directory (gitignored).
 - `notebooks/` — Jupyter notebooks for analysis and paper figures.
 - `paper/` — LaTeX source for the arxiv submission.
-- `scripts/` — Setup and export utilities organized by integration/domain (e.g., `setup_mimic.sh`, `medagentbench/`).
+- `scripts/` — Setup and export utilities organized by integration/domain (e.g., `medagentbench/`).
 - `tests/` — Unit and integration tests for tools and the agent.
 - `.agent/plans/` — Individual ExecPlan files (see ExecPlans section below).
 
@@ -27,7 +26,7 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 
 - **Python ≥ 3.11** is required. Use modern Python idioms (type hints, dataclasses, `match` statements where appropriate).
 - **Packaging** is managed via `pyproject.toml`. Install with `uv sync --all-extras`. Add new dependencies with `uv add <package>`.
-- **Environment variables** are loaded from `.env` (see `.env.example` for required keys). Never hard-code secrets.
+- **Environment variables** are loaded from `.env`. Never hard-code secrets.
 - **SQL** targets PostgreSQL (MIMIC-IV). Always use parameterized queries; never interpolate user input.
 - **Testing** uses `pytest`. Run the full suite with `pytest tests/` from the repo root.
 - **Linting** uses `ruff`. Run `ruff check src/ tests/` before committing.
@@ -50,7 +49,7 @@ Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must e
 
 ## Tasks
 
-The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with task metadata (`task.yaml`) plus optional task-local execution/scoring modules (`runner.py`, `evaluator.py`), prompts, and fixtures. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep top-level CLIs in `run.py`/`demo.py` plus integration-specific scripts (for example `scripts/medagentbench/evaluate.py`) responsible for consistent execution.
+The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with benchmark manifests under `sources/<benchmark_name>/` plus optional prompts, fixtures, and task-local docs. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep top-level CLIs in `run.py`/`demo.py` plus integration-specific scripts (for example `scripts/medagentbench/evaluate.py`) responsible for consistent execution.
 
 ## ExecPlans
 
@@ -75,17 +74,36 @@ uv sync --all-extras
 # Activate virtual environment
 source .venv/bin/activate
 
-# Copy and fill in API keys
-cp .env.example .env
+# Demo workflow (MedAgentBench recommended first run)
+bash scripts/medagentbench/fhir_up.sh
+uv run python demo.py \
+  --backend azure_openai \
+  --model gpt-5-mini \
+  --api-version 2025-03-01-preview \
+  --fhir-base-url http://localhost:8080/fhir
+bash scripts/medagentbench/fhir_down.sh
 
-# Set up MIMIC database (requires PhysioNet credentials)
-bash scripts/setup_mimic.sh
-
-# Run a task
-python run.py --task medagentbench --split std --max-tasks 3 --model gpt-5.2
-
-# Evaluate MedAgentBench results
-python scripts/medagentbench/evaluate.py --task medagentbench --results results/medagentbench/<run-id>/results.jsonl
+# Benchmark evaluation workflow (MedAgentBench example)
+bash scripts/medagentbench/fhir_up.sh
+curl -sSf http://localhost:8080/fhir/metadata | head -c 200
+bash scripts/medagentbench/setup.sh
+uv run python scripts/medagentbench/import_tasks.py \
+  --input data/medagentbench/test_data_v2.json \
+  --funcs-json data/medagentbench/funcs_v1.json \
+  --output-root tasks \
+  --split std
+uv run python run.py \
+  --task medagentbench \
+  --split std \
+  --max-tasks 3 \
+  --backend azure_openai \
+  --model gpt-5-mini \
+  --api-version 2025-03-01-preview \
+  --fhir-base-url http://localhost:8080/fhir
+uv run python scripts/medagentbench/evaluate.py \
+  --task medagentbench \
+  --results results/medagentbench/<run-id>/results.jsonl
+bash scripts/medagentbench/fhir_down.sh
 
 # Run tests
 pytest tests/

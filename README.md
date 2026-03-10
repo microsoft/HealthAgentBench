@@ -42,11 +42,9 @@ The agent has access to tools across five categories:
 
 ## Task Suite Architecture
 
-Tasks are first-class artifacts in this repository. Each task can include:
+Tasks are first-class artifacts in this repository. Each task-type package can include:
 
-- declarative metadata (`task.yaml`)
-- task-specific execution glue (`runner.py`)
-- task-specific scoring logic (`evaluator.py`)
+- benchmark manifests under `sources/<benchmark_name>/`
 - prompts, fixtures, and docs needed to reproduce the task
 
 Task packages are organized by task type from the `Tasks` table above (for example `tasks/cohort_construction/`, `tasks/temporal_reasoning/`), not by benchmark source. If a new task type is added, update the `Tasks` section first, then add the corresponding `tasks/<task_type>/` package.
@@ -60,7 +58,6 @@ ehr-co-scientist/
 ├── README.md
 ├── LICENSE
 ├── pyproject.toml
-├── .env.example
 ├── CLAUDE.md                         # Claude Code instructions
 ├── AGENTS.md                         # Codex agent instructions
 ├── PLANS.md                          # ExecPlan format definition
@@ -69,22 +66,19 @@ ehr-co-scientist/
 ├── .agent/plans/                     # Individual ExecPlan files
 ├── src/ehr_co_scientist/
 │   ├── agent/                        # Core agent package (core loop + parsing/policy/tool execution helpers)
-│   ├── prompts/                      # System & task prompt templates
 │   ├── tools/                        # Tool implementations
 │   └── utils/                        # DB, sandbox, logging helpers
-├── tasks/                            # Task suite: specs + runners + evaluators + fixtures
-│   ├── registry.py                   # Task discovery/registration
+├── tasks/                            # Task suite: manifests + task-type assets
 │   ├── selectors/                    # Reusable task selection manifests
 │   ├── cohort_construction/          # Task-type package
-│   │   └── task.yaml                 # Task-type metadata/spec
+│   │   └── sources/medagentbench/    # Benchmark manifests
 │   ├── temporal_reasoning/           # Task-type package
-│   │   └── task.yaml                 # Task-type metadata/spec
+│   │   └── sources/medagentbench/    # Benchmark manifests
 │   └── report_generation/            # Task-type package
-│       └── task.yaml                 # Task-type metadata/spec
+│       └── sources/                  # Optional benchmark manifests
 ├── run.py                            # Top-level benchmark runner CLI
 ├── demo.py                           # Interactive terminal demo CLI
 ├── scripts/                          # Setup/export/evaluation utilities organized by integration domain
-│   ├── setup_mimic.sh                # Core MIMIC bootstrap script
 │   └── medagentbench/                # MedAgentBench runtime, import, and evaluation scripts
 ├── results/                          # Run/evaluation artifacts (gitignored)
 ├── notebooks/                        # Analysis & paper figures
@@ -102,25 +96,78 @@ cd ehr-co-scientist
 
 # Install dependencies (requires uv: https://docs.astral.sh/uv/)
 uv sync --all-extras
-
-# Copy and fill in API keys
-cp .env.example .env
-
-# Set up MIMIC database (requires PhysioNet credentials)
-bash scripts/setup_mimic.sh
 ```
 
 ## Usage
 
-```bash
-# Run a task
-python run.py --task medagentbench --split std --max-tasks 3 --model gpt-5.2
+### Demo
 
-# Evaluate MedAgentBench results
-python scripts/medagentbench/evaluate.py --task medagentbench --results results/medagentbench/<run-id>/results.jsonl
+For an interactive demo, MedAgentBench is the recommended first run:
+
+```bash
+# Start local FHIR runtime
+bash scripts/medagentbench/fhir_up.sh
+
+# Launch demo
+uv run python demo.py \
+  --backend azure_openai \
+  --model gpt-5-mini \
+  --api-version 2025-03-01-preview \
+  --fhir-base-url http://localhost:8080/fhir
 ```
 
-Task-local execution/scoring scripts live under each task-type package in `tasks/<task_type>/`. Benchmark-specific imports (such as MedAgentBench) should map into the relevant task-type package during integration work, rather than creating benchmark-named task roots.
+The demo enables FHIR function-calling tools by default. Exit with `quit`, `exit`, or EOF (`Ctrl-D`).
+
+When finished:
+
+```bash
+# Stop runtime
+bash scripts/medagentbench/fhir_down.sh
+```
+
+For more MedAgentBench-specific demo details, see `scripts/medagentbench/README.md`.
+
+### Run a Benchmark Evaluation
+
+Benchmark workflows follow the same general pattern: prepare benchmark assets, import task manifests under `tasks/<task_type>/sources/<benchmark_name>/`, run `run.py`, and evaluate the results. MedAgentBench is one example:
+
+```bash
+# 1) Start local FHIR runtime (required before setup.sh sol backfill)
+bash scripts/medagentbench/fhir_up.sh
+
+# 2) Verify FHIR readiness
+curl -sSf http://localhost:8080/fhir/metadata | head -c 200
+
+# 3) Prepare benchmark assets
+bash scripts/medagentbench/setup.sh
+
+# 4) Import tasks into task-type manifests
+uv run python scripts/medagentbench/import_tasks.py \
+  --input data/medagentbench/test_data_v2.json \
+  --funcs-json data/medagentbench/funcs_v1.json \
+  --output-root tasks \
+  --split std
+
+# 5) Run a benchmark slice
+uv run python run.py \
+  --task medagentbench \
+  --split std \
+  --max-tasks 3 \
+  --backend azure_openai \
+  --model gpt-5-mini \
+  --api-version 2025-03-01-preview \
+  --fhir-base-url http://localhost:8080/fhir
+
+# 6) Evaluate run outputs
+uv run python scripts/medagentbench/evaluate.py \
+  --task medagentbench \
+  --results results/medagentbench/<run-id>/results.jsonl
+
+# 7) Stop runtime
+bash scripts/medagentbench/fhir_down.sh
+```
+
+Benchmark-specific imports (such as MedAgentBench) should map into the relevant task-type package under `tasks/<task_type>/sources/<benchmark_name>/`, rather than creating benchmark-named task roots.
 
 Scripts should be grouped under `scripts/<integration_or_domain>/` as the repository grows (for example `scripts/medagentbench/`) to avoid an unscalable flat script list.
 
