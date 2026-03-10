@@ -24,7 +24,7 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 
 ## Conventions
 
-- **Python ≥ 3.11** is required. Use modern Python idioms (type hints, dataclasses, `match` statements where appropriate).
+- **Python ≥ 3.12** is required. Use modern Python idioms (type hints, dataclasses, `match` statements where appropriate).
 - **Packaging** is managed via `pyproject.toml`. Install with `uv sync --all-extras`. Add new dependencies with `uv add <package>`.
 - **Environment variables** are loaded from `.env`. Never hard-code secrets.
 - **SQL** targets PostgreSQL (MIMIC-IV). Always use parameterized queries; never interpolate user input.
