@@ -1206,7 +1206,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.14.3" },
     { name = "biopython", specifier = ">=1.86" },
     { name = "fhir-resources", specifier = ">=8.2.0" },
-    { name = "harbor", specifier = ">=0.1.45" },
+    { name = "harbor", git = "https://github.com/harbor-framework/harbor.git?rev=c255479c1319f96f140b25e6ae0b86874ee05809" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "lifelines", specifier = ">=0.30.0" },
     { name = "lxml", specifier = ">=6.0.2" },
@@ -1615,7 +1615,7 @@ wheels = [
 [[package]]
 name = "harbor"
 version = "0.1.45"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/harbor-framework/harbor.git?rev=c255479c1319f96f140b25e6ae0b86874ee05809#c255479c1319f96f140b25e6ae0b86874ee05809" }
 dependencies = [
     { name = "claude-agent-sdk" },
     { name = "datasets" },
@@ -1634,6 +1634,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "rich" },
+    { name = "ruff" },
     { name = "runloop-api-client" },
     { name = "shortuuid" },
     { name = "supabase" },
@@ -1641,10 +1642,6 @@ dependencies = [
     { name = "toml" },
     { name = "typer" },
     { name = "uvicorn" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/89/78/e4da8b6c33b8c7a5d5d923cc296628d309bdf642f9ba66ed0d5b3301efc4/harbor-0.1.45.tar.gz", hash = "sha256:f8999cdb21978e33478d460ed6253c52b729b6d04d76ce119a5ef23d3bf6c306", size = 650970, upload-time = "2026-02-27T01:21:35.091Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ca/dc/003653587735fea639fbb6b2221cda8dbe03cc9c1af9d292f055d5a6da42/harbor-0.1.45-py3-none-any.whl", hash = "sha256:ea1494f2dc1cf4286c7d390b3d8e89bb23c201ab9c570117c8319fb57a39d56a", size = 741599, upload-time = "2026-02-27T01:21:33.492Z" },
 ]
 
 [[package]]

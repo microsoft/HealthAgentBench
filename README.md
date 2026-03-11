@@ -8,6 +8,19 @@ An agentic system powered by frontier language models for solving complex, multi
 
 EHR Co-Scientist is a research project exploring how LLM-based agents (GPT, Claude) can serve as autonomous research assistants for clinical data analysis. The system equips models with a suite of callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data to complete tasks that typically require significant domain expertise and manual effort.
 
+## Harbor Background
+
+This project uses Harbor as the terminal-task execution and evaluation substrate. Harbor provides a consistent trial lifecycle (agent run, verifier run, and artifacts), while EHR Co-Scientist adds domain-specific EHR tasks, tools, and integrations.
+
+Important pointers:
+
+1. Harbor repo: https://github.com/harbor-framework/harbor
+2. Harbor docs/wiki: https://deepwiki.com/harbor-framework/harbor
+3. Pinned Harbor commit used here: https://github.com/harbor-framework/harbor/commit/c255479c1319f96f140b25e6ae0b86874ee05809
+   - Maintenance note: periodically check for a newer stable Harbor release/commit.
+   - Upgrade caution: Harbor upgrades can break custom agent integration interfaces (for example this repo's Codex wrapper at `src/ehr_co_scientist/agents/harbor/installed/codex.py`).
+4. Local Harbor job config in this repo: `jobs/example.yaml`
+
 ## Tasks
 
 The system targets 15 agentic EHR tasks spanning data understanding, clinical reasoning, and report generation:
@@ -65,7 +78,9 @@ ehr-co-scientist/
 ├── .codex/                           # Codex-specific config
 ├── .agent/plans/                     # Individual ExecPlan files
 ├── src/ehr_co_scientist/
-│   ├── agent/                        # Core agent package (core loop + parsing/policy/tool execution helpers)
+│   ├── agents/
+│   │   ├── oai_agent/                # Core OpenAI-style agent package (core loop + parsing/policy/tool execution helpers)
+│   │   └── harbor/installed/         # Harbor-installed agent wrappers (for example Codex adapter)
 │   ├── tools/                        # Tool implementations
 │   └── utils/                        # DB, sandbox, logging helpers
 ├── tasks/                            # Task suite: manifests + task-type assets
@@ -98,7 +113,25 @@ cd ehr-co-scientist
 uv sync --all-extras
 ```
 
-## Usage
+Python version requirement: `>=3.12`.
+
+## Harbor Usage
+
+### Quick Start
+
+Important: you must export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs the agent inside Docker, and without this variable Codex cannot authenticate in the container environment.
+
+```bash
+# Export Codex auth for this shell session
+export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+
+# Run Harbor job config
+uv run harbor run -c jobs/example.yaml
+```
+
+Harbor writes run artifacts under `results/harbor/<timestamp>/`.
+
+## OAI Usage
 
 ### Demo
 

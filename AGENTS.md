@@ -10,6 +10,7 @@ EHR Co-Scientist is an agentic system powered by frontier language models for so
 ## Repository Layout
 
 - `src/ehr_co_scientist/agents/oai_agent/` — Core OpenAI-style agent package (`core.py`, parsing/policy/tool-exec modules).
+- `src/ehr_co_scientist/agents/harbor/installed/` — Harbor installed-agent wrappers (for example Codex adapter).
 - `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
 - `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
 - `tasks/` — Task suite package organized by task type (benchmark manifests, prompts, fixtures, selectors, and task-local docs).
@@ -73,7 +74,21 @@ uv sync --all-extras
 
 # Activate virtual environment
 source .venv/bin/activate
+```
 
+### Harbor Usage
+
+Important: export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs inside Docker, and without this variable Codex cannot authenticate in the container environment.
+
+```bash
+# Harbor quick start
+export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+uv run harbor run -c jobs/example.yaml
+```
+
+### OAI Usage
+
+```bash
 # Demo workflow (MedAgentBench recommended first run)
 bash scripts/medagentbench/fhir_up.sh
 uv run python demo.py \
