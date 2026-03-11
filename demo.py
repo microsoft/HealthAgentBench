@@ -11,16 +11,16 @@ from typing import Any
 
 import yaml
 
-from ehr_co_scientist.agents.oai_agent import AgentConfig, run_task
-from ehr_co_scientist.backends.adapter import BackendConfig
-from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
-from ehr_co_scientist.tools.fhir_tools import FHIRClient
-from ehr_co_scientist.tools.tooling.function_tools import get_openai_function_tools
-from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
+from medcli.agents.oai_agent import AgentConfig, run_task
+from medcli.backends.adapter import BackendConfig
+from medcli.tools.catalog import TOOL_DEFINITIONS
+from medcli.tools.fhir_tools import FHIRClient
+from medcli.tools.tooling.function_tools import get_openai_function_tools
+from medcli.tools.tooling.runtime import ToolRuntime
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Interactive EHR Co-Scientist demo")
+    parser = argparse.ArgumentParser(description="Interactive MedCLI demo")
     parser.add_argument("--backend", default="azure_openai")
     parser.add_argument("--model", default="gpt-5.2")
     parser.add_argument("--api-version", default="2025-03-01-preview")
@@ -123,7 +123,7 @@ def main() -> None:
         chat_kwargs["tool_choice"] = "auto"
         chat_kwargs["parallel_tool_calls"] = False
 
-    print("EHR Co-Scientist Demo")
+    print("MedCLI Demo")
     if args.task_id:
         print(f"Running task {args.task_id} from split '{args.split}'.")
     else:

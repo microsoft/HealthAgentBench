@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from ehr_co_scientist.backends.azure_openai import run_direct_chat_completion
+from medcli.backends.azure_openai import run_direct_chat_completion
 
 
 def _extract_tool_call(payload: dict[str, Any]) -> tuple[str, dict[str, Any]]:

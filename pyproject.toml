@@ -1,5 +1,5 @@
 [project]
-name = "ehr-co-scientist"
+name = "medcli"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -43,8 +43,8 @@ dependencies = [
 ]
 
 [project.scripts]
-ehr-co-scientist = "ehr_co_scientist:main"
-ehr-azure-openai = "ehr_co_scientist.backends.azure_openai:main"
+medcli = "medcli:main"
+medcli-azure-openai = "medcli.backends.azure_openai:main"
 
 [build-system]
 requires = ["setuptools>=69", "wheel"]
@@ -52,7 +52,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src", "."]
-include = ["ehr_co_scientist*", "scripts*"]
+include = ["medcli*", "scripts*"]
 
 [dependency-groups]
 dev = [

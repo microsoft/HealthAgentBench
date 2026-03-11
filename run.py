@@ -13,12 +13,12 @@ from typing import Any
 
 import yaml
 
-from ehr_co_scientist.agents.oai_agent import AgentConfig, run_async_tasks
-from ehr_co_scientist.backends.adapter import BackendConfig
-from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
-from ehr_co_scientist.tools.fhir_tools import FHIRClient
-from ehr_co_scientist.tools.tooling.function_tools import get_openai_function_tools
-from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
+from medcli.agents.oai_agent import AgentConfig, run_async_tasks
+from medcli.backends.adapter import BackendConfig
+from medcli.tools.catalog import TOOL_DEFINITIONS
+from medcli.tools.fhir_tools import FHIRClient
+from medcli.tools.tooling.function_tools import get_openai_function_tools
+from medcli.tools.tooling.runtime import ToolRuntime
 
 
 def _now_run_id() -> str:

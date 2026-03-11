@@ -7,7 +7,7 @@ from typing import Any
 
 import aiolimiter
 
-from ehr_co_scientist.backends import azure_openai
+from medcli.backends import azure_openai
 
 
 @dataclass(frozen=True)

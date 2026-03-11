@@ -6,12 +6,12 @@ import argparse
 from dataclasses import dataclass, field
 from typing import Any
 
-from ehr_co_scientist.tools.tooling import (
+from medcli.tools.tooling import (
     ToolRuntime,
     register_tool,
     write_openai_function_tools_json,
 )
-from ehr_co_scientist.utils.http import JsonHttpClient
+from medcli.utils.http import JsonHttpClient
 
 
 @dataclass
@@ -491,7 +491,7 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    from ehr_co_scientist.tools.catalog import TOOL_DEFINITIONS
+    from medcli.tools.catalog import TOOL_DEFINITIONS
 
     args = _parse_args()
     written = write_openai_function_tools_json(

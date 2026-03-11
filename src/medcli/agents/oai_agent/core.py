@@ -10,8 +10,8 @@ from typing import Any
 import aiolimiter
 from tqdm import tqdm
 
-from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion
-from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
+from medcli.backends.adapter import BackendConfig, run_chat_completion
+from medcli.tools.tooling.runtime import ToolRuntime
 
 from .async_runtime import (
     advance_task_state,

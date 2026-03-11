@@ -13,4 +13,4 @@ Each task-type package under `tasks/<task_type>/` can include:
 
 Benchmark integrations (for example MedAgentBench) should be mapped into the relevant task-type package at integration time, usually under a `sources/<benchmark_name>/` subdirectory.
 
-Shared orchestration belongs in `src/ehr_co_scientist/`. Top-level run/evaluate CLIs in `run.py`/`demo.py` and integration-specific script packages (for example `scripts/medagentbench/`) should load benchmark manifests directly from the relevant task-type packages.
+Shared orchestration belongs in `src/medcli/`. Top-level run/evaluate CLIs in `run.py`/`demo.py` and integration-specific script packages (for example `scripts/medagentbench/`) should load benchmark manifests directly from the relevant task-type packages.

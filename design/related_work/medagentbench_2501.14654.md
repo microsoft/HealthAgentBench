@@ -37,7 +37,7 @@ The paper evaluates multiple frontier and open models in a constrained agent loo
 - Cohort derived from a single institutional data source (potential representativeness limits).
 - Initial benchmark scope (300 tasks, 100 patients) trades breadth for practical evaluation cost.
 
-## Relevance to EHR Co-Scientist
+## Relevance to MedCLI
 This paper is highly relevant to this project’s objective of tool-augmented EHR agents.
 
 ### Alignment
@@ -47,7 +47,7 @@ This paper is highly relevant to this project’s objective of tool-augmented EH
 
 ### Differences
 - MedAgentBench is centered on **FHIR API interaction** in a simulated EHR server.
-- EHR Co-Scientist is broader, including SQL-centric analysis over MIMIC-style data, ETL, cohorting, temporal reasoning, and report generation.
+- MedCLI is broader, including SQL-centric analysis over MIMIC-style data, ETL, cohorting, temporal reasoning, and report generation.
 
 ### Implications for This Repository
 1. MedAgentBench can serve as an external benchmark target through `scripts/medagentbench/` orchestration and task manifests under `tasks/<task_type>/sources/medagentbench/`.

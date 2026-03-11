@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from ehr_co_scientist.backends import azure_openai
+from medcli.backends import azure_openai
 
 
 class _FakeResponse:
@@ -28,7 +28,7 @@ def test_batch_cli_example_command(monkeypatch, capsys):
     monkeypatch.setattr(
         "sys.argv",
         [
-            "ehr-azure-openai",
+            "medcli-azure-openai",
             "--example",
             "batch",
             "--endpoint-name",
@@ -97,7 +97,7 @@ def test_batch_cli_function_calling_flags(
     monkeypatch.setattr(
         "sys.argv",
         [
-            "ehr-azure-openai",
+            "medcli-azure-openai",
             "--example",
             "batch",
             "--endpoint-name",

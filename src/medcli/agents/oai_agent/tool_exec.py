@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from ehr_co_scientist.tools.catalog import TOOL_REGISTRY
-from ehr_co_scientist.tools.tooling.function_tools import call_registered_tool
-from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
+from medcli.tools.catalog import TOOL_REGISTRY
+from medcli.tools.tooling.function_tools import call_registered_tool
+from medcli.tools.tooling.runtime import ToolRuntime
 
 from .parsing import tool_feedback_message
 

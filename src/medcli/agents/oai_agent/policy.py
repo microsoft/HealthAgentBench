@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ehr_co_scientist.tools.catalog import should_pretend_on_call_in_evaluation
+from medcli.tools.catalog import should_pretend_on_call_in_evaluation
 
 
 def build_blocked_not_allowed(

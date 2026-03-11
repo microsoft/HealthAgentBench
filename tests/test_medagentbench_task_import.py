@@ -3,7 +3,7 @@ from pathlib import Path
 
 import yaml
 
-from ehr_co_scientist.tools.catalog import TOOL_REGISTRY
+from medcli.tools.catalog import TOOL_REGISTRY
 
 
 def test_import_groups_into_task_type_manifests(tmp_path: Path):

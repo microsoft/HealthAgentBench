@@ -5,8 +5,8 @@ from typing import Any
 
 import pytest
 
-from ehr_co_scientist.agents.oai_agent import AgentConfig, run_async_tasks, run_task
-from ehr_co_scientist.backends.adapter import BackendConfig
+from medcli.agents.oai_agent import AgentConfig, run_async_tasks, run_task
+from medcli.backends.adapter import BackendConfig
 
 
 def test_run_task_uses_backend_safe_tool_feedback(monkeypatch):
@@ -26,10 +26,10 @@ def test_run_task_uses_backend_safe_tool_feedback(monkeypatch):
         return {"resourceType": "Bundle", "total": 1}
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.core.run_chat_completion", fake_chat_completion
+        "medcli.agents.oai_agent.core.run_chat_completion", fake_chat_completion
     )
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.tool_exec.call_registered_tool", fake_call_tool
+        "medcli.agents.oai_agent.tool_exec.call_registered_tool", fake_call_tool
     )
 
     result = run_task(
@@ -84,10 +84,10 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
         return {"resourceType": "Bundle", "total": 1}
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.core.run_chat_completion", fake_chat_completion
+        "medcli.agents.oai_agent.core.run_chat_completion", fake_chat_completion
     )
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.tool_exec.call_registered_tool", fake_call_tool
+        "medcli.agents.oai_agent.tool_exec.call_registered_tool", fake_call_tool
     )
 
     result = run_task(
@@ -140,10 +140,10 @@ def test_run_task_evaluation_mode_simulates_write_tool(monkeypatch, native_tool_
         raise AssertionError(f"call_tool should not run in evaluation mode: {tool_name}")
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.core.run_chat_completion", fake_chat_completion
+        "medcli.agents.oai_agent.core.run_chat_completion", fake_chat_completion
     )
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.tool_exec.call_registered_tool", fail_call_tool
+        "medcli.agents.oai_agent.tool_exec.call_registered_tool", fail_call_tool
     )
 
     result = run_task(
@@ -213,10 +213,10 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
         raise AssertionError(f"call_tool should not run for disallowed tool: {tool_name}")
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.core.run_chat_completion", fake_chat_completion
+        "medcli.agents.oai_agent.core.run_chat_completion", fake_chat_completion
     )
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.tool_exec.call_registered_tool", fail_call_tool
+        "medcli.agents.oai_agent.tool_exec.call_registered_tool", fail_call_tool
     )
 
     result = run_task(
@@ -256,11 +256,11 @@ def test_run_async_tasks_requeues_after_tool_output(monkeypatch):
         return {"resourceType": "Bundle", "total": 1}
 
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.async_runtime.run_chat_completion_async",
+        "medcli.agents.oai_agent.async_runtime.run_chat_completion_async",
         fake_chat_completion_async,
     )
     monkeypatch.setattr(
-        "ehr_co_scientist.agents.oai_agent.tool_exec.call_registered_tool",
+        "medcli.agents.oai_agent.tool_exec.call_registered_tool",
         fake_call_tool,
     )
 

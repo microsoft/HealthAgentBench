@@ -8,7 +8,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Literal
 
-from ehr_co_scientist.backends.azure_openai import run_direct_chat_completion
+from medcli.backends.azure_openai import run_direct_chat_completion
 
 
 JudgeCaseType = Literal["query_compare", "action_payload_compare"]

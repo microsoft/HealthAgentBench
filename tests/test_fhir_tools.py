@@ -1,16 +1,16 @@
 import json
 
-from ehr_co_scientist.tools.catalog import (
+from medcli.tools.catalog import (
     TOOL_DEFINITIONS,
     TOOL_REGISTRY,
     should_pretend_on_call_in_evaluation,
 )
-from ehr_co_scientist.tools.tooling.function_tools import (
+from medcli.tools.tooling.function_tools import (
     call_registered_tool,
     get_openai_function_tools,
     write_openai_function_tools_json,
 )
-from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
+from medcli.tools.tooling.runtime import ToolRuntime
 
 
 class _FakeFHIRClient:

@@ -1149,101 +1149,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ehr-co-scientist"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "aiolimiter" },
-    { name = "anthropic" },
-    { name = "azure-identity" },
-    { name = "backoff" },
-    { name = "beautifulsoup4" },
-    { name = "biopython" },
-    { name = "fhir-resources" },
-    { name = "harbor" },
-    { name = "jinja2" },
-    { name = "lifelines" },
-    { name = "lxml" },
-    { name = "matplotlib" },
-    { name = "networkx" },
-    { name = "numpy" },
-    { name = "openai" },
-    { name = "openpyxl" },
-    { name = "pandas" },
-    { name = "presidio-analyzer" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "pyarrow" },
-    { name = "pydantic" },
-    { name = "python-dotenv" },
-    { name = "pyyaml" },
-    { name = "requests" },
-    { name = "rich" },
-    { name = "scipy" },
-    { name = "seaborn" },
-    { name = "sqlalchemy" },
-    { name = "sqlparse" },
-    { name = "tenacity" },
-    { name = "tiktoken" },
-    { name = "tqdm" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ipykernel" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "aiolimiter", specifier = ">=1.2.1" },
-    { name = "anthropic", specifier = ">=0.84.0" },
-    { name = "azure-identity", specifier = ">=1.25.1" },
-    { name = "backoff", specifier = ">=2.2.1" },
-    { name = "beautifulsoup4", specifier = ">=4.14.3" },
-    { name = "biopython", specifier = ">=1.86" },
-    { name = "fhir-resources", specifier = ">=8.2.0" },
-    { name = "harbor", git = "https://github.com/harbor-framework/harbor.git?rev=c255479c1319f96f140b25e6ae0b86874ee05809" },
-    { name = "jinja2", specifier = ">=3.1.6" },
-    { name = "lifelines", specifier = ">=0.30.0" },
-    { name = "lxml", specifier = ">=6.0.2" },
-    { name = "matplotlib", specifier = ">=3.10.8" },
-    { name = "networkx", specifier = ">=3.6.1" },
-    { name = "numpy", specifier = ">=2.4.2" },
-    { name = "openai", specifier = ">=2.24.0" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "pandas", specifier = ">=3.0.1" },
-    { name = "presidio-analyzer", specifier = ">=2.2.361" },
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.3.3" },
-    { name = "pyarrow", specifier = ">=23.0.1" },
-    { name = "pydantic", specifier = ">=2.12.5" },
-    { name = "python-dotenv", specifier = ">=1.2.2" },
-    { name = "pyyaml", specifier = ">=6.0.3" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "rich", specifier = ">=14.3.3" },
-    { name = "scipy", specifier = ">=1.17.1" },
-    { name = "seaborn", specifier = ">=0.13.2" },
-    { name = "sqlalchemy", specifier = ">=2.0.48" },
-    { name = "sqlparse", specifier = ">=0.5.5" },
-    { name = "tenacity", specifier = ">=9.1.4" },
-    { name = "tiktoken", specifier = ">=0.12.0" },
-    { name = "tqdm", specifier = ">=4.67.1" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ipykernel", specifier = ">=7.2.0" },
-    { name = "pre-commit", specifier = ">=4.5.1" },
-    { name = "pytest", specifier = ">=9.0.2" },
-    { name = "pytest-asyncio", specifier = ">=1.3.0" },
-    { name = "pytest-cov", specifier = ">=7.0.0" },
-    { name = "ruff", specifier = ">=0.15.4" },
-]
-
-[[package]]
 name = "environs"
 version = "14.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2404,6 +2309,101 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
+]
+
+[[package]]
+name = "medcli"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "aiolimiter" },
+    { name = "anthropic" },
+    { name = "azure-identity" },
+    { name = "backoff" },
+    { name = "beautifulsoup4" },
+    { name = "biopython" },
+    { name = "fhir-resources" },
+    { name = "harbor" },
+    { name = "jinja2" },
+    { name = "lifelines" },
+    { name = "lxml" },
+    { name = "matplotlib" },
+    { name = "networkx" },
+    { name = "numpy" },
+    { name = "openai" },
+    { name = "openpyxl" },
+    { name = "pandas" },
+    { name = "presidio-analyzer" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "pyarrow" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "pyyaml" },
+    { name = "requests" },
+    { name = "rich" },
+    { name = "scipy" },
+    { name = "seaborn" },
+    { name = "sqlalchemy" },
+    { name = "sqlparse" },
+    { name = "tenacity" },
+    { name = "tiktoken" },
+    { name = "tqdm" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ipykernel" },
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiolimiter", specifier = ">=1.2.1" },
+    { name = "anthropic", specifier = ">=0.84.0" },
+    { name = "azure-identity", specifier = ">=1.25.1" },
+    { name = "backoff", specifier = ">=2.2.1" },
+    { name = "beautifulsoup4", specifier = ">=4.14.3" },
+    { name = "biopython", specifier = ">=1.86" },
+    { name = "fhir-resources", specifier = ">=8.2.0" },
+    { name = "harbor", git = "https://github.com/harbor-framework/harbor.git?rev=c255479c1319f96f140b25e6ae0b86874ee05809" },
+    { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "lifelines", specifier = ">=0.30.0" },
+    { name = "lxml", specifier = ">=6.0.2" },
+    { name = "matplotlib", specifier = ">=3.10.8" },
+    { name = "networkx", specifier = ">=3.6.1" },
+    { name = "numpy", specifier = ">=2.4.2" },
+    { name = "openai", specifier = ">=2.24.0" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pandas", specifier = ">=3.0.1" },
+    { name = "presidio-analyzer", specifier = ">=2.2.361" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.3.3" },
+    { name = "pyarrow", specifier = ">=23.0.1" },
+    { name = "pydantic", specifier = ">=2.12.5" },
+    { name = "python-dotenv", specifier = ">=1.2.2" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "rich", specifier = ">=14.3.3" },
+    { name = "scipy", specifier = ">=1.17.1" },
+    { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "sqlalchemy", specifier = ">=2.0.48" },
+    { name = "sqlparse", specifier = ">=0.5.5" },
+    { name = "tenacity", specifier = ">=9.1.4" },
+    { name = "tiktoken", specifier = ">=0.12.0" },
+    { name = "tqdm", specifier = ">=4.67.1" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "ipykernel", specifier = ">=7.2.0" },
+    { name = "pre-commit", specifier = ">=4.5.1" },
+    { name = "pytest", specifier = ">=9.0.2" },
+    { name = "pytest-asyncio", specifier = ">=1.3.0" },
+    { name = "pytest-cov", specifier = ">=7.0.0" },
+    { name = "ruff", specifier = ">=0.15.4" },
 ]
 
 [[package]]

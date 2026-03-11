@@ -1,16 +1,16 @@
-# EHR Co-Scientist
+# MedCLI
 
-![Building an EHR Co-Scientist](cover.png)
+![Building MedCLI](cover.png)
 
 An agentic system powered by frontier language models for solving complex, multi-step tasks over Electronic Health Record (EHR) databases through tool-augmented reasoning.
 
 ## Overview
 
-EHR Co-Scientist is a research project exploring how LLM-based agents (GPT, Claude) can serve as autonomous research assistants for clinical data analysis. The system equips models with a suite of callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data to complete tasks that typically require significant domain expertise and manual effort.
+MedCLI is a research project exploring how LLM-based agents (GPT, Claude) can serve as autonomous research assistants for clinical data analysis. The system equips models with a suite of callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data to complete tasks that typically require significant domain expertise and manual effort.
 
 ## Harbor Background
 
-This project uses Harbor as the terminal-task execution and evaluation substrate. Harbor provides a consistent trial lifecycle (agent run, verifier run, and artifacts), while EHR Co-Scientist adds domain-specific EHR tasks, tools, and integrations.
+This project uses Harbor as the terminal-task execution and evaluation substrate. Harbor provides a consistent trial lifecycle (agent run, verifier run, and artifacts), while MedCLI adds domain-specific EHR tasks, tools, and integrations.
 
 Important pointers:
 
@@ -18,7 +18,7 @@ Important pointers:
 2. Harbor docs/wiki: https://deepwiki.com/harbor-framework/harbor
 3. Pinned Harbor commit used here: https://github.com/harbor-framework/harbor/commit/c255479c1319f96f140b25e6ae0b86874ee05809
    - Maintenance note: periodically check for a newer stable Harbor release/commit.
-   - Upgrade caution: Harbor upgrades can break custom agent integration interfaces (for example this repo's Codex wrapper at `src/ehr_co_scientist/agents/harbor/installed/codex.py`).
+   - Upgrade caution: Harbor upgrades can break custom agent integration interfaces (for example this repo's Codex wrapper at `src/medcli/agents/harbor/installed/codex.py`).
 4. Local Harbor job config in this repo: `jobs/example.yaml`
 
 ## Tasks
@@ -62,12 +62,12 @@ Tasks are first-class artifacts in this repository. Each task-type package can i
 
 Task packages are organized by task type from the `Tasks` table above (for example `tasks/cohort_construction/`, `tasks/temporal_reasoning/`), not by benchmark source. If a new task type is added, update the `Tasks` section first, then add the corresponding `tasks/<task_type>/` package.
 
-Shared orchestration still lives in `src/ehr_co_scientist/`, while `tasks/` owns task-type-specific assets and logic.
+Shared orchestration still lives in `src/medcli/`, while `tasks/` owns task-type-specific assets and logic.
 
 ## Project Structure
 
 ```
-ehr-co-scientist/
+MedCLI/
 ├── README.md
 ├── LICENSE
 ├── pyproject.toml
@@ -77,7 +77,7 @@ ehr-co-scientist/
 ├── .claude/                          # Claude Code settings, commands, skills
 ├── .codex/                           # Codex-specific config
 ├── .agent/plans/                     # Individual ExecPlan files
-├── src/ehr_co_scientist/
+├── src/medcli/
 │   ├── agents/
 │   │   ├── oai_agent/                # Core OpenAI-style agent package (core loop + parsing/policy/tool execution helpers)
 │   │   └── harbor/installed/         # Harbor-installed agent wrappers (for example Codex adapter)
@@ -106,8 +106,8 @@ ehr-co-scientist/
 
 ```bash
 # Clone the repo
-git clone https://github.com/<user>/ehr-co-scientist.git
-cd ehr-co-scientist
+git clone git@github.com:sheng-z/MedCLI.git
+cd MedCLI
 
 # Install dependencies (requires uv: https://docs.astral.sh/uv/)
 uv sync --all-extras

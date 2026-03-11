@@ -7,7 +7,7 @@ from harbor.models.trial.paths import EnvironmentPaths
 
 
 class Codex(HarborCodex):
-    """EHR Co-Scientist wrapper around Harbor's Codex installed agent."""
+    """MedCLI wrapper around Harbor's Codex installed agent."""
 
     def create_run_agent_commands(self, instruction: str) -> list[ExecInput]:
         escaped_instruction = shlex.quote(instruction)

@@ -1,4 +1,4 @@
-from ehr_co_scientist.tools.fhir_tools import FHIRClient
+from medcli.tools.fhir_tools import FHIRClient
 
 
 class _FakeHttp:

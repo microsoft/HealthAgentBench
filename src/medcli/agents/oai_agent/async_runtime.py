@@ -8,8 +8,8 @@ from typing import Any
 
 import aiolimiter
 
-from ehr_co_scientist.backends.adapter import BackendConfig, run_chat_completion_async
-from ehr_co_scientist.tools.tooling.runtime import ToolRuntime
+from medcli.backends.adapter import BackendConfig, run_chat_completion_async
+from medcli.tools.tooling.runtime import ToolRuntime
 
 from .parsing import extract_native_tool_calls, parse_tool_call
 from .policy import check_tool_policy, should_simulate_tool_call_in_evaluation

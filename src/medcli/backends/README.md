@@ -1,6 +1,6 @@
 # Backends
 
-This directory contains backend integrations used by the EHR Co-Scientist project.
+This directory contains backend integrations used by the MedCLI project.
 
 ## Purpose
 
@@ -22,13 +22,13 @@ system decoupled from provider details (auth, endpoint routing, request options)
 From repository root:
 
 ```bash
-uv run ehr-azure-openai --help
+uv run medcli-azure-openai --help
 ```
 
 Direct mode example:
 
 ```bash
-uv run ehr-azure-openai \
+uv run medcli-azure-openai \
   --example direct \
   --endpoint-name hanover-openai-east \
   --model gpt-5.2 \
@@ -38,7 +38,7 @@ uv run ehr-azure-openai \
 Batch mode example:
 
 ```bash
-uv run ehr-azure-openai \
+uv run medcli-azure-openai \
   --example batch \
   --endpoint-name trapi-msrhf-shared \
   --model o3_2025-04-16 \
@@ -64,7 +64,7 @@ Function-calling example:
 #   }
 # ]
 #
-uv run ehr-azure-openai \
+uv run medcli-azure-openai \
   --example direct \
   --endpoint-name hanover-openai-east \
   --model gpt-5.2 \

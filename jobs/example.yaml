@@ -14,7 +14,7 @@ environment:
     - CODEX_AUTH_JSON=${CODEX_AUTH_JSON}
 
 agents:
-  - import_path: src.ehr_co_scientist.agents.harbor.installed.codex:Codex
+  - import_path: medcli.agents.harbor.installed.codex:Codex
     model_name: gpt-5.1-codex-mini
     kwargs:
       reasoning_effort: medium

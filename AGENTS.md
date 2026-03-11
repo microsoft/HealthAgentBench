@@ -1,18 +1,18 @@
-# EHR Co-Scientist — Agent Instructions
+# MedCLI — Agent Instructions
 
 > **Sync notice:** `AGENTS.md` and `CLAUDE.md` must always be identical.
 > When you update one, update the other immediately.
 
 ## Project Overview
 
-EHR Co-Scientist is an agentic system powered by frontier language models for solving complex, multi-step tasks over Electronic Health Record (EHR) databases through tool-augmented reasoning. The system equips LLM-based agents with callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data.
+MedCLI is an agentic system powered by frontier language models for solving complex, multi-step tasks over Electronic Health Record (EHR) databases through tool-augmented reasoning. The system equips LLM-based agents with callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data.
 
 ## Repository Layout
 
-- `src/ehr_co_scientist/agents/oai_agent/` — Core OpenAI-style agent package (`core.py`, parsing/policy/tool-exec modules).
-- `src/ehr_co_scientist/agents/harbor/installed/` — Harbor installed-agent wrappers (for example Codex adapter).
-- `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
-- `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
+- `src/medcli/agents/oai_agent/` — Core OpenAI-style agent package (`core.py`, parsing/policy/tool-exec modules).
+- `src/medcli/agents/harbor/installed/` — Harbor installed-agent wrappers (for example Codex adapter).
+- `src/medcli/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
+- `src/medcli/utils/` — Shared helpers for database access, sandboxed execution, and logging.
 - `tasks/` — Task suite package organized by task type (benchmark manifests, prompts, fixtures, selectors, and task-local docs).
 - `scripts/medagentbench/` — MedAgentBench runtime orchestration, import, and evaluation utilities.
 - `run.py` / `demo.py` — Top-level orchestration CLIs for benchmark runs and interactive demos.
@@ -46,11 +46,11 @@ When implementing or modifying tools, respect the five-category taxonomy:
 4. **EHR utilities** — FHIR client, ClinicalTrials.gov search, de-identification checker.
 5. **File & format** — CSV/Parquet reader, document parser, schema mapper, web fetcher, bash tools.
 
-Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must expose a consistent interface that the agent loop in `src/ehr_co_scientist/agents/oai_agent/core.py` can discover and invoke.
+Each tool lives in its own module under `src/medcli/tools/` and must expose a consistent interface that the agent loop in `src/medcli/agents/oai_agent/core.py` can discover and invoke.
 
 ## Tasks
 
-The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with benchmark manifests under `sources/<benchmark_name>/` plus optional prompts, fixtures, and task-local docs. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/ehr_co_scientist/`, and keep top-level CLIs in `run.py`/`demo.py` plus integration-specific scripts (for example `scripts/medagentbench/evaluate.py`) responsible for consistent execution.
+The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with benchmark manifests under `sources/<benchmark_name>/` plus optional prompts, fixtures, and task-local docs. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/medcli/`, and keep top-level CLIs in `run.py`/`demo.py` plus integration-specific scripts (for example `scripts/medagentbench/evaluate.py`) responsible for consistent execution.
 
 ## ExecPlans
 
