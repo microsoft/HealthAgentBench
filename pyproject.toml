@@ -65,6 +65,8 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["results", ".venv", "__pycache__"]
 markers = [
     "integration: marks tests that require external services such as Dockerized FHIR runtime",
 ]
