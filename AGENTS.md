@@ -78,13 +78,28 @@ source .venv/bin/activate
 
 ### Harbor Usage
 
-Important: export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs inside Docker, and without this variable Codex cannot authenticate in the container environment.
+Important: you must export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs the agent inside Docker, and without this variable Codex cannot authenticate in the container environment.
+
+The MedAgentBench Harbor task generated in this repo is a single meta-task at `harbor_tasks/medagentbench/`. It bundles a 10-case slice (`task1_1` through `task10_1`), a pinned FHIR sidecar, helper scripts, and a verifier that scores the agent's `submission.json` with the existing MedAgentBench evaluator. The generated task tree is source-only; runtime files such as `submission.json` are created inside the running container, not committed under `harbor_tasks/`.
 
 ```bash
-# Harbor quick start
+# Export Codex auth for this shell session
 export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+
+# Run Harbor hello-world smoke test
 uv run harbor run -c jobs/example.yaml
+
+# Generate the single-task MedAgentBench Harbor task and run it
+uv run python scripts/medagentbench/generate_harbor_tasks.py --input-root tasks --output-root harbor_tasks/medagentbench
+uv run harbor run -c jobs/medagentbench_meta.yaml
 ```
+
+For step-by-step Harbor task debugging, use the helpers under `debug/harbor/`:
+
+- `debug/harbor/medagentbench/smoke-meta-task.sh` covers the non-agent smoke path.
+- `debug/harbor/setup-agent.sh` is the generic default-agent setup step after `up-task-env.sh`.
+- `debug/harbor/medagentbench/run-manually.sh` is the task-specific one-command wrapper that performs setup and opens a ready-to-use Codex shell.
+- `debug/README.md` documents the full manual build, bring-up, agent-setup, verifier, and cleanup workflow.
 
 ### OAI Usage
 

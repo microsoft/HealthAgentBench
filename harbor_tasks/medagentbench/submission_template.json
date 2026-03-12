@@ -1,0 +1,129 @@
+{
+  "submission_path": "/workspace/submission.json",
+  "instructions": {
+    "query_tasks": "Return only the requested answer in final_answer.",
+    "action_tasks": "Do not mutate the database for action tasks. Instead, record the intended FHIR write operation(s) in tool_trace using the exact tool names and a resource payload under args.resource."
+  },
+  "results": [
+    {
+      "task_id": "task1_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    },
+    {
+      "task_id": "task2_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    },
+    {
+      "task_id": "task3_1",
+      "final_answer": "",
+      "tool_trace": [
+        {
+          "tool": "vital_create",
+          "status": "ok",
+          "args": {
+            "resource": {
+              "resourceType": "Observation",
+              "status": "final",
+              "category": [
+                {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/observation-category",
+                      "code": "vital-signs",
+                      "display": "Vital Signs"
+                    }
+                  ]
+                }
+              ],
+              "code": {
+                "text": "BP"
+              },
+              "effectiveDateTime": "2023-11-13T10:15:00+00:00",
+              "valueString": "118/77 mmHg",
+              "subject": {
+                "reference": "Patient/S2380121"
+              }
+            }
+          }
+        }
+      ],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    },
+    {
+      "task_id": "task4_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    },
+    {
+      "task_id": "task5_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "For this selected case, the expected action is no write because the recent magnesium value is unavailable."
+    },
+    {
+      "task_id": "task6_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    },
+    {
+      "task_id": "task7_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    },
+    {
+      "task_id": "task8_1",
+      "final_answer": "",
+      "tool_trace": [
+        {
+          "tool": "procedure_create",
+          "status": "ok",
+          "args": {
+            "resource": {
+              "resourceType": "ServiceRequest",
+              "status": "active",
+              "intent": "order",
+              "authoredOn": "2023-11-13T10:15:00+00:00",
+              "priority": "stat",
+              "code": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "306181000000106"
+                  }
+                ]
+              },
+              "note": [
+                {
+                  "text": "Situation: acute left knee injury, Background: radiology report indicates ACL tear. Assessment: ACL tear grade II. Recommendation: request for Orthopedic service to evaluate and provide management recommendations."
+                }
+              ],
+              "subject": {
+                "reference": "Patient/S2016972"
+              }
+            }
+          }
+        }
+      ],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    },
+    {
+      "task_id": "task9_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "For this selected case, the potassium level is already at goal, so the expected action is no write."
+    },
+    {
+      "task_id": "task10_1",
+      "final_answer": "",
+      "tool_trace": [],
+      "notes": "Fill final_answer for query-style scoring. For action-scored tasks, fill tool_trace and leave final_answer blank unless the task explicitly asks for one."
+    }
+  ]
+}

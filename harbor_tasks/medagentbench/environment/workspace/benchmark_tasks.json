@@ -1,0 +1,270 @@
+{
+  "benchmark_name": "medagentbench",
+  "reference_time": "2023-11-13T10:15:00+00:00",
+  "fhir_base_url": "http://fhir:8080/fhir",
+  "submission_path": "/workspace/submission.json",
+  "tasks": [
+    {
+      "task_id": "task1_1",
+      "category": "factual_qa",
+      "difficulty": "easy",
+      "instruction": "What’s the MRN of the patient with name Peter Stafford and DOB of 1932-12-29? If the patient does not exist, the answer should be \"Patient not found\"\n\nFinal answer format requirement: return only the MRN string (for example \"S1234567\"), or \"Patient not found\". Do not include any extra text.",
+      "task_type": "query",
+      "source_group": "task1",
+      "source_task_type": "patient_information_retrieval",
+      "expected_answer": "S6534835",
+      "required_actions": [],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S6534835",
+      "manifest_path": "tasks/factual_qa/sources/medagentbench/std.yaml",
+      "evaluation_focus": "final_answer"
+    },
+    {
+      "task_id": "task2_1",
+      "category": "factual_qa",
+      "difficulty": "easy",
+      "instruction": "What's the age of the patient with MRN of S2874099?\n\nContext: It's 2023-11-13T10:15:00+00:00 now, and the answer should be rounded down to an integer.\n\nFinal answer format requirement: return only a single numeric value. Do not include any extra text.",
+      "task_type": "query",
+      "source_group": "task2",
+      "source_task_type": "patient_information_retrieval",
+      "expected_answer": 60,
+      "required_actions": [],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S2874099",
+      "manifest_path": "tasks/factual_qa/sources/medagentbench/std.yaml",
+      "evaluation_focus": "final_answer"
+    },
+    {
+      "task_id": "task3_1",
+      "category": "clinical_data_recording",
+      "difficulty": "medium",
+      "instruction": "I just measured the blood pressure for patient with MRN of S2380121, and it is \"118/77 mmHg\". Help me record it.\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The flowsheet ID for blood pressure is BP.",
+      "task_type": "action",
+      "source_group": "task3",
+      "source_task_type": "recording_patient_data",
+      "expected_answer": "",
+      "required_actions": [
+        "recording_patient_data"
+      ],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S2380121",
+      "manifest_path": "tasks/clinical_data_recording/sources/medagentbench/std.yaml",
+      "evaluation_focus": "tool_trace"
+    },
+    {
+      "task_id": "task4_1",
+      "category": "factual_qa",
+      "difficulty": "easy",
+      "instruction": "What’s the most recent magnesium level of the patient S3032536 within last 24 hours?\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for magnesium is \"MG\". The answer should be a single number converted to a unit of mg/dL, and it should be -1 if a measurement within last 24 hours is not available.\n\nFinal answer format requirement: return only a single numeric value. Do not include any extra text.",
+      "task_type": "query",
+      "source_group": "task4",
+      "source_task_type": "lab_result_retrieval",
+      "expected_answer": -1,
+      "required_actions": [],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S3032536",
+      "manifest_path": "tasks/factual_qa/sources/medagentbench/std.yaml",
+      "evaluation_focus": "final_answer"
+    },
+    {
+      "task_id": "task5_1",
+      "category": "medication_reconciliation",
+      "difficulty": "medium",
+      "instruction": "Check patient S6315806's last serum magnesium level within last 24 hours. If low, then order replacement IV magnesium according to dosing instructions. If no magnesium level has been recorded in the last 24 hours, don't order anything.\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for magnesium is \"MG\". The NDC for replacement IV magnesium is 0338-1715-40. Dosing instructions: (1) Mild deficiency (eg, serum magnesium 1.5 to 1.9 mg/dL):\nIV: 1 g over 1 hour.\n(2) Moderate deficiency (eg, serum magnesium 1 to <1.5 mg/dL):\nIV: 2 g over 2 hours.\n(3) Severe deficiency (eg, serum magnesium <1 mg/dL):\nIV: 4 g over 4 hours.\n\nFinal answer format requirement: return only a single numeric value (or -1 if no measurement is available). Do not include any extra text.",
+      "task_type": "action",
+      "source_group": "task5",
+      "source_task_type": "medication_ordering",
+      "expected_answer": -1,
+      "required_actions": [
+        "medication_ordering"
+      ],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S6315806",
+      "manifest_path": "tasks/medication_reconciliation/sources/medagentbench/std.yaml",
+      "evaluation_focus": "tool_trace"
+    },
+    {
+      "task_id": "task6_1",
+      "category": "data_aggregation",
+      "difficulty": "easy",
+      "instruction": "What is the average CBG of the patient S6307599 over the last 24 hours?\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for CBG is \"GLU\". The answer should be a single number converted to a unit of mg/dL, and it should be -1 if a measurement within last 24 hours is not available.\n\nFinal answer format requirement: return only a single numeric value. Do not include any extra text.",
+      "task_type": "query",
+      "source_group": "task6",
+      "source_task_type": "patient_data_aggregation",
+      "expected_answer": 97.0,
+      "required_actions": [],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S6307599",
+      "manifest_path": "tasks/data_aggregation/sources/medagentbench/std.yaml",
+      "evaluation_focus": "final_answer"
+    },
+    {
+      "task_id": "task7_1",
+      "category": "factual_qa",
+      "difficulty": "easy",
+      "instruction": "What is the most recent CBG of the patient S2823623?\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for CBG is \"GLU\"\n\nFinal answer format requirement: return only a single numeric value. Do not include any extra text.",
+      "task_type": "query",
+      "source_group": "task7",
+      "source_task_type": "lab_result_retrieval",
+      "expected_answer": 123.0,
+      "required_actions": [],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S2823623",
+      "manifest_path": "tasks/factual_qa/sources/medagentbench/std.yaml",
+      "evaluation_focus": "final_answer"
+    },
+    {
+      "task_id": "task8_1",
+      "category": "care_ordering",
+      "difficulty": "medium",
+      "instruction": "Order orthopedic surgery referral for patient S2016972. Specify within the free text of the referral, \"Situation: acute left knee injury, Background: radiology report indicates ACL tear. Assessment: ACL tear grade II. Recommendation: request for Orthopedic service to evaluate and provide management recommendations.\"\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The SNOMED code for orthopedic surgery referral is 306181000000106.",
+      "task_type": "action",
+      "source_group": "task8",
+      "source_task_type": "test_ordering",
+      "expected_answer": "",
+      "required_actions": [
+        "test_ordering"
+      ],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S2016972",
+      "manifest_path": "tasks/care_ordering/sources/medagentbench/std.yaml",
+      "evaluation_focus": "tool_trace"
+    },
+    {
+      "task_id": "task9_1",
+      "category": "medication_reconciliation",
+      "difficulty": "medium",
+      "instruction": "Check patient S3241217's most recent potassium level. If low, then order replacement potassium according to dosing instructions. Also pair this order with a morning serum potassium level to be completed the next day at 8am.\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for potassium is \"K\".The NDC for replacement potassium is 40032-917-01. Dosing instructions: for every 0.1 mEq/L (or mmol/L) below threshold, order 10 mEq potassium oral repletion) to reach a goal of 3.5 serum level. The LOINC code for serum potassium level is 2823-3.\n\nFinal answer format requirement: return only a single numeric value (or -1 if no measurement is available). Do not include any extra text.",
+      "task_type": "action",
+      "source_group": "task9",
+      "source_task_type": "medication_ordering",
+      "expected_answer": 3.9,
+      "required_actions": [
+        "medication_ordering"
+      ],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S3241217",
+      "manifest_path": "tasks/medication_reconciliation/sources/medagentbench/std.yaml",
+      "evaluation_focus": "tool_trace"
+    },
+    {
+      "task_id": "task10_1",
+      "category": "care_ordering",
+      "difficulty": "medium",
+      "instruction": "What’s the last HbA1C (hemoglobin A1C) value in the chart for patient S6227720 and when was it recorded? If the lab value result date is greater than 1 year old, order a new HbA1C lab test.\n\nContext: It's 2023-11-13T10:15:00+00:00 now. The code for HbA1C is \"A1C\". The LOINC code for ordering HbA1C lab is: 4548-4. The answer should be [-1] if a measurement is not available.\n\nFinal answer format requirement: return [-1] if no qualifying measurement is available; otherwise return [value, timestamp].",
+      "task_type": "action",
+      "source_group": "task10",
+      "source_task_type": "test_ordering",
+      "expected_answer": [
+        -1
+      ],
+      "required_actions": [
+        "test_ordering"
+      ],
+      "allowed_tools": [
+        "condition_search",
+        "lab_search",
+        "medicationrequest_create",
+        "medicationrequest_search",
+        "patient_search",
+        "procedure_create",
+        "procedure_search",
+        "vital_create",
+        "vital_search"
+      ],
+      "eval_mrn": "S6227720",
+      "manifest_path": "tasks/care_ordering/sources/medagentbench/std.yaml",
+      "evaluation_focus": "final_answer"
+    }
+  ]
+}

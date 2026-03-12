@@ -19,7 +19,7 @@ Important pointers:
 3. Pinned Harbor commit used here: https://github.com/harbor-framework/harbor/commit/c255479c1319f96f140b25e6ae0b86874ee05809
    - Maintenance note: periodically check for a newer stable Harbor release/commit.
    - Upgrade caution: Harbor upgrades can break custom agent integration interfaces (for example this repo's Codex wrapper at `src/medcli/agents/harbor/installed/codex.py`).
-4. Local Harbor job config in this repo: `jobs/example.yaml`
+4. Local Harbor job configs in this repo: `jobs/example.yaml` (hello-world smoke test) and `jobs/medagentbench_meta.yaml` (single-task MedAgentBench meta-task).
 
 ## Tasks
 
@@ -121,15 +121,33 @@ Python version requirement: `>=3.12`.
 
 Important: you must export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs the agent inside Docker, and without this variable Codex cannot authenticate in the container environment.
 
+The MedAgentBench Harbor task generated in this repo is hardened for reproducibility:
+
+- the FHIR sidecar image is pinned by digest
+- the task environment does not require outbound internet
+- the generated task tree is source-only; runtime files such as `submission.json` are created inside the running container, not committed under `harbor_tasks/`
+
 ```bash
 # Export Codex auth for this shell session
 export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
 
-# Run Harbor job config
+# Run Harbor hello-world smoke test
 uv run harbor run -c jobs/example.yaml
+
+# Generate the single-task MedAgentBench Harbor task and run it
+uv run python scripts/medagentbench/generate_harbor_tasks.py --input-root tasks --output-root harbor_tasks/medagentbench
+uv run harbor run -c jobs/medagentbench_meta.yaml
 ```
 
 Harbor writes run artifacts under `results/harbor/<timestamp>/`.
+
+For step-by-step Harbor task debugging, use the reusable helpers under `debug/harbor/`. For the current MedAgentBench meta-task:
+
+- `debug/harbor/medagentbench/smoke-meta-task.sh` covers the non-agent smoke path
+- `debug/harbor/setup-agent.sh` is the generic default-agent setup step after `up-task-env.sh`
+- `debug/harbor/medagentbench/run-manually.sh` is the task-specific one-command wrapper that uses that generic setup step internally and opens a ready-to-use shell
+
+See [debug/README.md](/home/shezhan/repos/ehr-co-scientist/debug/README.md) for the full workflow.
 
 ## OAI Usage
 
