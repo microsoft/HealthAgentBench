@@ -5,7 +5,7 @@ def test_harbor_evaluator_passes_query_and_payload_cases():
     rows = [
         {
             "id": "task1_1",
-            "sol": ["S1234567"],
+            "expected_answer": "S1234567",
             "final_answer": "S1234567",
             "payload": None,
         },
@@ -76,14 +76,14 @@ def test_harbor_evaluator_handles_multi_payload_and_optional_noop_cases():
         {
             "id": "task5_1",
             "eval_MRN": "S6315806",
-            "sol": [-1],
+            "expected_answer": -1,
             "final_answer": -1,
             "payload": None,
         },
         {
             "id": "task9_1",
             "eval_MRN": "S3241217",
-            "sol": [3.2],
+            "expected_answer": 3.2,
             "final_answer": 3.2,
             "payload": [
                 {
@@ -190,7 +190,7 @@ def test_harbor_evaluator_requires_task10_payload_when_order_needed():
         {
             "id": "task10_1",
             "eval_MRN": "S6227720",
-            "sol": [-1],
+            "expected_answer": [-1],
             "final_answer": [-1],
             "payload": None,
         }

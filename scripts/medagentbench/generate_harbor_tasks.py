@@ -14,6 +14,7 @@ from typing import Any
 
 from scripts.medagentbench.normalization import (
     build_harbor_answer_key,
+    build_instruction,
     default_selected_task_ids,
     infer_group,
     load_raw_tasks,
@@ -139,25 +140,27 @@ def _expected_payload(task_id: str, eval_mrn: str) -> Any:
     return None
 
 
-def _action_payload_templates(raw_tasks: list[dict[str, Any]]) -> dict[str, Any]:
-    templates: dict[str, Any] = {}
-    for task in raw_tasks:
-        task_id = str(task["id"])
-        templates[task_id] = _expected_payload(task_id, str(task.get("eval_MRN", "")))
-    return templates
-
-
 def _answer_key_payload(raw_tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [build_harbor_answer_key(task) for task in raw_tasks]
+    rows: list[dict[str, Any]] = []
+    for task in raw_tasks:
+        task_id = str(task.get("id", task.get("task_id", "")))
+        answer_row = build_harbor_answer_key(task)
+        answer_row["payload"] = _expected_payload(task_id, str(task.get("eval_MRN", "")))
+        rows.append(answer_row)
+    return rows
 
 
 def _submission_template(raw_tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for task in raw_tasks:
+        task_id = str(task.get("id", task.get("task_id", "")))
         row = {
-            "task_id": str(task.get("id", task.get("task_id", ""))),
-            "instruction": str(task.get("instruction", "")),
-            "context": str(task.get("context", "")),
+            "task_id": task_id,
+            "instruction": build_instruction(
+                base_instruction=str(task.get("instruction", "")),
+                context=str(task.get("context", "")),
+                source_group=infer_group(task_id),
+            ),
             "final_answer": "",
             "payload": None,
         }
@@ -168,26 +171,33 @@ def _submission_template(raw_tasks: list[dict[str, Any]]) -> list[dict[str, Any]
 def _instruction_md(tasks_payload: dict[str, Any]) -> str:
     return "\n".join(
         [
-            "# Benchmark",
+            "# EHR Workflow Benchmark",
             "",
             "You are working inside a task environment that contains:",
             "",
             "- a local FHIR server at `http://fhir:8080/fhir`",
             "- task descriptions at `/workspace/benchmark_tasks.json`",
-            "- editable task rows at `/workspace/submission_template.json`",
+            "- editable task rows already prepared at `/workspace/submission.json`",
             "- primitive FHIR helper scripts under `/workspace/scripts/primitives/` (each supports `--help`)",
+            "",
+            "Primitive helper examples:",
+            "- `python /workspace/scripts/primitives/get_patient.py --help`",
+            "- `python /workspace/scripts/primitives/get_patient.py --identifier S2874099`",
+            "- `python /workspace/scripts/primitives/get_observation_labs.py --patient S2823623 --code GLU`",
+            "- `python /workspace/scripts/primitives/post_servicerequest.py --help`",
+            "",
+            "This benchmark simulates realistic EHR workflows in which each task may require multiple retrieval and action steps over patient data.",
+            "The environment provides API-style helper scripts for interacting with the EHR. Work through the tasks carefully and complete each row accurately.",
             "",
             "Your final work product is `/workspace/submission.json`.",
             "",
             "Suggested workflow:",
             "",
-            "1. Run `/workspace/scripts/wait_for_fhir.sh`.",
-            "2. Copy `/workspace/submission_template.json` to `/workspace/submission.json`.",
-            "3. Choose one row from `/workspace/submission.json`.",
-            "4. Read that row's instruction and context carefully.",
-            "5. Use the helper scripts under `/workspace/scripts/primitives/` when you need to query the chart or simulate a write. Start with `--help` if you are unsure which primitive to use.",
-            "6. Write the row's `final_answer` and `payload`, then move to the next row.",
-            "7. Stop when every row is complete.",
+            "1. Choose one row from `/workspace/submission.json`.",
+            "2. Read that row's instruction carefully.",
+            "3. Use the helper scripts under `/workspace/scripts/primitives/` when you need to query the chart or simulate a write. Start with `--help` if you are unsure which primitive to use.",
+            "4. Write the row's `final_answer` and `payload`, then move to the next row.",
+            "5. Stop when every row is complete.",
             "",
             "Submission rules:",
             "",
@@ -242,11 +252,17 @@ def _workspace_readme() -> str:
         # Workspace Files
 
         - `benchmark_tasks.json`: normalized task rows used for task browsing.
-        - `submission_template.json`: copy this to `submission.json` and fill in `final_answer` and `payload`.
+        - `submission.json`: editable task rows; fill in `final_answer` and `payload`.
         - `scripts/primitives/fhir_common.py`: shared HTTP and payload helpers used by the primitive scripts.
         - `scripts/primitives/get_*.py`: primitive read helpers; each supports `--help`.
         - `scripts/primitives/post_*.py`: simulated write helpers; each supports `--help`.
-        - `scripts/wait_for_fhir.sh`: wait until the local FHIR endpoint is ready.
+
+        Primitive helper examples:
+
+        - `python /workspace/scripts/primitives/get_patient.py --help`
+        - `python /workspace/scripts/primitives/get_patient.py --identifier S2874099`
+        - `python /workspace/scripts/primitives/get_observation_labs.py --patient S2823623 --code GLU`
+        - `python /workspace/scripts/primitives/post_servicerequest.py --help`
 
         The verifier reads `/workspace/submission.json` after the agent stops.
         """
@@ -263,6 +279,7 @@ def _environment_dockerfile() -> str:
             && rm -rf /var/lib/apt/lists/*
 
         WORKDIR /workspace
+        COPY workspace/ /workspace/
         """
     ).strip() + "\n"
 
@@ -483,58 +500,25 @@ def _primitive_scripts() -> dict[str, str]:
     }
 
 
-def _init_submission_py() -> str:
-    return _clean_block(
-        """
-        #!/usr/bin/env python3
-        from __future__ import annotations
-
-        import shutil
-        from pathlib import Path
-
-
-        def main() -> None:
-            template = Path("/workspace/submission_template.json")
-            target = Path("/workspace/submission.json")
-            if target.exists():
-                print(f"already exists: {target}")
-                return
-            shutil.copyfile(template, target)
-            print(f"created {target}")
-
-
-        if __name__ == "__main__":
-            main()
-        """
-    )
-
-
-def _wait_for_fhir_sh() -> str:
-    return _clean_block(
-        """
-        #!/usr/bin/env bash
-        set -euo pipefail
-
-        base_url="${FHIR_BASE_URL:-http://fhir:8080/fhir}"
-        until curl -fsS "${base_url}/metadata" >/dev/null; do
-          sleep 1
-        done
-        echo "FHIR ready: ${base_url}"
-        """
-    )
-
-
 def _test_sh() -> str:
     return _clean_block(
         """
         #!/usr/bin/env bash
         set -euo pipefail
 
+        mkdir -p /logs/verifier
+
+        extra_args=()
+        if [[ -n "${VERIFIER_ERROR_ANALYSIS_FILE:-}" ]]; then
+          extra_args+=(--error-analysis-file "${VERIFIER_ERROR_ANALYSIS_FILE}")
+        fi
+
         python /tests/verify_meta_task.py \
           --submission /workspace/submission.json \
           --tasks /workspace/benchmark_tasks.json \
           --answer-key /tests/task_answer_key.json \
-          --reward-file /logs/verifier/reward.txt
+          --reward-file /logs/verifier/reward.txt \
+          "${extra_args[@]}"
         """
     )
 
@@ -572,12 +556,45 @@ def _verify_meta_task_py() -> str:
             raise ValueError("benchmark_tasks.json must be a list or an object with a 'tasks' list")
 
 
+        def _error_analysis_rows(summary, merged_rows, submitted_by_id, answers_by_id):
+            merged_by_id = {
+                str(row.get("task_id", row.get("id", ""))): row
+                for row in merged_rows
+                if isinstance(row, dict)
+            }
+            shaped = []
+            for result in summary.get("results", []):
+                if not isinstance(result, dict):
+                    continue
+                if result.get("success", False):
+                    continue
+                task_id = str(result.get("task_id", ""))
+                merged = merged_by_id.get(task_id, {})
+                submitted = submitted_by_id.get(task_id, {})
+                expected = answers_by_id.get(task_id, {})
+                shaped.append(
+                    {
+                        "task_id": task_id,
+                        "category": expected.get("category", ""),
+                        "difficulty": expected.get("difficulty", ""),
+                        "failure_reason": result.get("failure_reason", ""),
+                        "expected_answer": expected.get("expected_answer", ""),
+                        "final_answer": submitted.get("final_answer", ""),
+                        "expected_payload": expected.get("payload"),
+                        "final_payload": submitted.get("payload"),
+                        "instruction": merged.get("instruction", submitted.get("instruction", "")),
+                    }
+                )
+            return shaped
+
+
         def main() -> None:
             parser = argparse.ArgumentParser()
             parser.add_argument("--submission", type=Path, required=True)
             parser.add_argument("--tasks", type=Path, required=True)
             parser.add_argument("--answer-key", type=Path, required=True)
             parser.add_argument("--reward-file", type=Path, required=True)
+            parser.add_argument("--error-analysis-file", type=Path)
             args = parser.parse_args()
 
             if not args.submission.exists():
@@ -611,8 +628,15 @@ def _verify_meta_task_py() -> str:
                 rows.extend(merged)
 
             summary = evaluate_submission_rows(rows)
+            args.reward_file.parent.mkdir(parents=True, exist_ok=True)
             results_path = args.reward_file.parent / "meta_results.json"
             results_path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+            if args.error_analysis_file is not None:
+                error_rows = _error_analysis_rows(summary, rows, submitted_by_id, answers_by_id)
+                args.error_analysis_file.write_text(
+                    json.dumps(error_rows, indent=2, ensure_ascii=False) + "\\n",
+                    encoding="utf-8",
+                )
             args.reward_file.write_text(f"{summary['pass_at_1']:.6f}\\n", encoding="utf-8")
             print(json.dumps(summary, indent=2, ensure_ascii=False))
 
@@ -655,7 +679,6 @@ def _write_meta_task(
 
     task_dir = output_root
     benchmark_payload = _benchmark_tasks_payload(selected_raw_tasks)
-    action_templates = _action_payload_templates(selected_raw_tasks)
     answer_key = _answer_key_payload(selected_raw_tasks)
     submission_template = _submission_template(selected_raw_tasks)
 
@@ -666,7 +689,6 @@ def _write_meta_task(
         _task_toml(selected_task_ids), encoding="utf-8"
     )
     _write_json(task_dir / "benchmark_tasks.json", benchmark_payload)
-    _write_json(task_dir / "submission_template.json", submission_template)
 
     environment_dir = task_dir / "environment"
     workspace_dir = environment_dir / "workspace"
@@ -682,21 +704,11 @@ def _write_meta_task(
     )
     workspace_dir.joinpath("README.md").write_text(_workspace_readme(), encoding="utf-8")
     _write_json(workspace_dir / "benchmark_tasks.json", benchmark_payload)
-    _write_json(workspace_dir / "submission_template.json", submission_template)
-    submission_path = workspace_dir / "submission.json"
-    if submission_path.exists():
-        submission_path.unlink()
+    _write_json(workspace_dir / "submission.json", submission_template)
     for script_name, content in _primitive_scripts().items():
         primitives_dir.joinpath(script_name).write_text(content, encoding="utf-8")
-    scripts_dir.joinpath("init_submission.py").write_text(
-        _init_submission_py(), encoding="utf-8"
-    )
-    wait_path = scripts_dir / "wait_for_fhir.sh"
-    wait_path.write_text(_wait_for_fhir_sh(), encoding="utf-8")
-    wait_path.chmod(0o755)
     for script_name in _primitive_scripts().keys():
         (primitives_dir / script_name).chmod(0o755)
-    (scripts_dir / "init_submission.py").chmod(0o755)
 
     tests_dir = task_dir / "tests"
     test_sh = tests_dir / "test.sh"
@@ -710,7 +722,6 @@ def _write_meta_task(
         evaluator_src.read_text(encoding="utf-8"), encoding="utf-8"
     )
     _write_json(tests_dir / "task_answer_key.json", answer_key)
-    _write_json(tests_dir / "action_payload_templates.json", action_templates)
 
 
 def main() -> None:

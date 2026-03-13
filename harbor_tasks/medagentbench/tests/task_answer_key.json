@@ -3,86 +3,141 @@
     "task_id": "task1_1",
     "category": "factual_qa",
     "difficulty": "easy",
-    "sol": [
-      "S6534835"
-    ],
-    "eval_MRN": "S6534835"
+    "expected_answer": "S6534835",
+    "eval_MRN": "S6534835",
+    "payload": null
   },
   {
     "task_id": "task2_1",
     "category": "factual_qa",
     "difficulty": "easy",
-    "sol": [
-      60
-    ],
-    "eval_MRN": "S2874099"
+    "expected_answer": 60,
+    "eval_MRN": "S2874099",
+    "payload": null
   },
   {
     "task_id": "task3_1",
     "category": "clinical_data_recording",
     "difficulty": "medium",
-    "sol": "",
-    "eval_MRN": "S2380121"
+    "expected_answer": "",
+    "eval_MRN": "S2380121",
+    "payload": {
+      "resourceType": "Observation",
+      "status": "final",
+      "category": [
+        {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/observation-category",
+              "code": "vital-signs",
+              "display": "Vital Signs"
+            }
+          ]
+        }
+      ],
+      "code": {
+        "text": "BP"
+      },
+      "effectiveDateTime": "2023-11-13T10:15:00+00:00",
+      "valueString": "118/77 mmHg",
+      "subject": {
+        "reference": "Patient/S2380121"
+      }
+    }
   },
   {
     "task_id": "task4_1",
     "category": "factual_qa",
     "difficulty": "easy",
-    "sol": [
-      -1
-    ],
-    "eval_MRN": "S3032536"
+    "expected_answer": -1,
+    "eval_MRN": "S3032536",
+    "payload": null
   },
   {
     "task_id": "task5_1",
     "category": "medication_reconciliation",
     "difficulty": "medium",
-    "sol": [
-      -1
-    ],
-    "eval_MRN": "S6315806"
+    "expected_answer": -1,
+    "eval_MRN": "S6315806",
+    "payload": null
   },
   {
     "task_id": "task6_1",
     "category": "data_aggregation",
     "difficulty": "easy",
-    "sol": [
-      97.0
-    ],
-    "eval_MRN": "S6307599"
+    "expected_answer": 97.0,
+    "eval_MRN": "S6307599",
+    "payload": null
   },
   {
     "task_id": "task7_1",
     "category": "factual_qa",
     "difficulty": "easy",
-    "sol": [
-      123.0
-    ],
-    "eval_MRN": "S2823623"
+    "expected_answer": 123.0,
+    "eval_MRN": "S2823623",
+    "payload": null
   },
   {
     "task_id": "task8_1",
     "category": "care_ordering",
     "difficulty": "medium",
-    "sol": "",
-    "eval_MRN": "S2016972"
+    "expected_answer": "",
+    "eval_MRN": "S2016972",
+    "payload": {
+      "resourceType": "ServiceRequest",
+      "status": "active",
+      "intent": "order",
+      "authoredOn": "2023-11-13T10:15:00+00:00",
+      "priority": "stat",
+      "code": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "306181000000106"
+          }
+        ]
+      },
+      "note": {
+        "text": "Situation: acute left knee injury, Background: radiology report indicates ACL tear. Assessment: ACL tear grade II. Recommendation: request for Orthopedic service to evaluate and provide management recommendations."
+      },
+      "subject": {
+        "reference": "Patient/S2016972"
+      }
+    }
   },
   {
     "task_id": "task9_1",
     "category": "medication_reconciliation",
     "difficulty": "medium",
-    "sol": [
-      3.9
-    ],
-    "eval_MRN": "S3241217"
+    "expected_answer": 3.9,
+    "eval_MRN": "S3241217",
+    "payload": null
   },
   {
     "task_id": "task10_1",
     "category": "care_ordering",
     "difficulty": "medium",
-    "sol": [
+    "expected_answer": [
       -1
     ],
-    "eval_MRN": "S6227720"
+    "eval_MRN": "S6227720",
+    "payload": {
+      "resourceType": "ServiceRequest",
+      "status": "active",
+      "intent": "order",
+      "authoredOn": "2023-11-13T10:15:00+00:00",
+      "priority": "stat",
+      "code": {
+        "coding": [
+          {
+            "system": "http://loinc.org",
+            "code": "4548-4"
+          }
+        ]
+      },
+      "subject": {
+        "reference": "Patient/S6227720"
+      }
+    }
   }
 ]

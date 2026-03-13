@@ -27,8 +27,6 @@ This command will now:
 Inside the opened container shell:
 
 1. Initialize and inspect the task:
-   /workspace/scripts/wait_for_fhir.sh
-   python /workspace/scripts/init_submission.py
    sed -n '1,200p' /workspace/benchmark_tasks.json
    sed -n '1,160p' /workspace/submission.json
 

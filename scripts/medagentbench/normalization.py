@@ -142,10 +142,16 @@ def build_harbor_answer_key(row: dict[str, Any]) -> dict[str, Any]:
     med_task_type = GROUP_TO_MED_TASK_TYPE.get(group, "patient_information_retrieval")
     category = MED_TASK_TYPE_TO_REPO_TASK_TYPE[med_task_type]
     difficulty = "medium" if group in ACTION_GROUPS else "easy"
+    expected_answer: Any = row.get("sol", "")
+    if isinstance(expected_answer, list) and len(expected_answer) == 1:
+        expected_answer = expected_answer[0]
+    if group == "task10" and expected_answer == -1:
+        expected_answer = [-1]
     return {
         "task_id": task_id,
         "category": category,
         "difficulty": difficulty,
-        "sol": row.get("sol", ""),
+        "expected_answer": expected_answer,
         "eval_MRN": row.get("eval_MRN"),
+        "payload": None,
     }

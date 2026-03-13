@@ -10,11 +10,9 @@ set -euo pipefail
 ls /workspace
 ls /workspace/scripts
 ls /workspace/scripts/primitives
-/workspace/scripts/wait_for_fhir.sh
 python /workspace/scripts/primitives/get_patient.py --help
 python /workspace/scripts/primitives/get_patient.py --identifier S2874099
 python /workspace/scripts/primitives/get_observation_labs.py --patient S2823623 --code GLU
 python /workspace/scripts/primitives/post_servicerequest.py --help
-python /workspace/scripts/init_submission.py
 sed -n "1,120p" /workspace/submission.json
 '

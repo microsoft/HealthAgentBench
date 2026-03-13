@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Analyze failed MedAgentBench cases and print concise diagnostics."""
+"""Analyze unsuccessful MedAgentBench cases and print concise diagnostics."""
 
 from __future__ import annotations
 
@@ -38,87 +38,6 @@ def _clip(text: str, max_width: int) -> str:
     return f"{text[:head]}...{text[-tail:]}"
 
 
-def _scalar_equal(expected: Any, actual: Any) -> bool:
-    if isinstance(expected, (int, float)) and isinstance(actual, (int, float)):
-        return abs(float(expected) - float(actual)) <= 1e-6
-    return expected == actual
-
-
-def _collect_payload_diffs(
-    expected: Any,
-    actual: Any,
-    *,
-    path: str = "",
-    diffs: list[str] | None = None,
-    limit: int = 8,
-) -> list[str]:
-    if diffs is None:
-        diffs = []
-    if len(diffs) >= limit:
-        return diffs
-
-    if isinstance(expected, dict):
-        if not isinstance(actual, dict):
-            diffs.append(f"{path or '$'}: expected object, got {type(actual).__name__}")
-            return diffs
-        for key, expected_val in expected.items():
-            if len(diffs) >= limit:
-                break
-            if key.endswith("_contains"):
-                actual_key = key.removesuffix("_contains")
-                value = actual.get(actual_key)
-                if expected_val not in str(value):
-                    diffs.append(
-                        f"{path + '.' if path else ''}{actual_key}: expected contains {expected_val!r}, got {value!r}"
-                    )
-                continue
-            if key not in actual:
-                diffs.append(f"{path + '.' if path else ''}{key}: missing")
-                continue
-            _collect_payload_diffs(
-                expected_val,
-                actual[key],
-                path=f"{path + '.' if path else ''}{key}",
-                diffs=diffs,
-                limit=limit,
-            )
-        return diffs
-
-    if isinstance(expected, list):
-        if not isinstance(actual, list):
-            diffs.append(f"{path or '$'}: expected list, got {type(actual).__name__}")
-            return diffs
-        if len(actual) < len(expected):
-            diffs.append(f"{path or '$'}: expected len>={len(expected)}, got {len(actual)}")
-            return diffs
-        for idx, expected_item in enumerate(expected):
-            if len(diffs) >= limit:
-                break
-            _collect_payload_diffs(
-                expected_item,
-                actual[idx],
-                path=f"{path}[{idx}]",
-                diffs=diffs,
-                limit=limit,
-            )
-        return diffs
-
-    if not _scalar_equal(expected, actual):
-        diffs.append(f"{path or '$'}: expected {expected!r}, got {actual!r}")
-    return diffs
-
-
-def _summarize_action_payload(row: dict[str, Any]) -> str:
-    expected = build_expected_action_payload_for_row(row)
-    if expected is None:
-        return "unsupported task group for expected payload"
-    actual = build_actual_action_payload_for_row(row)
-    diffs = _collect_payload_diffs(expected, actual)
-    if not diffs:
-        return "no mismatch found (likely policy/ordering issue)"
-    return " | ".join(diffs[:4])
-
-
 def _tool_summary(row: dict[str, Any]) -> str:
     trace = row.get("tool_trace")
     if not isinstance(trace, list):
@@ -152,6 +71,8 @@ def _build_rows(results_path: Path, fail_mode: str) -> list[dict[str, str]]:
 
     rows: list[dict[str, str]] = []
     for entry in selected:
+        if not entry.get("failure_reason"):
+            continue
         row = entry["row"]
         task_type = str(row.get("task_type", ""))
         base = {
@@ -164,13 +85,17 @@ def _build_rows(results_path: Path, fail_mode: str) -> list[dict[str, str]]:
             "tools": _tool_summary(row),
             "expected_answer": "",
             "final_answer": "",
-            "payload_issue": "",
+            "expected_payload": "",
+            "final_payload": "",
         }
         if task_type == "query":
             base["expected_answer"] = str(row.get("expected_answer", ""))
             base["final_answer"] = str(row.get("final_answer", ""))
         else:
-            base["payload_issue"] = _summarize_action_payload(row)
+            expected_payload = build_expected_action_payload_for_row(row)
+            final_payload = build_actual_action_payload_for_row(row)
+            base["expected_payload"] = json.dumps(expected_payload, ensure_ascii=True, sort_keys=True)
+            base["final_payload"] = json.dumps(final_payload, ensure_ascii=True, sort_keys=True)
         rows.append(base)
     return rows
 
@@ -184,7 +109,8 @@ def _print_table(rows: list[dict[str, str]], *, max_rows: int, max_col_width: in
         "failure_reason",
         "expected_answer",
         "final_answer",
-        "payload_issue",
+        "expected_payload",
+        "final_payload",
     ]
     shown = rows[:max_rows]
     widths: dict[str, int] = {col: len(col) for col in columns}

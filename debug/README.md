@@ -63,13 +63,24 @@ Reusable Harbor scripts:
   - copies the task `tests/` directory into the running container at `/tests`
   - executes `/tests/test.sh`
   - reads the mounted verifier outputs from `.tmp/<project>/verifier/`
+- By default it also asks the verifier to emit a merged `error_analysis.json` file under the verifier log directory.
 - This means the task environment must already be running.
 
-9. `debug/harbor/show-task-logs.sh`
+9. `debug/harbor/save-task-submission.sh`
+- Copies `/workspace/submission.json` from the running task container to the host.
+- Default output path:
+  - `.tmp/<project>/artifacts/submission.json`
+
+10. `debug/harbor/restore-task-submission.sh`
+- Copies a saved host-side submission snapshot back into `/workspace/submission.json` in the running task container.
+- Default input path:
+  - `.tmp/<project>/artifacts/submission.json`
+
+11. `debug/harbor/show-task-logs.sh`
 - Prints the latest Harbor run/trial files, trial log, agent log, verifier stdout, and reward.
 - Optional arg: explicit Harbor run directory.
 
-10. `debug/harbor/down-task-env.sh`
+12. `debug/harbor/down-task-env.sh`
 - Stops and removes the debug Docker Compose stack.
 - Set `HB_FULL_CLEANUP=1` to mirror Harbor's heavier cleanup path and also remove images and volumes.
 
@@ -153,7 +164,6 @@ bash debug/harbor/medagentbench/run-manually.sh
 Inside the opened container shell:
 
 ```bash
-python /workspace/scripts/init_submission.py
 codex exec \
   --dangerously-bypass-approvals-and-sandbox \
   --skip-git-repo-check \
@@ -168,18 +178,29 @@ codex exec \
 When the agent finishes, exit the shell and run:
 
 ```bash
+bash debug/harbor/save-task-submission.sh
 bash debug/harbor/run-task-verifier.sh
+```
+
+That saves the generated submission to:
+
+```bash
+.tmp/<project>/artifacts/submission.json
 ```
 
 ### 4. Verifier-only debugging
 
-Create or edit a submission file, then run:
+If you already saved a submission from a previous agent run:
 
 ```bash
+bash debug/harbor/build-task-env.sh
+bash debug/harbor/up-task-env.sh
+bash debug/harbor/restore-task-submission.sh
 bash debug/harbor/run-task-verifier.sh
 ```
 
 This prints the reward and writes verifier artifacts under `.tmp/<project>/verifier/`.
+For the current MedAgentBench task it also writes `.tmp/<project>/verifier/error_analysis.json`, which merges the submission rows with the hidden answer-key fields by `task_id`.
 
 ### 5. Harbor trial log inspection
 

@@ -38,7 +38,6 @@ def main() -> None:
     workspace_dir = args.task_dir / "environment" / "workspace"
     benchmark = _load_json(workspace_dir / "benchmark_tasks.json")
     answer_key_rows = _load_json(args.task_dir / "tests" / "task_answer_key.json")
-    action_templates = _load_json(args.task_dir / "tests" / "action_payload_templates.json")
     answers_by_id = {str(row.get("task_id", row.get("id", ""))): row for row in answer_key_rows}
 
     results: list[dict[str, Any]] = []
@@ -50,9 +49,8 @@ def main() -> None:
         row: dict[str, Any] = {
             "task_id": task_id,
             "instruction": task.get("instruction", ""),
-            "context": "",
             "final_answer": "",
-            "payload": action_templates.get(task_id),
+            "payload": answer_key.get("payload"),
         }
         expected = answer_key.get("sol", "")
         if isinstance(expected, list) and len(expected) == 1:

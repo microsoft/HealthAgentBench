@@ -112,13 +112,7 @@ def _payload_object(row: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def _expected(row: dict[str, Any]) -> Any:
-    value = row.get("sol", "")
-    if isinstance(value, list) and len(value) == 1:
-        single = value[0]
-        if _task_group(str(row.get("id", ""))) == "task10" and single == -1:
-            return [-1]
-        return single
-    return value
+    return row.get("expected_answer", "")
 
 
 def _match_numeric(expected: Any, predicted: Any, *, tolerance: float = 0.0) -> bool:

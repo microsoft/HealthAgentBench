@@ -28,12 +28,45 @@ def _normalize_tasks(payload):
     raise ValueError("benchmark_tasks.json must be a list or an object with a 'tasks' list")
 
 
+def _error_analysis_rows(summary, merged_rows, submitted_by_id, answers_by_id):
+    merged_by_id = {
+        str(row.get("task_id", row.get("id", ""))): row
+        for row in merged_rows
+        if isinstance(row, dict)
+    }
+    shaped = []
+    for result in summary.get("results", []):
+        if not isinstance(result, dict):
+            continue
+        if result.get("success", False):
+            continue
+        task_id = str(result.get("task_id", ""))
+        merged = merged_by_id.get(task_id, {})
+        submitted = submitted_by_id.get(task_id, {})
+        expected = answers_by_id.get(task_id, {})
+        shaped.append(
+            {
+                "task_id": task_id,
+                "category": expected.get("category", ""),
+                "difficulty": expected.get("difficulty", ""),
+                "failure_reason": result.get("failure_reason", ""),
+                "expected_answer": expected.get("expected_answer", ""),
+                "final_answer": submitted.get("final_answer", ""),
+                "expected_payload": expected.get("payload"),
+                "final_payload": submitted.get("payload"),
+                "instruction": merged.get("instruction", submitted.get("instruction", "")),
+            }
+        )
+    return shaped
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--submission", type=Path, required=True)
     parser.add_argument("--tasks", type=Path, required=True)
     parser.add_argument("--answer-key", type=Path, required=True)
     parser.add_argument("--reward-file", type=Path, required=True)
+    parser.add_argument("--error-analysis-file", type=Path)
     args = parser.parse_args()
 
     if not args.submission.exists():
@@ -67,8 +100,15 @@ def main() -> None:
         rows.extend(merged)
 
     summary = evaluate_submission_rows(rows)
+    args.reward_file.parent.mkdir(parents=True, exist_ok=True)
     results_path = args.reward_file.parent / "meta_results.json"
     results_path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if args.error_analysis_file is not None:
+        error_rows = _error_analysis_rows(summary, rows, submitted_by_id, answers_by_id)
+        args.error_analysis_file.write_text(
+            json.dumps(error_rows, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
     args.reward_file.write_text(f"{summary['pass_at_1']:.6f}\n", encoding="utf-8")
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
