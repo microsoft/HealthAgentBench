@@ -1,4 +1,4 @@
-"""Reusable FHIR tool wrappers, client, and function-calling schemas."""
+"""Primitive MedAgentBench-aligned FHIR tools and schema export helpers."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from medcli.utils.http import JsonHttpClient
 
 @dataclass
 class FHIRClient:
-    """Minimal FHIR REST client used by search/create tool handlers."""
+    """Minimal FHIR REST client used by MedAgentBench-aligned tool handlers."""
 
     base_url: str
     timeout_s: float = 30.0
@@ -44,9 +44,7 @@ class FHIRClient:
             headers={"Accept": "application/fhir+json"},
         )
 
-    def create(
-        self, resource_type: str, resource_body: dict[str, Any]
-    ) -> dict[str, Any]:
+    def create(self, resource_type: str, resource_body: dict[str, Any]) -> dict[str, Any]:
         """Create FHIR resource (`POST /<Resource>`)."""
         return self._http.request_json(
             method="POST",
@@ -60,276 +58,262 @@ class FHIRClient:
 
 
 def _to_search_params(kwargs: dict[str, Any]) -> dict[str, str]:
-    return {k: str(v) for k, v in kwargs.items() if v is not None}
+    return {key: str(value) for key, value in kwargs.items() if value is not None}
+
+
+def _create_payload(kwargs: dict[str, Any]) -> dict[str, Any]:
+    return {key: value for key, value in kwargs.items() if value is not None}
+
+
+def _schema(
+    properties: dict[str, Any],
+    *,
+    required: list[str] | None = None,
+) -> dict[str, Any]:
+    return {
+        "type": "object",
+        "properties": properties,
+        "required": required or [],
+        "additionalProperties": False,
+    }
 
 
 @register_tool(
-    tool_name="patient_search",
+    tool_name="get_condition",
     description=(
-        "Search Patient resources. Prefer family + given (+ optional birthdate) "
-        "for person matching."
+        "Condition.Search (Problems). Retrieve problems from a patient's chart. "
+        "This resource is typically queried by patient and optionally category."
     ),
-    parameters=lambda: _patient_search_parameters_schema(),
+    parameters=lambda: _condition_parameters_schema(),
 )
-def patient_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
-    """Search Patient resources with MedAgentBench-compatible name fallback."""
-    client = tool_runtime.require_fhir()
-    params = _to_search_params(kwargs)
-    # Compatibility fallback: if caller provides a full name string, derive
-    # family/given fields to match MedAgentBench-style Patient search usage.
-    if "name" in params and "family" not in params and "given" not in params:
-        raw_name = params.pop("name").strip()
-        parts = [part for part in raw_name.split() if part]
-        if len(parts) >= 2:
-            params["given"] = " ".join(parts[:-1])
-            params["family"] = parts[-1]
-        elif parts:
-            params["family"] = parts[0]
-    return client.search("Patient", params)
+def get_condition(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Search Condition resources using the original MedAgentBench primitive schema."""
+    return tool_runtime.require_fhir().search("Condition", _to_search_params(kwargs))
 
 
 @register_tool(
-    tool_name="lab_search",
+    tool_name="get_observation_labs",
     description=(
-        "Search Observation resources for laboratory results. "
-        "Defaults category=laboratory when category is omitted."
+        "Observation.Search (Labs). Retrieve laboratory observations by patient "
+        "and code, with optional date filtering."
     ),
-    parameters=lambda: _lab_search_parameters_schema(),
+    parameters=lambda: _observation_labs_parameters_schema(),
 )
-def lab_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
-    """Search Observation resources scoped to laboratory category."""
-    client = tool_runtime.require_fhir()
-    params = _to_search_params(kwargs)
-    params.setdefault("category", "laboratory")
-    return client.search("Observation", params)
+def get_observation_labs(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Search Observation resources for lab-style queries."""
+    return tool_runtime.require_fhir().search("Observation", _to_search_params(kwargs))
 
 
 @register_tool(
-    tool_name="vital_search",
+    tool_name="get_observation_vitals",
     description=(
-        "Search Observation resources for vital signs. "
-        "Defaults category=vital-signs when category is omitted."
+        "Observation.Search (Vitals). Retrieve vital signs and other non-duplicable "
+        "flowsheet data by patient, category, and optional date."
     ),
-    parameters=lambda: _vital_search_parameters_schema(),
+    parameters=lambda: _observation_vitals_parameters_schema(),
 )
-def vital_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
-    """Search Observation resources scoped to vital-signs category."""
-    client = tool_runtime.require_fhir()
-    params = _to_search_params(kwargs)
-    params.setdefault("category", "vital-signs")
-    return client.search("Observation", params)
+def get_observation_vitals(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Search Observation resources for vital-sign queries."""
+    return tool_runtime.require_fhir().search("Observation", _to_search_params(kwargs))
 
 
 @register_tool(
-    tool_name="condition_search",
-    description="Search Condition resources by standard FHIR query params.",
-    parameters=lambda: _condition_search_parameters_schema(),
+    tool_name="post_observation_vitals",
+    description=(
+        "Observation.Create (Vitals). File a new vitals Observation payload "
+        "to the FHIR server."
+    ),
+    parameters=lambda: _observation_create_parameters_schema(),
+    pretend_on_call_in_evaluation=True,
 )
-def condition_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
-    """Search Condition resources by standard FHIR query params."""
-    client = tool_runtime.require_fhir()
-    return client.search("Condition", _to_search_params(kwargs))
+def post_observation_vitals(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Create an Observation resource using the primitive MedAgentBench payload shape."""
+    return tool_runtime.require_fhir().create("Observation", _create_payload(kwargs))
 
 
 @register_tool(
-    tool_name="procedure_search",
-    description="Search Procedure resources by standard FHIR query params.",
-    parameters=lambda: _procedure_search_parameters_schema(),
-)
-def procedure_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
-    """Search Procedure resources by standard FHIR query params."""
-    client = tool_runtime.require_fhir()
-    return client.search("Procedure", _to_search_params(kwargs))
-
-
-@register_tool(
-    tool_name="medicationrequest_search",
-    description="Search MedicationRequest resources by standard FHIR query params.",
+    tool_name="get_medicationrequest",
+    description=(
+        "MedicationRequest.Search (Signed Medication Order). Query medication orders "
+        "for a patient and optionally filter by category or date."
+    ),
     parameters=lambda: _medicationrequest_search_parameters_schema(),
 )
-def medicationrequest_search(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
-    """Search MedicationRequest resources by standard FHIR query params."""
-    client = tool_runtime.require_fhir()
-    return client.search("MedicationRequest", _to_search_params(kwargs))
+def get_medicationrequest(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Search MedicationRequest resources using the primitive MedAgentBench schema."""
+    return tool_runtime.require_fhir().search("MedicationRequest", _to_search_params(kwargs))
 
 
 @register_tool(
-    tool_name="vital_create",
-    description="Create a new Observation resource (typically a vital sign).",
-    parameters=lambda: _wrap_resource_schema(_vital_create_resource_schema()),
+    tool_name="post_medicationrequest",
+    description="MedicationRequest.Create.",
+    parameters=lambda: _medicationrequest_create_parameters_schema(),
     pretend_on_call_in_evaluation=True,
 )
-def vital_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dict[str, Any]:
-    """Create Observation resource used for vital-sign write tasks."""
-    client = tool_runtime.require_fhir()
-    return client.create("Observation", resource)
+def post_medicationrequest(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Create a MedicationRequest resource using the primitive MedAgentBench payload shape."""
+    return tool_runtime.require_fhir().create("MedicationRequest", _create_payload(kwargs))
 
 
 @register_tool(
-    tool_name="procedure_create",
-    description="Create a new ServiceRequest resource.",
-    parameters=lambda: _wrap_resource_schema(_servicerequest_create_resource_schema()),
-    pretend_on_call_in_evaluation=True,
+    tool_name="get_procedure",
+    description=(
+        "Procedure.Search (Orders). Query procedures for a patient with required date "
+        "filtering and optional code filtering."
+    ),
+    parameters=lambda: _procedure_search_parameters_schema(),
 )
-def procedure_create(tool_runtime: ToolRuntime, resource: dict[str, Any]) -> dict[str, Any]:
-    """Create ServiceRequest resource used for procedure/order tasks."""
-    client = tool_runtime.require_fhir()
-    # MedAgentBench maps this action tool to ServiceRequest.Create.
-    return client.create("ServiceRequest", resource)
+def get_procedure(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Search Procedure resources using the primitive MedAgentBench schema."""
+    return tool_runtime.require_fhir().search("Procedure", _to_search_params(kwargs))
 
 
 @register_tool(
-    tool_name="medicationrequest_create",
-    description="Create a new MedicationRequest resource.",
-    parameters=lambda: _wrap_resource_schema(_medicationrequest_create_resource_schema()),
+    tool_name="post_servicerequest",
+    description="ServiceRequest.Create.",
+    parameters=lambda: _servicerequest_create_parameters_schema(),
     pretend_on_call_in_evaluation=True,
 )
-def medicationrequest_create(
-    tool_runtime: ToolRuntime, resource: dict[str, Any]
-) -> dict[str, Any]:
-    """Create MedicationRequest resource used for medication-order tasks."""
-    client = tool_runtime.require_fhir()
-    return client.create("MedicationRequest", resource)
+def post_servicerequest(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Create a ServiceRequest resource using the primitive MedAgentBench payload shape."""
+    return tool_runtime.require_fhir().create("ServiceRequest", _create_payload(kwargs))
 
 
-def _patient_search_parameters_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "_id": {"type": ["string", "null"]},
-            "identifier": {"type": ["string", "null"]},
-            "family": {"type": ["string", "null"]},
-            "given": {"type": ["string", "null"]},
-            "birthdate": {"type": ["string", "null"]},
-            "gender": {"type": ["string", "null"]},
-            "_count": {"type": ["string", "null"]},
-        },
-        "required": ["_id", "identifier", "family", "given", "birthdate", "gender", "_count"],
-        "additionalProperties": False,
-    }
+@register_tool(
+    tool_name="get_patient",
+    description=(
+        "Patient.Search. Filter or search for patients based on demographic "
+        "parameters and patient identifiers."
+    ),
+    parameters=lambda: _patient_parameters_schema(),
+)
+def get_patient(tool_runtime: ToolRuntime, **kwargs: Any) -> dict[str, Any]:
+    """Search Patient resources without MedCLI-specific convenience transforms."""
+    return tool_runtime.require_fhir().search("Patient", _to_search_params(kwargs))
 
 
-def _condition_search_parameters_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "patient": {"type": "string"},
-            "category": {"type": ["string", "null"]},
-        },
-        "required": ["patient", "category"],
-        "additionalProperties": False,
-    }
-
-
-def _lab_search_parameters_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "patient": {"type": "string"},
-            "code": {"type": "string"},
-            "date": {"type": ["string", "null"]},
-        },
-        "required": ["patient", "code", "date"],
-        "additionalProperties": False,
-    }
-
-
-def _vital_search_parameters_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "patient": {"type": "string"},
+def _condition_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
             "category": {
-                "type": ["string", "null"],
-                "enum": ["vital-signs", None],
+                "type": "string",
+                "description": 'Always "problem-list-item" for this API.',
             },
-            "date": {"type": ["string", "null"]},
+            "patient": {
+                "type": "string",
+                "description": "Reference to a patient resource the condition is for.",
+            },
         },
-        "required": ["patient", "category", "date"],
-        "additionalProperties": False,
-    }
+        required=["patient"],
+    )
 
 
-def _procedure_search_parameters_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "patient": {"type": "string"},
-            "date": {"type": "string"},
-            "code": {"type": ["string", "null"]},
+def _observation_labs_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
+            "code": {
+                "type": "string",
+                "description": "The observation identifier (base name).",
+            },
+            "date": {
+                "type": "string",
+                "description": "Date when the specimen was obtained.",
+            },
+            "patient": {
+                "type": "string",
+                "description": "Reference to a patient resource the condition is for.",
+            },
         },
-        "required": ["patient", "date", "code"],
-        "additionalProperties": False,
-    }
+        required=["code", "patient"],
+    )
 
 
-def _medicationrequest_search_parameters_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "patient": {"type": "string"},
-            "category": {"type": ["string", "null"]},
-            "date": {"type": ["string", "null"]},
-            "status": {"type": ["string", "null"]},
+def _observation_vitals_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
+            "category": {
+                "type": "string",
+                "description": 'Use "vital-signs" to search for vitals observations.',
+            },
+            "date": {
+                "type": "string",
+                "description": "The date range for when the observation was taken.",
+            },
+            "patient": {
+                "type": "string",
+                "description": "Reference to a patient resource the condition is for.",
+            },
         },
-        "required": ["patient", "category", "date", "status"],
-        "additionalProperties": False,
-    }
+        required=["category", "patient"],
+    )
 
 
-def _vital_create_resource_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
+def _observation_create_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
             "resourceType": {
                 "type": "string",
-                "description": 'Use "Observation" for vitals observations.',
+                'description': 'Use "Observation" for vitals observations.',
             },
             "category": {
                 "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
+                "items": _schema(
+                    {
                         "coding": {
                             "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "system": {"type": "string"},
-                                    "code": {"type": "string"},
-                                    "display": {"type": "string"},
-                                },
-                                "required": ["system", "code", "display"],
-                                "additionalProperties": False,
-                            },
+                            "items": _schema(
+                                {
+                                    "system": {
+                                        "type": "string",
+                                        "description": 'Use "http://hl7.org/fhir/observation-category" ',
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        'description': 'Use "vital-signs" ',
+                                    },
+                                    "display": {
+                                        "type": "string",
+                                        'description': 'Use "Vital Signs" ',
+                                    },
+                                }
+                            ),
                         }
-                    },
-                    "required": ["coding"],
-                    "additionalProperties": False,
-                },
+                    }
+                ),
             },
-            "code": {
-                "type": "object",
-                "properties": {
+            "code": _schema(
+                {
                     "text": {
                         "type": "string",
-                        "description": "What is being measured.",
+                        "description": (
+                            "The flowsheet ID, encoded flowsheet ID, or LOINC codes to "
+                            "flowsheet mapping. What is being measured."
+                        ),
                     }
-                },
-                "required": ["text"],
-                "additionalProperties": False,
+                }
+            ),
+            "effectiveDateTime": {
+                "type": "string",
+                "description": "The date and time the observation was taken, in ISO format.",
             },
-            "effectiveDateTime": {"type": "string"},
-            "status": {"type": "string"},
-            "valueString": {"type": "string"},
-            "subject": {
-                "type": "object",
-                "properties": {"reference": {"type": "string"}},
-                "required": ["reference"],
-                "additionalProperties": False,
+            "status": {
+                "type": "string",
+                'description': 'The status of the observation. Only a value of "final" is supported.',
             },
+            "valueString": {
+                "type": "string",
+                "description": "Measurement value",
+            },
+            "subject": _schema(
+                {
+                    "reference": {
+                        "type": "string",
+                        "description": "The patient FHIR ID for whom the observation is about.",
+                    }
+                }
+            ),
         },
-        "required": [
+        required=[
             "resourceType",
             "category",
             "code",
@@ -338,56 +322,125 @@ def _vital_create_resource_schema() -> dict[str, Any]:
             "valueString",
             "subject",
         ],
-        "additionalProperties": False,
-    }
+    )
 
 
-def _medicationrequest_create_resource_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "resourceType": {"type": "string"},
-            "medicationCodeableConcept": {
-                "type": "object",
-                "properties": {
-                    "coding": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "system": {"type": "string"},
-                                "code": {"type": "string"},
-                                "display": {"type": "string"},
-                            },
-                            "required": ["system", "code", "display"],
-                            "additionalProperties": False,
-                        },
-                    },
-                    "text": {"type": ["string", "null"]},
-                },
-                "required": ["coding", "text"],
-                "additionalProperties": False,
+def _medicationrequest_search_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
+            "category": {
+                "type": "string",
+                "description": "The category of medication orders to search for.",
             },
-            "authoredOn": {"type": "string"},
-            "dosageInstruction": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {},
-                    "required": [],
-                    "additionalProperties": False,
-                },
+            "date": {
+                "type": "string",
+                "description": "The medication administration date.",
             },
-            "status": {"type": "string"},
-            "intent": {"type": "string"},
-            "subject": {
-                "type": "object",
-                "properties": {"reference": {"type": "string"}},
-                "required": ["reference"],
-                "additionalProperties": False,
+            "patient": {
+                "type": "string",
+                "description": "The FHIR patient ID.",
             },
         },
-        "required": [
+        required=["patient"],
+    )
+
+
+def _medicationrequest_create_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
+            "resourceType": {
+                "type": "string",
+                'description': 'Use "MedicationRequest" for medication requests.',
+            },
+            "medicationCodeableConcept": _schema(
+                {
+                    "coding": {
+                        "type": "array",
+                        "items": _schema(
+                            {
+                                "system": {
+                                    "type": "string",
+                                    'description': 'Coding system such as "http://hl7.org/fhir/sid/ndc" ',
+                                },
+                                "code": {
+                                    "type": "string",
+                                    "description": "The actual code",
+                                },
+                                "display": {
+                                    "type": "string",
+                                    "description": "Display name",
+                                },
+                            }
+                        ),
+                    },
+                    "text": {
+                        "type": "string",
+                        "description": "The order display name of the medication, otherwise the record name.",
+                    },
+                }
+            ),
+            "authoredOn": {
+                "type": "string",
+                "description": "The date the prescription was written.",
+            },
+            "dosageInstruction": {
+                "type": "array",
+                "items": _schema(
+                    {
+                        "route": _schema(
+                            {
+                                "text": {
+                                    "type": "string",
+                                    "description": "The medication route.",
+                                }
+                            }
+                        ),
+                        "doseAndRate": {
+                            "type": "array",
+                            "items": _schema(
+                                {
+                                    "doseQuantity": _schema(
+                                        {
+                                            "value": {"type": "number"},
+                                            "unit": {
+                                                "type": "string",
+                                                'description': 'unit for the dose such as "g" ',
+                                            },
+                                        }
+                                    ),
+                                    "rateQuantity": _schema(
+                                        {
+                                            "value": {"type": "number"},
+                                            "unit": {
+                                                "type": "string",
+                                                'description': 'unit for the rate such as "h" ',
+                                            },
+                                        }
+                                    ),
+                                }
+                            ),
+                        },
+                    }
+                ),
+            },
+            "status": {
+                "type": "string",
+                "description": "The status of the medication request.",
+            },
+            "intent": {
+                "type": "string",
+                "description": "The intent of the medication request.",
+            },
+            "subject": _schema(
+                {
+                    "reference": {
+                        "type": "string",
+                        "description": "The patient FHIR ID for whom the medication request is about.",
+                    }
+                }
+            ),
+        },
+        required=[
             "resourceType",
             "medicationCodeableConcept",
             "authoredOn",
@@ -396,54 +449,90 @@ def _medicationrequest_create_resource_schema() -> dict[str, Any]:
             "intent",
             "subject",
         ],
-        "additionalProperties": False,
-    }
+    )
 
 
-def _servicerequest_create_resource_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "resourceType": {"type": "string"},
+def _procedure_search_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
             "code": {
-                "type": "object",
-                "properties": {
+                "type": "string",
+                "description": "Specific procedure code to search for.",
+            },
+            "date": {
+                "type": "string",
+                "description": "Procedure date filter.",
+            },
+            "patient": {
+                "type": "string",
+                "description": "The FHIR patient ID.",
+            },
+        },
+        required=["date", "patient"],
+    )
+
+
+def _servicerequest_create_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
+            "resourceType": {
+                "type": "string",
+                'description': 'Use "ServiceRequest" for service requests.',
+            },
+            "code": _schema(
+                {
                     "coding": {
                         "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "system": {"type": "string"},
-                                "code": {"type": "string"},
-                                "display": {"type": "string"},
-                            },
-                            "required": ["system", "code", "display"],
-                            "additionalProperties": False,
-                        },
+                        "items": _schema(
+                            {
+                                "system": {
+                                    "type": "string",
+                                    "description": "Coding system such as SNOMED or LOINC.",
+                                },
+                                "code": {
+                                    "type": "string",
+                                    "description": "The actual code",
+                                },
+                                "display": {
+                                    "type": "string",
+                                    "description": "Display name",
+                                },
+                            }
+                        ),
                     }
-                },
-                "required": ["coding"],
-                "additionalProperties": False,
+                }
+            ),
+            "authoredOn": {
+                "type": "string",
+                "description": "The date the service request was authored.",
             },
-            "authoredOn": {"type": "string"},
-            "status": {"type": "string"},
-            "intent": {"type": "string"},
-            "priority": {"type": "string"},
-            "subject": {
-                "type": "object",
-                "properties": {"reference": {"type": "string"}},
-                "required": ["reference"],
-                "additionalProperties": False,
+            "status": {
+                "type": "string",
+                "description": "The status of the service request.",
             },
-            "note": {
-                "type": ["object", "null"],
-                "properties": {"text": {"type": "string"}},
-                "required": ["text"],
-                "additionalProperties": False,
+            "intent": {
+                "type": "string",
+                "description": "The intent of the service request.",
             },
-            "occurrenceDateTime": {"type": ["string", "null"]},
+            "priority": {
+                "type": "string",
+                "description": "Priority of the service request.",
+            },
+            "subject": _schema(
+                {
+                    "reference": {
+                        "type": "string",
+                        "description": "The patient FHIR ID for whom the service request is about.",
+                    }
+                }
+            ),
+            "note": _schema({"text": {"type": "string", "description": "Free-text comment."}}),
+            "occurrenceDateTime": {
+                "type": "string",
+                "description": "Requested occurrence date/time.",
+            },
         },
-        "required": [
+        required=[
             "resourceType",
             "code",
             "authoredOn",
@@ -451,36 +540,39 @@ def _servicerequest_create_resource_schema() -> dict[str, Any]:
             "intent",
             "priority",
             "subject",
-            "note",
-            "occurrenceDateTime",
         ],
-        "additionalProperties": False,
-    }
+    )
 
 
-def _wrap_resource_schema(resource_schema: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {"resource": resource_schema},
-        "required": ["resource"],
-        "additionalProperties": False,
-    }
+def _patient_parameters_schema() -> dict[str, Any]:
+    return _schema(
+        {
+            "address": {"type": "string", "description": "Search by full address text."},
+            "address-city": {"type": "string", "description": "Search by city."},
+            "address-postalcode": {"type": "string", "description": "Search by postal code."},
+            "address-state": {"type": "string", "description": "Search by state."},
+            "birthdate": {"type": "string", "description": "Patient birth date."},
+            "family": {"type": "string", "description": "Patient family name."},
+            "gender": {"type": "string", "description": "Patient gender."},
+            "given": {"type": "string", "description": "Patient given name."},
+            "identifier": {"type": "string", "description": "Patient identifier or MRN."},
+            "legal-sex": {"type": "string", "description": "Legal sex."},
+            "name": {"type": "string", "description": "Full patient name."},
+            "telecom": {"type": "string", "description": "Phone or telecom search string."},
+        }
+    )
 
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Export FHIR tool schemas for GPT function calling."
+        description="Export MedAgentBench-aligned FHIR tool schemas for function calling."
     )
-    parser.add_argument(
-        "--output",
-        required=True,
-        help="Path to write tools JSON file.",
-    )
+    parser.add_argument("--output", required=True, help="Path to write tools JSON file.")
     parser.add_argument(
         "--tool",
         action="append",
         default=None,
-        help="Internal tool name to include (repeatable). Defaults to all tools.",
+        help="Canonical tool name to include (repeatable). Defaults to all tools.",
     )
     parser.add_argument(
         "--as-list",
@@ -491,6 +583,7 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Export tool schemas for backend/demo consumption."""
     from medcli.tools.catalog import TOOL_DEFINITIONS
 
     args = _parse_args()

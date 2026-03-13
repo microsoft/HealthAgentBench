@@ -55,9 +55,8 @@ def test_evaluate_results_overrides_action_success_from_trace(tmp_path: Path):
             "eval_mrn": "S123",
             "tool_trace": [
                 {
-                    "tool": "vital_create",
+                    "tool": "post_observation_vitals",
                     "args": {
-                        "resource": {
                             "resourceType": "Observation",
                             "category": {
                                 "coding": [
@@ -73,7 +72,6 @@ def test_evaluate_results_overrides_action_success_from_trace(tmp_path: Path):
                             "status": "final",
                             "valueString": "118/77 mmHg",
                             "subject": {"reference": "Patient/S123"},
-                        }
                     },
                     "status": "skipped_evaluation_mode",
                 }
@@ -89,9 +87,8 @@ def test_evaluate_results_overrides_action_success_from_trace(tmp_path: Path):
             "eval_mrn": "S456",
             "tool_trace": [
                 {
-                    "tool": "procedure_create",
+                    "tool": "post_servicerequest",
                     "args": {
-                        "resource": {
                             "resourceType": "ServiceRequest",
                             "code": {
                                 "coding": [
@@ -116,7 +113,6 @@ def test_evaluate_results_overrides_action_success_from_trace(tmp_path: Path):
                                 }
                             ],
                             "subject": {"reference": "Patient/S456"},
-                        }
                     },
                     "status": "skipped_evaluation_mode",
                 }
@@ -148,8 +144,8 @@ def test_evaluate_results_marks_invalid_action_trace(tmp_path: Path):
             "eval_mrn": "S123",
             "tool_trace": [
                 {
-                    "tool": "vital_create",
-                    "args": {"resource": {"resourceType": "Observation"}},
+                    "tool": "post_observation_vitals",
+                    "args": {"resourceType": "Observation"},
                     "status": "skipped_evaluation_mode",
                 }
             ],
@@ -164,4 +160,3 @@ def test_evaluate_results_marks_invalid_action_trace(tmp_path: Path):
     assert summary["total_tasks"] == 1
     assert summary["passed_tasks"] == 0
     assert summary["error_taxonomy"]["action_trace_validation_failed"] == 1
-

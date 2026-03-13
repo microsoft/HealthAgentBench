@@ -93,7 +93,9 @@ def _extract_tool_resource(row: dict[str, Any], tool_name: str) -> dict[str, Any
         if not isinstance(args, dict):
             return None
         resource = args.get("resource")
-        return resource if isinstance(resource, dict) else None
+        if isinstance(resource, dict):
+            return resource
+        return args
     return None
 
 
@@ -102,7 +104,7 @@ def _build_expected_task3_payload(row: dict[str, Any]) -> dict[str, Any] | None:
     if not isinstance(eval_mrn, str) or not eval_mrn:
         return None
     return {
-        "vital_create": {
+        "post_observation_vitals": {
             "resourceType": "Observation",
             "category": [
                 {
@@ -134,7 +136,7 @@ def _build_expected_task8_payload(row: dict[str, Any]) -> dict[str, Any] | None:
         "evaluate and provide management recommendations."
     )
     return {
-        "procedure_create": {
+        "post_servicerequest": {
             "resourceType": "ServiceRequest",
             "code": {
                 "coding": [{"system": "http://snomed.info/sct", "code": "306181000000106"}]
@@ -161,7 +163,7 @@ def _build_expected_task5_payload(row: dict[str, Any]) -> dict[str, Any] | None:
     else:
         dose, rate = 1.0, 1.0
     return {
-        "medicationrequest_create": {
+        "post_medicationrequest": {
             "resourceType": "MedicationRequest",
             "medicationCodeableConcept": {
                 "coding": [{"system": "http://hl7.org/fhir/sid/ndc", "code": "0338-1715-40"}]
@@ -192,7 +194,7 @@ def _build_expected_task9_payload(row: dict[str, Any]) -> dict[str, Any] | None:
         return None
     dose = (3.5 - expected) / 0.1 * 10.0
     return {
-        "medicationrequest_create": {
+        "post_medicationrequest": {
             "resourceType": "MedicationRequest",
             "medicationCodeableConcept": {
                 "coding": [{"system": "http://hl7.org/fhir/sid/ndc", "code": "40032-917-01"}]
@@ -205,7 +207,7 @@ def _build_expected_task9_payload(row: dict[str, Any]) -> dict[str, Any] | None:
             "intent": "order",
             "subject": {"reference": f"Patient/{eval_mrn}"},
         },
-        "procedure_create": {
+        "post_servicerequest": {
             "resourceType": "ServiceRequest",
             "code": {"coding": [{"system": "http://loinc.org", "code": "2823-3"}]},
             "authoredOn": "2023-11-13T10:15:00+00:00",
@@ -236,9 +238,9 @@ def _build_expected_action_payload(row: dict[str, Any]) -> dict[str, Any] | None
 
 def _build_actual_action_payload(row: dict[str, Any]) -> dict[str, Any]:
     return {
-        "vital_create": _extract_tool_resource(row, "vital_create"),
-        "medicationrequest_create": _extract_tool_resource(row, "medicationrequest_create"),
-        "procedure_create": _extract_tool_resource(row, "procedure_create"),
+        "post_observation_vitals": _extract_tool_resource(row, "post_observation_vitals"),
+        "post_medicationrequest": _extract_tool_resource(row, "post_medicationrequest"),
+        "post_servicerequest": _extract_tool_resource(row, "post_servicerequest"),
     }
 
 

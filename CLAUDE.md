@@ -7,20 +7,23 @@
 
 MedCLI is an agentic system powered by frontier language models for solving complex, multi-step tasks over Electronic Health Record (EHR) databases through tool-augmented reasoning. The system equips LLM-based agents with callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data.
 
+The repository is in a Harbor-first transition. New benchmark work should target Harbor task environments and Harbor jobs. The older OpenAI-style runner path remains temporarily for migration only.
+
 ## Repository Layout
 
-- `src/medcli/agents/oai_agent/` — Core OpenAI-style agent package (`core.py`, parsing/policy/tool-exec modules).
 - `src/medcli/agents/harbor/installed/` — Harbor installed-agent wrappers (for example Codex adapter).
-- `src/medcli/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
+- `src/medcli/agents/oai_agent/` — Legacy OpenAI-style agent package kept temporarily during migration.
+- `src/medcli/tools/` — Shared tool implementations that are not Harbor-task-local helpers.
 - `src/medcli/utils/` — Shared helpers for database access, sandboxed execution, and logging.
-- `tasks/` — Task suite package organized by task type (benchmark manifests, prompts, fixtures, selectors, and task-local docs).
-- `scripts/medagentbench/` — MedAgentBench runtime orchestration, import, and evaluation utilities.
-- `run.py` / `demo.py` — Top-level orchestration CLIs for benchmark runs and interactive demos.
+- `data/medagentbench/` — Canonical raw MedAgentBench benchmark assets.
+- `harbor_tasks/medagentbench/` — Generated Harbor MedAgentBench meta-task.
+- `jobs/` — Harbor job configs.
+- `debug/` — Harbor debug helpers and workflow docs.
+- `scripts/medagentbench/` — Raw-data normalization, Harbor task generation, setup, and evaluation utilities.
+- `tasks/` — Legacy task manifests grouped by task type; MedAgentBench entries here are transitional.
+- `run.py` / `demo.py` — Legacy orchestration CLIs kept temporarily during migration.
 - `results/` — Top-level run/evaluation artifacts directory (gitignored).
-- `notebooks/` — Jupyter notebooks for analysis and paper figures.
-- `paper/` — LaTeX source for the arxiv submission.
-- `scripts/` — Setup and export utilities organized by integration/domain (e.g., `medagentbench/`).
-- `tests/` — Unit and integration tests for tools and the agent.
+- `tests/` — Unit and integration tests.
 - `.agent/plans/` — Individual ExecPlan files (see ExecPlans section below).
 
 ## Conventions
@@ -28,17 +31,20 @@ MedCLI is an agentic system powered by frontier language models for solving comp
 - **Python ≥ 3.12** is required. Use modern Python idioms (type hints, dataclasses, `match` statements where appropriate).
 - **Packaging** is managed via `pyproject.toml`. Install with `uv sync --all-extras`. Add new dependencies with `uv add <package>`.
 - **Environment variables** are loaded from `.env`. Never hard-code secrets.
-- **SQL** targets PostgreSQL (MIMIC-IV). Always use parameterized queries; never interpolate user input.
 - **Testing** uses `pytest`. Run the full suite with `pytest tests/` from the repo root.
 - **Linting** uses `ruff`. Run `ruff check src/ tests/` before committing.
-- **Formatting** uses `ruff format`. Run `ruff format src/ tests/` before committing.
-- **Docstrings** are required for public modules/functions and non-trivial internal helpers in `src/`; keep them concise and focused on purpose/inputs/outputs.
+- **Formatting** uses `ruff format src/ tests/` before committing.
+- **Docstrings** are required for public modules/functions and non-trivial internal helpers in `src/`; keep them concise and focused on purpose, inputs, and outputs.
 - **Scripts layout** should avoid a flat `scripts/` list as integrations grow; place related scripts under subdirectories such as `scripts/medagentbench/`.
 - **Commits** should be small, focused, and have descriptive messages. Prefer one logical change per commit.
 
+## Harbor-First Rule
+
+For MedAgentBench, the canonical source is `data/medagentbench/test_data_v2.json`, and the canonical runnable artifact is the Harbor meta-task under `harbor_tasks/medagentbench/`. Do not build new MedAgentBench features on top of `tasks/*.yaml`, `run.py`, `demo.py`, or `src/medcli/agents/oai_agent/` unless the work is explicitly about migration cleanup or removal.
+
 ## Tool Categories
 
-When implementing or modifying tools, respect the five-category taxonomy:
+When implementing or modifying shared MedCLI tools, respect the five-category taxonomy:
 
 1. **Database & query** — SQL executor, schema inspector, query validator.
 2. **Data analysis** — Python sandbox, statistical calculator, visualization generator.
@@ -46,11 +52,11 @@ When implementing or modifying tools, respect the five-category taxonomy:
 4. **EHR utilities** — FHIR client, ClinicalTrials.gov search, de-identification checker.
 5. **File & format** — CSV/Parquet reader, document parser, schema mapper, web fetcher, bash tools.
 
-Each tool lives in its own module under `src/medcli/tools/` and must expose a consistent interface that the agent loop in `src/medcli/agents/oai_agent/core.py` can discover and invoke.
+Each shared tool lives in its own module under `src/medcli/tools/`. MedAgentBench-specific primitive helpers that belong to the Harbor task environment should live in generated Harbor workspace scripts rather than in the legacy OpenAI-style tool registry.
 
 ## Tasks
 
-The system supports 15 agentic EHR task types. Treat each task type as a first-class package under `tasks/<task_type>/` with benchmark manifests under `sources/<benchmark_name>/` plus optional prompts, fixtures, and task-local docs. Organize by task type from `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark source name. If new task types are introduced, update the `Tasks` section in `README.md` and add matching packages. Keep shared orchestration/runtime logic in `src/medcli/`, and keep top-level CLIs in `run.py`/`demo.py` plus integration-specific scripts (for example `scripts/medagentbench/evaluate.py`) responsible for consistent execution.
+The system supports 15 agentic EHR task types. The `tasks/<task_type>/` tree still exists for legacy manifests and migration support. For MedAgentBench, however, the canonical task-generation path is now raw JSON to Harbor meta-task generation, not YAML manifests. If new task types are introduced in repository-level documentation, update the `Tasks` section in `README.md`.
 
 ## ExecPlans
 
@@ -80,7 +86,7 @@ source .venv/bin/activate
 
 Important: you must export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs the agent inside Docker, and without this variable Codex cannot authenticate in the container environment.
 
-The MedAgentBench Harbor task generated in this repo is a single meta-task at `harbor_tasks/medagentbench/`. It bundles a 10-case slice (`task1_1` through `task10_1`), a pinned FHIR sidecar, helper scripts, and a verifier that scores the agent's `submission.json` with the existing MedAgentBench evaluator. The generated task tree is source-only; runtime files such as `submission.json` are created inside the running container, not committed under `harbor_tasks/`.
+The MedAgentBench Harbor task is a single meta-task at `harbor_tasks/medagentbench/`. It is generated directly from `data/medagentbench/test_data_v2.json`, bundles the current 10-case slice (`task1_1` through `task10_1`), runs against a local FHIR sidecar, and evaluates a `submission.json` file whose rows preserve the original raw benchmark task plus `final_answer` and `payload`.
 
 ```bash
 # Export Codex auth for this shell session
@@ -89,8 +95,10 @@ export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
 # Run Harbor hello-world smoke test
 uv run harbor run -c jobs/example.yaml
 
-# Generate the single-task MedAgentBench Harbor task and run it
-uv run python scripts/medagentbench/generate_harbor_tasks.py --input-root tasks --output-root harbor_tasks/medagentbench
+# Generate the MedAgentBench Harbor task from raw JSON and run it
+uv run python scripts/medagentbench/generate_harbor_tasks.py \
+  --input-json data/medagentbench/test_data_v2.json \
+  --output-root harbor_tasks/medagentbench
 uv run harbor run -c jobs/medagentbench_meta.yaml
 ```
 
@@ -98,47 +106,23 @@ For step-by-step Harbor task debugging, use the helpers under `debug/harbor/`:
 
 - `debug/harbor/medagentbench/smoke-meta-task.sh` covers the non-agent smoke path.
 - `debug/harbor/setup-agent.sh` is the generic default-agent setup step after `up-task-env.sh`.
-- `debug/harbor/medagentbench/run-manually.sh` is the task-specific one-command wrapper that performs setup and opens a ready-to-use Codex shell.
+- `debug/harbor/medagentbench/run-manually.sh` is the task-specific wrapper that performs setup and opens a ready-to-use Codex shell.
 - `debug/README.md` documents the full manual build, bring-up, agent-setup, verifier, and cleanup workflow.
 
-### OAI Usage
+### Legacy OAI Path
+
+The older OpenAI-style runner path is transitional and frozen.
 
 ```bash
-# Demo workflow (MedAgentBench recommended first run)
-bash scripts/medagentbench/fhir_up.sh
-uv run python demo.py \
-  --backend azure_openai \
-  --model gpt-5-mini \
-  --api-version 2025-03-01-preview \
-  --fhir-base-url http://localhost:8080/fhir
-bash scripts/medagentbench/fhir_down.sh
-
-# Benchmark evaluation workflow (MedAgentBench example)
-bash scripts/medagentbench/fhir_up.sh
-curl -sSf http://localhost:8080/fhir/metadata | head -c 200
-bash scripts/medagentbench/setup.sh
+# Transitional MedAgentBench import path
 uv run python scripts/medagentbench/import_tasks.py \
   --input data/medagentbench/test_data_v2.json \
   --funcs-json data/medagentbench/funcs_v1.json \
   --output-root tasks \
   --split std
-uv run python run.py \
-  --task medagentbench \
-  --split std \
-  --max-tasks 3 \
-  --backend azure_openai \
-  --model gpt-5-mini \
-  --api-version 2025-03-01-preview \
-  --fhir-base-url http://localhost:8080/fhir
-uv run python scripts/medagentbench/evaluate.py \
-  --task medagentbench \
-  --results results/medagentbench/<run-id>/results.jsonl
-bash scripts/medagentbench/fhir_down.sh
 
-# Run tests
-pytest tests/
-
-# Lint and format
-ruff check src/ tests/
-ruff format src/ tests/
+# Transitional runner path
+uv run python run.py --task medagentbench --split std --max-tasks 3
 ```
+
+Do not build new MedAgentBench features on that path.

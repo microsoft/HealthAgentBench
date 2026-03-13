@@ -1,10 +1,10 @@
 # Workspace Files
 
-- `benchmark_tasks.json`: the 10 selected MedAgentBench items to solve.
-- `submission_template.json`: copy this to `submission.json` and fill it in.
-- `action_payload_templates.json`: example payload shapes for the action-scored tasks.
-- `scripts/fhir_tools.py`: helper CLI for common FHIR queries.
-- `scripts/show_action_template.py <task_id>`: print the template payload for an action task.
+- `benchmark_tasks.json`: normalized MedAgentBench task rows used for task browsing.
+- `submission_template.json`: copy this to `submission.json` and fill in `final_answer` and `payload`.
+- `action_payload_templates.json`: reference payloads for the selected write tasks.
+- `scripts/fhir_primitives.py`: primitive GET and simulated POST helpers.
+- `scripts/show_action_template.py <task_id>`: print the reference payload for a selected task.
 - `scripts/wait_for_fhir.sh`: wait until the local FHIR endpoint is ready.
 
 The verifier reads `/workspace/submission.json` after the agent stops.

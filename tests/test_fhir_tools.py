@@ -26,9 +26,23 @@ class _FakeFHIRClient:
         return {"resourceType": resource_type, "id": "example"}
 
 
+EXPECTED_TOOL_NAMES = {
+    "get_condition",
+    "get_observation_labs",
+    "get_observation_vitals",
+    "post_observation_vitals",
+    "get_medicationrequest",
+    "post_medicationrequest",
+    "get_procedure",
+    "post_servicerequest",
+    "get_patient",
+}
+
+
 def test_get_openai_function_tools_contains_all_registry_tools():
     tools = get_openai_function_tools(TOOL_DEFINITIONS)
     exported_names = {tool["function"]["name"] for tool in tools}
+    assert exported_names == EXPECTED_TOOL_NAMES
     assert exported_names == set(TOOL_REGISTRY)
 
 
@@ -37,40 +51,29 @@ def test_write_openai_function_tools_json_writes_tools_wrapper(tmp_path):
     write_openai_function_tools_json(
         output,
         tool_definitions=TOOL_DEFINITIONS,
-        tool_names=["patient_search"],
+        tool_names=["get_patient"],
     )
 
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert isinstance(payload, dict)
     assert "tools" in payload
-    assert payload["tools"][0]["function"]["name"] == "patient_search"
+    assert payload["tools"][0]["function"]["name"] == "get_patient"
 
 
-def test_call_tool_dispatches_by_canonical_name():
+def test_call_tool_dispatches_get_patient_without_convenience_fallbacks():
     client = _FakeFHIRClient()
     result = call_registered_tool(
-        "patient_search",
-        ToolRuntime(fhir=client),
-        registry=TOOL_REGISTRY,
-        kwargs={"family": "Alice"},
-    )
-    assert result["resourceType"] == "Bundle"
-    assert client.calls == [("search", "Patient", {"family": "Alice"})]
-
-
-def test_patient_search_splits_full_name_to_family_given():
-    client = _FakeFHIRClient()
-    _ = call_registered_tool(
-        "patient_search",
+        "get_patient",
         ToolRuntime(fhir=client),
         registry=TOOL_REGISTRY,
         kwargs={"name": "Peter Stafford", "birthdate": "1932-12-29"},
     )
+    assert result["resourceType"] == "Bundle"
     assert client.calls == [
         (
             "search",
             "Patient",
-            {"given": "Peter", "family": "Stafford", "birthdate": "1932-12-29"},
+            {"name": "Peter Stafford", "birthdate": "1932-12-29"},
         )
     ]
 
@@ -80,26 +83,25 @@ def test_search_tool_required_fields_align_with_medagentbench():
         tool["function"]["name"]: tool["function"]["parameters"]
         for tool in get_openai_function_tools(TOOL_DEFINITIONS)
     }
-    assert "patient" in tools["condition_search"].get("required", [])
-    assert {"patient", "code"}.issubset(set(tools["lab_search"].get("required", [])))
-    assert "patient" in tools["vital_search"].get("required", [])
-    assert "patient" in tools["medicationrequest_search"].get("required", [])
-    assert {"patient", "date"}.issubset(
-        set(tools["procedure_search"].get("required", []))
-    )
-    assert tools["condition_search"].get("additionalProperties") is False
-    assert tools["lab_search"].get("additionalProperties") is False
+    assert tools["get_condition"]["required"] == ["patient"]
+    assert tools["get_observation_labs"]["required"] == ["code", "patient"]
+    assert tools["get_observation_vitals"]["required"] == ["category", "patient"]
+    assert tools["get_medicationrequest"]["required"] == ["patient"]
+    assert tools["get_procedure"]["required"] == ["date", "patient"]
+    assert tools["get_patient"]["required"] == []
+    assert tools["get_condition"]["additionalProperties"] is False
+    assert tools["get_observation_labs"]["additionalProperties"] is False
 
 
-def test_create_tool_schemas_are_resource_specific():
+def test_create_tool_schemas_are_primitive_not_resource_wrapped():
     tools = {
         tool["function"]["name"]: tool["function"]["parameters"]
         for tool in get_openai_function_tools(TOOL_DEFINITIONS)
     }
 
-    vital_required = tools["vital_create"]["properties"]["resource"]["required"]
-    med_required = tools["medicationrequest_create"]["properties"]["resource"]["required"]
-    procedure_required = tools["procedure_create"]["properties"]["resource"]["required"]
+    vital_required = tools["post_observation_vitals"]["required"]
+    med_required = tools["post_medicationrequest"]["required"]
+    service_required = tools["post_servicerequest"]["required"]
 
     assert vital_required == [
         "resourceType",
@@ -119,7 +121,7 @@ def test_create_tool_schemas_are_resource_specific():
         "intent",
         "subject",
     ]
-    assert {
+    assert service_required == [
         "resourceType",
         "code",
         "authoredOn",
@@ -127,23 +129,24 @@ def test_create_tool_schemas_are_resource_specific():
         "intent",
         "priority",
         "subject",
-    }.issubset(set(procedure_required))
+    ]
+    assert "resource" not in tools["post_observation_vitals"]["properties"]
 
 
-def test_procedure_create_posts_service_request():
+def test_post_servicerequest_posts_raw_payload():
     client = _FakeFHIRClient()
     payload = {"resourceType": "ServiceRequest", "status": "active"}
     _ = call_registered_tool(
-        "procedure_create",
+        "post_servicerequest",
         ToolRuntime(fhir=client),
         registry=TOOL_REGISTRY,
-        kwargs={"resource": payload},
+        kwargs=payload,
     )
     assert client.calls == [("create", "ServiceRequest", payload)]
 
 
 def test_write_tools_pretend_in_evaluation_mode():
-    assert should_pretend_on_call_in_evaluation("vital_create") is True
-    assert should_pretend_on_call_in_evaluation("procedure_create") is True
-    assert should_pretend_on_call_in_evaluation("medicationrequest_create") is True
-    assert should_pretend_on_call_in_evaluation("patient_search") is False
+    assert should_pretend_on_call_in_evaluation("post_observation_vitals") is True
+    assert should_pretend_on_call_in_evaluation("post_servicerequest") is True
+    assert should_pretend_on_call_in_evaluation("post_medicationrequest") is True
+    assert should_pretend_on_call_in_evaluation("get_patient") is False

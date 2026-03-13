@@ -19,15 +19,15 @@ tasks:
   source_task_type: recording_patient_data
   eval_mrn: S2380121
   allowed_tools: &id001
-  - condition_search
-  - lab_search
-  - medicationrequest_create
-  - medicationrequest_search
-  - patient_search
-  - procedure_create
-  - procedure_search
-  - vital_create
-  - vital_search
+  - get_condition
+  - get_medicationrequest
+  - get_observation_labs
+  - get_observation_vitals
+  - get_patient
+  - get_procedure
+  - post_medicationrequest
+  - post_observation_vitals
+  - post_servicerequest
 
 - task_id: task3_10
   category: clinical_data_recording

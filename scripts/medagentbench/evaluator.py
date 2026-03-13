@@ -120,7 +120,11 @@ def _write_calls(row: dict[str, Any]) -> list[dict[str, Any]]:
         if not isinstance(entry, dict):
             continue
         tool = entry.get("tool")
-        if tool in {"vital_create", "procedure_create", "medicationrequest_create"}:
+        if tool in {
+            "post_observation_vitals",
+            "post_servicerequest",
+            "post_medicationrequest",
+        }:
             calls.append(entry)
     return calls
 
@@ -130,7 +134,9 @@ def _arg_resource(entry: dict[str, Any]) -> dict[str, Any] | None:
     if not isinstance(args, dict):
         return None
     resource = args.get("resource")
-    return resource if isinstance(resource, dict) else None
+    if isinstance(resource, dict):
+        return resource
+    return args
 
 
 def _as_list(value: Any) -> list[Any]:
@@ -226,7 +232,7 @@ def _eval_task5_action(row: dict[str, Any]) -> tuple[bool, str | None]:
     if len(writes) != 1:
         return False, "expected_single_write_call"
     write = writes[0]
-    if write.get("tool") != "medicationrequest_create":
+    if write.get("tool") != "post_medicationrequest":
         return False, "unexpected_write_tool"
     resource = _arg_resource(write)
     if resource is None:
@@ -296,8 +302,8 @@ def _eval_task9_action(row: dict[str, Any]) -> tuple[bool, str | None]:
 
     if len(writes) != 2:
         return False, "expected_two_write_calls"
-    med_call = _find_write_call(writes, "medicationrequest_create")
-    svc_call = _find_write_call(writes, "procedure_create")
+    med_call = _find_write_call(writes, "post_medicationrequest")
+    svc_call = _find_write_call(writes, "post_servicerequest")
     if med_call is None or svc_call is None:
         return False, "missing_required_write_tools"
 
@@ -361,7 +367,7 @@ def _eval_task3_action(row: dict[str, Any]) -> tuple[bool, str | None]:
     if len(writes) != 1:
         return False, "expected_single_write_call"
     write = writes[0]
-    if write.get("tool") != "vital_create":
+    if write.get("tool") != "post_observation_vitals":
         return False, "unexpected_write_tool"
     resource = _arg_resource(write)
     if resource is None:
@@ -398,7 +404,7 @@ def _eval_task8_action(row: dict[str, Any]) -> tuple[bool, str | None]:
     if len(writes) != 1:
         return False, "expected_single_write_call"
     write = writes[0]
-    if write.get("tool") != "procedure_create":
+    if write.get("tool") != "post_servicerequest":
         return False, "unexpected_write_tool"
     resource = _arg_resource(write)
     if resource is None:

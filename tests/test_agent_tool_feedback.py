@@ -15,11 +15,11 @@ def test_run_task_uses_backend_safe_tool_feedback(monkeypatch):
     def fake_chat_completion(*, config, messages):  # noqa: ANN001
         calls.append(messages)
         if len(calls) == 1:
-            return {"assistant_text": '{"tool":"patient_search","args":{"name":"Alice"}}'}
+            return {"assistant_text": '{"tool":"get_patient","args":{"name":"Alice"}}'}
         return {"assistant_text": "done"}
 
     def fake_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
-        assert tool_name == "patient_search"
+        assert tool_name == "get_patient"
         assert "registry" in kwargs
         assert "runtime" not in kwargs
         assert kwargs["kwargs"] == {"name": "Alice"}
@@ -66,7 +66,7 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
                                         "id": "call_1",
                                         "type": "function",
                                         "function": {
-                                            "name": "patient_search",
+                                            "name": "get_patient",
                                             "arguments": '{"name":"Alice"}',
                                         },
                                     }
@@ -79,7 +79,7 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
         return {"assistant_text": "done", "raw": {"choices": [{"message": {"role": "assistant", "content": "done"}}]}}
 
     def fake_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
-        assert tool_name == "patient_search"
+        assert tool_name == "get_patient"
         assert kwargs["kwargs"] == {"name": "Alice"}
         return {"resourceType": "Bundle", "total": 1}
 
@@ -94,7 +94,7 @@ def test_run_task_handles_native_tool_calls(monkeypatch):
         task={"instruction": "find patient"},
         backend_config=BackendConfig(backend="mock", model="m"),
         config=AgentConfig(max_rounds=3),
-        chat_kwargs={"tools": [{"type": "function", "function": {"name": "patient_search"}}]},
+        chat_kwargs={"tools": [{"type": "function", "function": {"name": "get_patient"}}]},
     )
 
     assert result["final_answer"] == "done"
@@ -122,8 +122,8 @@ def test_run_task_evaluation_mode_simulates_write_tool(monkeypatch, native_tool_
                                         "id": "call_1",
                                         "type": "function",
                                         "function": {
-                                            "name": "vital_create",
-                                            "arguments": '{"resource":{"resourceType":"Observation"}}',
+                                            "name": "post_observation_vitals",
+                                            "arguments": '{"resourceType":"Observation"}',
                                         },
                                     }
                                 ],
@@ -133,7 +133,7 @@ def test_run_task_evaluation_mode_simulates_write_tool(monkeypatch, native_tool_
                 },
             }
         if len(calls) == 1:
-            return {"assistant_text": '{"tool":"vital_create","args":{"resource":{"resourceType":"Observation"}}}'}
+            return {"assistant_text": '{"tool":"post_observation_vitals","args":{"resourceType":"Observation"}}'}
         return {"assistant_text": "final response"}
 
     def fail_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
@@ -151,7 +151,7 @@ def test_run_task_evaluation_mode_simulates_write_tool(monkeypatch, native_tool_
         backend_config=BackendConfig(backend="mock", model="m"),
         config=AgentConfig(max_rounds=3, evaluation_mode=True),
         chat_kwargs=(
-            {"tools": [{"type": "function", "function": {"name": "vital_create"}}]}
+            {"tools": [{"type": "function", "function": {"name": "post_observation_vitals"}}]}
             if native_tool_call
             else None
         ),
@@ -160,7 +160,7 @@ def test_run_task_evaluation_mode_simulates_write_tool(monkeypatch, native_tool_
     assert result["terminated_early"] is False
     assert result["termination_reason"] is None
     assert result["final_answer"] == "final response"
-    assert result["tool_trace"][0]["tool"] == "vital_create"
+    assert result["tool_trace"][0]["tool"] == "post_observation_vitals"
     assert result["tool_trace"][0]["status"] == "simulated_evaluation_mode"
 
     second_round_messages = calls[1]
@@ -197,8 +197,8 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
                                         "id": "call_1",
                                         "type": "function",
                                         "function": {
-                                            "name": "vital_create",
-                                            "arguments": '{"resource":{"resourceType":"Observation"}}',
+                                            "name": "post_observation_vitals",
+                                            "arguments": '{"resourceType":"Observation"}',
                                         },
                                     }
                                 ],
@@ -207,7 +207,7 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
                     ]
                 },
             }
-        return {"assistant_text": '{"tool":"vital_create","args":{"resource":{"resourceType":"Observation"}}}'}
+        return {"assistant_text": '{"tool":"post_observation_vitals","args":{"resourceType":"Observation"}}'}
 
     def fail_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
         raise AssertionError(f"call_tool should not run for disallowed tool: {tool_name}")
@@ -224,11 +224,11 @@ def test_run_task_blocks_disallowed_tool(monkeypatch, native_tool_call):
         backend_config=BackendConfig(backend="mock", model="m"),
         config=AgentConfig(max_rounds=3),
         chat_kwargs=(
-            {"tools": [{"type": "function", "function": {"name": "vital_create"}}]}
+            {"tools": [{"type": "function", "function": {"name": "post_observation_vitals"}}]}
             if native_tool_call
             else None
         ),
-        allowed_tools={"patient_search"},
+        allowed_tools={"get_patient"},
     )
 
     assert result["terminated_early"] is True
@@ -246,13 +246,13 @@ def test_run_async_tasks_requeues_after_tool_output(monkeypatch):
             )
             if not has_tool_feedback:
                 return {
-                    "assistant_text": '{"tool":"patient_search","args":{"name":"Alice"}}'
+                    "assistant_text": '{"tool":"get_patient","args":{"name":"Alice"}}'
                 }
             return {"assistant_text": "done-a"}
         return {"assistant_text": "done-b"}
 
     def fake_call_tool(tool_name, tool_runtime, **kwargs):  # noqa: ANN001
-        assert tool_name == "patient_search"
+        assert tool_name == "get_patient"
         return {"resourceType": "Bundle", "total": 1}
 
     monkeypatch.setattr(
@@ -279,6 +279,6 @@ def test_run_async_tasks_requeues_after_tool_output(monkeypatch):
     assert len(results) == 2
     assert results[0]["final_answer"] == "done-a"
     assert results[0]["rounds_used"] == 2
-    assert results[0]["tool_trace"][0]["tool"] == "patient_search"
+    assert results[0]["tool_trace"][0]["tool"] == "get_patient"
     assert results[1]["final_answer"] == "done-b"
     assert results[1]["rounds_used"] == 1

@@ -22,15 +22,15 @@ tasks:
   source_task_type: patient_data_aggregation
   eval_mrn: S6307599
   allowed_tools: &id001
-  - condition_search
-  - lab_search
-  - medicationrequest_create
-  - medicationrequest_search
-  - patient_search
-  - procedure_create
-  - procedure_search
-  - vital_create
-  - vital_search
+  - get_condition
+  - get_medicationrequest
+  - get_observation_labs
+  - get_observation_vitals
+  - get_patient
+  - get_procedure
+  - post_medicationrequest
+  - post_observation_vitals
+  - post_servicerequest
 
 - task_id: task6_10
   category: data_aggregation

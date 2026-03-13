@@ -28,6 +28,8 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
 - [x] (2026-03-12 19:05Z) Added a manual Harbor Codex debugging path with reusable helper scripts: raw shell, task-aware shell handoff, Codex install, Codex auth/runtime prep, and a MedAgentBench-specific manual wrapper.
 - [x] (2026-03-12 19:18Z) Fixed the manual Codex command template to match the actual Harbor wrapper flags by using `-c model_reasoning_effort=medium` instead of `--reasoning-effort medium`.
 - [x] (2026-03-12 19:52Z) Refactored default-agent bootstrapping into a generic `debug/harbor/setup-agent.sh` step and updated the MedAgentBench manual wrapper to use it before opening a ready-to-use shell.
+- [x] (2026-03-12 21:25Z) Reworked the MedAgentBench Harbor task prompt into a hybrid of the original MedAgentBench instructions and the Harbor submission-file contract, so the task now foregrounds primitive FHIR operations and the original GET/POST/FINISH semantics while still writing outputs to `/workspace/submission.json`.
+- [x] (2026-03-12 21:25Z) Replaced the old convenience FHIR tool surface with primitive MedAgentBench-aligned tools (`get_*` / `post_*`), updated task manifests and Harbor artifacts to use the new canonical names, and validated the refactor with the full pytest suite.
 - [ ] Complete a Harbor trial to termination and record the observed runtime behavior of the Codex and nop smoke runs.
 
 ## Surprises & Discoveries
@@ -67,6 +69,12 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
 
 - Observation: Opening the interactive shell before installing Codex causes a confusing developer experience because the already-open shell does not automatically pick up the new NVM/Codex environment.
   Evidence: Manual repro on 2026-03-12 showed that Codex was not visible in the first shell until the user exited and re-entered after installation.
+
+- Observation: The original MedAgentBench prompt is stricter than the Harbor meta-task contract because it expects one raw `GET`, `POST`, or `FINISH(...)` action per turn with no extra text.
+  Evidence: DeepWiki summary of `src/server/tasks/medagentbench/__init__.py` confirmed the original output contract and invalid-action rules.
+
+- Observation: Matching `data/medagentbench/funcs_v1.json` faithfully requires primitive POST tools to accept raw top-level payload fields rather than the earlier MedCLI-specific `args.resource` wrapper.
+  Evidence: Local inspection of `funcs_v1.json` showed that the original functions expose raw JSON bodies for POST requests, not nested wrapper objects.
 
 ## Decision Log
 
@@ -118,13 +126,21 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
   Rationale: Doing install/auth prep before shell handoff avoids the confusing state where Codex is installed in a later `docker compose exec` but not visible in the already-open shell.
   Date/Author: 2026-03-12 / User+Codex
 
+- Decision: Align the Harbor MedAgentBench instruction with the original MedAgentBench prompt as a hybrid, not a literal port.
+  Rationale: The Harbor task must keep its `/workspace/submission.json` contract, but it should still emphasize the original primitive FHIR function semantics and stricter output expectations.
+  Date/Author: 2026-03-12 / User+Codex
+
+- Decision: Replace the convenience FHIR tool names with primitive MedAgentBench-aligned canonical names (`get_patient`, `get_condition`, `get_observation_labs`, `get_observation_vitals`, `get_medicationrequest`, `get_procedure`, `post_observation_vitals`, `post_medicationrequest`, `post_servicerequest`).
+  Rationale: `data/medagentbench/funcs_v1.json` is the schema source of truth for the MedAgentBench primitive tool surface, and the repo should use one clean canonical mapping instead of compatibility aliases.
+  Date/Author: 2026-03-12 / User+Codex
+
 ## Outcomes & Retrospective
 
 The original per-instance Harbor dataset plan is now obsolete. The repository still has useful Harbor-related work in progress, but the implementation target changed materially: Harbor now exposes MedAgentBench as one benchmark meta-task, not as a local dataset of hundreds of tasks.
 
 That change simplifies the Harbor-facing UX and aligns with the user's goal of one shared environment and one shared evaluator, but it also means this integration deliberately departs from Harbor's normal one-task-per-instance model. The remaining implementation risk is therefore less about task generation volume and more about designing a clean harness/verifier contract for a single trial that internally runs multiple benchmark cases.
 
-The fast-iteration slice is now fixed and implemented: one task from each `taskN` family, scored by mean pass@1. The generator, workspace contract, verifier bridge, and Harbor-aligned debug path are complete. The generated task now uses a pinned FHIR image digest, a readiness helper sidecar for startup gating, and a clean source-only task tree without committed runtime artifacts. The Harbor debug toolbox now also includes a generic default-agent setup step and a one-command MedAgentBench manual Codex workflow. The remaining open item is Harbor runtime validation to completion with real agent execution.
+The fast-iteration slice is now fixed and implemented: one task from each `taskN` family, scored by mean pass@1. The generator, workspace contract, verifier bridge, and Harbor-aligned debug path are complete. The generated task now uses a pinned FHIR image digest, a readiness helper sidecar for startup gating, and a clean source-only task tree without committed runtime artifacts. The Harbor debug toolbox now also includes a generic default-agent setup step and a one-command MedAgentBench manual Codex workflow. The Harbor prompt now explicitly explains the original MedAgentBench GET/POST/FINISH model and how Harbor adapts it, and the repo's FHIR tool surface now matches the original primitive MedAgentBench functions instead of the earlier convenience wrappers. The remaining open item is Harbor runtime validation to completion with real agent execution.
 
 ## Context and Orientation
 
@@ -261,3 +277,8 @@ Define a harness entrypoint under `scripts/medagentbench/` that reads the Harbor
 Define a verifier helper under `scripts/medagentbench/` that reads the harness outputs and returns an aggregate numeric score by invoking shared MedAgentBench evaluation logic.
 
 If shared evaluator extraction helpers are needed, place them in `scripts/medagentbench/evaluator.py` or a nearby module so the Harbor verifier bridge and the existing evaluation CLI share the same semantics.
+
+
+## Supersession Note
+
+This plan is now superseded for MedAgentBench implementation details by `.agent/plans/harbor_raw_json_medagentbench_execplan.md`. The repository originally converted YAML-derived MedAgentBench tasks into one Harbor meta-task, but the canonical path has since changed: Harbor MedAgentBench is now generated directly from `data/medagentbench/test_data_v2.json`, uses its own Harbor-specific evaluator, and treats the YAML manifest path only as a temporary compatibility layer during migration.

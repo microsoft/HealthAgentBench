@@ -5,98 +5,19 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-GROUP_TO_MED_TASK_TYPE: dict[str, str] = {
-    "task1": "patient_information_retrieval",
-    "task2": "patient_information_retrieval",
-    "task3": "recording_patient_data",
-    "task4": "lab_result_retrieval",
-    "task5": "medication_ordering",
-    "task6": "patient_data_aggregation",
-    "task7": "lab_result_retrieval",
-    "task8": "test_ordering",
-    "task9": "medication_ordering",
-    "task10": "test_ordering",
-}
-
-MED_TASK_TYPE_TO_REPO_TASK_TYPE: dict[str, str] = {
-    "patient_information_retrieval": "factual_qa",
-    "lab_result_retrieval": "factual_qa",
-    "patient_data_aggregation": "data_aggregation",
-    "recording_patient_data": "clinical_data_recording",
-    "test_ordering": "care_ordering",
-    "medication_ordering": "medication_reconciliation",
-}
-
-ACTION_MED_TASK_TYPES = {
-    "recording_patient_data",
-    "test_ordering",
-    "medication_ordering",
-}
-
-
-def _build_instruction(
-    *,
-    base_instruction: str,
-    context: str,
-    source_group: str,
-) -> str:
-    parts: list[str] = [base_instruction.strip()]
-    if context.strip():
-        parts.append(f"Context: {context.strip()}")
-
-    if source_group == "task1":
-        mentions_not_found = "patient not found" in (base_instruction + context).lower()
-        if mentions_not_found:
-            parts.append(
-                "Final answer format requirement: return only the MRN string "
-                '(for example "S1234567"), or "Patient not found". '
-                "Do not include any extra text."
-            )
-        else:
-            parts.append(
-                "Final answer format requirement: return only the MRN string "
-                '(for example "S1234567"). Do not include any extra text.'
-            )
-    elif source_group in {"task2", "task4", "task6", "task7"}:
-        parts.append(
-            "Final answer format requirement: return only a single numeric value. "
-            "Do not include any extra text."
-        )
-
-    elif source_group == "task10":
-        parts.append(
-            "Final answer format requirement: return [-1] if no qualifying measurement is available; "
-            "otherwise return [value, timestamp]."
-        )
-    elif source_group in {"task5", "task9"}:
-        parts.append(
-            "Final answer format requirement: return only a single numeric value "
-            "(or -1 if no measurement is available). Do not include any extra text."
-        )
-
-    return "\n\n".join(part for part in parts if part)
-
-
-def _load_tasks(path: Path) -> list[dict[str, Any]]:
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    if isinstance(raw, list):
-        tasks = raw
-    elif isinstance(raw, dict) and isinstance(raw.get("tasks"), list):
-        tasks = raw["tasks"]
-    else:
-        raise ValueError("Input JSON must be a list or object with a 'tasks' list.")
-    return [dict(task) for task in tasks]
-
-
-def _infer_group(task_id: str) -> str:
-    match = re.match(r"^(task\d+)_", task_id)
-    return match.group(1) if match else "unknown"
+from scripts.medagentbench.normalization import (
+    ACTION_GROUPS,
+    GROUP_TO_MED_TASK_TYPE,
+    MED_TASK_TYPE_TO_REPO_TASK_TYPE,
+    build_instruction,
+    infer_group,
+    load_raw_tasks,
+)
 
 
 def _parse_tool_names(path: Path | None) -> list[str]:
@@ -113,27 +34,27 @@ def _parse_tool_names(path: Path | None) -> list[str]:
             continue
         name = str(item.get("name", ""))
         if "Condition" in name and "GET" in name:
-            tool_names.append("condition_search")
+            tool_names.append("get_condition")
         elif "Observation" in name and "Labs" in str(item.get("description", "")):
-            tool_names.append("lab_search")
+            tool_names.append("get_observation_labs")
         elif (
             "Observation" in name
             and "Vitals" in str(item.get("description", ""))
             and "GET" in name
         ):
-            tool_names.append("vital_search")
+            tool_names.append("get_observation_vitals")
         elif "Observation" in name and "POST" in name:
-            tool_names.append("vital_create")
+            tool_names.append("post_observation_vitals")
         elif "MedicationRequest" in name and "GET" in name:
-            tool_names.append("medicationrequest_search")
+            tool_names.append("get_medicationrequest")
         elif "MedicationRequest" in name and "POST" in name:
-            tool_names.append("medicationrequest_create")
+            tool_names.append("post_medicationrequest")
         elif "Procedure" in name and "GET" in name:
-            tool_names.append("procedure_search")
+            tool_names.append("get_procedure")
         elif "ServiceRequest" in name and "POST" in name:
-            tool_names.append("procedure_create")
+            tool_names.append("post_servicerequest")
         elif "Patient" in name and "GET" in name:
-            tool_names.append("patient_search")
+            tool_names.append("get_patient")
 
     return sorted(set(tool_names))
 
@@ -142,30 +63,26 @@ def _normalize(
     task: dict[str, Any], *, split: str, allowed_tools: list[str]
 ) -> dict[str, Any]:
     task_id = str(task.get("id", task.get("task_id", "")))
-    group = _infer_group(task_id)
+    group = infer_group(task_id)
     med_task_type = GROUP_TO_MED_TASK_TYPE.get(group, "patient_information_retrieval")
     repo_task_type = MED_TASK_TYPE_TO_REPO_TASK_TYPE[med_task_type]
-    query_or_action = "action" if med_task_type in ACTION_MED_TASK_TYPES else "query"
-
-    instruction = str(task.get("instruction", ""))
-    context = str(task.get("context", "")).strip()
+    query_or_action = "action" if group in ACTION_GROUPS else "query"
 
     expected_answer: Any = task.get("sol", "")
     if isinstance(expected_answer, list) and len(expected_answer) == 1:
         expected_answer = expected_answer[0]
     if group == "task10" and expected_answer == -1:
         expected_answer = [-1]
-    instruction = _build_instruction(
-        base_instruction=instruction,
-        context=context,
-        source_group=group,
-    )
 
     return {
         "task_id": task_id,
         "category": repo_task_type,
         "difficulty": "medium" if query_or_action == "action" else "easy",
-        "instruction": instruction,
+        "instruction": build_instruction(
+            base_instruction=str(task.get("instruction", "")),
+            context=str(task.get("context", "")).strip(),
+            source_group=group,
+        ),
         "expected_answer": expected_answer,
         "required_actions": [] if query_or_action == "query" else [med_task_type],
         "split": split,
@@ -181,6 +98,8 @@ def _normalize(
 
 def _task_type_slug(value: str) -> str:
     lowered = value.strip().lower().replace("-", " ").replace("/", " ")
+    import re
+
     return re.sub(r"[^a-z0-9]+", "_", lowered).strip("_") or "unknown"
 
 
@@ -188,7 +107,6 @@ def _write_manifest(path: Path, tasks: list[dict[str, Any]]) -> None:
     payload = {"tasks": tasks}
     path.parent.mkdir(parents=True, exist_ok=True)
     rendered = yaml.safe_dump(payload, sort_keys=False, allow_unicode=True)
-    # Improve readability by separating top-level task entries with a blank line.
     parts = rendered.split("\n- task_id: ")
     if len(parts) > 1:
         rendered = parts[0] + "\n- task_id: " + "\n\n- task_id: ".join(parts[1:])
@@ -217,7 +135,7 @@ def main() -> None:
     allowed_tools = _parse_tool_names(funcs_path)
     tasks = [
         _normalize(t, split=args.split, allowed_tools=allowed_tools)
-        for t in _load_tasks(input_path)
+        for t in load_raw_tasks(input_path)
     ]
     tasks.sort(key=lambda item: item["task_id"])
 
@@ -228,9 +146,7 @@ def main() -> None:
     if output_root:
         grouped: dict[tuple[str, str], list[dict[str, Any]]] = {}
         for task in tasks:
-            task_type = _task_type_slug(str(task["category"]))
-            split = str(task.get("split", "std"))
-            key = (task_type, split)
+            key = (_task_type_slug(str(task["category"])), str(task.get("split", "std")))
             grouped.setdefault(key, []).append(task)
 
         for (task_type, split), task_rows in sorted(grouped.items()):

@@ -3,32 +3,30 @@ import subprocess
 from pathlib import Path
 
 
-def _write_manifest(path: Path, tasks: list[tuple[str, str]]) -> None:
-    blocks = []
-    for task_id, source_group in tasks:
-        blocks.append(
-            "\n".join(
-                [
-                    f"  - task_id: {task_id}",
-                    "    category: factual_qa",
-                    "    difficulty: easy",
-                    f"    instruction: synthetic task for {task_id}",
-                    "    task_type: query",
-                    f"    source_group: {source_group}",
-                    "    source_benchmark: medagentbench",
-                ]
-            )
-        )
-    path.write_text("tasks:\n" + "\n".join(blocks) + "\n", encoding="utf-8")
+def _write_raw_tasks(path: Path, tasks: list[dict]) -> None:
+    path.write_text(json.dumps(tasks, indent=2) + "\n", encoding="utf-8")
 
 
 def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
-    input_root = tmp_path / "tasks"
-    manifest_dir = input_root / "factual_qa" / "sources" / "medagentbench"
-    manifest_dir.mkdir(parents=True)
-    _write_manifest(
-        manifest_dir / "std.yaml",
-        [("task1_1", "task1"), ("task2_1", "task2")],
+    input_json = tmp_path / "test_data_v2.json"
+    _write_raw_tasks(
+        input_json,
+        [
+            {
+                "id": "task1_1",
+                "instruction": "synthetic task1",
+                "context": "ctx1",
+                "sol": ["S1"],
+                "eval_MRN": "S1",
+            },
+            {
+                "id": "task2_1",
+                "instruction": "synthetic task2",
+                "context": "ctx2",
+                "sol": [42],
+                "eval_MRN": "S2",
+            },
+        ],
     )
 
     output_root = tmp_path / "harbor_tasks" / "medagentbench"
@@ -37,8 +35,8 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
         [
             ".venv/bin/python",
             "scripts/medagentbench/generate_harbor_tasks.py",
-            "--input-root",
-            str(input_root),
+            "--input-json",
+            str(input_json),
             "--output-root",
             str(output_root),
             "--selected-task-ids",
@@ -52,38 +50,61 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     assert (output_root / "task.toml").exists()
     assert (output_root / "benchmark_tasks.json").exists()
     assert (output_root / "submission_template.json").exists()
-    assert (output_root / "environment" / "Dockerfile").exists()
-    assert (output_root / "environment" / "docker-compose.yaml").exists()
-    assert (output_root / "environment" / "workspace" / "scripts" / "fhir_tools.py").exists()
+    assert (output_root / "environment" / "workspace" / "scripts" / "fhir_primitives.py").exists()
     assert not (output_root / "environment" / "workspace" / "submission.json").exists()
     assert (output_root / "tests" / "test.sh").exists()
     assert (output_root / "tests" / "verify_meta_task.py").exists()
-    assert not (output_root / "tests" / "__pycache__").exists()
 
-    payload = json.loads((output_root / "benchmark_tasks.json").read_text(encoding="utf-8"))
-    assert [row["task_id"] for row in payload["tasks"]] == ["task1_1", "task2_1"]
+    benchmark_payload = json.loads((output_root / "benchmark_tasks.json").read_text(encoding="utf-8"))
+    assert [row["task_id"] for row in benchmark_payload["tasks"]] == ["task1_1", "task2_1"]
+    assert set(benchmark_payload["tasks"][0]) == {
+        "task_id",
+        "category",
+        "difficulty",
+        "instruction",
+        "expected_answer",
+        "source_benchmark",
+        "eval_mrn",
+    }
+
+    submission_template = json.loads((output_root / "submission_template.json").read_text(encoding="utf-8"))
+    assert submission_template[0]["id"] == "task1_1"
+    assert submission_template[0]["final_answer"] == ""
+    assert submission_template[0]["payload"] is None
 
     compose_text = (output_root / "environment" / "docker-compose.yaml").read_text(encoding="utf-8")
     assert "jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966" in compose_text
     assert "fhir-ready" in compose_text
-    assert "service_completed_successfully" in compose_text
 
 
 def test_generate_harbor_meta_task_is_deterministic(tmp_path: Path):
-    input_root = tmp_path / "tasks"
-    manifest_dir = input_root / "factual_qa" / "sources" / "medagentbench"
-    manifest_dir.mkdir(parents=True)
-    _write_manifest(
-        manifest_dir / "std.yaml",
-        [("task1_1", "task1"), ("task2_1", "task2")],
+    input_json = tmp_path / "test_data_v2.json"
+    _write_raw_tasks(
+        input_json,
+        [
+            {
+                "id": "task1_1",
+                "instruction": "synthetic task1",
+                "context": "ctx1",
+                "sol": ["S1"],
+                "eval_MRN": "S1",
+            },
+            {
+                "id": "task2_1",
+                "instruction": "synthetic task2",
+                "context": "ctx2",
+                "sol": [42],
+                "eval_MRN": "S2",
+            },
+        ],
     )
 
     output_root = tmp_path / "harbor_tasks" / "medagentbench"
     cmd = [
         ".venv/bin/python",
         "scripts/medagentbench/generate_harbor_tasks.py",
-        "--input-root",
-        str(input_root),
+        "--input-json",
+        str(input_json),
         "--output-root",
         str(output_root),
         "--selected-task-ids",
@@ -108,17 +129,26 @@ def test_generate_harbor_meta_task_is_deterministic(tmp_path: Path):
 
 
 def test_generate_harbor_meta_task_rejects_unknown_selected_ids(tmp_path: Path):
-    input_root = tmp_path / "tasks"
-    manifest_dir = input_root / "factual_qa" / "sources" / "medagentbench"
-    manifest_dir.mkdir(parents=True)
-    _write_manifest(manifest_dir / "std.yaml", [("task1_1", "task1")])
+    input_json = tmp_path / "test_data_v2.json"
+    _write_raw_tasks(
+        input_json,
+        [
+            {
+                "id": "task1_1",
+                "instruction": "synthetic task1",
+                "context": "ctx1",
+                "sol": ["S1"],
+                "eval_MRN": "S1",
+            }
+        ],
+    )
 
     proc = subprocess.run(
         [
             ".venv/bin/python",
             "scripts/medagentbench/generate_harbor_tasks.py",
-            "--input-root",
-            str(input_root),
+            "--input-json",
+            str(input_json),
             "--output-root",
             str(tmp_path / "out" / "medagentbench"),
             "--selected-task-ids",
