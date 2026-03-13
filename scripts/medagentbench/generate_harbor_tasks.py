@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.medagentbench.normalization import (
+    build_harbor_answer_key,
     default_selected_task_ids,
     infer_group,
     load_raw_tasks,
@@ -71,7 +72,6 @@ def _select_tasks(raw_tasks: list[dict[str, Any]], selected_task_ids: list[str])
 
 def _benchmark_tasks_payload(raw_tasks: list[dict[str, Any]]) -> dict[str, Any]:
     return {
-        "benchmark_name": "medagentbench",
         "reference_time": DEFAULT_REFERENCE_TIME,
         "submission_path": "/workspace/submission.json",
         "tasks": [normalize_harbor_task(task) for task in raw_tasks],
@@ -151,12 +151,20 @@ def _action_payload_templates(raw_tasks: list[dict[str, Any]]) -> dict[str, Any]
     return templates
 
 
+def _answer_key_payload(raw_tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [build_harbor_answer_key(task) for task in raw_tasks]
+
+
 def _submission_template(raw_tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for task in raw_tasks:
-        row = dict(task)
-        row["final_answer"] = ""
-        row["payload"] = None
+        row = {
+            "task_id": str(task.get("id", task.get("task_id", ""))),
+            "instruction": str(task.get("instruction", "")),
+            "context": str(task.get("context", "")),
+            "final_answer": "",
+            "payload": None,
+        }
         rows.append(row)
     return rows
 
@@ -175,7 +183,7 @@ def _instruction_md(tasks_payload: dict[str, Any]) -> str:
             "",
             "- a local FHIR server at `http://fhir:8080/fhir`",
             "- the selected MedAgentBench task slice at `/workspace/benchmark_tasks.json`",
-            "- the original benchmark rows plus editable result fields in `/workspace/submission_template.json`",
+            "- the selected tasks plus editable result fields in `/workspace/submission_template.json`",
             "- primitive FHIR helper scripts under `/workspace/scripts/`",
             "",
             "Original MedAgentBench expects one action at a time using `GET ...`, `POST ...`, or `FINISH(...)` with no extra text.",
@@ -183,7 +191,7 @@ def _instruction_md(tasks_payload: dict[str, Any]) -> str:
             "",
             "Submission rules:",
             "",
-            "- `/workspace/submission.json` is a JSON list. Each row starts as the original raw benchmark task row and adds exactly two result fields: `final_answer` and `payload`.",
+            "- `/workspace/submission.json` is a JSON list. Each row contains `task_id`, task text, and exactly two editable result fields: `final_answer` and `payload`.",
             "- For query-only tasks, set `final_answer` and leave `payload` as `null`.",
             "- For write tasks, use the simulated POST helpers. They do not mutate the database; instead they print an accepted payload for you to copy into `payload`.",
             "- If a task needs multiple writes, set `payload` to a list of payload objects in call order. Otherwise use one payload object or `null`.",
@@ -247,9 +255,7 @@ def _workspace_readme() -> str:
 
         - `benchmark_tasks.json`: normalized MedAgentBench task rows used for task browsing.
         - `submission_template.json`: copy this to `submission.json` and fill in `final_answer` and `payload`.
-        - `action_payload_templates.json`: reference payloads for the selected write tasks.
         - `scripts/fhir_primitives.py`: primitive GET and simulated POST helpers.
-        - `scripts/show_action_template.py <task_id>`: print the reference payload for a selected task.
         - `scripts/wait_for_fhir.sh`: wait until the local FHIR endpoint is ready.
 
         The verifier reads `/workspace/submission.json` after the agent stops.
@@ -459,34 +465,6 @@ def _fhir_primitives_py() -> str:
     )
 
 
-def _show_action_template_py() -> str:
-    return _clean_block(
-        """
-        #!/usr/bin/env python3
-        from __future__ import annotations
-
-        import json
-        import sys
-        from pathlib import Path
-
-
-        def main() -> None:
-            if len(sys.argv) != 2:
-                raise SystemExit("usage: show_action_template.py <task_id>")
-            task_id = sys.argv[1]
-            templates_path = Path("/workspace/action_payload_templates.json")
-            payload = json.loads(templates_path.read_text(encoding="utf-8"))
-            if task_id not in payload:
-                raise SystemExit(f"no action template for {task_id}")
-            print(json.dumps(payload[task_id], indent=2, ensure_ascii=False))
-
-
-        if __name__ == "__main__":
-            main()
-        """
-    )
-
-
 def _init_submission_py() -> str:
     return _clean_block(
         """
@@ -537,6 +515,7 @@ def _test_sh() -> str:
         python /tests/verify_meta_task.py \
           --submission /workspace/submission.json \
           --tasks /workspace/benchmark_tasks.json \
+          --answer-key /tests/task_answer_key.json \
           --reward-file /logs/verifier/reward.txt
         """
     )
@@ -552,7 +531,7 @@ def _verify_meta_task_py() -> str:
         import json
         from pathlib import Path
 
-        from evaluator import evaluate_submission_rows
+        from evaluator import evaluate_submission_rows, merge_submission_with_answer_key
 
 
         def _load_json(path: Path):
@@ -571,6 +550,7 @@ def _verify_meta_task_py() -> str:
             parser = argparse.ArgumentParser()
             parser.add_argument("--submission", type=Path, required=True)
             parser.add_argument("--tasks", type=Path, required=True)
+            parser.add_argument("--answer-key", type=Path, required=True)
             parser.add_argument("--reward-file", type=Path, required=True)
             args = parser.parse_args()
 
@@ -582,9 +562,15 @@ def _verify_meta_task_py() -> str:
             task_payload = _load_json(args.tasks)
             expected_ids = [row["task_id"] for row in task_payload.get("tasks", []) if isinstance(row, dict)]
             submission_rows = _normalize_submission(_load_json(args.submission))
+            answer_key_rows = _load_json(args.answer_key)
             submitted_by_id = {
-                str(row.get("id", row.get("task_id", ""))): row
+                str(row.get("task_id", row.get("id", ""))): row
                 for row in submission_rows
+                if isinstance(row, dict)
+            }
+            answers_by_id = {
+                str(row.get("task_id", row.get("id", ""))): row
+                for row in answer_key_rows
                 if isinstance(row, dict)
             }
 
@@ -592,8 +578,11 @@ def _verify_meta_task_py() -> str:
             for task_id in expected_ids:
                 row = submitted_by_id.get(task_id)
                 if row is None:
-                    row = {"id": task_id, "final_answer": "", "payload": None}
-                rows.append(row)
+                    row = {"task_id": task_id, "final_answer": "", "payload": None}
+                merged = merge_submission_with_answer_key(
+                    [row], [answers_by_id.get(task_id, {"task_id": task_id})]
+                )
+                rows.extend(merged)
 
             summary = evaluate_submission_rows(rows)
             results_path = args.reward_file.parent / "meta_results.json"
@@ -641,6 +630,7 @@ def _write_meta_task(
     task_dir = output_root
     benchmark_payload = _benchmark_tasks_payload(selected_raw_tasks)
     action_templates = _action_payload_templates(selected_raw_tasks)
+    answer_key = _answer_key_payload(selected_raw_tasks)
     submission_template = _submission_template(selected_raw_tasks)
 
     task_dir.joinpath("instruction.md").write_text(
@@ -650,7 +640,6 @@ def _write_meta_task(
         _task_toml(selected_task_ids), encoding="utf-8"
     )
     _write_json(task_dir / "benchmark_tasks.json", benchmark_payload)
-    _write_json(task_dir / "action_payload_templates.json", action_templates)
     _write_json(task_dir / "submission_template.json", submission_template)
 
     environment_dir = task_dir / "environment"
@@ -666,7 +655,6 @@ def _write_meta_task(
     )
     workspace_dir.joinpath("README.md").write_text(_workspace_readme(), encoding="utf-8")
     _write_json(workspace_dir / "benchmark_tasks.json", benchmark_payload)
-    _write_json(workspace_dir / "action_payload_templates.json", action_templates)
     _write_json(workspace_dir / "submission_template.json", submission_template)
     submission_path = workspace_dir / "submission.json"
     if submission_path.exists():
@@ -674,16 +662,13 @@ def _write_meta_task(
     scripts_dir.joinpath("fhir_primitives.py").write_text(
         _fhir_primitives_py(), encoding="utf-8"
     )
-    scripts_dir.joinpath("show_action_template.py").write_text(
-        _show_action_template_py(), encoding="utf-8"
-    )
     scripts_dir.joinpath("init_submission.py").write_text(
         _init_submission_py(), encoding="utf-8"
     )
     wait_path = scripts_dir / "wait_for_fhir.sh"
     wait_path.write_text(_wait_for_fhir_sh(), encoding="utf-8")
     wait_path.chmod(0o755)
-    for script_name in ("fhir_primitives.py", "show_action_template.py", "init_submission.py"):
+    for script_name in ("fhir_primitives.py", "init_submission.py"):
         (scripts_dir / script_name).chmod(0o755)
 
     tests_dir = task_dir / "tests"
@@ -697,6 +682,8 @@ def _write_meta_task(
     tests_dir.joinpath("evaluator.py").write_text(
         evaluator_src.read_text(encoding="utf-8"), encoding="utf-8"
     )
+    _write_json(tests_dir / "task_answer_key.json", answer_key)
+    _write_json(tests_dir / "action_payload_templates.json", action_templates)
 
 
 def main() -> None:

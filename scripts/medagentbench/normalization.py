@@ -123,17 +123,12 @@ def build_instruction(
 
 
 def normalize_harbor_task(row: dict[str, Any]) -> dict[str, Any]:
-    """Build the minimal normalized task payload used by Harbor benchmark metadata."""
+    """Build the public task payload exposed to the Harbor agent workspace."""
     task_id = str(row.get("id", row.get("task_id", "")))
     group = infer_group(task_id)
     med_task_type = GROUP_TO_MED_TASK_TYPE.get(group, "patient_information_retrieval")
     category = MED_TASK_TYPE_TO_REPO_TASK_TYPE[med_task_type]
     difficulty = "medium" if group in ACTION_GROUPS else "easy"
-    expected_answer: Any = row.get("sol", "")
-    if isinstance(expected_answer, list) and len(expected_answer) == 1:
-        expected_answer = expected_answer[0]
-    if group == "task10" and expected_answer == -1:
-        expected_answer = [-1]
     return {
         "task_id": task_id,
         "category": category,
@@ -143,7 +138,13 @@ def normalize_harbor_task(row: dict[str, Any]) -> dict[str, Any]:
             context=str(row.get("context", "")),
             source_group=group,
         ),
-        "expected_answer": expected_answer,
-        "source_benchmark": "medagentbench",
-        "eval_mrn": row.get("eval_MRN"),
+    }
+
+
+def build_harbor_answer_key(row: dict[str, Any]) -> dict[str, Any]:
+    """Build the verifier-only answer key row for one MedAgentBench task."""
+    return {
+        "task_id": str(row.get("id", row.get("task_id", ""))),
+        "sol": row.get("sol", ""),
+        "eval_MRN": row.get("eval_MRN"),
     }

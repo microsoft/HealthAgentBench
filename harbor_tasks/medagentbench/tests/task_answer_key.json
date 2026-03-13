@@ -1,0 +1,68 @@
+[
+  {
+    "task_id": "task1_1",
+    "sol": [
+      "S6534835"
+    ],
+    "eval_MRN": "S6534835"
+  },
+  {
+    "task_id": "task2_1",
+    "sol": [
+      60
+    ],
+    "eval_MRN": "S2874099"
+  },
+  {
+    "task_id": "task3_1",
+    "sol": "",
+    "eval_MRN": "S2380121"
+  },
+  {
+    "task_id": "task4_1",
+    "sol": [
+      -1
+    ],
+    "eval_MRN": "S3032536"
+  },
+  {
+    "task_id": "task5_1",
+    "sol": [
+      -1
+    ],
+    "eval_MRN": "S6315806"
+  },
+  {
+    "task_id": "task6_1",
+    "sol": [
+      97.0
+    ],
+    "eval_MRN": "S6307599"
+  },
+  {
+    "task_id": "task7_1",
+    "sol": [
+      123.0
+    ],
+    "eval_MRN": "S2823623"
+  },
+  {
+    "task_id": "task8_1",
+    "sol": "",
+    "eval_MRN": "S2016972"
+  },
+  {
+    "task_id": "task9_1",
+    "sol": [
+      3.9
+    ],
+    "eval_MRN": "S3241217"
+  },
+  {
+    "task_id": "task10_1",
+    "sol": [
+      -1
+    ],
+    "eval_MRN": "S6227720"
+  }
+]

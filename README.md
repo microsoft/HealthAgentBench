@@ -92,7 +92,7 @@ Python version requirement: `>=3.12`.
 
 Important: export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs the agent inside Docker, and without this variable Codex cannot authenticate in the container environment.
 
-The MedAgentBench Harbor task generated in this repo is a single meta-task at `harbor_tasks/medagentbench/`. It is generated directly from `data/medagentbench/test_data_v2.json`, uses a local FHIR sidecar, exposes MedAgentBench primitive helpers inside the task workspace, and evaluates a `submission.json` file whose rows preserve the original raw benchmark row plus `final_answer` and `payload`.
+The MedAgentBench Harbor task generated in this repo is a single meta-task at `harbor_tasks/medagentbench/`. It is generated directly from `data/medagentbench/test_data_v2.json`, uses a local FHIR sidecar, exposes MedAgentBench primitive helpers inside the task workspace, and evaluates a `submission.json` file whose public rows contain only safe task text plus `final_answer` and `payload`. Hidden answer keys and reference write payloads live only under `tests/` in the generated Harbor task.
 
 ```bash
 # Export Codex auth for this shell session

@@ -51,9 +51,11 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     assert (output_root / "benchmark_tasks.json").exists()
     assert (output_root / "submission_template.json").exists()
     assert (output_root / "environment" / "workspace" / "scripts" / "fhir_primitives.py").exists()
+    assert not (output_root / "environment" / "workspace" / "action_payload_templates.json").exists()
     assert not (output_root / "environment" / "workspace" / "submission.json").exists()
     assert (output_root / "tests" / "test.sh").exists()
     assert (output_root / "tests" / "verify_meta_task.py").exists()
+    assert (output_root / "tests" / "task_answer_key.json").exists()
 
     benchmark_payload = json.loads((output_root / "benchmark_tasks.json").read_text(encoding="utf-8"))
     assert [row["task_id"] for row in benchmark_payload["tasks"]] == ["task1_1", "task2_1"]
@@ -62,15 +64,14 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
         "category",
         "difficulty",
         "instruction",
-        "expected_answer",
-        "source_benchmark",
-        "eval_mrn",
     }
 
     submission_template = json.loads((output_root / "submission_template.json").read_text(encoding="utf-8"))
-    assert submission_template[0]["id"] == "task1_1"
+    assert submission_template[0]["task_id"] == "task1_1"
     assert submission_template[0]["final_answer"] == ""
     assert submission_template[0]["payload"] is None
+    assert "sol" not in submission_template[0]
+    assert "eval_MRN" not in submission_template[0]
 
     compose_text = (output_root / "environment" / "docker-compose.yaml").read_text(encoding="utf-8")
     assert "jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966" in compose_text

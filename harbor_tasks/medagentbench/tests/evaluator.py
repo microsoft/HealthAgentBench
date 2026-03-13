@@ -24,6 +24,30 @@ def load_submission(path: Path) -> list[dict[str, Any]]:
     return [row for row in rows if isinstance(row, dict)]
 
 
+def merge_submission_with_answer_key(
+    submission_rows: list[dict[str, Any]], answer_key_rows: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Join public submission rows with hidden verifier rows by task id."""
+    answers_by_id = {
+        str(row.get("task_id", row.get("id", ""))): row
+        for row in answer_key_rows
+        if isinstance(row, dict)
+    }
+    merged: list[dict[str, Any]] = []
+    for row in submission_rows:
+        if not isinstance(row, dict):
+            continue
+        task_id = str(row.get("task_id", row.get("id", "")))
+        merged_row = dict(answers_by_id.get(task_id, {}))
+        merged_row.update(row)
+        if "id" not in merged_row and task_id:
+            merged_row["id"] = task_id
+        if "task_id" not in merged_row and task_id:
+            merged_row["task_id"] = task_id
+        merged.append(merged_row)
+    return merged
+
+
 def _task_group(task_id: str) -> str:
     head = task_id.split("_", 1)[0]
     return head if head.startswith("task") else ""

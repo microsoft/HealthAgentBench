@@ -4,7 +4,7 @@ You are working inside a Harbor task environment that contains:
 
 - a local FHIR server at `http://fhir:8080/fhir`
 - the selected MedAgentBench task slice at `/workspace/benchmark_tasks.json`
-- the original benchmark rows plus editable result fields in `/workspace/submission_template.json`
+- the selected tasks plus editable result fields in `/workspace/submission_template.json`
 - primitive FHIR helper scripts under `/workspace/scripts/`
 
 Original MedAgentBench expects one action at a time using `GET ...`, `POST ...`, or `FINISH(...)` with no extra text.
@@ -12,7 +12,7 @@ This Harbor adaptation keeps the primitive MedAgentBench task semantics, but you
 
 Submission rules:
 
-- `/workspace/submission.json` is a JSON list. Each row starts as the original raw benchmark task row and adds exactly two result fields: `final_answer` and `payload`.
+- `/workspace/submission.json` is a JSON list. Each row contains `task_id`, task text, and exactly two editable result fields: `final_answer` and `payload`.
 - For query-only tasks, set `final_answer` and leave `payload` as `null`.
 - For write tasks, use the simulated POST helpers. They do not mutate the database; instead they print an accepted payload for you to copy into `payload`.
 - If a task needs multiple writes, set `payload` to a list of payload objects in call order. Otherwise use one payload object or `null`.

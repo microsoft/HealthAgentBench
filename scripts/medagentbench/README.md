@@ -8,6 +8,7 @@ This directory contains the MedAgentBench migration utilities. The canonical Med
 - Canonical Harbor task generator: `scripts/medagentbench/generate_harbor_tasks.py`
 - Canonical runnable task artifact: `harbor_tasks/medagentbench/`
 - Canonical Harbor evaluator: `scripts/medagentbench/harbor_evaluator.py`
+- Hidden Harbor answer key location after generation: `harbor_tasks/medagentbench/tests/`
 
 The older YAML manifest importer and legacy evaluator remain in this directory temporarily for migration support only.
 

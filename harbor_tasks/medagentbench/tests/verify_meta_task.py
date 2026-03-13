@@ -5,7 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
-from evaluator import evaluate_submission_rows
+from evaluator import evaluate_submission_rows, merge_submission_with_answer_key
 
 
 def _load_json(path: Path):
@@ -24,6 +24,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--submission", type=Path, required=True)
     parser.add_argument("--tasks", type=Path, required=True)
+    parser.add_argument("--answer-key", type=Path, required=True)
     parser.add_argument("--reward-file", type=Path, required=True)
     args = parser.parse_args()
 
@@ -35,9 +36,15 @@ def main() -> None:
     task_payload = _load_json(args.tasks)
     expected_ids = [row["task_id"] for row in task_payload.get("tasks", []) if isinstance(row, dict)]
     submission_rows = _normalize_submission(_load_json(args.submission))
+    answer_key_rows = _load_json(args.answer_key)
     submitted_by_id = {
-        str(row.get("id", row.get("task_id", ""))): row
+        str(row.get("task_id", row.get("id", ""))): row
         for row in submission_rows
+        if isinstance(row, dict)
+    }
+    answers_by_id = {
+        str(row.get("task_id", row.get("id", ""))): row
+        for row in answer_key_rows
         if isinstance(row, dict)
     }
 
@@ -45,8 +52,11 @@ def main() -> None:
     for task_id in expected_ids:
         row = submitted_by_id.get(task_id)
         if row is None:
-            row = {"id": task_id, "final_answer": "", "payload": None}
-        rows.append(row)
+            row = {"task_id": task_id, "final_answer": "", "payload": None}
+        merged = merge_submission_with_answer_key(
+            [row], [answers_by_id.get(task_id, {"task_id": task_id})]
+        )
+        rows.extend(merged)
 
     summary = evaluate_submission_rows(rows)
     results_path = args.reward_file.parent / "meta_results.json"

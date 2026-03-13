@@ -13,7 +13,7 @@ After this change, a contributor can generate and run the MedAgentBench Harbor m
 - [x] (2026-03-13 01:05Z) Extracted shared MedAgentBench normalization logic into `scripts/medagentbench/normalization.py` so raw JSON ingestion, group inference, category mapping, difficulty mapping, context merging, and instruction building no longer depend on YAML manifests.
 - [x] (2026-03-13 01:10Z) Updated `scripts/medagentbench/import_tasks.py` to consume the shared normalization module so the legacy YAML import path remains runnable during transition, even though it is no longer canonical.
 - [x] (2026-03-13 01:24Z) Rewrote `scripts/medagentbench/generate_harbor_tasks.py` to read `data/medagentbench/test_data_v2.json` directly and generate the Harbor task from raw benchmark rows rather than from `tasks/*.yaml`.
-- [x] (2026-03-13 01:31Z) Changed the Harbor benchmark task payload to the new compact seven-field normalized shape: `task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `source_benchmark`, and `eval_mrn`.
+- [x] (2026-03-13 01:31Z) Changed the Harbor benchmark task payload to the new compact public four-field shape: `task_id`, `category`, `difficulty`, and `instruction`, while moving answer-bearing data into verifier-side fixtures under `tests/`.
 - [x] (2026-03-13 01:36Z) Changed the Harbor submission contract so each submission row preserves the original raw task row and appends `final_answer` plus `payload`, where `payload` is `null`, one object, or a list of objects depending on the task.
 - [x] (2026-03-13 01:48Z) Added a Harbor-only evaluator at `scripts/medagentbench/harbor_evaluator.py` and updated the generated verifier bundle to use it instead of the legacy evaluator.
 - [x] (2026-03-13 01:57Z) Reworked the generated Harbor workspace helpers so MedAgentBench primitive FHIR operations live inside the Harbor task as `scripts/fhir_primitives.py`; simulated POST helpers now capture payloads without mutating the database.
@@ -30,7 +30,7 @@ After this change, a contributor can generate and run the MedAgentBench Harbor m
   Evidence: after extraction into `scripts/medagentbench/normalization.py`, both the legacy importer and the Harbor generator could produce consistent task instructions from the same raw benchmark row.
 
 - Observation: the Harbor submission contract did not need the old `tool_trace` structure at all. The write-task evaluator can operate directly on `payload`, which makes the Harbor task contract smaller and easier for the agent to understand.
-  Evidence: the new Harbor evaluator only needs `final_answer`, `payload`, and the original raw row fields such as `id`, `sol`, and `eval_MRN`.
+  Evidence: the new Harbor evaluator can score correctly after merging the public submission rows with a hidden answer key keyed by `task_id`.
 
 - Observation: the MedAgentBench primitive POST behavior is better represented as a simulated write inside the Harbor task than as a policy instruction telling the agent not to mutate the database.
   Evidence: the generated `fhir_primitives.py` POST helpers now return a stable accepted payload with a message telling the agent to copy it into `submission.json`, which removes ambiguity from the task instruction.
@@ -109,7 +109,7 @@ All commands below are run from the repository root.
        print(data['tasks'][0])
        PY
 
-   Expected outcome: each task contains exactly `task_id`, `category`, `difficulty`, `instruction`, `expected_answer`, `source_benchmark`, and `eval_mrn`.
+   Expected outcome: each public Harbor task contains exactly `task_id`, `category`, `difficulty`, and `instruction`.
 
 3. Inspect the submission template.
 
@@ -180,11 +180,9 @@ Expected generator transcript shape:
 Expected submission-row shape:
 
     {
-      "id": "task3_1",
-      "question": "...",
+      "task_id": "task3_1",
+      "instruction": "...",
       "context": "...",
-      "eval_MRN": "S1234567",
-      "sol": "...",
       "final_answer": "",
       "payload": null
     }

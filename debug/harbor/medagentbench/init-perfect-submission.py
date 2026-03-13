@@ -37,21 +37,33 @@ def main() -> None:
 
     workspace_dir = args.task_dir / "environment" / "workspace"
     benchmark = _load_json(workspace_dir / "benchmark_tasks.json")
-    action_templates = _load_json(workspace_dir / "action_payload_templates.json")
+    answer_key_rows = _load_json(args.task_dir / "tests" / "task_answer_key.json")
+    action_templates = _load_json(args.task_dir / "tests" / "action_payload_templates.json")
+    answers_by_id = {str(row.get("task_id", row.get("id", ""))): row for row in answer_key_rows}
 
     results: list[dict[str, Any]] = []
     for task in benchmark.get("tasks", []):
         if not isinstance(task, dict):
             continue
         task_id = str(task.get("task_id", ""))
-        row: dict[str, Any] = {"task_id": task_id, "final_answer": "", "tool_trace": []}
-        if task.get("evaluation_focus") == "tool_trace":
-            row["tool_trace"] = action_templates.get(task_id, {}).get("tool_trace", [])
+        answer_key = answers_by_id.get(task_id, {})
+        row: dict[str, Any] = {
+            "task_id": task_id,
+            "instruction": task.get("instruction", ""),
+            "context": "",
+            "final_answer": "",
+            "payload": action_templates.get(task_id),
+        }
+        expected = answer_key.get("sol", "")
+        if isinstance(expected, list) and len(expected) == 1:
+            expected = expected[0]
+        if task_id.startswith(("task3", "task8")):
+            row["final_answer"] = ""
         else:
-            row["final_answer"] = task.get("expected_answer", "")
+            row["final_answer"] = expected
         results.append(row)
 
-    payload = json.dumps({"results": results}, indent=2, ensure_ascii=False) + "\n"
+    payload = json.dumps(results, indent=2, ensure_ascii=False) + "\n"
     if args.output is None:
         sys.stdout.write(payload)
         return
