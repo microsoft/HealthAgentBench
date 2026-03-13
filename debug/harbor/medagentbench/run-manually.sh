@@ -33,9 +33,10 @@ Inside the opened container shell:
    sed -n '1,160p' /workspace/submission.json
 
 2. Use the helper scripts while editing /workspace/submission.json:
-   python /workspace/scripts/fhir_tools.py patient-age --mrn S2874099
-   python /workspace/scripts/fhir_tools.py latest-observation --patient S2823623 --code GLU
-   python /workspace/scripts/show_action_template.py task8_1
+   python /workspace/scripts/primitives/get_patient.py --help
+   python /workspace/scripts/primitives/get_patient.py --identifier S2874099
+   python /workspace/scripts/primitives/get_observation_labs.py --patient S2823623 --code GLU
+   python /workspace/scripts/primitives/post_servicerequest.py --help
 
 3. Run the default Codex agent command inside the container:
    export CODEX_HOME=/logs/agent

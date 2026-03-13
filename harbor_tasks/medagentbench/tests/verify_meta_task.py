@@ -20,6 +20,14 @@ def _normalize_submission(payload):
     raise ValueError("submission.json must be a list or an object with a 'results' list")
 
 
+def _normalize_tasks(payload):
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict) and isinstance(payload.get("tasks"), list):
+        return payload["tasks"]
+    raise ValueError("benchmark_tasks.json must be a list or an object with a 'tasks' list")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--submission", type=Path, required=True)
@@ -33,8 +41,8 @@ def main() -> None:
         print(f"missing submission file: {args.submission}")
         return
 
-    task_payload = _load_json(args.tasks)
-    expected_ids = [row["task_id"] for row in task_payload.get("tasks", []) if isinstance(row, dict)]
+    task_payload = _normalize_tasks(_load_json(args.tasks))
+    expected_ids = [row["task_id"] for row in task_payload if isinstance(row, dict)]
     submission_rows = _normalize_submission(_load_json(args.submission))
     answer_key_rows = _load_json(args.answer_key)
     submitted_by_id = {

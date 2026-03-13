@@ -71,11 +71,7 @@ def _select_tasks(raw_tasks: list[dict[str, Any]], selected_task_ids: list[str])
 
 
 def _benchmark_tasks_payload(raw_tasks: list[dict[str, Any]]) -> dict[str, Any]:
-    return {
-        "reference_time": DEFAULT_REFERENCE_TIME,
-        "submission_path": "/workspace/submission.json",
-        "tasks": [normalize_harbor_task(task) for task in raw_tasks],
-    }
+    return [normalize_harbor_task(task) for task in raw_tasks]
 
 
 def _expected_payload(task_id: str, eval_mrn: str) -> Any:
@@ -170,24 +166,28 @@ def _submission_template(raw_tasks: list[dict[str, Any]]) -> list[dict[str, Any]
 
 
 def _instruction_md(tasks_payload: dict[str, Any]) -> str:
-    bullet_lines = []
-    for task in tasks_payload["tasks"]:
-        bullet_lines.append(
-            f"- `{task['task_id']}` ({task['category']}, {task['difficulty']}): {task['instruction']}"
-        )
     return "\n".join(
         [
-            "# MedAgentBench Meta-Task",
+            "# Benchmark",
             "",
-            "You are working inside a Harbor task environment that contains:",
+            "You are working inside a task environment that contains:",
             "",
             "- a local FHIR server at `http://fhir:8080/fhir`",
-            "- the selected MedAgentBench task slice at `/workspace/benchmark_tasks.json`",
-            "- the selected tasks plus editable result fields in `/workspace/submission_template.json`",
-            "- primitive FHIR helper scripts under `/workspace/scripts/`",
+            "- task descriptions at `/workspace/benchmark_tasks.json`",
+            "- editable task rows at `/workspace/submission_template.json`",
+            "- primitive FHIR helper scripts under `/workspace/scripts/primitives/` (each supports `--help`)",
             "",
-            "Original MedAgentBench expects one action at a time using `GET ...`, `POST ...`, or `FINISH(...)` with no extra text.",
-            "This Harbor adaptation keeps the primitive MedAgentBench task semantics, but your final work product is `/workspace/submission.json`.",
+            "Your final work product is `/workspace/submission.json`.",
+            "",
+            "Suggested workflow:",
+            "",
+            "1. Run `/workspace/scripts/wait_for_fhir.sh`.",
+            "2. Copy `/workspace/submission_template.json` to `/workspace/submission.json`.",
+            "3. Choose one row from `/workspace/submission.json`.",
+            "4. Read that row's instruction and context carefully.",
+            "5. Use the helper scripts under `/workspace/scripts/primitives/` when you need to query the chart or simulate a write. Start with `--help` if you are unsure which primitive to use.",
+            "6. Write the row's `final_answer` and `payload`, then move to the next row.",
+            "7. Stop when every row is complete.",
             "",
             "Submission rules:",
             "",
@@ -196,18 +196,6 @@ def _instruction_md(tasks_payload: dict[str, Any]) -> str:
             "- For write tasks, use the simulated POST helpers. They do not mutate the database; instead they print an accepted payload for you to copy into `payload`.",
             "- If a task needs multiple writes, set `payload` to a list of payload objects in call order. Otherwise use one payload object or `null`.",
             "- Do not add new fields to the submission rows.",
-            "",
-            "Suggested workflow:",
-            "",
-            "1. Run `/workspace/scripts/wait_for_fhir.sh`.",
-            "2. Copy `/workspace/submission_template.json` to `/workspace/submission.json`.",
-            "3. Use `/workspace/scripts/fhir_primitives.py` GET commands to inspect the chart.",
-            "4. For write tasks, use the simulated POST commands and copy the returned payload into the row's `payload` field.",
-            "5. Update `final_answer` where the task expects one, then stop when every selected row is complete.",
-            "",
-            "Selected tasks in this slice:",
-            "",
-            *bullet_lines,
             "",
         ]
     )
@@ -253,9 +241,11 @@ def _workspace_readme() -> str:
         """
         # Workspace Files
 
-        - `benchmark_tasks.json`: normalized MedAgentBench task rows used for task browsing.
+        - `benchmark_tasks.json`: normalized task rows used for task browsing.
         - `submission_template.json`: copy this to `submission.json` and fill in `final_answer` and `payload`.
-        - `scripts/fhir_primitives.py`: primitive GET and simulated POST helpers.
+        - `scripts/primitives/fhir_common.py`: shared HTTP and payload helpers used by the primitive scripts.
+        - `scripts/primitives/get_*.py`: primitive read helpers; each supports `--help`.
+        - `scripts/primitives/post_*.py`: simulated write helpers; each supports `--help`.
         - `scripts/wait_for_fhir.sh`: wait until the local FHIR endpoint is ready.
 
         The verifier reads `/workspace/submission.json` after the agent stops.
@@ -305,13 +295,11 @@ def _environment_compose() -> str:
     )
 
 
-def _fhir_primitives_py() -> str:
+def _fhir_common_py() -> str:
     return _clean_block(
         """
-        #!/usr/bin/env python3
         from __future__ import annotations
 
-        import argparse
         import json
         import os
         import urllib.parse
@@ -365,104 +353,134 @@ def _fhir_primitives_py() -> str:
                     "message": "POST request accepted (simulated). Copy this payload into the task row's payload field and finish with the final answer.",
                 }
             )
-
-
-        def main() -> None:
-            parser = argparse.ArgumentParser()
-            subparsers = parser.add_subparsers(dest="command", required=True)
-
-            patient_parser = subparsers.add_parser("get-patient")
-            for name in (
-                "address",
-                "address-city",
-                "address-postalcode",
-                "address-state",
-                "birthdate",
-                "family",
-                "gender",
-                "given",
-                "identifier",
-                "legal-sex",
-                "name",
-                "telecom",
-            ):
-                patient_parser.add_argument(f"--{name}")
-
-            condition_parser = subparsers.add_parser("get-condition")
-            condition_parser.add_argument("--patient", required=True)
-            condition_parser.add_argument("--category")
-
-            labs_parser = subparsers.add_parser("get-observation-labs")
-            labs_parser.add_argument("--patient", required=True)
-            labs_parser.add_argument("--code", required=True)
-            labs_parser.add_argument("--date")
-
-            vitals_parser = subparsers.add_parser("get-observation-vitals")
-            vitals_parser.add_argument("--patient", required=True)
-            vitals_parser.add_argument("--category", required=True)
-            vitals_parser.add_argument("--date")
-
-            meds_parser = subparsers.add_parser("get-medicationrequest")
-            meds_parser.add_argument("--patient", required=True)
-            meds_parser.add_argument("--category")
-            meds_parser.add_argument("--date")
-
-            procedure_parser = subparsers.add_parser("get-procedure")
-            procedure_parser.add_argument("--patient", required=True)
-            procedure_parser.add_argument("--date", required=True)
-            procedure_parser.add_argument("--code")
-
-            obs_post = subparsers.add_parser("post-observation-vitals")
-            obs_post.add_argument("--payload-file", required=True)
-
-            med_post = subparsers.add_parser("post-medicationrequest")
-            med_post.add_argument("--payload-file", required=True)
-
-            svc_post = subparsers.add_parser("post-servicerequest")
-            svc_post.add_argument("--payload-file", required=True)
-
-            args = parser.parse_args()
-
-            if args.command == "get-patient":
-                _get(
-                    "Patient",
-                    {name: getattr(args, name.replace("-", "_")) for name in (
-                        "address",
-                        "address-city",
-                        "address-postalcode",
-                        "address-state",
-                        "birthdate",
-                        "family",
-                        "gender",
-                        "given",
-                        "identifier",
-                        "legal-sex",
-                        "name",
-                        "telecom",
-                    )},
-                )
-            elif args.command == "get-condition":
-                _get("Condition", {"patient": args.patient, "category": args.category})
-            elif args.command == "get-observation-labs":
-                _get("Observation", {"patient": args.patient, "code": args.code, "date": args.date})
-            elif args.command == "get-observation-vitals":
-                _get("Observation", {"patient": args.patient, "category": args.category, "date": args.date})
-            elif args.command == "get-medicationrequest":
-                _get("MedicationRequest", {"patient": args.patient, "category": args.category, "date": args.date})
-            elif args.command == "get-procedure":
-                _get("Procedure", {"patient": args.patient, "date": args.date, "code": args.code})
-            elif args.command == "post-observation-vitals":
-                _simulate_post("Observation", args.payload_file)
-            elif args.command == "post-medicationrequest":
-                _simulate_post("MedicationRequest", args.payload_file)
-            elif args.command == "post-servicerequest":
-                _simulate_post("ServiceRequest", args.payload_file)
-
-
-        if __name__ == "__main__":
-            main()
         """
     )
+
+
+def _primitive_script_py(
+    *,
+    description: str,
+    arg_lines: list[str],
+    body_lines: list[str],
+) -> str:
+    return _clean_block(
+        "\n".join(
+            [
+                "#!/usr/bin/env python3",
+                "from __future__ import annotations",
+                "",
+                "import argparse",
+                "",
+                "from fhir_common import _get, _simulate_post",
+                "",
+                "",
+                "def main() -> None:",
+                f"    parser = argparse.ArgumentParser(description={description!r})",
+                *[f"    {line}" for line in arg_lines],
+                "    args = parser.parse_args()",
+                *[f"    {line}" for line in body_lines],
+                "",
+                "",
+                'if __name__ == "__main__":',
+                "    main()",
+            ]
+        )
+    )
+
+
+def _primitive_scripts() -> dict[str, str]:
+    patient_fields = [
+        "address",
+        "address-city",
+        "address-postalcode",
+        "address-state",
+        "birthdate",
+        "family",
+        "gender",
+        "given",
+        "identifier",
+        "legal-sex",
+        "name",
+        "telecom",
+    ]
+    patient_args = [
+        f'parser.add_argument("--{name}", help="FHIR Patient search parameter: {name}")'
+        for name in patient_fields
+    ]
+    patient_body = [
+        '_get("Patient", {'
+        + ", ".join(
+            [f'"{name}": args.{name.replace("-", "_")}' for name in patient_fields]
+        )
+        + '})'
+    ]
+    return {
+        "fhir_common.py": _fhir_common_py(),
+        "get_patient.py": _primitive_script_py(
+            description="Retrieve Patient resources using FHIR Patient search parameters.",
+            arg_lines=patient_args,
+            body_lines=patient_body,
+        ),
+        "get_condition.py": _primitive_script_py(
+            description="Retrieve Condition resources for a patient.",
+            arg_lines=[
+                'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
+                'parser.add_argument("--category", help="Optional FHIR Condition category filter.")',
+            ],
+            body_lines=['_get("Condition", {"patient": args.patient, "category": args.category})'],
+        ),
+        "get_observation_labs.py": _primitive_script_py(
+            description="Retrieve laboratory Observation resources for a patient and code.",
+            arg_lines=[
+                'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
+                'parser.add_argument("--code", required=True, help="Observation code to filter on.")',
+                'parser.add_argument("--date", help="Optional FHIR date filter expression.")',
+            ],
+            body_lines=['_get("Observation", {"patient": args.patient, "code": args.code, "date": args.date})'],
+        ),
+        "get_observation_vitals.py": _primitive_script_py(
+            description="Retrieve vital-sign Observation resources for a patient and category.",
+            arg_lines=[
+                'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
+                'parser.add_argument("--category", required=True, help="Observation category filter, such as vital-signs.")',
+                'parser.add_argument("--date", help="Optional FHIR date filter expression.")',
+            ],
+            body_lines=['_get("Observation", {"patient": args.patient, "category": args.category, "date": args.date})'],
+        ),
+        "get_medicationrequest.py": _primitive_script_py(
+            description="Retrieve MedicationRequest resources for a patient.",
+            arg_lines=[
+                'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
+                'parser.add_argument("--category", help="Optional MedicationRequest category filter.")',
+                'parser.add_argument("--date", help="Optional FHIR date filter expression.")',
+            ],
+            body_lines=['_get("MedicationRequest", {"patient": args.patient, "category": args.category, "date": args.date})'],
+        ),
+        "get_procedure.py": _primitive_script_py(
+            description="Retrieve Procedure resources for a patient.",
+            arg_lines=[
+                'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
+                'parser.add_argument("--date", required=True, help="FHIR date filter expression.")',
+                'parser.add_argument("--code", help="Optional Procedure code filter.")',
+            ],
+            body_lines=['_get("Procedure", {"patient": args.patient, "date": args.date, "code": args.code})'],
+        ),
+        "post_observation_vitals.py": _primitive_script_py(
+            description="Simulate posting a vital-sign Observation payload from a JSON file.",
+            arg_lines=['parser.add_argument("--payload-file", required=True, help="Path to a JSON file containing one Observation payload.")'],
+            body_lines=['_simulate_post("Observation", args.payload_file)'],
+        ),
+        "post_medicationrequest.py": _primitive_script_py(
+            description="Simulate posting a MedicationRequest payload from a JSON file.",
+            arg_lines=['parser.add_argument("--payload-file", required=True, help="Path to a JSON file containing one MedicationRequest payload.")'],
+            body_lines=['_simulate_post("MedicationRequest", args.payload_file)'],
+        ),
+        "post_servicerequest.py": _primitive_script_py(
+            description="Simulate posting a ServiceRequest payload from a JSON file.",
+            arg_lines=['parser.add_argument("--payload-file", required=True, help="Path to a JSON file containing one ServiceRequest payload.")'],
+            body_lines=['_simulate_post("ServiceRequest", args.payload_file)'],
+        ),
+    }
 
 
 def _init_submission_py() -> str:
@@ -546,6 +564,14 @@ def _verify_meta_task_py() -> str:
             raise ValueError("submission.json must be a list or an object with a 'results' list")
 
 
+        def _normalize_tasks(payload):
+            if isinstance(payload, list):
+                return payload
+            if isinstance(payload, dict) and isinstance(payload.get("tasks"), list):
+                return payload["tasks"]
+            raise ValueError("benchmark_tasks.json must be a list or an object with a 'tasks' list")
+
+
         def main() -> None:
             parser = argparse.ArgumentParser()
             parser.add_argument("--submission", type=Path, required=True)
@@ -559,8 +585,8 @@ def _verify_meta_task_py() -> str:
                 print(f"missing submission file: {args.submission}")
                 return
 
-            task_payload = _load_json(args.tasks)
-            expected_ids = [row["task_id"] for row in task_payload.get("tasks", []) if isinstance(row, dict)]
+            task_payload = _normalize_tasks(_load_json(args.tasks))
+            expected_ids = [row["task_id"] for row in task_payload if isinstance(row, dict)]
             submission_rows = _normalize_submission(_load_json(args.submission))
             answer_key_rows = _load_json(args.answer_key)
             submitted_by_id = {
@@ -645,7 +671,8 @@ def _write_meta_task(
     environment_dir = task_dir / "environment"
     workspace_dir = environment_dir / "workspace"
     scripts_dir = workspace_dir / "scripts"
-    scripts_dir.mkdir(parents=True, exist_ok=True)
+    primitives_dir = scripts_dir / "primitives"
+    primitives_dir.mkdir(parents=True, exist_ok=True)
 
     environment_dir.joinpath("Dockerfile").write_text(
         _environment_dockerfile(), encoding="utf-8"
@@ -659,17 +686,17 @@ def _write_meta_task(
     submission_path = workspace_dir / "submission.json"
     if submission_path.exists():
         submission_path.unlink()
-    scripts_dir.joinpath("fhir_primitives.py").write_text(
-        _fhir_primitives_py(), encoding="utf-8"
-    )
+    for script_name, content in _primitive_scripts().items():
+        primitives_dir.joinpath(script_name).write_text(content, encoding="utf-8")
     scripts_dir.joinpath("init_submission.py").write_text(
         _init_submission_py(), encoding="utf-8"
     )
     wait_path = scripts_dir / "wait_for_fhir.sh"
     wait_path.write_text(_wait_for_fhir_sh(), encoding="utf-8")
     wait_path.chmod(0o755)
-    for script_name in ("fhir_primitives.py", "init_submission.py"):
-        (scripts_dir / script_name).chmod(0o755)
+    for script_name in _primitive_scripts().keys():
+        (primitives_dir / script_name).chmod(0o755)
+    (scripts_dir / "init_submission.py").chmod(0o755)
 
     tests_dir = task_dir / "tests"
     test_sh = tests_dir / "test.sh"

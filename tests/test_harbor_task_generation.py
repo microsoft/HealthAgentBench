@@ -50,7 +50,22 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     assert (output_root / "task.toml").exists()
     assert (output_root / "benchmark_tasks.json").exists()
     assert (output_root / "submission_template.json").exists()
-    assert (output_root / "environment" / "workspace" / "scripts" / "fhir_primitives.py").exists()
+    scripts_dir = output_root / "environment" / "workspace" / "scripts"
+    primitives_dir = scripts_dir / "primitives"
+    assert (primitives_dir / "fhir_common.py").exists()
+    for script_name in (
+        "get_patient.py",
+        "get_condition.py",
+        "get_observation_labs.py",
+        "get_observation_vitals.py",
+        "get_medicationrequest.py",
+        "get_procedure.py",
+        "post_observation_vitals.py",
+        "post_medicationrequest.py",
+        "post_servicerequest.py",
+    ):
+        assert (primitives_dir / script_name).exists()
+    assert not (scripts_dir / "fhir_primitives.py").exists()
     assert not (output_root / "environment" / "workspace" / "action_payload_templates.json").exists()
     assert not (output_root / "environment" / "workspace" / "submission.json").exists()
     assert (output_root / "tests" / "test.sh").exists()
@@ -58,13 +73,16 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     assert (output_root / "tests" / "task_answer_key.json").exists()
 
     benchmark_payload = json.loads((output_root / "benchmark_tasks.json").read_text(encoding="utf-8"))
-    assert [row["task_id"] for row in benchmark_payload["tasks"]] == ["task1_1", "task2_1"]
-    assert set(benchmark_payload["tasks"][0]) == {
+    instruction_text = (output_root / "instruction.md").read_text(encoding="utf-8")
+    assert instruction_text.index("Suggested workflow:") < instruction_text.index("Submission rules:")
+    assert isinstance(benchmark_payload, list)
+    assert [row["task_id"] for row in benchmark_payload] == ["task1_1", "task2_1"]
+    assert set(benchmark_payload[0]) == {
         "task_id",
-        "category",
-        "difficulty",
         "instruction",
     }
+    answer_key = json.loads((output_root / "tests" / "task_answer_key.json").read_text(encoding="utf-8"))
+    assert set(answer_key[0]) == {"task_id", "category", "difficulty", "sol", "eval_MRN"}
 
     submission_template = json.loads((output_root / "submission_template.json").read_text(encoding="utf-8"))
     assert submission_template[0]["task_id"] == "task1_1"
@@ -76,6 +94,19 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     compose_text = (output_root / "environment" / "docker-compose.yaml").read_text(encoding="utf-8")
     assert "jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966" in compose_text
     assert "fhir-ready" in compose_text
+
+    help_result = subprocess.run(
+        [
+            ".venv/bin/python",
+            str(primitives_dir / "get_patient.py"),
+            "--help",
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    assert "Retrieve Patient resources" in help_result.stdout
+    assert "--identifier" in help_result.stdout
 
 
 def test_generate_harbor_meta_task_is_deterministic(tmp_path: Path):

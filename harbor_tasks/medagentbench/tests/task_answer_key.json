@@ -1,6 +1,8 @@
 [
   {
     "task_id": "task1_1",
+    "category": "factual_qa",
+    "difficulty": "easy",
     "sol": [
       "S6534835"
     ],
@@ -8,6 +10,8 @@
   },
   {
     "task_id": "task2_1",
+    "category": "factual_qa",
+    "difficulty": "easy",
     "sol": [
       60
     ],
@@ -15,11 +19,15 @@
   },
   {
     "task_id": "task3_1",
+    "category": "clinical_data_recording",
+    "difficulty": "medium",
     "sol": "",
     "eval_MRN": "S2380121"
   },
   {
     "task_id": "task4_1",
+    "category": "factual_qa",
+    "difficulty": "easy",
     "sol": [
       -1
     ],
@@ -27,6 +35,8 @@
   },
   {
     "task_id": "task5_1",
+    "category": "medication_reconciliation",
+    "difficulty": "medium",
     "sol": [
       -1
     ],
@@ -34,6 +44,8 @@
   },
   {
     "task_id": "task6_1",
+    "category": "data_aggregation",
+    "difficulty": "easy",
     "sol": [
       97.0
     ],
@@ -41,6 +53,8 @@
   },
   {
     "task_id": "task7_1",
+    "category": "factual_qa",
+    "difficulty": "easy",
     "sol": [
       123.0
     ],
@@ -48,11 +62,15 @@
   },
   {
     "task_id": "task8_1",
+    "category": "care_ordering",
+    "difficulty": "medium",
     "sol": "",
     "eval_MRN": "S2016972"
   },
   {
     "task_id": "task9_1",
+    "category": "medication_reconciliation",
+    "difficulty": "medium",
     "sol": [
       3.9
     ],
@@ -60,6 +78,8 @@
   },
   {
     "task_id": "task10_1",
+    "category": "care_ordering",
+    "difficulty": "medium",
     "sol": [
       -1
     ],

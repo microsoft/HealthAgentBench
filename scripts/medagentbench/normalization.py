@@ -125,6 +125,19 @@ def build_instruction(
 def normalize_harbor_task(row: dict[str, Any]) -> dict[str, Any]:
     """Build the public task payload exposed to the Harbor agent workspace."""
     task_id = str(row.get("id", row.get("task_id", "")))
+    return {
+        "task_id": task_id,
+        "instruction": build_instruction(
+            base_instruction=str(row.get("instruction", "")),
+            context=str(row.get("context", "")),
+            source_group=infer_group(task_id),
+        ),
+    }
+
+
+def build_harbor_answer_key(row: dict[str, Any]) -> dict[str, Any]:
+    """Build the verifier-only answer key row for one MedAgentBench task."""
+    task_id = str(row.get("id", row.get("task_id", "")))
     group = infer_group(task_id)
     med_task_type = GROUP_TO_MED_TASK_TYPE.get(group, "patient_information_retrieval")
     category = MED_TASK_TYPE_TO_REPO_TASK_TYPE[med_task_type]
@@ -133,18 +146,6 @@ def normalize_harbor_task(row: dict[str, Any]) -> dict[str, Any]:
         "task_id": task_id,
         "category": category,
         "difficulty": difficulty,
-        "instruction": build_instruction(
-            base_instruction=str(row.get("instruction", "")),
-            context=str(row.get("context", "")),
-            source_group=group,
-        ),
-    }
-
-
-def build_harbor_answer_key(row: dict[str, Any]) -> dict[str, Any]:
-    """Build the verifier-only answer key row for one MedAgentBench task."""
-    return {
-        "task_id": str(row.get("id", row.get("task_id", ""))),
         "sol": row.get("sol", ""),
         "eval_MRN": row.get("eval_MRN"),
     }

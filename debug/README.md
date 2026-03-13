@@ -123,7 +123,7 @@ bash debug/harbor/up-task-env.sh
 bash debug/harbor/exec-task-shell.sh
 ```
 
-Inside the container, you can inspect `/workspace` and run the helper scripts manually.
+Inside the container, you can inspect `/workspace` and run the per-primitive helper scripts manually. Each primitive under `/workspace/scripts/primitives/` supports `--help`.
 
 When finished:
 

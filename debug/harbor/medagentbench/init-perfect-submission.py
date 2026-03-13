@@ -42,7 +42,7 @@ def main() -> None:
     answers_by_id = {str(row.get("task_id", row.get("id", ""))): row for row in answer_key_rows}
 
     results: list[dict[str, Any]] = []
-    for task in benchmark.get("tasks", []):
+    for task in benchmark:
         if not isinstance(task, dict):
             continue
         task_id = str(task.get("task_id", ""))
