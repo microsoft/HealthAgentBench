@@ -2,12 +2,18 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
 from fhir_common import _get, _simulate_post
 
-
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Retrieve Patient resources using FHIR Patient search parameters.')
+    parser = argparse.ArgumentParser(
+        description='Retrieve Patient resources using FHIR Patient search parameters.',
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog=None,
+    )
     parser.add_argument("--address", help="FHIR Patient search parameter: address")
     parser.add_argument("--address-city", help="FHIR Patient search parameter: address-city")
     parser.add_argument("--address-postalcode", help="FHIR Patient search parameter: address-postalcode")

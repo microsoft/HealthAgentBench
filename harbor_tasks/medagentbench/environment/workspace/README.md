@@ -2,9 +2,9 @@
 
 - `benchmark_tasks.json`: normalized task rows used for task browsing.
 - `submission.json`: editable task rows; fill in `final_answer` and `payload`.
-- `scripts/primitives/fhir_common.py`: shared HTTP and payload helpers used by the primitive scripts.
 - `scripts/primitives/get_*.py`: primitive read helpers; each supports `--help`.
 - `scripts/primitives/post_*.py`: simulated write helpers; each supports `--help`.
+- `scripts/lib/fhir_common.py`: shared HTTP and payload helpers used by the primitive scripts.
 
 Primitive helper examples:
 

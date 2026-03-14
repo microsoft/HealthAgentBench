@@ -28,6 +28,7 @@ After this change, a contributor can generate and run the Harbor MedAgentBench b
 - [x] (2026-03-13 04:14Z) Folded hidden expected write payloads into `tests/task_answer_key.json`, renamed hidden `sol` to `expected_answer`, and applied the same answer normalization used by the legacy importer.
 - [x] (2026-03-13 04:24Z) Added debug-only submission snapshot helpers so a generated `/workspace/submission.json` can be copied to `.tmp/<project>/artifacts/submission.json` and restored later without rerunning the agent.
 - [x] (2026-03-13 04:31Z) Extended the generated verifier/debug path to emit `error_analysis.json` containing failure-only rows with `expected_payload` and `final_payload`.
+- [x] (2026-03-13 05:02Z) Refined the generated primitive interface so `scripts/primitives/` contains only runnable entrypoints, shared logic lives under `scripts/lib/`, and primitive discovery relies on `--help` without generated schema artifacts.
 
 ## Surprises & Discoveries
 
@@ -48,6 +49,9 @@ After this change, a contributor can generate and run the Harbor MedAgentBench b
 
 - Observation: splitting the primitive helper into one file per primitive made the generated task easier to navigate, but also exposed stale debug references that still pointed at removed helper names.
   Evidence: `debug/harbor/medagentbench/check-workspace.sh` and `run-manually.sh` still referenced `fhir_tools.py` until the helper split forced them to be updated.
+
+- Observation: generated schema files and a separate `--schema` flag were an awkward fit for agent usability; the agent benefited more from seeing the payload shape directly in `--help`.
+  Evidence: manual debug runs produced repeated payload mismatches, and the review of `.tmp/medagentbench-debug/verifier/error_analysis.json` showed the missing information was specifically the POST payload shape, not a lack of access to another file.
 
 ## Decision Log
 
@@ -83,11 +87,15 @@ After this change, a contributor can generate and run the Harbor MedAgentBench b
   Rationale: the user wants the Harbor task environment to be self-contained and easy for the agent to navigate file-by-file.
   Date/Author: 2026-03-13 / Codex
 
+- Decision: Primitive discovery uses `--help` only; there is no `--schema` flag and no generated `scripts/schemas/` directory.
+  Rationale: GET schemas are already captured by flags, and POST payload requirements are more usable when the original schema is inlined directly into `--help`.
+  Date/Author: 2026-03-13 / Codex
+
 ## Outcomes & Retrospective
 
 The Harbor MedAgentBench path is now structurally aligned with the intended end state. The task is generated from raw benchmark JSON, uses a Harbor-local public/private file split, keeps answer-bearing data verifier-side only, and exposes a simple row-by-row workflow to the agent. The debug path now also supports saving/restoring `submission.json` snapshots and emits a shaped failure-only `error_analysis.json` artifact for post-run inspection. The remaining work is cleanup rather than architecture: once task conversion is finished for all desired benchmarks, the frozen legacy OAI path can be removed.
 
-The main lesson is that the Harbor task became clearer once the agent-visible interface was aggressively minimized. A plain list of task rows, a pre-created submission file with merged instructions, and one file per primitive script are easier for both the agent and the developer to reason about than the earlier benchmark-heavy shape.
+The main lesson is that the Harbor task became clearer once the agent-visible interface was aggressively minimized. A plain list of task rows, a pre-created submission file with merged instructions, and one file per primitive script are easier for both the agent and the developer to reason about than the earlier benchmark-heavy shape. The primitive interface also became more usable once schema discovery was folded back into `--help` instead of being split across extra files and flags.
 
 ## Context and Orientation
 
@@ -97,7 +105,7 @@ The first group is the Harbor generation path. `scripts/medagentbench/generate_h
 
 The second group is the shared normalization layer. `scripts/medagentbench/normalization.py` contains the reusable logic for raw-task loading, task-group inference, context merging, instruction construction, and hidden answer-key row construction. `scripts/medagentbench/import_tasks.py` still exists and uses the same normalization helpers to produce YAML manifests under `tasks/`, but that path is transitional.
 
-The third group is the public task workspace. The agent-visible files are `harbor_tasks/medagentbench/benchmark_tasks.json`, `harbor_tasks/medagentbench/instruction.md`, and the workspace files under `harbor_tasks/medagentbench/environment/workspace/`, including the pre-created `submission.json` and the helper scripts under `scripts/`. The primitive FHIR helpers live under `scripts/primitives/`, and each one supports `--help`.
+The third group is the public task workspace. The agent-visible files are `harbor_tasks/medagentbench/benchmark_tasks.json`, `harbor_tasks/medagentbench/instruction.md`, and the workspace files under `harbor_tasks/medagentbench/environment/workspace/`, including the pre-created `submission.json` and the helper scripts under `scripts/`. The primitive FHIR helpers live under `scripts/primitives/`, shared runtime code lives under `scripts/lib/`, and each primitive supports `--help`.
 
 The fourth group is evaluation. `scripts/medagentbench/harbor_evaluator.py` evaluates the Harbor submission contract after the generated verifier joins the public submission rows with the hidden answer key under `harbor_tasks/medagentbench/tests/task_answer_key.json`. The generated verifier also writes `meta_results.json`, `reward.txt`, and, in debug mode, a shaped `error_analysis.json`. The debug perfect-submission helper also reads hidden expected payloads from that same answer key.
 
@@ -109,7 +117,7 @@ Start by keeping the normalization logic in one place. Put all raw-JSON-to-instr
 
 Next, make the Harbor generator raw-JSON-first and public/private by design. In `scripts/medagentbench/generate_harbor_tasks.py`, read `data/medagentbench/test_data_v2.json`, derive the default selected task IDs as `task1_1` through `task10_1`, and generate a public `benchmark_tasks.json` as a plain list of safe task rows with only `task_id` and `instruction`. Generate a pre-created `/workspace/submission.json` as a JSON list of safe editable rows containing `task_id`, `instruction`, `final_answer`, and `payload`. Generate a hidden verifier fixture under `harbor_tasks/medagentbench/tests/` as `task_answer_key.json`, containing `expected_answer`, `eval_MRN`, and expected write `payload` keyed by task, along with verifier-only `category` and `difficulty`.
 
-Then keep the generated task environment self-contained. Generate the public helper scripts under `harbor_tasks/medagentbench/environment/workspace/scripts/`, with common logic in `scripts/primitives/fhir_common.py` and one file per primitive command under `scripts/primitives/`. The GET helpers should query the FHIR sidecar. The POST helpers should accept payload files, validate the top-level `resourceType`, and print a success-like JSON blob that includes the payload without mutating the database.
+Then keep the generated task environment self-contained. Generate the public helper scripts under `harbor_tasks/medagentbench/environment/workspace/scripts/`, with common logic in `scripts/lib/fhir_common.py` and one file per primitive command under `scripts/primitives/`. The GET helpers should query the FHIR sidecar and express required inputs directly as required flags. The POST helpers should accept payload files, validate the top-level `resourceType`, print a success-like JSON blob that includes the payload without mutating the database, and inline the original payload schema into `--help`.
 
 After that, isolate Harbor evaluation from legacy evaluation. Implement `scripts/medagentbench/harbor_evaluator.py` so it reads merged rows, evaluates query tasks from `final_answer`, evaluates write tasks from `payload`, and returns a summary with pass counts plus failure reasons. Copy that file into the generated Harbor verifier bundle and update `harbor_tasks/medagentbench/tests/verify_meta_task.py` generation so the Harbor verifier uses the Harbor-only evaluator plus the hidden answer key.
 
@@ -168,7 +176,7 @@ All commands below are run from the repository root.
 
        find harbor_tasks/medagentbench/environment/workspace/scripts -maxdepth 2 -type f | sort
 
-   Expected outcome: the workspace already contains `submission.json`, and the primitive helper files live under `scripts/primitives/` with one file per primitive plus `fhir_common.py`.
+   Expected outcome: the workspace already contains `submission.json`, the primitive helper files live under `scripts/primitives/` with one file per primitive, and shared runtime code lives under `scripts/lib/fhir_common.py`.
 
 6. Run the Harbor generation tests.
 
@@ -192,7 +200,7 @@ All commands below are run from the repository root.
 
 The change is accepted when a contributor can regenerate the benchmark task from `data/medagentbench/test_data_v2.json`, inspect the plain-list public task file, inspect the safe submission template, inspect the hidden verifier fixtures, and run the Harbor smoke path successfully.
 
-Behaviorally, `harbor_tasks/medagentbench/benchmark_tasks.json` must be a plain JSON list of safe public rows and must not contain `submission_path`, `reference_time`, `category`, `difficulty`, `expected_answer`, or `eval_MRN`. The generated `/workspace/submission.json` must be a JSON list of safe editable rows with `task_id`, merged `instruction`, `final_answer`, and `payload`. The generated helper interface must live under `scripts/primitives/`, with one file per primitive and `--help` support for each primitive script.
+Behaviorally, `harbor_tasks/medagentbench/benchmark_tasks.json` must be a plain JSON list of safe public rows and must not contain `submission_path`, `reference_time`, `category`, `difficulty`, `expected_answer`, or `eval_MRN`. The generated `/workspace/submission.json` must be a JSON list of safe editable rows with `task_id`, merged `instruction`, `final_answer`, and `payload`. The generated helper interface must live under `scripts/primitives/`, with one file per primitive and `--help` support for each primitive script; there must be no generated `scripts/schemas/` artifact.
 
 For evaluation, `scripts/medagentbench/harbor_evaluator.py` must remain the scoring implementation used inside the generated Harbor verifier. A perfect synthetic submission must score `1.0`, and the repository tests covering Harbor task generation and Harbor evaluation must pass.
 
@@ -254,4 +262,4 @@ Plan revision note: this plan supersedes the earlier YAML-first Harbor task conv
 
 `scripts/medagentbench/harbor_evaluator.py` must expose `load_submission(path: Path) -> list[dict[str, Any]]`, `merge_submission_with_answer_key(...)`, and `evaluate_submission_rows(rows: list[dict[str, Any]]) -> dict[str, Any]` so the generated verifier can import and run it directly.
 
-The generated Harbor workspace helper directory `environment/workspace/scripts/primitives/` must remain self-contained and callable with standard Python inside the Harbor task container.
+The generated Harbor workspace helper directories `environment/workspace/scripts/primitives/` and `environment/workspace/scripts/lib/` must remain self-contained and callable with standard Python inside the Harbor task container.
