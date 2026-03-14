@@ -23,3 +23,6 @@ datasets:
   - path: harbor_tasks
     task_names:
       - medagentbench
+
+artifacts:
+  - /workspace/submission.json

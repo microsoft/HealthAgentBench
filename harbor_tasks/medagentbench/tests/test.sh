@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-mkdir -p /logs/verifier
+mkdir -p /logs/verifier /logs/artifacts
+
+: "${VERIFIER_ERROR_ANALYSIS_FILE:=/logs/artifacts/error_analysis.json}"
 
 extra_args=()
 if [[ -n "${VERIFIER_ERROR_ANALYSIS_FILE:-}" ]]; then

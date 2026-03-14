@@ -281,7 +281,7 @@ def _task_toml(selected_task_ids: list[str]) -> str:
             "",
             "[environment]",
             "build_timeout_sec = 1800.0",
-            "allow_internet = false",
+            "allow_internet = true",
             "cpus = 2",
             "memory_mb = 4096",
             "storage_mb = 10240",
@@ -583,7 +583,9 @@ def _test_sh() -> str:
         #!/usr/bin/env bash
         set -euo pipefail
 
-        mkdir -p /logs/verifier
+        mkdir -p /logs/verifier /logs/artifacts
+
+        : "${VERIFIER_ERROR_ANALYSIS_FILE:=/logs/artifacts/error_analysis.json}"
 
         extra_args=()
         if [[ -n "${VERIFIER_ERROR_ANALYSIS_FILE:-}" ]]; then

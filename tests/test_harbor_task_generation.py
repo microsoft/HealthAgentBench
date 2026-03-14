@@ -77,6 +77,7 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     test_sh_text = (output_root / "tests" / "test.sh").read_text(encoding="utf-8")
     assert "--error-analysis-file" in verify_text
     assert "VERIFIER_ERROR_ANALYSIS_FILE" in test_sh_text
+    assert "/logs/artifacts/error_analysis.json" in test_sh_text
 
     benchmark_payload = json.loads((output_root / "benchmark_tasks.json").read_text(encoding="utf-8"))
     instruction_text = (output_root / "instruction.md").read_text(encoding="utf-8")
@@ -113,9 +114,11 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
 
     compose_text = (output_root / "environment" / "docker-compose.yaml").read_text(encoding="utf-8")
     dockerfile_text = (output_root / "environment" / "Dockerfile").read_text(encoding="utf-8")
+    task_toml_text = (output_root / "task.toml").read_text(encoding="utf-8")
     assert "jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966" in compose_text
     assert "fhir-ready" in compose_text
     assert "COPY workspace/ /workspace/" in dockerfile_text
+    assert "allow_internet = true" in task_toml_text
 
     help_result = subprocess.run(
         [
