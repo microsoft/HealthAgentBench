@@ -6,7 +6,7 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 ## Purpose / Big Picture
 
-After this change, MedAgentBench in this repository is Harbor-only. A contributor can generate the Harbor task from `scripts/medagentbench/assets/test_data_v2.json`, run it through Harbor, debug it through `debug/`, and inspect trial artifacts under `results/harbor/` without any parallel OpenAI-style runner, YAML manifest importer, or legacy evaluator path remaining in the tree.
+After this change, MedAgentBench in this repository is Harbor-only. A contributor can generate the Harbor task from `scripts/medagentbench/assets/test_data_v2.json`, run it through Harbor, debug it through `debug/`, and inspect trial artifacts under `results/` without any parallel OpenAI-style runner, YAML manifest importer, or legacy evaluator path remaining in the tree.
 
 ## Progress
 

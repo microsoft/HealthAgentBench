@@ -197,7 +197,7 @@ Work from the repository root.
        export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
        uv run harbor run -c jobs/medagentbench_meta.yaml
 
-   Expected outcome: Harbor runs the single MedAgentBench meta-task and writes standard Harbor artifacts under `results/harbor/...`.
+   Expected outcome: Harbor runs the single MedAgentBench meta-task and writes standard Harbor artifacts under `results/...`.
 
 5. Validate end-to-end on the default 10-task slice.
 
@@ -220,7 +220,7 @@ Third, run a Harbor smoke test on the single meta-task with the custom Codex wra
     export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
     uv run harbor run -c jobs/medagentbench_meta.yaml
 
-Expected outcome: Harbor completes one trial, writes standard result artifacts under `results/harbor/...`, and the verifier reward is a float equal to the aggregate mean pass@1 across the configured 10 tasks.
+Expected outcome: Harbor completes one trial, writes standard result artifacts under `results/...`, and the verifier reward is a float equal to the aggregate mean pass@1 across the configured 10 tasks.
 
 Fourth, compare the Harbor reward against the score produced by the current MedAgentBench evaluator on the same task IDs. The values must match within normal floating-point formatting.
 
@@ -230,7 +230,7 @@ The change is complete when a contributor can regenerate the single Harbor MedAg
 
 The generator must be safe to run repeatedly. Re-running it should replace or refresh the generated Harbor meta-task deterministically without requiring manual cleanup. If generation fails partway through, the contributor should delete only the incomplete `tasks/medagentbench/` output and rerun the generator; the source manifests under `tasks/` must never be modified by the generator.
 
-The harness and verifier bridge must be additive and must not break the existing `run.py` or `demo.py` evaluation path except where shared scoring helpers are intentionally extracted. If Harbor verification fails during development, the contributor should debug using the Harbor trial logs under `results/harbor/` rather than manually editing task outputs.
+The harness and verifier bridge must be additive and must not break the existing `run.py` or `demo.py` evaluation path except where shared scoring helpers are intentionally extracted. If Harbor verification fails during development, the contributor should debug using the Harbor trial logs under `results/` rather than manually editing task outputs.
 
 ## Artifacts and Notes
 
@@ -259,10 +259,10 @@ Representative selected benchmark slice:
 
 Representative existing Harbor artifact shape from a successful local run:
 
-    results/harbor/<run-id>/<trial>/agent/trajectory.json
-    results/harbor/<run-id>/<trial>/result.json
-    results/harbor/<run-id>/<trial>/verifier/reward.txt
-    results/harbor/<run-id>/<trial>/verifier/test-stdout.txt
+    results/<run-id>/<trial>/agent/trajectory.json
+    results/<run-id>/<trial>/result.json
+    results/<run-id>/<trial>/verifier/reward.txt
+    results/<run-id>/<trial>/verifier/test-stdout.txt
 
 Those artifacts are the contract the Harbor verifier bridge must target.
 

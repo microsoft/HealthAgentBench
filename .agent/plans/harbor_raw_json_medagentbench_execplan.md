@@ -55,7 +55,7 @@ After this change, a contributor can generate and run the Harbor MedAgentBench b
   Evidence: manual debug runs produced repeated payload mismatches, and the review of `.tmp/medagentbench-debug/verifier/error_analysis.json` showed the missing information was specifically the POST payload shape, not a lack of access to another file.
 
 - Observation: Harbor's installed Codex agent bootstrap requires outbound network access because it downloads NVM and installs the Codex CLI at runtime.
-  Evidence: the failed Harbor job under `results/harbor/2026-03-13__21-43-58/` shows agent setup failing on DNS resolution for `deb.debian.org` and `raw.githubusercontent.com` while running Harbor's `install-codex.sh.j2`.
+  Evidence: the failed Harbor job under `results/2026-03-13__21-43-58/` shows agent setup failing on DNS resolution for `deb.debian.org` and `raw.githubusercontent.com` while running Harbor's `install-codex.sh.j2`.
 
 ## Decision Log
 
@@ -210,7 +210,7 @@ All commands below are run from the repository root.
 
 9. Inspect full-run trial artifacts.
 
-       find results/harbor/<job>/<trial>/artifacts -maxdepth 2 -type f | sort
+       find results/<job>/<trial>/artifacts -maxdepth 2 -type f | sort
 
    Expected outcome: the trial artifacts include `submission.json` and `error_analysis.json`.
 

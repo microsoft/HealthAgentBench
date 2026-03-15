@@ -84,33 +84,6 @@ Reusable Harbor scripts:
 - Stops and removes the debug Docker Compose stack.
 - Set `HB_FULL_CLEANUP=1` to mirror Harbor's heavier cleanup path and also remove images and volumes.
 
-## MedAgentBench Helpers
-
-These scripts assume the current single-task MedAgentBench Harbor meta-task.
-
-1. `debug/medagentbench/check-workspace.sh`
-- Runs basic in-container checks:
-  - lists `/workspace`
-  - exercises the helper scripts
-  - inspects the prepared `submission.json`
-
-2. `debug/medagentbench/init-perfect-submission.py`
-- Builds a synthetic perfect submission payload based on the selected benchmark slice and hidden answer key.
-- By default it prints JSON to stdout; the smoke wrapper writes it to a temp file and copies it into the live task container.
-
-3. `debug/medagentbench/smoke-meta-task.sh`
-- Runs the full non-agent smoke path:
-  1. build task environment
-  2. start environment
-  3. check workspace
-  4. generate a perfect submission and copy it into the live container
-  5. run verifier directly
-
-4. `debug/medagentbench/run-manually.sh`
-- Recommended one-command manual Codex workflow for MedAgentBench.
-- Requires `CODEX_AUTH_JSON` in the host shell.
-- Calls the generic `debug/setup-agent.sh`, then opens a shell where `codex` is already available.
-
 ## Recommended Workflows
 
 ### 1. Fast verifier smoke test
@@ -149,15 +122,6 @@ bash debug/build-task-env.sh
 bash debug/up-task-env.sh
 bash debug/setup-agent.sh
 bash debug/run-task-manually.sh
-```
-
-Or, for the current MedAgentBench task, use the one-command wrapper:
-
-```bash
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
-bash debug/build-task-env.sh
-bash debug/up-task-env.sh
-bash debug/medagentbench/run-manually.sh
 ```
 
 Inside the opened container shell:
@@ -199,7 +163,6 @@ bash debug/run-task-verifier.sh
 ```
 
 This prints the reward and writes verifier artifacts under `.tmp/<project>/verifier/`.
-For the current MedAgentBench task it also writes `.tmp/<project>/verifier/error_analysis.json`, which merges the submission rows with the hidden answer-key fields by `task_id`.
 
 ### 5. Harbor trial log inspection
 
@@ -207,17 +170,15 @@ After running Harbor normally:
 
 ```bash
 export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
-UV_CACHE_DIR=.uv-cache uv run harbor run -c jobs/medagentbench_meta.yaml
+UV_CACHE_DIR=.uv-cache uv run harbor run -c jobs/example.yaml
 bash debug/show-task-logs.sh
 ```
 
 ## Notes
 
-- The reusable Harbor scripts intentionally do not hard-code MedAgentBench-specific verifier logic.
-- The MedAgentBench wrapper scripts are thin orchestration helpers on top of the generic Harbor layer.
+- The reusable Harbor scripts intentionally do not hard-code benchmark-specific verifier logic.
 - The debug stack uses Harbor's default `hb__<task-name>` image naming for the main task image.
 - `up-task-env.sh` intentionally runs `docker compose down --remove-orphans` before `up -d --wait` to match Harbor's `DockerEnvironment.start()` behavior.
-- `tasks/medagentbench/environment/workspace/submission.json` is part of the generated task tree and is expected to exist in the repo; runtime copies inside the container or under `.tmp/` are separate.
 - `install-codex-agent.sh` mirrors Harbor's `install-codex.sh.j2` behavior closely: it installs NVM, Node 22, and `@openai/codex`, then prints the installed Codex version.
 - `prepare-codex-agent.sh` expects `CODEX_AUTH_JSON` in the host shell and writes the auth file into the live container using the same `/tmp/codex-secrets` and `/logs/agent/auth.json` layout as the Harbor-installed Codex wrapper.
 - `setup-agent.sh` is the default generic post-`up-task-env.sh` step when Codex is the debug agent; task-specific wrappers can call it instead of duplicating install/setup commands.

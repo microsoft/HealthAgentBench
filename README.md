@@ -1,6 +1,4 @@
-# MedCLI
-
-![Building MedCLI](cover.png)
+<img src="logo.png" alt="MedCLI" width="120" />
 
 ## Overview
 

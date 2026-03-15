@@ -1,4 +1,4 @@
-jobs_dir: results/harbor
+jobs_dir: results
 n_attempts: 1
 timeout_multiplier: 1.0
 orchestrator:

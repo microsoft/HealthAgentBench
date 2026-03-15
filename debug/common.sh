@@ -115,7 +115,7 @@ hb::stage_instruction_in_container() {
 }
 
 hb::latest_harbor_run() {
-  local jobs_dir="${1:-results/harbor}"
+  local jobs_dir="${1:-results}"
   ls -td "${jobs_dir}"/* 2>/dev/null | head -n 1
 }
 
