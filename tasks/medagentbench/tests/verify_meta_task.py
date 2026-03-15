@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+from evaluator import evaluate_submission_rows, merge_submission_with_answer_key
+
+
+def _load_json(path: Path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _normalize_submission(payload):
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict) and isinstance(payload.get("results"), list):
+        return payload["results"]
+    raise ValueError("submission.json must be a list or an object with a 'results' list")
+
+
+def _normalize_tasks(payload):
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict) and isinstance(payload.get("tasks"), list):
+        return payload["tasks"]
+    raise ValueError("benchmark_tasks.json must be a list or an object with a 'tasks' list")
+
+
+def _error_analysis_rows(summary, merged_rows, submitted_by_id, answers_by_id):
+    merged_by_id = {
+        str(row.get("task_id", row.get("id", ""))): row
+        for row in merged_rows
+        if isinstance(row, dict)
+    }
+    shaped = []
+    for result in summary.get("results", []):
+        if not isinstance(result, dict):
+            continue
+        if result.get("success", False):
+            continue
+        task_id = str(result.get("task_id", ""))
+        merged = merged_by_id.get(task_id, {})
+        submitted = submitted_by_id.get(task_id, {})
+        expected = answers_by_id.get(task_id, {})
+        shaped.append(
+            {
+                "task_id": task_id,
+                "category": expected.get("category", ""),
+                "difficulty": expected.get("difficulty", ""),
+                "failure_reason": result.get("failure_reason", ""),
+                "expected_answer": expected.get("expected_answer", ""),
+                "final_answer": submitted.get("final_answer", ""),
+                "expected_payload": expected.get("payload"),
+                "final_payload": submitted.get("payload"),
+                "instruction": merged.get("instruction", submitted.get("instruction", "")),
+            }
+        )
+    return shaped
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--submission", type=Path, required=True)
+    parser.add_argument("--tasks", type=Path, required=True)
+    parser.add_argument("--answer-key", type=Path, required=True)
+    parser.add_argument("--reward-file", type=Path, required=True)
+    parser.add_argument("--error-analysis-file", type=Path)
+    args = parser.parse_args()
+
+    if not args.submission.exists():
+        args.reward_file.write_text("0\n", encoding="utf-8")
+        print(f"missing submission file: {args.submission}")
+        return
+
+    task_payload = _normalize_tasks(_load_json(args.tasks))
+    expected_ids = [row["task_id"] for row in task_payload if isinstance(row, dict)]
+    submission_rows = _normalize_submission(_load_json(args.submission))
+    answer_key_rows = _load_json(args.answer_key)
+    submitted_by_id = {
+        str(row.get("task_id", row.get("id", ""))): row
+        for row in submission_rows
+        if isinstance(row, dict)
+    }
+    answers_by_id = {
+        str(row.get("task_id", row.get("id", ""))): row
+        for row in answer_key_rows
+        if isinstance(row, dict)
+    }
+
+    rows = []
+    for task_id in expected_ids:
+        row = submitted_by_id.get(task_id)
+        if row is None:
+            row = {"task_id": task_id, "final_answer": "", "payload": None}
+        merged = merge_submission_with_answer_key(
+            [row], [answers_by_id.get(task_id, {"task_id": task_id})]
+        )
+        rows.extend(merged)
+
+    summary = evaluate_submission_rows(rows)
+    args.reward_file.parent.mkdir(parents=True, exist_ok=True)
+    results_path = args.reward_file.parent / "meta_results.json"
+    results_path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if args.error_analysis_file is not None:
+        error_rows = _error_analysis_rows(summary, rows, submitted_by_id, answers_by_id)
+        args.error_analysis_file.write_text(
+            json.dumps(error_rows, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+    args.reward_file.write_text(f"{summary['pass_at_1']:.6f}\n", encoding="utf-8")
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

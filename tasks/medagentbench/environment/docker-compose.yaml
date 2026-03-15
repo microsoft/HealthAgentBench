@@ -1,0 +1,21 @@
+services:
+  main:
+    environment:
+      FHIR_BASE_URL: "http://fhir:8080/fhir"
+    depends_on:
+      fhir-ready:
+        condition: service_completed_successfully
+  fhir:
+    image: jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966
+  fhir-ready:
+    image: curlimages/curl:8.12.1
+    depends_on:
+      fhir:
+        condition: service_started
+    command:
+      - sh
+      - -c
+      - >
+        until curl -fsS http://fhir:8080/fhir/metadata >/dev/null; do
+          sleep 1;
+        done

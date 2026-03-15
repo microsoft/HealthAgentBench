@@ -1,12 +1,12 @@
 [project]
-name = "ehr-co-scientist"
+name = "medcli"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [
     { name = "Sheng Zhang", email = "shezhan@microsoft.com" }
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "aiolimiter>=1.2.1",
     "anthropic>=0.84.0",
@@ -15,6 +15,7 @@ dependencies = [
     "beautifulsoup4>=4.14.3",
     "biopython>=1.86",
     "fhir-resources>=8.2.0",
+    "harbor @ git+https://github.com/harbor-framework/harbor.git@c255479c1319f96f140b25e6ae0b86874ee05809",
     "jinja2>=3.1.6",
     "lifelines>=0.30.0",
     "lxml>=6.0.2",
@@ -42,12 +43,15 @@ dependencies = [
 ]
 
 [project.scripts]
-ehr-co-scientist = "ehr_co_scientist:main"
-ehr-azure-openai = "ehr_co_scientist.backends.azure_openai:main"
+medcli = "medcli:main"
 
 [build-system]
-requires = ["uv_build>=0.9.26,<0.10.0"]
-build-backend = "uv_build"
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src", "."]
+include = ["medcli*", "scripts*"]
 
 [dependency-groups]
 dev = [
@@ -57,4 +61,11 @@ dev = [
     "pytest-asyncio>=1.3.0",
     "pytest-cov>=7.0.0",
     "ruff>=0.15.4",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["results", ".venv", "__pycache__"]
+markers = [
+    "integration: marks tests that require external services such as Dockerized FHIR runtime",
 ]

@@ -1,16 +1,12 @@
-# EHR Co-Scientist
-
-![Building an EHR Co-Scientist](cover.png)
-
-An agentic system powered by frontier language models for solving complex, multi-step tasks over Electronic Health Record (EHR) databases through tool-augmented reasoning.
+<img src="logo.png" alt="MedCLI" width="120" />
 
 ## Overview
 
-EHR Co-Scientist is a research project exploring how LLM-based agents (GPT, Claude) can serve as autonomous research assistants for clinical data analysis. The system equips models with a suite of callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data to complete tasks that typically require significant domain expertise and manual effort.
+MedCLI is a [Harbor](https://harborframework.com/)-first research project exploring how LLM agents can act as autonomous research assistants for healthcare.
 
-## Tasks
+The system centers on a **terminal-based** environment where agents can inspect clinical data, use tools, access medical resources, and iteratively reason through complex tasks. Through this interface, agents interact with EHR systems and common data models to explore data, answer questions, perform analyses, and take structured actions.
 
-The system targets 12 agentic EHR tasks spanning data understanding, clinical reasoning, and report generation:
+MedCLI is designed to study how agents can **understand and operate on real-world medical data systems** across tasks such as:
 
 | Task | Description |
 |------|-------------|
@@ -26,74 +22,77 @@ The system targets 12 agentic EHR tasks spanning data understanding, clinical re
 | **Medication reconciliation** | Compile active medications and flag drug interactions |
 | **Data quality auditing** | Detect inconsistencies, missing values, and implausible entries |
 | **Report generation** | Draft clinical documents (referral letters, discharge summaries) from data |
+| **Data aggregation** | Aggregate multiple EHR measurements into computed summaries or trends |
+| **Clinical data recording** | Record new observations or updates into the clinical chart via structured APIs |
+| **Care ordering** | Place orders/referrals/tests with appropriate coded payloads and rationale |
 
-## Tools
+## Harbor Background
 
-The agent has access to tools across five categories:
+This project uses Harbor as the terminal-task execution and evaluation substrate. Harbor provides a consistent trial lifecycle (agent run, verifier run, and artifacts), while MedCLI adds domain-specific health tasks, Harbor task environments, and benchmark integrations.
 
-- **Database & query** — SQL executor, schema inspector, query validator
-- **Data analysis** — Python sandbox, statistical calculator, visualization generator
-- **Medical knowledge** — ICD/CPT/LOINC lookup, RxNorm/DrugBank, guideline retriever, PubMed search
-- **EHR utilities** — FHIR client, ClinicalTrials.gov search, de-identification checker
-- **File & format** — CSV/Parquet reader, document parser, schema mapper, web fetcher, bash tools
+Important pointers:
+
+1. Harbor repo: https://github.com/harbor-framework/harbor
+2. Harbor docs/wiki: https://deepwiki.com/harbor-framework/harbor
+3. Pinned Harbor commit used here: https://github.com/harbor-framework/harbor/commit/c255479c1319f96f140b25e6ae0b86874ee05809
+   - Maintenance note: periodically check for a newer stable Harbor release or commit.
+   - Upgrade caution: Harbor upgrades can break custom agent integration interfaces such as `src/medcli/agents/harbor/installed/codex.py`.
+4. Local Harbor job configs in this repo include `jobs/example.yaml` and benchmark-specific job configs under `jobs/`.
 
 ## Project Structure
 
-```
-ehr-co-scientist/
+```text
+MedCLI/
 ├── README.md
-├── LICENSE
-├── pyproject.toml
-├── .env.example
-├── CLAUDE.md                         # Claude Code instructions
-├── AGENTS.md                         # Codex agent instructions
-├── PLANS.md                          # ExecPlan format definition
-├── .claude/                          # Claude Code settings, commands, skills
-├── .codex/                           # Codex-specific config
-├── .agent/plans/                     # Individual ExecPlan files
-├── config/
-│   └── agent.yaml                    # Model, tool whitelist, DB connection
-├── src/ehr_co_scientist/
-│   ├── agent.py                      # Core agent loop
-│   ├── prompts/                      # System & task prompt templates
-│   ├── tools/                        # Tool implementations
-│   └── utils/                        # DB, sandbox, logging helpers
-├── tasks/                            # Task definitions (YAML)
-├── benchmarks/                       # Evaluation protocol, datasets, gold answers
-├── experiments/                      # Run configs, CLI, results
-├── notebooks/                        # Analysis & paper figures
-├── paper/                            # LaTeX source for arxiv submission
-├── design/                           # Design docs, architecture, scope, ideas
-├── scripts/                          # Setup & export utilities
-└── tests/                            # Tool & agent tests
+├── AGENTS.md
+├── CLAUDE.md
+├── PLANS.md
+├── .agent/plans/               # ExecPlans, including Harbor migration and cleanup plans
+├── design/                     # Design docs, brainstorm notes, and planning materials not yet executed in the project
+├── paper/                      # Future paper-writing materials, for example LaTeX source files
+├── tasks/<benchmark>/          # Generated Harbor task for a benchmark
+├── jobs/                       # Harbor job configs
+├── debug/                      # Generic Harbor-oriented debug helpers and docs
+├── src/medcli/
+│   └── agents/harbor/installed/ # Harbor installed-agent wrappers
+├── scripts/<benchmark>/        # Benchmark-specific setup, generation, and evaluation helpers
+├── results/                    # Run and evaluation artifacts (gitignored)
+└── tests/
 ```
 
 ## Setup
 
 ```bash
 # Clone the repo
-git clone https://github.com/<user>/ehr-co-scientist.git
-cd ehr-co-scientist
+git clone git@github.com:sheng-z/MedCLI.git
+cd MedCLI
 
-# Install dependencies (requires uv: https://docs.astral.sh/uv/)
+# Install dependencies
 uv sync --all-extras
-
-# Copy and fill in API keys
-cp .env.example .env
-
-# Set up MIMIC database (requires PhysioNet credentials)
-bash scripts/setup_mimic.sh
 ```
+
+Python version requirement: `>=3.12`.
 
 ## Usage
 
-```bash
-# Run a task
-python experiments/run.py --task cohort_construction --model claude-4-sonnet
+See `tasks/README.md` for the full list of currently supported tasks and benchmarks.
 
-# Evaluate results
-python benchmarks/evaluate.py --task cohort_construction --results experiments/results/
+```bash
+# Export Codex auth for this shell session
+export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+
+uv run harbor run -c jobs/<benchmark>.yaml
 ```
+
+## Task Creation
+
+For benchmark-specific task creation details, see `scripts/<benchmark>/README.md`.
+
+## Debug
+
+For generic Harbor debug workflow details, see `debug/README.md`.
+
+For benchmark-specific debug workflow details, see `debug/<benchmark>/README.md`.
 
 ## License
 

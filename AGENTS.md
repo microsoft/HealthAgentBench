@@ -1,54 +1,44 @@
-# EHR Co-Scientist — Agent Instructions
+# MedCLI — Agent Instructions
 
-> **Sync notice:** This file (`AGENTS.md`) and `CLAUDE.md` must always be identical.
+> **Sync notice:** `AGENTS.md` and `CLAUDE.md` must always be identical.
 > When you update one, update the other immediately.
 
 ## Project Overview
 
-EHR Co-Scientist is an agentic system powered by frontier language models for solving complex, multi-step tasks over Electronic Health Record (EHR) databases through tool-augmented reasoning. The system equips LLM-based agents with callable tools — SQL execution, medical code lookup, statistical analysis, visualization, and more — enabling them to plan, query, compute, and reason over real EHR data.
+MedCLI is a Harbor-first research project for health tasks. The core environment is a terminal: a generic interface through which agents can inspect data, use tools, access medical resources, take actions, and iteratively understand, reason about, and solve tasks across many kinds of medical data and systems.
+
+The repository currently uses Harbor task environments and Harbor jobs as the supported execution path for benchmark work.
 
 ## Repository Layout
 
-- `config/agent.yaml` — Model selection, tool whitelist, database connection settings.
-- `src/ehr_co_scientist/agent.py` — Core agent loop.
-- `src/ehr_co_scientist/prompts/` — System and task prompt templates.
-- `src/ehr_co_scientist/tools/` — Tool implementations (DB, analysis, medical knowledge, EHR utilities, file/format).
-- `src/ehr_co_scientist/utils/` — Shared helpers for database access, sandboxed execution, and logging.
-- `tasks/` — Task definitions in YAML, one per task type.
-- `benchmarks/` — Evaluation protocol, datasets, and gold-standard answers.
-- `experiments/` — Run configurations, CLI entry points, and result artifacts.
-- `notebooks/` — Jupyter notebooks for analysis and paper figures.
-- `paper/` — LaTeX source for the arxiv submission.
-- `scripts/` — Setup and export utilities (e.g., `setup_mimic.sh`).
-- `tests/` — Unit and integration tests for tools and the agent.
+- `src/medcli/agents/harbor/installed/` — Harbor installed-agent wrappers (for example Codex adapter).
+- `tasks/<benchmark>/` — Generated Harbor benchmark task.
+- `jobs/` — Harbor job configs.
+- `debug/` — Harbor debug helpers and workflow docs.
+- `scripts/<benchmark>/` — Benchmark-specific setup, normalization, task generation, and evaluation utilities.
+- `results/` — Top-level run/evaluation artifacts directory (gitignored).
+- `tests/` — Unit and integration tests.
 - `.agent/plans/` — Individual ExecPlan files (see ExecPlans section below).
 
 ## Conventions
 
-- **Python ≥ 3.11** is required. Use modern Python idioms (type hints, dataclasses, `match` statements where appropriate).
+- **Python ≥ 3.12** is required. Use modern Python idioms (type hints, dataclasses, `match` statements where appropriate).
 - **Packaging** is managed via `pyproject.toml`. Install with `uv sync --all-extras`. Add new dependencies with `uv add <package>`.
-- **Environment variables** are loaded from `.env` (see `.env.example` for required keys). Never hard-code secrets.
-- **SQL** targets PostgreSQL (MIMIC-IV). Always use parameterized queries; never interpolate user input.
+- **Environment variables** are loaded from `.env`. Never hard-code secrets.
 - **Testing** uses `pytest`. Run the full suite with `pytest tests/` from the repo root.
 - **Linting** uses `ruff`. Run `ruff check src/ tests/` before committing.
-- **Formatting** uses `ruff format`. Run `ruff format src/ tests/` before committing.
+- **Formatting** uses `ruff format src/ tests/` before committing.
+- **Docstrings** are required for public modules/functions and non-trivial internal helpers in `src/`; keep them concise and focused on purpose, inputs, and outputs.
+- **Scripts layout** should avoid a flat `scripts/` list as integrations grow; place related scripts under subdirectories such as `scripts/<benchmark>/`.
 - **Commits** should be small, focused, and have descriptive messages. Prefer one logical change per commit.
 
-## Tool Categories
+## Harbor-First Rule
 
-When implementing or modifying tools, respect the five-category taxonomy:
-
-1. **Database & query** — SQL executor, schema inspector, query validator.
-2. **Data analysis** — Python sandbox, statistical calculator, visualization generator.
-3. **Medical knowledge** — ICD/CPT/LOINC lookup, RxNorm/DrugBank, guideline retriever, PubMed search.
-4. **EHR utilities** — FHIR client, ClinicalTrials.gov search, de-identification checker.
-5. **File & format** — CSV/Parquet reader, document parser, schema mapper, web fetcher, bash tools.
-
-Each tool lives in its own module under `src/ehr_co_scientist/tools/` and must expose a consistent interface that the agent loop in `agent.py` can discover and invoke.
+For a benchmark integrated through Harbor, the canonical source should live under `scripts/<benchmark>/assets/`, and the canonical runnable artifact should live under `tasks/<benchmark>/`. Do not reintroduce alternate benchmark execution paths outside Harbor.
 
 ## Tasks
 
-The system supports 12 agentic EHR tasks. Task definitions live in `tasks/` as YAML files. When adding or modifying tasks, ensure the YAML schema stays consistent and that evaluation scripts in `benchmarks/` can consume the output.
+The system supports 15 agentic health task types conceptually. For benchmark integrations, prefer raw source assets to Harbor task generation rather than parallel runner stacks.
 
 ## ExecPlans
 
@@ -70,22 +60,40 @@ Key rules (see `PLANS.md` for the complete specification):
 # Install dependencies
 uv sync --all-extras
 
-# Copy and fill in API keys
-cp .env.example .env
-
-# Set up MIMIC database (requires PhysioNet credentials)
-bash scripts/setup_mimic.sh
-
-# Run a task
-python experiments/run.py --task cohort_construction --model claude-4-sonnet
-
-# Evaluate results
-python benchmarks/evaluate.py --task cohort_construction --results experiments/results/
-
-# Run tests
-pytest tests/
-
-# Lint and format
-ruff check src/ tests/
-ruff format src/ tests/
+# Activate virtual environment
+source .venv/bin/activate
 ```
+
+## Usage
+
+Important: you must export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs the agent inside Docker, and without this variable Codex cannot authenticate in the container environment.
+
+```bash
+# Export Codex auth for this shell session
+export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+
+uv run harbor run -c jobs/<benchmark>.yaml
+```
+
+## Current Benchmark
+
+The current benchmark in this repo is `medagentbench`.
+
+- Task: `tasks/medagentbench/`
+- Scripts: `scripts/medagentbench/`
+- Job: `jobs/medagentbench_meta.yaml`
+- Debug: `debug/medagentbench/README.md`
+
+## Task Creation
+
+For benchmark-specific task creation details, see `scripts/<benchmark>/README.md`.
+
+For the current MedAgentBench benchmark, see `scripts/medagentbench/README.md`.
+
+## Debug
+
+For generic Harbor debug workflow details, see `debug/README.md`.
+
+For benchmark-specific debug workflow details, see `debug/<benchmark>/README.md`.
+
+For the current MedAgentBench benchmark, see `debug/medagentbench/README.md`.
