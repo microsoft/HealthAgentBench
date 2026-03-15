@@ -44,7 +44,6 @@ dependencies = [
 
 [project.scripts]
 medcli = "medcli:main"
-medcli-azure-openai = "medcli.backends.azure_openai:main"
 
 [build-system]
 requires = ["setuptools>=69", "wheel"]

@@ -35,7 +35,7 @@ printf '\n'
 
 cat <<EOF
 To prepare the default Codex agent setup from another terminal:
-  bash debug/harbor/prepare-codex-agent.sh
+  bash debug/prepare-codex-agent.sh
 
 Dropping into the running task container now.
 EOF

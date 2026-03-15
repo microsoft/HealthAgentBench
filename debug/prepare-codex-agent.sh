@@ -2,7 +2,7 @@
 # Prepare the default Codex agent inside the running Harbor task container.
 # This mirrors the auth setup used by src/medcli/agents/harbor/installed/codex.py
 # and prints the exact codex exec command to run manually. Codex must already
-# be installed; use debug/harbor/install-codex-agent.sh first if needed.
+# be installed; use debug/install-codex-agent.sh first if needed.
 set -euo pipefail
 source "$(dirname "$0")/common.sh"
 
@@ -18,7 +18,7 @@ hb::stage_instruction_in_container "${HB_CODEX_INSTRUCTION_PATH}"
 
 if ! hb::compose exec "${HB_MAIN_SERVICE}" bash -lc '. "$HOME/.nvm/nvm.sh" >/dev/null 2>&1 || true; command -v codex >/dev/null 2>&1'; then
   echo "Codex CLI is not installed in the running container." >&2
-  echo "Run: bash debug/harbor/install-codex-agent.sh" >&2
+  echo "Run: bash debug/install-codex-agent.sh" >&2
   exit 1
 fi
 

@@ -25,7 +25,7 @@ def main() -> None:
     parser.add_argument(
         "--task-dir",
         type=Path,
-        default=Path("harbor_tasks/medagentbench"),
+        default=Path("tasks/medagentbench"),
         help="Generated Harbor task directory.",
     )
     parser.add_argument(
@@ -35,8 +35,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    workspace_dir = args.task_dir / "environment" / "workspace"
-    benchmark = _load_json(workspace_dir / "benchmark_tasks.json")
+    benchmark = _load_json(args.task_dir / "benchmark_tasks.json")
     answer_key_rows = _load_json(args.task_dir / "tests" / "task_answer_key.json")
     answers_by_id = {str(row.get("task_id", row.get("id", ""))): row for row in answer_key_rows}
 
@@ -52,7 +51,7 @@ def main() -> None:
             "final_answer": "",
             "payload": answer_key.get("payload"),
         }
-        expected = answer_key.get("sol", "")
+        expected = answer_key.get("expected_answer", "")
         if isinstance(expected, list) and len(expected) == 1:
             expected = expected[0]
         if task_id.startswith(("task3", "task8")):

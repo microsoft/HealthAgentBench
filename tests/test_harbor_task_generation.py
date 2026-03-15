@@ -29,7 +29,7 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
         ],
     )
 
-    output_root = tmp_path / "harbor_tasks" / "medagentbench"
+    output_root = tmp_path / "tasks" / "medagentbench"
 
     subprocess.run(
         [
@@ -190,7 +190,7 @@ def test_generate_harbor_meta_task_is_deterministic(tmp_path: Path):
         ],
     )
 
-    output_root = tmp_path / "harbor_tasks" / "medagentbench"
+    output_root = tmp_path / "tasks" / "medagentbench"
     cmd = [
         ".venv/bin/python",
         "scripts/medagentbench/generate_harbor_tasks.py",

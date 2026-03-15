@@ -1,7 +1,7 @@
 source: medagentbench
 source_files:
-  tasks: data/medagentbench/test_data_v2.json
-  tools: data/medagentbench/funcs_v1.json
+  tasks: scripts/medagentbench/assets/test_data_v2.json
+  tools: scripts/medagentbench/assets/funcs_v1.json
 
 medagentbench_task_types:
   patient_information_retrieval:

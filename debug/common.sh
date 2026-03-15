@@ -5,7 +5,7 @@
 set -euo pipefail
 
 hb::repo_root() {
-  cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd
+  cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd
 }
 
 hb::task_name() {
@@ -44,7 +44,7 @@ PY
 
 # Populate compose-related environment variables for the selected Harbor task.
 hb::setup_task_env() {
-  : "${HB_TASK_DIR:=harbor_tasks/medagentbench}"
+  : "${HB_TASK_DIR:=tasks/medagentbench}"
   : "${HB_PROJECT_NAME:=$(basename "${HB_TASK_DIR}")-debug}"
   : "${HB_MAIN_SERVICE:=main}"
   : "${HB_TMP_ROOT:=$(hb::repo_root)/.tmp/${HB_PROJECT_NAME}}"
@@ -96,7 +96,7 @@ hb::require_running_main() {
   running="$(hb::compose ps --services --status running 2>/dev/null || true)"
   if ! grep -qx "${HB_MAIN_SERVICE}" <<<"${running}"; then
     echo "task environment is not running: ${HB_MAIN_SERVICE}" >&2
-    echo "start it first with: bash debug/harbor/up-task-env.sh" >&2
+    echo "start it first with: bash debug/up-task-env.sh" >&2
     exit 1
   fi
 }

@@ -23,8 +23,8 @@ from scripts.medagentbench.normalization import (
 
 
 DEFAULT_TASK_NAME = "medagentbench"
-DEFAULT_INPUT_JSON = Path("data/medagentbench/test_data_v2.json")
-DEFAULT_FUNCS_JSON = Path("data/medagentbench/funcs_v1.json")
+DEFAULT_INPUT_JSON = Path("scripts/medagentbench/assets/test_data_v2.json")
+DEFAULT_FUNCS_JSON = Path("scripts/medagentbench/assets/funcs_v1.json")
 DEFAULT_REFERENCE_TIME = "2023-11-13T10:15:00+00:00"
 FHIR_IMAGE = "jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966"
 FHIR_READY_IMAGE = "curlimages/curl:8.12.1"

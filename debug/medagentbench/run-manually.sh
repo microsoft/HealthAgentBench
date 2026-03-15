@@ -5,9 +5,9 @@ set -euo pipefail
 source "$(dirname "$0")/../common.sh"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT_DIR="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
-export HB_TASK_DIR="${HB_TASK_DIR:-harbor_tasks/medagentbench}"
+export HB_TASK_DIR="${HB_TASK_DIR:-tasks/medagentbench}"
 export HB_PROJECT_NAME="${HB_PROJECT_NAME:-medagentbench-debug}"
 export HB_READY_CODEX_SHELL=1
 
@@ -49,11 +49,11 @@ Inside the opened container shell:
      2>&1 </dev/null | stdbuf -oL tee /logs/agent/codex.txt
 
 4. After the agent run finishes, exit the shell and run:
-   bash debug/harbor/run-task-verifier.sh
+   bash debug/run-task-verifier.sh
 EOF
 
 printf '\nInstalling Codex if needed and preparing the container.\n\n'
-bash "${ROOT_DIR}/debug/harbor/setup-agent.sh"
+bash "${ROOT_DIR}/debug/setup-agent.sh"
 
 printf '\nHanding off to the generic manual task runner.\n\n'
-bash "${ROOT_DIR}/debug/harbor/run-task-manually.sh"
+bash "${ROOT_DIR}/debug/run-task-manually.sh"
