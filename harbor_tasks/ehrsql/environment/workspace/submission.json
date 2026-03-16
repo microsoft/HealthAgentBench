@@ -1,0 +1,194 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_valid_0d92a1f6eab9515735f242f4",
+    "instruction": "What is the method of administration for lidocaine 5% ointment?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_769483cfab48dda44872f850",
+    "instruction": "What is the administration method for danazol?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_2c0a11eb8e5e719bb20eb271",
+    "instruction": "How should naproxen be taken?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_3799354c7a881b01105356a7",
+    "instruction": "What is the intake method for phenytoin infatab?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_bd6cea419bc5f0a4edf72bb9",
+    "instruction": "What is the cost of the procedure soft tissue division nec?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_fa2f8acd008402e42c567872",
+    "instruction": "How much is the cost for a dressing of wound nec?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_0cce2cb5569991d85d71388a",
+    "instruction": "What is the price for the heart vessel op nec?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_35b8d922e1c37640d591922f",
+    "instruction": "What is the cost for loc exc bone lesion nec?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_e862af8849ff1c02705da36d",
+    "instruction": "What are the genders of patient 7107?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_cd051a61ff6129f7a8fca20b",
+    "instruction": "What is patient 76005's sex?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_3ee83f6be50294b39e219f81",
+    "instruction": "What is the gender of patient 27038?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_da04bd0d32301e95cba6d32d",
+    "instruction": "What is patient 1114's gender?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_04858a33a81c186f3ad7193a",
+    "instruction": "How many days have passed since patient 60136 was admitted to the hospital?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_3b73985cd0d7e3df4ed47b7d",
+    "instruction": "How many days has it been since patient 11826 was admitted to the hospital?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_5a1fa001acd25295f4564a8e",
+    "instruction": "How many days has it been since patient 72032 was admitted to the hospital?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_mimic_iii_valid_69026cd9f76b23d902a18162",
+    "instruction": "How many hours have passed since patient 31854 was admitted to the hospital?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_e99739f1cdf689b4761876f3",
+    "instruction": "What is the method of ingestion for warfarin sodium 2.5 mg po tabs?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_b7d73722adc2200e5aa8bec4",
+    "instruction": "What is the method for ingesting NS 1,000 ml?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_78f03cb7fce61762ad5027ba",
+    "instruction": "How is atorvastatin calcium 80 mg po tabs taken?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_c8d23fb0310536e59568dd32",
+    "instruction": "What is the intake method for metoprolol succinate ER 50 mg po TB24?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_e612c2ec36b2edcf9e8f14ea",
+    "instruction": "What is the price of the procedure called agent specific therapy - calcium channel blockers overdose?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_d648c0ceb4b72cf244ea40cb",
+    "instruction": "What is the price for the antifungal therapy - caspofungin?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_9f464252c3de5db535b2e020",
+    "instruction": "What is the cost for an orthopedics consultation?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_afeffd5275f5b47ccaf2223e",
+    "instruction": "How much does hypertonic saline administration cost?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_07c8edc89f0bb06f29d5188b",
+    "instruction": "Are patient 017-41154 a man or a woman?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_163c746f1373ea639f8c606f",
+    "instruction": "What is patient 025-66662's gender?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_6b0531d603c76e11b88b52a9",
+    "instruction": "What is patient 027-144847's gender?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_49714d656912cc7a5459d19b",
+    "instruction": "What is patient 006-97726's sex?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_64193e08b53fd1be95ec385a",
+    "instruction": "How many days have elapsed since patient 015-59552 was admitted to the hospital?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_e688022c87ad12d9f0ffb9a6",
+    "instruction": "How many days have passed since the time patient 015-59552 was admitted to the hospital?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_91be4cfe7fd352fdb4ee8707",
+    "instruction": "How many days have passed since patient 022-78423 was admitted to the hospital?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  },
+  {
+    "task_id": "ehrsql_eicu_valid_8a44dfb6f2cee7dfe600d04f",
+    "instruction": "How many days have elapsed since patient 027-165214 was admitted to the hospital?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. Consider using schema inspection tools to understand available tables and columns.",
+    "final_answer": "",
+    "payload": null
+  }
+]

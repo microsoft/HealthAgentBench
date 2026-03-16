@@ -45,7 +45,15 @@ The system targets 15 agentic EHR task types spanning data understanding, clinic
 
 ## Task Sources
 
-For MedAgentBench specifically, the canonical source is now the original raw benchmark JSON in `data/medagentbench/test_data_v2.json`. The older YAML manifests under `tasks/*/sources/medagentbench/` are transitional compatibility artifacts produced by `scripts/medagentbench/import_tasks.py`; they are frozen and will be removed after the Harbor migration is complete.
+### MedAgentBench
+The canonical source is the original raw benchmark JSON in `data/medagentbench/test_data_v2.json`. The older YAML manifests under `tasks/*/sources/medagentbench/` are transitional compatibility artifacts produced by `scripts/medagentbench/import_tasks.py`; they are frozen and will be removed after the Harbor migration is complete.
+
+### EHRSQL
+EHRSQL is a text-to-SQL benchmark on two EHR databases (MIMIC-III and eICU). The canonical source is the original repository at https://github.com/glee4810/EHRSQL with raw JSON task definitions. MedCLI integrates this as a Harbor meta-task using the `factual_qa` task type.
+
+- **Raw data**: JSON task definitions downloaded by `scripts/ehrsql/setup.sh` to `data/ehrsql/`
+- **Generated Harbor task**: `harbor_tasks/ehrsql/` (all validation set tasks by default, or customizable)
+- **Setup & generation**: `scripts/ehrsql/` (see README.md there for full details)
 
 ## Project Structure
 
@@ -57,7 +65,9 @@ MedCLI/
 ├── PLANS.md
 ├── .agent/plans/                     # ExecPlans, including Harbor migration plans
 ├── data/medagentbench/               # Canonical raw MedAgentBench benchmark assets
+├── data/ehrsql/                      # EHRSQL benchmark JSON and SQLite databases
 ├── harbor_tasks/medagentbench/       # Generated Harbor meta-task for the current MedAgentBench slice
+├── harbor_tasks/ehrsql/              # Generated Harbor meta-task for EHRSQL (all validation set)
 ├── jobs/                             # Harbor job configs
 ├── debug/                            # Harbor-oriented debug helpers and workflow docs
 ├── src/medcli/
@@ -66,6 +76,7 @@ MedCLI/
 │   ├── tools/                        # Shared MedCLI tools used outside Harbor task-local helpers
 │   └── utils/
 ├── scripts/medagentbench/            # Raw-data import, Harbor generation, setup, and evaluation helpers
+├── scripts/ehrsql/                   # EHRSQL setup, Harbor generation, and evaluation utilities
 ├── tasks/                            # Legacy task manifests grouped by task type (transition-only for MedAgentBench)
 ├── run.py                            # Legacy benchmark runner CLI (transition-only)
 ├── demo.py                           # Legacy demo CLI (transition-only)
@@ -101,14 +112,23 @@ export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
 # Run Harbor hello-world smoke test
 uv run harbor run -c jobs/example.yaml
 
-# Generate the MedAgentBench Harbor meta-task from raw JSON and run it
+# Generate and run MedAgentBench Harbor meta-task
 uv run python scripts/medagentbench/generate_harbor_tasks.py \
   --input-json data/medagentbench/test_data_v2.json \
   --output-root harbor_tasks/medagentbench
 uv run harbor run -c jobs/medagentbench_meta.yaml
+
+# Generate and run EHRSQL Harbor meta-task (validation set, ~2,239 tasks)
+uv run python scripts/ehrsql/setup.sh                    # Download EHRSQL JSON data
+uv run python scripts/ehrsql/generate_harbor_tasks.py \
+  --valid-json data/ehrsql/mimic_iii/valid.json data/ehrsql/eicu/valid.json \
+  --output-root harbor_tasks/ehrsql
+uv run harbor run -c jobs/ehrsql_meta.yaml
 ```
 
 Harbor writes run artifacts under `results/harbor/<timestamp>/`.
+
+For EHRSQL setup details, see `scripts/ehrsql/README.md`. Note: SQLite databases (MIMIC-III and eICU) must be downloaded separately from Google Drive; `setup.sh` downloads only the JSON task definitions.
 
 For step-by-step Harbor task debugging, use the helpers under `debug/harbor/`.
 
@@ -128,9 +148,13 @@ The older OpenAI-style runner path remains in the repository temporarily so migr
 
 No new MedAgentBench work should be built on top of that path.
 
-## MedAgentBench
+## Benchmarks
 
+### MedAgentBench
 For Harbor-oriented MedAgentBench setup and task-generation details, see `scripts/medagentbench/README.md` and `debug/README.md`.
+
+### EHRSQL
+For EHRSQL setup, task generation, and customization, see `scripts/ehrsql/README.md`. EHRSQL is a new Harbor-first integration with no legacy OpenAI-style artifacts.
 
 ## License
 

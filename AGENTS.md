@@ -16,10 +16,13 @@ The repository is in a Harbor-first transition. New benchmark work should target
 - `src/medcli/tools/` — Shared tool implementations that are not Harbor-task-local helpers.
 - `src/medcli/utils/` — Shared helpers for database access, sandboxed execution, and logging.
 - `data/medagentbench/` — Canonical raw MedAgentBench benchmark assets.
+- `data/ehrsql/` — EHRSQL benchmark JSON and SQLite databases.
 - `harbor_tasks/medagentbench/` — Generated Harbor MedAgentBench meta-task.
+- `harbor_tasks/ehrsql/` — Generated Harbor EHRSQL meta-task.
 - `jobs/` — Harbor job configs.
 - `debug/` — Harbor debug helpers and workflow docs.
 - `scripts/medagentbench/` — Raw-data normalization, Harbor task generation, setup, and evaluation utilities.
+- `scripts/ehrsql/` — EHRSQL setup, Harbor generation, and evaluation utilities.
 - `tasks/` — Legacy task manifests grouped by task type; MedAgentBench entries here are transitional.
 - `run.py` / `demo.py` — Legacy orchestration CLIs kept temporarily during migration.
 - `results/` — Top-level run/evaluation artifacts directory (gitignored).
@@ -88,6 +91,8 @@ Important: you must export `CODEX_AUTH_JSON` before running Harbor with Codex. H
 
 The MedAgentBench Harbor task is a single meta-task at `harbor_tasks/medagentbench/`. It is generated directly from `data/medagentbench/test_data_v2.json`, bundles the current 10-case slice (`task1_1` through `task10_1`), runs against a local FHIR sidecar, and evaluates a `submission.json` file whose public rows contain only safe task text plus `final_answer` and `payload`. Hidden answer keys and reference write payloads live only under `tests/` in the generated Harbor task.
 
+EHRSQL is a text-to-SQL benchmark on MIMIC-III and eICU databases. The EHRSQL Harbor task is generated from raw JSON at `data/ehrsql/` and provides all validation set tasks (~2,239 tasks) or custom selections.
+
 ```bash
 # Export Codex auth for this shell session
 export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
@@ -95,11 +100,18 @@ export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
 # Run Harbor hello-world smoke test
 uv run harbor run -c jobs/example.yaml
 
-# Generate the MedAgentBench Harbor task from raw JSON and run it
+# Generate and run MedAgentBench Harbor task
 uv run python scripts/medagentbench/generate_harbor_tasks.py \
   --input-json data/medagentbench/test_data_v2.json \
   --output-root harbor_tasks/medagentbench
 uv run harbor run -c jobs/medagentbench_meta.yaml
+
+# Generate and run EHRSQL Harbor task (validation set)
+uv run python scripts/ehrsql/setup.sh                    # Download JSON task definitions
+uv run python scripts/ehrsql/generate_harbor_tasks.py \
+  --valid-json data/ehrsql/mimic_iii/valid.json data/ehrsql/eicu/valid.json \
+  --output-root harbor_tasks/ehrsql
+uv run harbor run -c jobs/ehrsql_meta.yaml
 ```
 
 For step-by-step Harbor task debugging, use the helpers under `debug/harbor/`:
@@ -126,3 +138,10 @@ uv run python run.py --task medagentbench --split std --max-tasks 3
 ```
 
 Do not build new MedAgentBench features on that path.
+
+## EHRSQL
+
+EHRSQL is a Harbor-first integration with no legacy OpenAI-style artifacts. For setup, task generation, and customization details, see `scripts/ehrsql/README.md`. The canonical sources are:
+- **Raw task JSON**: Downloaded from https://github.com/glee4810/EHRSQL (valid.json, test.json, tables.json)
+- **SQLite databases**: Downloaded separately from Google Drive (see `scripts/ehrsql/README.md`)
+- **Generated Harbor task**: `harbor_tasks/ehrsql/` (configurable selection of validation or test split tasks)

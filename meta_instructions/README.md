@@ -1,0 +1,3 @@
+This directory contains meta instructions that serve as entry point guidelines for agents to read and execute tasks to contribute to this codebase. The instructions are designed to be generic. Below are the file structure
+
+How_to_add_tasks.md: This is the meta-instruction to teach agents how to add the code to process and evaluate a new task. Whenever the user wants to add a new task, you should refer your coding agent to this markdown file. 
