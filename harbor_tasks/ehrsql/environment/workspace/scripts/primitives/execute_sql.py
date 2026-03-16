@@ -20,8 +20,9 @@ def main():
         print(f"Error: Database file not found: {db_file}", file=sys.stderr)
         sys.exit(1)
 
-    conn = sqlite3.connect(str(db_file))
-    conn.timeout = args.timeout
+    # Pass timeout to sqlite3.connect() instead of setting as attribute
+    # (Python 3.12 sqlite3 Connection doesn't allow arbitrary attribute assignment)
+    conn = sqlite3.connect(str(db_file), timeout=args.timeout)
 
     try:
         cursor = conn.cursor()

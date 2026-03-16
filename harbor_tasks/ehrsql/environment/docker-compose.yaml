@@ -4,6 +4,6 @@ services:
       context: ..                    # Build from harbor_tasks/ehrsql/
       dockerfile: environment/Dockerfile
     volumes:
-      - /data/ehrsql:/data/ehrsql:ro  # Mount SQLite databases (read-only)
+      - /home/qianchuliu/projects/MedCLI/data/ehrsql:/data/ehrsql:ro  # Mount SQLite databases (read-only)
     environment:
       - PYTHONUNBUFFERED=1

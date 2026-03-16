@@ -1,115 +1,86 @@
 # EHRSQL Benchmark - Text-to-SQL Question Answering
 
-## Overview
+You are working inside a task environment that contains:
+- Two EHR databases: **MIMIC-III** and **eICU**
+- Task descriptions at `/workspace/benchmark_tasks.json`
+- Editable task rows at `/workspace/submission.json`
+- Primitive SQL helper scripts under `/workspace/scripts/primitives/` (use `--help` to learn)
 
-Your task is to answer natural language questions about Electronic Health Records (EHR) by generating SQL queries.
-The EHR databases include structured clinical data such as patients, diagnoses, medications, lab results, and vital signs.
+## Your Task
 
-## Databases
+**Your final work product is `/workspace/submission.json`.**
 
-You have access to two EHR databases:
-- **MIMIC-III**: A large, single-center database of adult ICU patients (Beth Israel Deaconess Medical Center, 2001-2012)
-- **eICU**: A collaborative, multi-center database of ICU patients (Philips eICU Research Institute, 2014-2015)
+You must complete **every single row** in this file. Each row is one SQL generation task:
+1. Read the `instruction` (a natural language question about EHR data)
+2. Generate a SQL query that answers it (or the string "null" if unanswerable)
+3. Write your answer to `final_answer`
+4. Move to the next row
+5. **Stop when every row is complete**
 
-Each database contains 10-17 tables with clinical events, patient demographics, and laboratory measurements.
+## Suggested Workflow
 
-## Tools Available
+1. **Count your tasks**: Load `/workspace/benchmark_tasks.json` to see how many rows you need to complete
+2. **For each task** (process in order, one at a time):
+   - Read the `instruction` field (contains the question + database name like "MIMIC-III" or "eICU")
+   - Extract which database to query from the instruction text
+   - Use `python scripts/primitives/inspect_schema.py --db-id mimic_iii` (or eicu) to explore tables
+   - Cache the schema knowledge to avoid repeating inspections
+   - Develop a SQL query to answer the question
+   - Test it with `python scripts/primitives/execute_sql.py --db-id mimic_iii --query "SELECT ..."`
+   - Write the final SQL query (or the string "null") in `final_answer`
+   - Update and save `/workspace/submission.json`
+3. **Track progress**: Print "Task X/N completed" periodically so you know how many remain
+4. **Complete all tasks**: When you have filled `final_answer` for every single row, confirm you are done
 
-You have access to the following tools:
+## Submission Rules
 
-### `inspect_schema.py`
-Inspect the database schema to understand available tables and columns.
+- Edit `/workspace/submission.json` — a JSON array of task objects
+- For each task, set **exactly two** editable fields:
+  - `final_answer`: Either a SQL query string OR the literal string `"null"`
+  - `payload`: Leave as `null` (for compatibility)
+- Do NOT add new fields, skip rows, or modify other fields
 
-Usage:
-```bash
-python scripts/primitives/inspect_schema.py --db-id mimic_iii [--table patient]
-```
+## Answer Format - CRITICAL
 
-Outputs:
-- All tables (no args) or specific table schema (with --table)
-- Column names, types, and sample values
+**These are NOT the same:**
+- ✓ CORRECT for answerable: `"SELECT * FROM table"` (a SQL query string)
+- ✓ CORRECT for unanswerable: `"null"` (exactly 4 characters: n-u-l-l)
+- ✗ WRONG: Empty string `""` or blank field — this will be scored as an error
+- ✗ WRONG: `null` without quotes (JSON null value) — must be the string `"null"`
 
-### `execute_sql.py`
-Execute a SQL query against the database and retrieve results.
-
-Usage:
-```bash
-python scripts/primitives/execute_sql.py --db-id mimic_iii --query "SELECT * FROM patient LIMIT 5"
-```
-
-Outputs:
-- Result rows as JSON
-- Execution time and row count
-- SQL errors if query is invalid
-
-## Task Format
-
-Your tasks are in `/workspace/benchmark_tasks.json`. This file contains an array of task objects with this structure:
-
-```json
-{
-  "task_id": "ehrsql_mimic_iii_valid_xyz",
-  "instruction": "What is the method of intake for clobetasol propionate 0.05% ointment?\n\nDatabase: MIMIC-III",
-  "final_answer": "",
-  "payload": null
-}
-```
-
-- `task_id`: Unique identifier for this task
-- `instruction`: The natural language question to answer (includes database name)
-- `final_answer`: You must fill this with your SQL query or "null"
-- `payload`: Leave as null (for compatibility)
-
-Process all tasks in `/workspace/benchmark_tasks.json` by:
-1. Reading the JSON file to load all tasks
-2. For each task, extract the `instruction` (which contains the natural language question and database name)
-3. Generate your SQL answer using the schema inspection and SQL execution tools
-4. Update each task object's `final_answer` field with your SQL query or "null"
-5. Save the completed array back to `/workspace/submission.json` when finished
-
-Work through as many tasks as possible within the available time.
-
-## Workflow
-
-1. **Load all tasks**: Read `/workspace/benchmark_tasks.json` into memory
-2. **For each task**:
-   - Extract the database ID (e.g., "mimic_iii" or "eicu") from the instruction
-   - Parse the natural language question
-   - Use `inspect_schema.py` to understand available tables/columns for that database
-   - Develop SQL queries to answer the question
-   - Test execution with `execute_sql.py`
-   - Record your final SQL query (or "null" if unanswerable) in `final_answer`
-3. **Save submission**: Write all completed tasks to `/workspace/submission.json`
-
-## Answer Format
-
-- **For answerable questions**: Return the final SQL query as a string
-- **For unanswerable questions**: Return the string `"null"`
-
-Example submission.json entry:
+Example correct submission entries:
 ```json
 {
   "task_id": "ehrsql_mimic_iii_valid_123",
-  "instruction": "What is the method of intake for clobetasol propionate 0.05% ointment?",
-  "final_answer": "SELECT DISTINCT route FROM prescriptions WHERE drug = 'clobetasol propionate 0.05% ointment'",
+  "instruction": "What is the cost of the lab test for glucose?",
+  "final_answer": "SELECT cost FROM cost WHERE event_type = 'labevents' AND event_id IN (SELECT row_id FROM labevents WHERE itemid = 50809)",
   "payload": null
 }
 ```
 
-## Tips
+For unanswerable questions:
+```json
+{
+  "task_id": "ehrsql_eicu_valid_456",
+  "instruction": "What is the patient's favorite color?",
+  "final_answer": "null",
+  "payload": null
+}
+```
 
-- Start by exploring the schema with `inspect_schema.py` to understand available data
-- Use `LIMIT` clauses when testing queries to avoid excessive output
-- SQL syntax: Standard SQL (SQLite dialect for both databases)
-- Time reference: Database records are shifted to 2100-2105 for de-identification
-- For temporal queries, use the shifted dates (not current dates)
+## Tips for Success
+
+- **Schema exploration**: Load each database's schema once, then reuse that knowledge
+- **Pattern recognition**: Find common SQL patterns (e.g., joining to lookup tables) and adapt them
+- **Testing**: Use `LIMIT 5` when testing queries to avoid huge result sets
+- **Dates**: Database timestamps are de-identified (shifted to 2100-2105), so use those dates
+- **Batch saves**: Update submission.json every 5-10 tasks to prevent context overflow
 
 ## Evaluation
 
-Your submission will be evaluated by:
-1. Executing your SQL query against the live database
-2. Comparing your result set to the gold standard SQL result
-3. Measuring execution accuracy: did you get the correct answer?
-4. Measuring answerability: did you correctly identify unanswerable questions?
+Your submission is evaluated on:
+1. **Correctness**: Does your SQL return the right answer?
+2. **Answerability**: Did you correctly return "null" for unanswerable questions?
+3. **Completion**: Did you answer **every single task**?
 
-Good luck!
+Incomplete submissions receive lower scores. **Every task must have a final_answer.**

@@ -38,8 +38,9 @@ def execute_sql(
         }
 
     try:
-        conn = sqlite3.connect(str(db_file))
-        conn.timeout = timeout
+        # Pass timeout to sqlite3.connect() instead of setting as attribute
+        # (Python 3.12 sqlite3 Connection doesn't allow arbitrary attribute assignment)
+        conn = sqlite3.connect(str(db_file), timeout=timeout)
         cursor = conn.cursor()
 
         cursor.execute(query)
