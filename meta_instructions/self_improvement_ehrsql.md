@@ -17,7 +17,7 @@ source .venv/bin/activate && export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)" 
 STEP 3: Check the evaluation results in./result/harbor/{latest_time_stamp}/ Here is a quick navigation cheat sheet:
 
 What you want to know,	File to check
-Overall score,	result.json (top-level, look for "mean": 0.625)
+Overall score,	result.json (top-level, look for "mean": ..)
 How many passed,	verifier/meta_results.json
 What SQL agent generated,	verifier/submission.json
 Which tasks failed,	verifier/meta_results.json (error_taxonomy)
@@ -28,7 +28,7 @@ Errors/debug info	agent/logs_1.sqlite (SQLite database of logs)
 
 STEP 4: After STEP 3, Append the results in /home/qianchuliu/projects/medcli_auto_improvement_results/ehrsql/results.csv, the run_id will be the branch name 'flora/dev/harbor' This will be the starting score for you to improve from
 
-STEP 5: After STEP 4, create a new branch named flora/dev/harbor/ehrsql_improvement0, based on what you discovered in STEP 3, improve the agent workflow by **modifying the generator script** `scripts/ehrsql/generate_harbor_tasks.py`. You are allowed ONLY with the following changes:
+STEP 5: After STEP 4, create a new branch named flora/dev/harbor_ehrsql_improvement1, based on what you discovered in STEP 3, improve the agent workflow by **modifying the generator script** `scripts/ehrsql/generate_harbor_tasks.py`. You are allowed ONLY with the following changes:
 
 **Important**: Do NOT manually edit files in `harbor_tasks/ehrsql/`. Instead, modify the generator functions to change what gets generated:
 - **To add/modify helper scripts** → Edit the `_generate_primitive_scripts()` function in the generator
@@ -45,4 +45,4 @@ Make sure your improvements are robust and generalized, as they need to validate
 
 STEP 6: Run STEP 2 - STEP 3 to run evaluation and analysis. 
 
-STEP 7: Once you have achieved good improvement, you can append your results in /home/qianchuliu/projects/medcli_auto_improvement_results/ehrsql/results.csv The run_id will be your current branch name which is flora/dev/harbor/ehrsql_improvement0
+STEP 7: Once you have achieved good improvement, you can append your results in /home/qianchuliu/projects/medcli_auto_improvement_results/ehrsql/results.csv The run_id will be your current branch name which is flora/dev/harbor_ehrsql_improvement1
