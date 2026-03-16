@@ -177,17 +177,20 @@ def build_harbor_answer_key(
     }
 
 
-def default_selected_task_ids(raw_tasks: list[dict[str, Any]]) -> list[str]:
-    """Select a default slice of tasks for the benchmark.
+def default_selected_task_ids(raw_tasks: list[dict[str, Any]], sample_size: int = 200) -> list[str]:
+    """Select a deterministic slice of tasks for the benchmark.
 
-    Strategy: Select 50 representative tasks (~25 per database, stratified by importance).
-    This is a practical size for a single Harbor trial (completes in <5 min).
+    Strategy: Select stratified tasks across databases and importance levels.
+    - Default: 200 tasks (~100 per database, distributed by importance)
+    - Customizable via sample_size parameter
+    - DETERMINISTIC: Same sample_size always produces same tasks
 
     Args:
         raw_tasks: List of all raw EHRSQL tasks
+        sample_size: Target number of tasks to select (default 200)
 
     Returns:
-        List of selected task IDs
+        List of selected task IDs (sorted for determinism)
     """
     selected_by_db: dict[str, list[str]] = {"mimic_iii": [], "eicu": []}
 
@@ -205,14 +208,24 @@ def default_selected_task_ids(raw_tasks: list[dict[str, Any]]) -> list[str]:
                 by_db_importance[key] = []
             by_db_importance[key].append(str(task_id))
 
-    # Select ~3-4 tasks per (db, importance) combination to get ~25 per db
-    for (db_id, importance), task_ids in sorted(by_db_importance.items()):
-        # Take first 4 tasks from each importance level for each db
-        selected_by_db[db_id].extend(task_ids[:4])
+    # Sort task IDs within each (db, importance) group for determinism
+    for key in by_db_importance:
+        by_db_importance[key].sort()
 
-    # Return combined list, capped at 50 total
-    result = selected_by_db["mimic_iii"] + selected_by_db["eicu"]
-    return sorted(set(result))[:50]
+    # Calculate tasks per importance level for each db
+    # sample_size/2 per database, distributed evenly across importance levels
+    tasks_per_db = sample_size // 2
+    importance_levels = sorted(set(imp for _, imp in by_db_importance.keys()))
+    tasks_per_importance = max(1, tasks_per_db // len(importance_levels)) if importance_levels else tasks_per_db
+
+    # Select stratified tasks: take first N tasks from each (db, importance) combination
+    # Tasks within each group are sorted, so selection is deterministic
+    for (db_id, importance), task_ids in sorted(by_db_importance.items()):
+        selected_by_db[db_id].extend(task_ids[:tasks_per_importance])
+
+    # Return combined sorted list, capped at sample_size
+    result = sorted(set(selected_by_db["mimic_iii"] + selected_by_db["eicu"]))[:sample_size]
+    return result
 
 
 def select_tasks(

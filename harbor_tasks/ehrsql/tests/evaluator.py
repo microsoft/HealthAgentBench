@@ -38,7 +38,8 @@ def execute_sql(
         }
 
     try:
-        conn = sqlite3.connect(str(db_file), timeout=float(timeout))
+        conn = sqlite3.connect(str(db_file))
+        conn.timeout = timeout
         cursor = conn.cursor()
 
         cursor.execute(query)

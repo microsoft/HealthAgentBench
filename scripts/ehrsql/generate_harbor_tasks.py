@@ -537,6 +537,7 @@ def generate_harbor_task(
     output_root: Path,
     raw_tasks: list[dict[str, Any]] | None = None,
     selected_task_ids: list[str] | None = None,
+    sample_size: int = 200,
 ) -> None:
     """Generate complete Harbor meta-task for EHRSQL.
 
@@ -545,6 +546,7 @@ def generate_harbor_task(
         raw_tasks: List of raw EHRSQL tasks (will load defaults if None)
         selected_task_ids: Task IDs to include (will select defaults if None).
                           If provided, uses exactly these tasks (no re-selection).
+        sample_size: Number of tasks to select if using default strategy (default 200)
     """
     output_root = Path(output_root)
     output_root.mkdir(parents=True, exist_ok=True)
@@ -563,7 +565,7 @@ def generate_harbor_task(
     # Only apply default selection if selected_task_ids is still None
     # (it would have been populated by main() if user provided JSON files)
     if selected_task_ids is None:
-        selected_task_ids = default_selected_task_ids(raw_tasks)
+        selected_task_ids = default_selected_task_ids(raw_tasks, sample_size=sample_size)
 
     selected_tasks = select_tasks(raw_tasks, selected_task_ids)
 
@@ -655,6 +657,12 @@ def main() -> None:
         "--selected-task-ids",
         help="Comma-separated task IDs to include (overrides default/file selection)",
     )
+    parser.add_argument(
+        "--sample-size",
+        type=int,
+        default=200,
+        help="Number of tasks to select with default strategy (default 200)",
+    )
 
     args = parser.parse_args()
 
@@ -680,6 +688,7 @@ def main() -> None:
         output_root=Path(args.output_root),
         raw_tasks=raw_tasks if (valid_paths or test_paths) else None,
         selected_task_ids=selected_task_ids,
+        sample_size=args.sample_size,
     )
 
 
