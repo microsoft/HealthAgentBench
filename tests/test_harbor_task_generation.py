@@ -29,7 +29,7 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
         ],
     )
 
-    output_root = tmp_path / "harbor_tasks" / "medagentbench"
+    output_root = tmp_path / "tasks" / "medagentbench"
 
     subprocess.run(
         [
@@ -51,7 +51,8 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     assert (output_root / "benchmark_tasks.json").exists()
     scripts_dir = output_root / "environment" / "workspace" / "scripts"
     primitives_dir = scripts_dir / "primitives"
-    assert (primitives_dir / "fhir_common.py").exists()
+    assert (scripts_dir / "lib" / "fhir_common.py").exists()
+    assert not (scripts_dir / "schemas").exists()
     for script_name in (
         "get_patient.py",
         "get_condition.py",
@@ -76,6 +77,7 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     test_sh_text = (output_root / "tests" / "test.sh").read_text(encoding="utf-8")
     assert "--error-analysis-file" in verify_text
     assert "VERIFIER_ERROR_ANALYSIS_FILE" in test_sh_text
+    assert "/logs/artifacts/error_analysis.json" in test_sh_text
 
     benchmark_payload = json.loads((output_root / "benchmark_tasks.json").read_text(encoding="utf-8"))
     instruction_text = (output_root / "instruction.md").read_text(encoding="utf-8")
@@ -86,8 +88,12 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     assert instruction_text.index("Suggested workflow:") < instruction_text.index("Submission rules:")
     assert "get_patient.py --help" in instruction_text
     assert "get_observation_labs.py --patient S2823623 --code GLU" in instruction_text
+    assert "post_servicerequest.py --help" in instruction_text
+    assert "--schema" not in instruction_text
     assert "get_patient.py --help" in workspace_readme
     assert "post_servicerequest.py --help" in workspace_readme
+    assert "scripts/lib/fhir_common.py" in workspace_readme
+    assert "--schema" not in workspace_readme
     assert isinstance(benchmark_payload, list)
     assert [row["task_id"] for row in benchmark_payload] == ["task1_1", "task2_1"]
     assert set(benchmark_payload[0]) == {
@@ -108,9 +114,11 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
 
     compose_text = (output_root / "environment" / "docker-compose.yaml").read_text(encoding="utf-8")
     dockerfile_text = (output_root / "environment" / "Dockerfile").read_text(encoding="utf-8")
+    task_toml_text = (output_root / "task.toml").read_text(encoding="utf-8")
     assert "jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966" in compose_text
     assert "fhir-ready" in compose_text
     assert "COPY workspace/ /workspace/" in dockerfile_text
+    assert "allow_internet = true" in task_toml_text
 
     help_result = subprocess.run(
         [
@@ -124,6 +132,40 @@ def test_generate_harbor_meta_task_materializes_expected_layout(tmp_path: Path):
     )
     assert "Retrieve Patient resources" in help_result.stdout
     assert "--identifier" in help_result.stdout
+    assert "--schema" not in help_result.stdout
+
+    post_help = subprocess.run(
+        [
+            ".venv/bin/python",
+            str(primitives_dir / "post_observation_vitals.py"),
+            "--help",
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    assert "--payload-file" in post_help.stdout
+    assert "--schema" not in post_help.stdout
+    assert "Original payload schema:" in post_help.stdout
+    assert '"required": [' in post_help.stdout
+    assert '"resourceType"' in post_help.stdout
+    assert '"effectiveDateTime"' in post_help.stdout
+
+    required_get = subprocess.run(
+        [
+            ".venv/bin/python",
+            str(primitives_dir / "get_observation_labs.py"),
+            "--help",
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    assert "--patient PATIENT" in required_get.stdout
+    assert "--code CODE" in required_get.stdout
+    assert "Required flags:" in required_get.stdout
+    assert "--patient" in required_get.stdout
+    assert "--code" in required_get.stdout
 
 
 def test_generate_harbor_meta_task_is_deterministic(tmp_path: Path):
@@ -148,7 +190,7 @@ def test_generate_harbor_meta_task_is_deterministic(tmp_path: Path):
         ],
     )
 
-    output_root = tmp_path / "harbor_tasks" / "medagentbench"
+    output_root = tmp_path / "tasks" / "medagentbench"
     cmd = [
         ".venv/bin/python",
         "scripts/medagentbench/generate_harbor_tasks.py",

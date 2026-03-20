@@ -1,16 +1,11 @@
 # Tasks
 
-This directory contains first-class task-type packages.
+This directory contains generated Harbor task environments for benchmark integrations.
 
-Packages are organized by task type defined in `README.md` (for example `cohort_construction`, `temporal_reasoning`), not by benchmark/source name.
+Current benchmark tasks in this repo:
 
-Each task-type package under `tasks/<task_type>/` can include:
+| Benchmark | Task Directory | Description | Notes |
+|-----------|----------------|-------------|-------|
+| **MedAgentBench** | `medagentbench/` | Interactive EHR benchmark focused on multi-step retrieval, reasoning, and structured action tasks over clinical data. | Harbor-generated benchmark task built from raw benchmark assets under `scripts/medagentbench/`. |
 
-- `sources/<benchmark_name>/`: benchmark manifests grouped by source and split
-- `prompt.md`: task-specific prompt and protocol notes
-- `fixtures/`: task-local sample inputs/outputs
-- `README.md`: implementation notes and usage
-
-Benchmark integrations (for example MedAgentBench) should be mapped into the relevant task-type package at integration time, usually under a `sources/<benchmark_name>/` subdirectory.
-
-Shared orchestration belongs in `src/medcli/`. Top-level run/evaluate CLIs in `run.py`/`demo.py` and integration-specific script packages (for example `scripts/medagentbench/`) should load benchmark manifests directly from the relevant task-type packages.
+For benchmark-specific task generation details, see `scripts/<benchmark>/README.md`.

@@ -6,7 +6,7 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 ## Purpose / Big Picture
 
-After this change, a user will be able to run a representative MedAgentBench slice through Harbor as a single benchmark-style meta-task instead of as hundreds of per-instance Harbor tasks. The existing YAML manifests under `tasks/*/sources/medagentbench/*.yaml` remain the source of truth. Harbor will expose one task directory at `harbor_tasks/medagentbench/`, whose environment includes a provided benchmark harness. The agent's job is to invoke that harness. The verifier will score the aggregate benchmark result and write one numeric Harbor reward equal to the mean pass@1 across the configured MedAgentBench slice.
+After this change, a user will be able to run a representative MedAgentBench slice through Harbor as a single benchmark-style meta-task instead of as hundreds of per-instance Harbor tasks. The existing YAML manifests under `tasks/*/sources/medagentbench/*.yaml` remain the source of truth. Harbor will expose one task directory at `tasks/medagentbench/`, whose environment includes a provided benchmark harness. The agent's job is to invoke that harness. The verifier will score the aggregate benchmark result and write one numeric Harbor reward equal to the mean pass@1 across the configured MedAgentBench slice.
 
 For fast iteration, the initial slice is exactly one case from each MedAgentBench `taskN` family: `task1_1` through `task10_1`.
 
@@ -16,7 +16,7 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
 - [x] (2026-03-11 23:58Z) Collected the original Harbor integration decisions: generated artifacts under `harbor_tasks/`, Harbor local path execution, evaluator reuse, and Harbor scaffold alignment.
 - [x] (2026-03-12 00:08Z) Confirmed from repository data that the current MedAgentBench manifests contain 10 `source_group` families (`task1` through `task10`) and selected the fast-iteration representative slice as `task1_1` through `task10_1`.
 - [x] (2026-03-12 00:11Z) Reframed the Harbor design from a per-instance dataset to a single Harbor meta-task with one trial running a benchmark harness and one aggregate reward.
-- [x] (2026-03-12 00:39Z) Replaced the obsolete per-instance generator with a single-task generator that emits `harbor_tasks/medagentbench/` using Harbor's scaffold command.
+- [x] (2026-03-12 00:39Z) Replaced the obsolete per-instance generator with a single-task generator that emits `tasks/medagentbench/` using Harbor's scaffold command.
 - [x] (2026-03-12 00:39Z) Added benchmark task/config artifacts for the fixed 10-task slice: `benchmark_tasks.json`, `submission_template.json`, and `action_payload_templates.json`.
 - [x] (2026-03-12 00:39Z) Implemented the Harbor task workspace contract: local FHIR sidecar, helper scripts under `/workspace/scripts/`, and `/workspace/submission.json` as the agent output file.
 - [x] (2026-03-12 00:39Z) Implemented a benchmark-level verifier bridge that converts `submission.json` into evaluator-compatible rows and computes mean pass@1 with the existing MedAgentBench evaluator.
@@ -27,7 +27,7 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
 - [x] (2026-03-12 18:27Z) Fixed the MedAgentBench Harbor smoke helper so it copies a perfect submission into the live container before verification; the direct debug smoke path again scores `1.000000`.
 - [x] (2026-03-12 19:05Z) Added a manual Harbor Codex debugging path with reusable helper scripts: raw shell, task-aware shell handoff, Codex install, Codex auth/runtime prep, and a MedAgentBench-specific manual wrapper.
 - [x] (2026-03-12 19:18Z) Fixed the manual Codex command template to match the actual Harbor wrapper flags by using `-c model_reasoning_effort=medium` instead of `--reasoning-effort medium`.
-- [x] (2026-03-12 19:52Z) Refactored default-agent bootstrapping into a generic `debug/harbor/setup-agent.sh` step and updated the MedAgentBench manual wrapper to use it before opening a ready-to-use shell.
+- [x] (2026-03-12 19:52Z) Refactored default-agent bootstrapping into a generic `debug/setup-agent.sh` step and updated the MedAgentBench manual wrapper to use it before opening a ready-to-use shell.
 - [x] (2026-03-12 21:25Z) Reworked the MedAgentBench Harbor task prompt into a hybrid of the original MedAgentBench instructions and the Harbor submission-file contract, so the task now foregrounds primitive FHIR operations and the original GET/POST/FINISH semantics while still writing outputs to `/workspace/submission.json`.
 - [x] (2026-03-12 21:25Z) Replaced the old convenience FHIR tool surface with primitive MedAgentBench-aligned tools (`get_*` / `post_*`), updated task manifests and Harbor artifacts to use the new canonical names, and validated the refactor with the full pytest suite.
 - [ ] Complete a Harbor trial to termination and record the observed runtime behavior of the Codex and nop smoke runs.
@@ -73,7 +73,7 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
 - Observation: The original MedAgentBench prompt is stricter than the Harbor meta-task contract because it expects one raw `GET`, `POST`, or `FINISH(...)` action per turn with no extra text.
   Evidence: DeepWiki summary of `src/server/tasks/medagentbench/__init__.py` confirmed the original output contract and invalid-action rules.
 
-- Observation: Matching `data/medagentbench/funcs_v1.json` faithfully requires primitive POST tools to accept raw top-level payload fields rather than the earlier MedCLI-specific `args.resource` wrapper.
+- Observation: Matching `scripts/medagentbench/assets/funcs_v1.json` faithfully requires primitive POST tools to accept raw top-level payload fields rather than the earlier MedCLI-specific `args.resource` wrapper.
   Evidence: Local inspection of `funcs_v1.json` showed that the original functions expose raw JSON bodies for POST requests, not nested wrapper objects.
 
 ## Decision Log
@@ -86,7 +86,7 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
   Rationale: This keeps the generated Harbor task aligned with Harbor's canonical layout as Harbor evolves.
   Date/Author: 2026-03-11 / User+Codex
 
-- Decision: Represent MedAgentBench in Harbor as a single meta-task at `harbor_tasks/medagentbench/`, not as one Harbor task per manifest row.
+- Decision: Represent MedAgentBench in Harbor as a single meta-task at `tasks/medagentbench/`, not as one Harbor task per manifest row.
   Rationale: The user wants one shared environment, one shared evaluator, and one Harbor-facing benchmark task rather than hundreds of Harbor task directories.
   Date/Author: 2026-03-12 / User+Codex
 
@@ -131,7 +131,7 @@ For fast iteration, the initial slice is exactly one case from each MedAgentBenc
   Date/Author: 2026-03-12 / User+Codex
 
 - Decision: Replace the convenience FHIR tool names with primitive MedAgentBench-aligned canonical names (`get_patient`, `get_condition`, `get_observation_labs`, `get_observation_vitals`, `get_medicationrequest`, `get_procedure`, `post_observation_vitals`, `post_medicationrequest`, `post_servicerequest`).
-  Rationale: `data/medagentbench/funcs_v1.json` is the schema source of truth for the MedAgentBench primitive tool surface, and the repo should use one clean canonical mapping instead of compatibility aliases.
+  Rationale: `scripts/medagentbench/assets/funcs_v1.json` is the schema source of truth for the MedAgentBench primitive tool surface, and the repo should use one clean canonical mapping instead of compatibility aliases.
   Date/Author: 2026-03-12 / User+Codex
 
 ## Outcomes & Retrospective
@@ -150,11 +150,11 @@ Harbor is already installed in this repository and can run local tasks. A Harbor
 
 The repository already has a custom Harbor Codex wrapper at `src/medcli/agents/harbor/installed/codex.py` and a working Harbor job example at `jobs/example.yaml`. That means the missing piece is not Harbor itself; the missing piece is a Harbor-compatible MedAgentBench task contract.
 
-In this document, “manifest tasks” means the existing YAML rows under `tasks/`. “Harbor meta-task” means the single generated runnable directory under `harbor_tasks/medagentbench/`. “Harness” means the benchmark command inside the Harbor task environment that runs the configured MedAgentBench slice. “Verifier bridge” means the code that reads the harness outputs, calls the existing MedAgentBench evaluator logic, and writes the aggregate Harbor reward.
+In this document, “manifest tasks” means the existing YAML rows under `tasks/`. “Harbor meta-task” means the single generated runnable directory under `tasks/medagentbench/`. “Harness” means the benchmark command inside the Harbor task environment that runs the configured MedAgentBench slice. “Verifier bridge” means the code that reads the harness outputs, calls the existing MedAgentBench evaluator logic, and writes the aggregate Harbor reward.
 
 ## Plan of Work
 
-First, replace the current per-instance Harbor generator with a meta-task generator under `scripts/medagentbench/`. That generator must initialize exactly one Harbor task directory at `harbor_tasks/medagentbench/` using Harbor's official scaffold command, then deterministically replace the scaffolded content with MedCLI-owned files. It must emit one benchmark-level `instruction.md`, one benchmark-level `task.toml`, one benchmark selection config file, and the environment/verifier files needed for the benchmark harness contract.
+First, replace the current per-instance Harbor generator with a meta-task generator under `scripts/medagentbench/`. That generator must initialize exactly one Harbor task directory at `tasks/medagentbench/` using Harbor's official scaffold command, then deterministically replace the scaffolded content with MedCLI-owned files. It must emit one benchmark-level `instruction.md`, one benchmark-level `task.toml`, one benchmark selection config file, and the environment/verifier files needed for the benchmark harness contract.
 
 Second, define the benchmark selection config. The config must live inside the Harbor task so the selected benchmark slice is explicit and editable. The default config for this milestone is the fixed 10-case slice `task1_1` through `task10_1`. The harness must read this config rather than having those task IDs duplicated in multiple code paths.
 
@@ -180,11 +180,11 @@ Work from the repository root.
 
        uv run python scripts/medagentbench/generate_harbor_tasks.py \
          --input-root tasks \
-         --output-root harbor_tasks/medagentbench
+         --output-root tasks/medagentbench
 
    Internally, the generator must initialize one Harbor task using Harbor's official scaffold command and then overwrite the scaffolded files deterministically.
 
-   Expected outcome: one Harbor task directory exists at `harbor_tasks/medagentbench/` with Harbor-required files plus task selection config and helper files.
+   Expected outcome: one Harbor task directory exists at `tasks/medagentbench/` with Harbor-required files plus task selection config and helper files.
 
 3. Add the benchmark harness and verifier bridge.
 
@@ -197,7 +197,7 @@ Work from the repository root.
        export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
        uv run harbor run -c jobs/medagentbench_meta.yaml
 
-   Expected outcome: Harbor runs the single MedAgentBench meta-task and writes standard Harbor artifacts under `results/harbor/...`.
+   Expected outcome: Harbor runs the single MedAgentBench meta-task and writes standard Harbor artifacts under `results/...`.
 
 5. Validate end-to-end on the default 10-task slice.
 
@@ -207,7 +207,7 @@ Work from the repository root.
 
 Acceptance is behavioral.
 
-First, run the generator and inspect the output tree. There must be exactly one Harbor task directory at `harbor_tasks/medagentbench/`, and it must contain the Harbor-required files plus a task-selection config that defaults to `task1_1` through `task10_1`.
+First, run the generator and inspect the output tree. There must be exactly one Harbor task directory at `tasks/medagentbench/`, and it must contain the Harbor-required files plus a task-selection config that defaults to `task1_1` through `task10_1`.
 
 Second, run the repository test suite that covers the generator and verifier bridge:
 
@@ -220,7 +220,7 @@ Third, run a Harbor smoke test on the single meta-task with the custom Codex wra
     export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
     uv run harbor run -c jobs/medagentbench_meta.yaml
 
-Expected outcome: Harbor completes one trial, writes standard result artifacts under `results/harbor/...`, and the verifier reward is a float equal to the aggregate mean pass@1 across the configured 10 tasks.
+Expected outcome: Harbor completes one trial, writes standard result artifacts under `results/...`, and the verifier reward is a float equal to the aggregate mean pass@1 across the configured 10 tasks.
 
 Fourth, compare the Harbor reward against the score produced by the current MedAgentBench evaluator on the same task IDs. The values must match within normal floating-point formatting.
 
@@ -228,9 +228,9 @@ The change is complete when a contributor can regenerate the single Harbor MedAg
 
 ## Idempotence and Recovery
 
-The generator must be safe to run repeatedly. Re-running it should replace or refresh the generated Harbor meta-task deterministically without requiring manual cleanup. If generation fails partway through, the contributor should delete only the incomplete `harbor_tasks/medagentbench/` output and rerun the generator; the source manifests under `tasks/` must never be modified by the generator.
+The generator must be safe to run repeatedly. Re-running it should replace or refresh the generated Harbor meta-task deterministically without requiring manual cleanup. If generation fails partway through, the contributor should delete only the incomplete `tasks/medagentbench/` output and rerun the generator; the source manifests under `tasks/` must never be modified by the generator.
 
-The harness and verifier bridge must be additive and must not break the existing `run.py` or `demo.py` evaluation path except where shared scoring helpers are intentionally extracted. If Harbor verification fails during development, the contributor should debug using the Harbor trial logs under `results/harbor/` rather than manually editing task outputs.
+The harness and verifier bridge must be additive and must not break the existing `run.py` or `demo.py` evaluation path except where shared scoring helpers are intentionally extracted. If Harbor verification fails during development, the contributor should debug using the Harbor trial logs under `results/` rather than manually editing task outputs.
 
 ## Artifacts and Notes
 
@@ -259,10 +259,10 @@ Representative selected benchmark slice:
 
 Representative existing Harbor artifact shape from a successful local run:
 
-    results/harbor/<run-id>/<trial>/agent/trajectory.json
-    results/harbor/<run-id>/<trial>/result.json
-    results/harbor/<run-id>/<trial>/verifier/reward.txt
-    results/harbor/<run-id>/<trial>/verifier/test-stdout.txt
+    results/<run-id>/<trial>/agent/trajectory.json
+    results/<run-id>/<trial>/result.json
+    results/<run-id>/<trial>/verifier/reward.txt
+    results/<run-id>/<trial>/verifier/test-stdout.txt
 
 Those artifacts are the contract the Harbor verifier bridge must target.
 
@@ -281,4 +281,4 @@ If shared evaluator extraction helpers are needed, place them in `scripts/medage
 
 ## Supersession Note
 
-This plan is now superseded for MedAgentBench implementation details by `.agent/plans/harbor_raw_json_medagentbench_execplan.md`. The repository originally converted YAML-derived MedAgentBench tasks into one Harbor meta-task, but the canonical path has since changed: Harbor MedAgentBench is now generated directly from `data/medagentbench/test_data_v2.json`, uses its own Harbor-specific evaluator, and treats the YAML manifest path only as a temporary compatibility layer during migration.
+This plan is now superseded for MedAgentBench implementation details by `.agent/plans/harbor_raw_json_medagentbench_execplan.md`. The repository originally converted YAML-derived MedAgentBench tasks into one Harbor meta-task, but the canonical path has since changed: Harbor MedAgentBench is now generated directly from `scripts/medagentbench/assets/test_data_v2.json`, uses its own Harbor-specific evaluator, and treats the YAML manifest path only as a temporary compatibility layer during migration.

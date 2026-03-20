@@ -14,7 +14,3 @@ results/
 
 # temporary files
 .tmp/
-
-# MedAgentBench intermediate data assets (downloaded/generated)
-data/medagentbench/*
-!data/medagentbench/task_type_mapping.yaml

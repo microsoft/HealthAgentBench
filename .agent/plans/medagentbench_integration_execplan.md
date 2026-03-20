@@ -25,14 +25,14 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 01:07Z) Implemented idempotent MedAgentBench asset ingestion + schema validation + checksum generation in `scripts/medagentbench/setup.sh`, and documented usage in `scripts/medagentbench/README.md`.
 - [x] (2026-03-05 01:07Z) Implemented Docker Compose-based local FHIR runtime with container healthcheck and compose-managed startup/shutdown scripts.
 - [x] (2026-03-05 01:18Z) Implemented `FHIRClient`, MedAgentBench-aligned FHIR tool wrappers, and shared JSON HTTP retry utilities in `src/ehr_co_scientist/tools/` and `src/ehr_co_scientist/utils/http.py`.
-- [x] (2026-03-05 04:10Z) Imported real MedAgentBench files (`data/medagentbench/test_data_v2.json`, `data/medagentbench/funcs_v1.json`) and grouped 300 tasks into repo task-type folders under `tasks/<task_type>/sources/medagentbench/` using an explicit 6-type alignment map.
+- [x] (2026-03-05 04:10Z) Imported real MedAgentBench files (`scripts/medagentbench/assets/test_data_v2.json`, `scripts/medagentbench/assets/funcs_v1.json`) and grouped 300 tasks into repo task-type folders under `tasks/<task_type>/sources/medagentbench/` using an explicit 6-type alignment map.
 - [x] (2026-03-04 19:30Z) Implemented MedAgentBench runner and evaluator CLIs (`run.py`, `scripts/medagentbench/evaluate.py`, `scripts/medagentbench/evaluator.py`) plus backend adapter and minimal agent loop wiring.
 - [x] (2026-03-04 19:33Z) Added unit tests for FHIR client, task import, and evaluator, plus integration smoke test for Dockerized runtime workflow.
 - [x] (2026-03-04 19:34Z) Validated end-to-end on small slices (explicit IDs, selector-based run, and `--max-tasks 3`) and generated summary artifacts.
 - [x] (2026-03-04 21:05Z) Implemented and validated interactive terminal demo CLI (`demo.py`) for ad-hoc prompt/task execution against a running FHIR server.
 - [x] (2026-03-04 23:19Z) Refactored `src/ehr_co_scientist/tools/fhir_tools.py` to be schema-first (tool definitions + handlers), added OpenAI function-tools JSON export helpers/CLI, and validated with new `tests/test_fhir_tools.py`.
 - [x] (2026-03-05 00:30Z) Switched runtime to preloaded MedAgentBench FHIR image (`jyxsu6/medagentbench:latest`), diagnosed first factual QA failure with `--show-full-trace`, and fixed `patient_search` schema/handler to use MedAgentBench-style `family/given` matching (with full-name fallback).
-- [x] (2026-03-05 08:10Z) Backfilled expected answers (`sol`) in `data/medagentbench/test_data_v2.json` for all query-derived groups supported by `refsol.py` (`task2`, `task4`, `task5`, `task6`, `task7`, `task9`, `task10`) using live FHIR queries against the MedAgentBench server.
+- [x] (2026-03-05 08:10Z) Backfilled expected answers (`sol`) in `scripts/medagentbench/assets/test_data_v2.json` for all query-derived groups supported by `refsol.py` (`task2`, `task4`, `task5`, `task6`, `task7`, `task9`, `task10`) using live FHIR queries against the MedAgentBench server.
 - [x] (2026-03-05 05:22Z) Executed Milestone 7 repo-structure/tooling refactor: moved remaining benchmark artifacts into `scripts/medagentbench/` (including evaluation CLI), merged `FHIRClient` implementation into `fhir_tools.py` with compatibility shim, and extracted tool-agnostic registry/schema/export helpers into `src/ehr_co_scientist/tools/tooling/`.
 - [x] (2026-03-05 10:22Z) Added evaluation-mode write-tool short-circuit: when `--evaluation-mode` is enabled, `run_task` now terminates immediately on write-tool calls (`vital_create`, `procedure_create`, `medicationrequest_create`) without executing HTTP writes; wired through both `run.py` and `demo.py` flags and validated with new agent/tool tests.
 - [x] (2026-03-05 11:05Z) Enforced per-task `allowed_tools` in benchmark runs: `run.py` now passes task-scoped OpenAI tool schemas and `allowed_tools` policy into `run_task`, and `run_task` now blocks/terminates on disallowed tool calls (`blocked_not_allowed`) for both native function-calling and fallback tool-call paths.
@@ -43,7 +43,7 @@ For MedAgentBench background and design context used when refining this plan, se
 - [x] (2026-03-05 15:08Z) Decoupled `run_task` from direct FHIR client construction by introducing shared `ToolRuntime`; moved FHIR client instantiation to caller entrypoints (`run.py`, `demo.py`) and updated tool handlers/dispatch to consume `tool_runtime`.
 - [x] (2026-03-05 15:16Z) Refactored `run_task` internals with dedicated helper functions for policy checks, termination payloads, and tool execution to reduce core-loop complexity without changing behavior.
 - [x] (2026-03-05 15:32Z) Split monolithic `src/ehr_co_scientist/agent.py` into package modules under `src/ehr_co_scientist/agent/` (`core.py`, `parsing.py`, `policy.py`, `tool_exec.py`) while preserving public imports via `src/ehr_co_scientist/agent/__init__.py`.
-- [x] (2026-03-05 16:05Z) Implemented action-trace evaluation overrides for MedAgentBench writing tasks `task3_*` and `task8_*` in `scripts/medagentbench/evaluator.py`, aligned with `data/medagentbench/refsol.py` semantics (tool/payload validation over final-answer matching).
+- [x] (2026-03-05 16:05Z) Implemented action-trace evaluation overrides for MedAgentBench writing tasks `task3_*` and `task8_*` in `scripts/medagentbench/evaluator.py`, aligned with `scripts/medagentbench/assets/refsol.py` semantics (tool/payload validation over final-answer matching).
 - [x] (2026-03-05 23:01Z) Sampled and executed two writing tasks (`task3_1`, `task8_1`) with actual backend + FHIR runtime, analyzed payload-shape mismatches, tightened write-call guidance, and updated evaluator normalization (list/dict shape compatibility) so both tasks now pass under action-trace scoring.
 - [x] (2026-03-06 01:06Z) Removed schema post-processing and switched to strict-native tool schemas directly in `src/ehr_co_scientist/tools/fhir_tools.py` (nullable optional fields + explicit `required` + `additionalProperties: false` on object nodes), then revalidated writing-task tool invocation with `gpt-5.2`.
 - [x] (2026-03-06 01:20Z) Added deterministic action-trace evaluation overrides for writing-task groups and diagnostics, then simplified evaluator modes to keep strict deterministic scoring as baseline.
@@ -73,7 +73,7 @@ For MedAgentBench background and design context used when refining this plan, se
   Evidence: `rg --files src tests tasks benchmarks experiments` returned only a small set of files (core package stubs, one backend module, and one CLI examples test) on 2026-03-04.
 
 - Observation: Real MedAgentBench task records in `test_data_v2.json` do not include an explicit task-type field; grouping must be inferred from `id` prefixes (`task1`..`task10`) and instruction patterns.
-  Evidence: Parsing `data/medagentbench/test_data_v2.json` showed keys `id`, `instruction`, `context`, `eval_MRN`, optional `sol`, with no `task_type`/`category` fields.
+  Evidence: Parsing `scripts/medagentbench/assets/test_data_v2.json` showed keys `id`, `instruction`, `context`, `eval_MRN`, optional `sol`, with no `task_type`/`category` fields.
 
 - Observation: Concrete step 4 (Azure backend smoke) is environment-dependent and requires valid Azure identity/endpoint access from the execution environment.
   Evidence: Endpoint and credential checks must succeed for direct Azure completion calls.
@@ -229,7 +229,7 @@ The implementation target is not to re-create MedAgentBench internals. The targe
 
 Milestone 1 establishes reproducible benchmark assets and container orchestration.
 
-Create `scripts/medagentbench/setup.sh` to download or verify required MedAgentBench artifacts into `data/medagentbench/`. The script must be idempotent: if files already exist and checksums match, it exits without modifying files. Create `scripts/medagentbench/docker-compose.yaml` with a single `fhir` service exposing port `8080`, and add `scripts/medagentbench/fhir_up.sh` and `scripts/medagentbench/fhir_down.sh` wrappers. Add `scripts/medagentbench/README.md` documenting prerequisites, expected files, and one-command startup.
+Create `scripts/medagentbench/setup.sh` to download or verify required MedAgentBench artifacts into `scripts/medagentbench/assets/`. The script must be idempotent: if files already exist and checksums match, it exits without modifying files. Create `scripts/medagentbench/docker-compose.yaml` with a single `fhir` service exposing port `8080`, and add `scripts/medagentbench/fhir_up.sh` and `scripts/medagentbench/fhir_down.sh` wrappers. Add `scripts/medagentbench/README.md` documenting prerequisites, expected files, and one-command startup.
 
 Milestone 2 adds foundational runtime config and FHIR client tools.
 
@@ -270,7 +270,7 @@ Expected: the second command prints JSON containing a FHIR CapabilityStatement p
 
     bash scripts/medagentbench/setup.sh
 
-Expected: `data/medagentbench/test_data_v2.json`, `funcs_v1.json`, and `refsol.py` exist; JSON files are pretty-formatted; setup logs include validation counts and checksum write confirmation.
+Expected: `scripts/medagentbench/assets/test_data_v2.json`, `funcs_v1.json`, and `refsol.py` exist; JSON files are pretty-formatted; setup logs include validation counts and checksum write confirmation.
 
 3. Create asset and orchestration files and scripts.
 
@@ -281,8 +281,8 @@ Expected: existing tests pass (initially may be zero tests).
 4. Import and normalize MedAgentBench task files.
 
     uv run python scripts/medagentbench/import_tasks.py \
-      --input data/medagentbench/test_data_v2.json \
-      --funcs-json data/medagentbench/funcs_v1.json \
+      --input scripts/medagentbench/assets/test_data_v2.json \
+      --funcs-json scripts/medagentbench/assets/funcs_v1.json \
       --output-root tasks \
       --split std
 
@@ -375,7 +375,7 @@ The concrete observable checks are:
 
 ## Idempotence and Recovery
 
-The setup scripts must be idempotent. Re-running `scripts/medagentbench/setup.sh` should only re-download missing or checksum-mismatched assets under `data/medagentbench/`. Re-running `scripts/medagentbench/fhir_up.sh` should either report the existing running service or restart cleanly. If container startup fails due to a stale container, `scripts/medagentbench/fhir_down.sh` followed by `scripts/medagentbench/fhir_up.sh` must recover. Task import must overwrite outputs deterministically so repeated imports do not create drift.
+The setup scripts must be idempotent. Re-running `scripts/medagentbench/setup.sh` should only re-download missing or checksum-mismatched assets under `scripts/medagentbench/assets/`. Re-running `scripts/medagentbench/fhir_up.sh` should either report the existing running service or restart cleanly. If container startup fails due to a stale container, `scripts/medagentbench/fhir_down.sh` followed by `scripts/medagentbench/fhir_up.sh` must recover. Task import must overwrite outputs deterministically so repeated imports do not create drift.
 
 No destructive operations on unrelated repository files are allowed. All generated run artifacts must stay under `results/medagentbench/`.
 
@@ -383,13 +383,13 @@ No destructive operations on unrelated repository files are allowed. All generat
 
 Expected key file additions and modifications:
 
-- `scripts/medagentbench/setup.sh`: Idempotent downloader/verifier for MedAgentBench assets under `data/medagentbench/`.
+- `scripts/medagentbench/setup.sh`: Idempotent downloader/verifier for MedAgentBench assets under `scripts/medagentbench/assets/`.
 - `scripts/medagentbench/fhir_up.sh`: One-command wrapper to start the Dockerized FHIR service with health checks.
 - `scripts/medagentbench/fhir_down.sh`: Wrapper to stop and cleanly tear down the Dockerized FHIR service.
 - `scripts/medagentbench/import_tasks.py`: Deterministic converter from source MedAgentBench task JSON into internal canonical YAML schema, including grouped output under `tasks/<task_type>/sources/medagentbench/`.
-- `data/medagentbench/test_data_v2.json`: Real MedAgentBench task dataset (300 tasks) used as import source of truth.
-- `data/medagentbench/funcs_v1.json`: MedAgentBench tool/function schema file used for allowed-tool metadata during import.
-- `data/medagentbench/task_type_mapping.yaml`: Explicit alignment map from MedAgentBench 6 task types to repo task types and source task groups.
+- `scripts/medagentbench/assets/test_data_v2.json`: Real MedAgentBench task dataset (300 tasks) used as import source of truth.
+- `scripts/medagentbench/assets/funcs_v1.json`: MedAgentBench tool/function schema file used for allowed-tool metadata during import.
+- `scripts/medagentbench/assets/task_type_mapping.yaml`: Explicit alignment map from MedAgentBench 6 task types to repo task types and source task groups.
 - `tasks/selectors/medagentbench_query_easy.yaml`: Example selector manifest demonstrating include/exclude filtering for a simple query subset.
 - `scripts/medagentbench/README.md`: Operator guide for setup, startup, task import, benchmark execution, and troubleshooting.
 - `scripts/medagentbench/docker-compose.yaml`: Container orchestration definition for the local MedAgentBench-compatible FHIR runtime.

@@ -1,4 +1,4 @@
-jobs_dir: results/harbor
+jobs_dir: results
 n_attempts: 1
 timeout_multiplier: 1.0
 orchestrator:
@@ -20,6 +20,9 @@ agents:
       reasoning_effort: medium
 
 datasets:
-  - path: harbor_tasks
+  - path: tasks
     task_names:
       - medagentbench
+
+artifacts:
+  - /workspace/submission.json

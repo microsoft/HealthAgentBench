@@ -1,6 +1,6 @@
 # Design
 
-This folder contains project design docs, brainstorm notes, and planning materials for the EHR co-scientist.
+This folder contains project design docs, brainstorm notes, and planning materials for MedCLI.
 
 ## Documents
 

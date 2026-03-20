@@ -23,10 +23,23 @@ from scripts.medagentbench.normalization import (
 
 
 DEFAULT_TASK_NAME = "medagentbench"
-DEFAULT_INPUT_JSON = Path("data/medagentbench/test_data_v2.json")
+DEFAULT_INPUT_JSON = Path("scripts/medagentbench/assets/test_data_v2.json")
+DEFAULT_FUNCS_JSON = Path("scripts/medagentbench/assets/funcs_v1.json")
 DEFAULT_REFERENCE_TIME = "2023-11-13T10:15:00+00:00"
 FHIR_IMAGE = "jyxsu6/medagentbench@sha256:3fb83d7ed71c5476f9eb6212bd440a909ef7505922bbc757dc488a8fc0701966"
 FHIR_READY_IMAGE = "curlimages/curl:8.12.1"
+
+PRIMITIVE_TO_FUNC_NAME = {
+    "get_condition": "GET {api_base}/Condition",
+    "get_observation_labs": "GET {api_base}/Observation|labs",
+    "get_observation_vitals": "GET {api_base}/Observation|vitals",
+    "post_observation_vitals": "POST {api_base}/Observation",
+    "get_medicationrequest": "GET {api_base}/MedicationRequest",
+    "post_medicationrequest": "POST {api_base}/MedicationRequest",
+    "get_procedure": "GET {api_base}/Procedure",
+    "post_servicerequest": "POST {api_base}/ServiceRequest",
+    "get_patient": "GET {api_base}/Patient",
+}
 
 
 def _clean_block(value: str) -> str:
@@ -40,6 +53,12 @@ def _parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_INPUT_JSON,
         help="Raw MedAgentBench task JSON file.",
+    )
+    parser.add_argument(
+        "--funcs-json",
+        type=Path,
+        default=DEFAULT_FUNCS_JSON,
+        help="Original MedAgentBench primitive schema JSON file.",
     )
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument(
@@ -69,6 +88,37 @@ def _select_tasks(raw_tasks: list[dict[str, Any]], selected_task_ids: list[str])
     if missing:
         raise ValueError(f"Unknown selected task IDs: {', '.join(missing)}")
     return [dict(by_id[task_id]) for task_id in selected_task_ids]
+
+
+def _load_funcs(path: Path) -> list[dict[str, Any]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, list):
+        raise ValueError("funcs JSON must be a list")
+    return [dict(entry) for entry in payload if isinstance(entry, dict)]
+
+
+def _primitive_schemas(funcs: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    schema_map: dict[str, dict[str, Any]] = {}
+    for entry in funcs:
+        name = str(entry.get("name", ""))
+        if name == "GET {api_base}/Observation":
+            description = str(entry.get("description", ""))
+            key = "GET {api_base}/Observation|vitals" if "Vitals" in description else "GET {api_base}/Observation|labs"
+        else:
+            key = name
+        schema_map[key] = {
+            "primitive": next(
+                (primitive for primitive, func_name in PRIMITIVE_TO_FUNC_NAME.items() if func_name == key),
+                "",
+            ),
+            "name": name,
+            "description": str(entry.get("description", "")),
+            "parameters": entry.get("parameters", {}),
+        }
+    missing = [primitive for primitive, key in PRIMITIVE_TO_FUNC_NAME.items() if key not in schema_map]
+    if missing:
+        raise ValueError(f"Missing primitive schemas for: {', '.join(missing)}")
+    return {primitive: schema_map[key] for primitive, key in PRIMITIVE_TO_FUNC_NAME.items()}
 
 
 def _benchmark_tasks_payload(raw_tasks: list[dict[str, Any]]) -> dict[str, Any]:
@@ -195,7 +245,7 @@ def _instruction_md(tasks_payload: dict[str, Any]) -> str:
             "",
             "1. Choose one row from `/workspace/submission.json`.",
             "2. Read that row's instruction carefully.",
-            "3. Use the helper scripts under `/workspace/scripts/primitives/` when you need to query the chart or simulate a write. Start with `--help` if you are unsure which primitive to use.",
+            "3. Use the helper scripts under `/workspace/scripts/primitives/` when you need to query the chart or simulate a write. Start with `--help` if you are unsure which primitive to use. For write primitives, `--help` also shows the expected payload schema.",
             "4. Write the row's `final_answer` and `payload`, then move to the next row.",
             "5. Stop when every row is complete.",
             "",
@@ -231,7 +281,7 @@ def _task_toml(selected_task_ids: list[str]) -> str:
             "",
             "[environment]",
             "build_timeout_sec = 1800.0",
-            "allow_internet = false",
+            "allow_internet = true",
             "cpus = 2",
             "memory_mb = 4096",
             "storage_mb = 10240",
@@ -253,9 +303,9 @@ def _workspace_readme() -> str:
 
         - `benchmark_tasks.json`: normalized task rows used for task browsing.
         - `submission.json`: editable task rows; fill in `final_answer` and `payload`.
-        - `scripts/primitives/fhir_common.py`: shared HTTP and payload helpers used by the primitive scripts.
         - `scripts/primitives/get_*.py`: primitive read helpers; each supports `--help`.
         - `scripts/primitives/post_*.py`: simulated write helpers; each supports `--help`.
+        - `scripts/lib/fhir_common.py`: shared HTTP and payload helpers used by the primitive scripts.
 
         Primitive helper examples:
 
@@ -377,9 +427,19 @@ def _fhir_common_py() -> str:
 def _primitive_script_py(
     *,
     description: str,
+    schema: dict[str, Any],
     arg_lines: list[str],
     body_lines: list[str],
+    include_schema_in_help: bool = False,
 ) -> str:
+    required = schema.get("parameters", {}).get("required", [])
+    epilog_lines: list[str] = []
+    if include_schema_in_help:
+        epilog_lines.append("Original payload schema:")
+        epilog_lines.append(json.dumps(schema.get("parameters", {}), indent=2, ensure_ascii=False))
+    elif required:
+        epilog_lines.append(f"Required flags: {', '.join(f'--{name}' for name in required)}")
+    epilog = "\n\n".join(epilog_lines) if epilog_lines else None
     return _clean_block(
         "\n".join(
             [
@@ -387,12 +447,18 @@ def _primitive_script_py(
                 "from __future__ import annotations",
                 "",
                 "import argparse",
+                "import sys",
+                "from pathlib import Path",
                 "",
+                'sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))',
                 "from fhir_common import _get, _simulate_post",
                 "",
-                "",
                 "def main() -> None:",
-                f"    parser = argparse.ArgumentParser(description={description!r})",
+                f"    parser = argparse.ArgumentParser(",
+                f"        description={description!r},",
+                "        formatter_class=argparse.RawTextHelpFormatter,",
+                f"        epilog={epilog!r},",
+                "    )",
                 *[f"    {line}" for line in arg_lines],
                 "    args = parser.parse_args()",
                 *[f"    {line}" for line in body_lines],
@@ -405,7 +471,7 @@ def _primitive_script_py(
     )
 
 
-def _primitive_scripts() -> dict[str, str]:
+def _primitive_scripts(schemas: dict[str, dict[str, Any]]) -> dict[str, str]:
     patient_fields = [
         "address",
         "address-city",
@@ -432,14 +498,15 @@ def _primitive_scripts() -> dict[str, str]:
         + '})'
     ]
     return {
-        "fhir_common.py": _fhir_common_py(),
         "get_patient.py": _primitive_script_py(
             description="Retrieve Patient resources using FHIR Patient search parameters.",
+            schema=schemas["get_patient"],
             arg_lines=patient_args,
             body_lines=patient_body,
         ),
         "get_condition.py": _primitive_script_py(
             description="Retrieve Condition resources for a patient.",
+            schema=schemas["get_condition"],
             arg_lines=[
                 'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
                 'parser.add_argument("--category", help="Optional FHIR Condition category filter.")',
@@ -448,6 +515,7 @@ def _primitive_scripts() -> dict[str, str]:
         ),
         "get_observation_labs.py": _primitive_script_py(
             description="Retrieve laboratory Observation resources for a patient and code.",
+            schema=schemas["get_observation_labs"],
             arg_lines=[
                 'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
                 'parser.add_argument("--code", required=True, help="Observation code to filter on.")',
@@ -457,6 +525,7 @@ def _primitive_scripts() -> dict[str, str]:
         ),
         "get_observation_vitals.py": _primitive_script_py(
             description="Retrieve vital-sign Observation resources for a patient and category.",
+            schema=schemas["get_observation_vitals"],
             arg_lines=[
                 'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
                 'parser.add_argument("--category", required=True, help="Observation category filter, such as vital-signs.")',
@@ -466,6 +535,7 @@ def _primitive_scripts() -> dict[str, str]:
         ),
         "get_medicationrequest.py": _primitive_script_py(
             description="Retrieve MedicationRequest resources for a patient.",
+            schema=schemas["get_medicationrequest"],
             arg_lines=[
                 'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
                 'parser.add_argument("--category", help="Optional MedicationRequest category filter.")',
@@ -475,6 +545,7 @@ def _primitive_scripts() -> dict[str, str]:
         ),
         "get_procedure.py": _primitive_script_py(
             description="Retrieve Procedure resources for a patient.",
+            schema=schemas["get_procedure"],
             arg_lines=[
                 'parser.add_argument("--patient", required=True, help="Patient identifier used in the FHIR patient query parameter.")',
                 'parser.add_argument("--date", required=True, help="FHIR date filter expression.")',
@@ -484,18 +555,24 @@ def _primitive_scripts() -> dict[str, str]:
         ),
         "post_observation_vitals.py": _primitive_script_py(
             description="Simulate posting a vital-sign Observation payload from a JSON file.",
+            schema=schemas["post_observation_vitals"],
             arg_lines=['parser.add_argument("--payload-file", required=True, help="Path to a JSON file containing one Observation payload.")'],
             body_lines=['_simulate_post("Observation", args.payload_file)'],
+            include_schema_in_help=True,
         ),
         "post_medicationrequest.py": _primitive_script_py(
             description="Simulate posting a MedicationRequest payload from a JSON file.",
+            schema=schemas["post_medicationrequest"],
             arg_lines=['parser.add_argument("--payload-file", required=True, help="Path to a JSON file containing one MedicationRequest payload.")'],
             body_lines=['_simulate_post("MedicationRequest", args.payload_file)'],
+            include_schema_in_help=True,
         ),
         "post_servicerequest.py": _primitive_script_py(
             description="Simulate posting a ServiceRequest payload from a JSON file.",
+            schema=schemas["post_servicerequest"],
             arg_lines=['parser.add_argument("--payload-file", required=True, help="Path to a JSON file containing one ServiceRequest payload.")'],
             body_lines=['_simulate_post("ServiceRequest", args.payload_file)'],
+            include_schema_in_help=True,
         ),
     }
 
@@ -506,7 +583,9 @@ def _test_sh() -> str:
         #!/usr/bin/env bash
         set -euo pipefail
 
-        mkdir -p /logs/verifier
+        mkdir -p /logs/verifier /logs/artifacts
+
+        : "${VERIFIER_ERROR_ANALYSIS_FILE:=/logs/artifacts/error_analysis.json}"
 
         extra_args=()
         if [[ -n "${VERIFIER_ERROR_ANALYSIS_FILE:-}" ]]; then
@@ -655,6 +734,7 @@ def _write_meta_task(
     *,
     selected_raw_tasks: list[dict[str, Any]],
     selected_task_ids: list[str],
+    primitive_schemas: dict[str, dict[str, Any]],
     output_root: Path,
     task_name: str,
 ) -> None:
@@ -694,7 +774,9 @@ def _write_meta_task(
     workspace_dir = environment_dir / "workspace"
     scripts_dir = workspace_dir / "scripts"
     primitives_dir = scripts_dir / "primitives"
+    lib_dir = scripts_dir / "lib"
     primitives_dir.mkdir(parents=True, exist_ok=True)
+    lib_dir.mkdir(parents=True, exist_ok=True)
 
     environment_dir.joinpath("Dockerfile").write_text(
         _environment_dockerfile(), encoding="utf-8"
@@ -705,9 +787,11 @@ def _write_meta_task(
     workspace_dir.joinpath("README.md").write_text(_workspace_readme(), encoding="utf-8")
     _write_json(workspace_dir / "benchmark_tasks.json", benchmark_payload)
     _write_json(workspace_dir / "submission.json", submission_template)
-    for script_name, content in _primitive_scripts().items():
+    primitive_scripts = _primitive_scripts(primitive_schemas)
+    (lib_dir / "fhir_common.py").write_text(_fhir_common_py(), encoding="utf-8")
+    for script_name, content in primitive_scripts.items():
         primitives_dir.joinpath(script_name).write_text(content, encoding="utf-8")
-    for script_name in _primitive_scripts().keys():
+    for script_name in primitive_scripts:
         (primitives_dir / script_name).chmod(0o755)
 
     tests_dir = task_dir / "tests"
@@ -727,12 +811,14 @@ def _write_meta_task(
 def main() -> None:
     args = _parse_args()
     raw_tasks = load_raw_tasks(args.input_json)
+    primitive_schemas = _primitive_schemas(_load_funcs(args.funcs_json))
     selected_task_ids = _split_csv(args.selected_task_ids) or default_selected_task_ids(raw_tasks)
     selected_raw_tasks = _select_tasks(raw_tasks, selected_task_ids)
 
     _write_meta_task(
         selected_raw_tasks=selected_raw_tasks,
         selected_task_ids=selected_task_ids,
+        primitive_schemas=primitive_schemas,
         output_root=args.output_root,
         task_name=args.task_name,
     )

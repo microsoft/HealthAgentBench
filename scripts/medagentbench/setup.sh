@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-DATA_DIR="${ROOT_DIR}/data/medagentbench"
+DATA_DIR="${ROOT_DIR}/scripts/medagentbench/assets"
 TEST_DATA_JSON="${DATA_DIR}/test_data_v2.json"
 FUNCS_JSON="${DATA_DIR}/funcs_v1.json"
 REFSOL_PY="${DATA_DIR}/refsol.py"
