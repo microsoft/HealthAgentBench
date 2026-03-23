@@ -14,3 +14,6 @@ results/
 
 # temporary files
 .tmp/
+
+# local convenience helpers
+resume-codex.sh
