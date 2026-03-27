@@ -8,18 +8,20 @@ RUN apt-get update && apt-get install -y \
     sqlite3 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Python dependencies required for evaluation
+RUN pip install --no-cache-dir \
+    func-timeout>=4.3.5 \
+    numpy>=2.4.2
+
 # Set working directory
 WORKDIR /workspace
 
 # Copy workspace files (build context is harbor_tasks/ehrsql/)
 COPY environment/workspace/ /workspace/
 
-# Copy tests directory (verifier and evaluator)
-COPY tests/ /tests/
-
-# Ensure scripts are executable
-RUN chmod +x /workspace/scripts/primitives/*.py || true
-RUN chmod +x /tests/test.sh || true
+# DO NOT copy /tests directory (answer keys will be mounted at runtime by Harbor)
+# This prevents agent from accessing the answer key file during task execution
+# Harbor will mount tests/ directory for the verifier only
 
 # Make logs directory
 RUN mkdir -p /logs/verifier

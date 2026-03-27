@@ -89,7 +89,6 @@ def build_instruction(
     parts.append(
         "Your task: Generate a SQL query that answers the question. "
         "If the question cannot be answered with the available data, return 'null'. "
-        "Consider using schema inspection tools to understand available tables and columns."
     )
 
     return "\n\n".join(parts)
@@ -178,54 +177,28 @@ def build_harbor_answer_key(
 
 
 def default_selected_task_ids(raw_tasks: list[dict[str, Any]], sample_size: int = 200) -> list[str]:
-    """Select a deterministic slice of tasks for the benchmark.
+    """Select a deterministic random sample of tasks for the benchmark.
 
-    Strategy: Select stratified tasks across databases and importance levels.
-    - Default: 200 tasks (~100 per database, distributed by importance)
+    Strategy: Randomly sample tasks with a fixed seed for reproducibility.
+    - Default: 200 tasks (or all if fewer available)
     - Customizable via sample_size parameter
-    - DETERMINISTIC: Same sample_size always produces same tasks
+    - DETERMINISTIC: Same sample_size always produces same tasks (seed=42)
 
     Args:
         raw_tasks: List of all raw EHRSQL tasks
         sample_size: Target number of tasks to select (default 200)
 
     Returns:
-        List of selected task IDs (sorted for determinism)
+        List of randomly selected task IDs
     """
-    selected_by_db: dict[str, list[str]] = {"mimic_iii": [], "eicu": []}
-
-    # Stratify by database and importance to get balanced coverage
-    by_db_importance: dict[tuple[str, str], list[str]] = {}
-
-    for task in raw_tasks:
-        db_id = infer_db_id(task)
-        importance = str(task.get("importance", "n/a")).lower()
-        key = (db_id, importance)
-
-        task_id = task.get("id")
-        if task_id:
-            if key not in by_db_importance:
-                by_db_importance[key] = []
-            by_db_importance[key].append(str(task_id))
-
-    # Sort task IDs within each (db, importance) group for determinism
-    for key in by_db_importance:
-        by_db_importance[key].sort()
-
-    # Calculate tasks per importance level for each db
-    # sample_size/2 per database, distributed evenly across importance levels
-    tasks_per_db = sample_size // 2
-    importance_levels = sorted(set(imp for _, imp in by_db_importance.keys()))
-    tasks_per_importance = max(1, tasks_per_db // len(importance_levels)) if importance_levels else tasks_per_db
-
-    # Select stratified tasks: take first N tasks from each (db, importance) combination
-    # Tasks within each group are sorted, so selection is deterministic
-    for (db_id, importance), task_ids in sorted(by_db_importance.items()):
-        selected_by_db[db_id].extend(task_ids[:tasks_per_importance])
-
-    # Return combined sorted list, capped at sample_size
-    result = sorted(set(selected_by_db["mimic_iii"] + selected_by_db["eicu"]))[:sample_size]
-    return result
+    import random
+    rng = random.Random(42)  # Fixed seed for determinism
+    all_ids = [str(t.get("id")) for t in raw_tasks if t.get("id")]
+    if len(all_ids) <= sample_size:
+        # If we have fewer tasks than sample_size, return all
+        return all_ids
+    # Random sample without replacement (deterministic with seed=42)
+    return rng.sample(all_ids, sample_size)
 
 
 def select_tasks(

@@ -5,14 +5,14 @@ This script is called by Harbor after the agent completes to evaluate the submis
 It reads submission.json, compares against answer_key.json, and outputs verification results.
 
 Usage (called by Harbor automatically):
-    python harbor_tasks/ehrsql/tests/verify_meta_task.py
+    python tasks/ehrsql/tests/verify_meta_task.py
 
 Expected environment:
     - /workspace/submission.json — agent's answers
     - /workspace/benchmark_tasks.json — task definitions
     - /tests/task_answer_key.json — expected answers
     - /tests/evaluator.py — evaluation logic (copied from scripts/ehrsql/)
-    - /data/ehrsql/ — SQLite database files
+    - /data/ehrsql/ — SQLite database files (mounted from scripts/ehrsql/assets)
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ def main() -> int:
     workspace_dir = Path("/workspace")
     tests_dir = Path("/tests")
     logs_dir = Path("/logs/verifier")
-    db_dir = Path("/data/ehrsql")
+    db_dir = Path("/data/ehrsql")  # Mount point for scripts/ehrsql/assets/ → /data/ehrsql/mimic_iii/mimic_iii.sqlite
 
     # Create logs directory
     logs_dir.mkdir(parents=True, exist_ok=True)
@@ -95,7 +95,18 @@ def main() -> int:
         "total_tasks": eval_result["total_tasks"],
         "passed_tasks": eval_result["passed_tasks"],
         "failed_tasks": eval_result["failed_tasks"],
-        "error_taxonomy": eval_result["error_taxonomy"],
+        "metrics": {
+            "answerability": {
+                "precision": eval_result["precision_ans"],
+                "recall": eval_result["recall_ans"],
+                "f1": eval_result["f1_ans"],
+            },
+            "execution": {
+                "precision": eval_result["precision_exec"],
+                "recall": eval_result["recall_exec"],
+                "f1": eval_result["f1_exec"],
+            },
+        },
         "summary": {
             "total": eval_result["total_tasks"],
             "passed": eval_result["passed_tasks"],
@@ -106,6 +117,18 @@ def main() -> int:
     # Write outputs
     (logs_dir / "meta_results.json").write_text(json.dumps(result, indent=2))
     (logs_dir / "reward.txt").write_text(f"{eval_result['pass_at_1']:.4f}")
+
+    # Save detailed results for debugging (SQL queries and outputs for each task)
+    detailed_results = {
+        "summary": {
+            "total_tasks": eval_result["total_tasks"],
+            "passed_tasks": eval_result["passed_tasks"],
+            "failed_tasks": eval_result["failed_tasks"],
+            "pass_at_1": eval_result["pass_at_1"],
+        },
+        "tasks": eval_result["results"],
+    }
+    (logs_dir / "detailed_results.json").write_text(json.dumps(detailed_results, indent=2))
 
     # Print to stdout
     print(json.dumps(result, indent=2))

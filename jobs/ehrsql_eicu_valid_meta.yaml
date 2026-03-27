@@ -1,4 +1,4 @@
-jobs_dir: results/harbor
+jobs_dir: results/harbor/ehrsql_eicu_valid
 n_attempts: 1
 timeout_multiplier: 1.0
 orchestrator:
@@ -15,13 +15,13 @@ environment:
 
 agents:
   - import_path: medcli.agents.harbor.installed.codex:Codex
-    model_name: gpt-5.1-codex-mini
+    model_name: gpt-5.1-codex
     kwargs:
       reasoning_effort: medium
 
 datasets:
   - path: tasks
     task_names:
-      - ehrsql
+      - ehrsql_eicu_valid
 artifacts:
   - /workspace/submission.json

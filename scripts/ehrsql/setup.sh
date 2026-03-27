@@ -7,7 +7,7 @@
 set -e
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-DATA_DIR="${REPO_ROOT}/data/ehrsql"
+DATA_DIR="${REPO_ROOT}/scripts/ehrsql/assets"
 GITHUB_BASE="https://raw.githubusercontent.com/glee4810/EHRSQL/main/dataset/ehrsql"
 
 echo "===== EHRSQL Harbor Setup ====="
