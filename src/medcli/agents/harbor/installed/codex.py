@@ -1,21 +1,51 @@
 import os
 import shlex
+from pathlib import Path
 
-from harbor.agents.installed.base import ExecInput
+from harbor.agents.installed.base import with_prompt_template
 from harbor.agents.installed.codex import Codex as HarborCodex
+from harbor.environments.base import BaseEnvironment
+from harbor.models.agent.context import AgentContext
 from harbor.models.trial.paths import EnvironmentPaths
 
 
 class Codex(HarborCodex):
     """MedCLI wrapper around Harbor's Codex installed agent."""
 
-    def create_run_agent_commands(self, instruction: str) -> list[ExecInput]:
+    @staticmethod
+    def _resolve_auth_file() -> Path:
+        auth_file = os.environ.get("CODEX_AUTH_FILE", "").strip()
+        path = Path(auth_file).expanduser() if auth_file else Path.home() / ".codex" / "auth.json"
+        if not path.is_file():
+            raise ValueError(
+                "Codex auth file not found. Expected ~/.codex/auth.json or set CODEX_AUTH_FILE."
+            )
+        return path
+
+    @with_prompt_template
+    async def run(
+        self,
+        instruction: str,
+        environment: BaseEnvironment,
+        context: AgentContext,
+    ) -> None:
+        auth_file = self._resolve_auth_file()
+        await self.exec_as_agent(environment, command="mkdir -p /tmp/codex-secrets")
+        await environment.upload_file(
+            source_path=auth_file,
+            target_path="/tmp/codex-secrets/auth.json",
+        )
         escaped_instruction = shlex.quote(instruction)
 
         if not self.model_name:
             raise ValueError("Model name is required")
 
         model = self.model_name.split("/")[-1]
+        self._resolve_auth_file()
+        env = {
+            "CODEX_HOME": (EnvironmentPaths.agent_dir).as_posix(),
+        }
+
         codex_auth_json = os.environ.get("CODEX_AUTH_JSON", "").strip()
         codex_task_toml = os.environ.get("CODEX_TASK_TOML", "").strip()
         azure_openai_api_key = os.environ.get("AZURE_OPENAI_API_KEY", "").strip()
@@ -24,25 +54,22 @@ class Codex(HarborCodex):
         if codex_auth_json:
             env = {
                 "CODEX_AUTH_JSON": codex_auth_json,
-                "CODEX_HOME": (EnvironmentPaths.agent_dir).as_posix(),
             }
             setup_command = """
-            mkdir -p /tmp/codex-secrets
-            printf '%s' "$CODEX_AUTH_JSON" > /tmp/codex-secrets/auth.json
-            ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
-                            """
+mkdir -p /tmp/codex-secrets "$CODEX_HOME"
+ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
+                """
 
         elif azure_openai_api_key and codex_task_toml:
             env = {
                 "AZURE_OPENAI_API_KEY": azure_openai_api_key,
                 "CODEX_TASK_TOML": codex_task_toml,
-                "CODEX_HOME": (EnvironmentPaths.agent_dir).as_posix(),
             }
             setup_command = """
-            mkdir -p /tmp/codex-secrets
-            printf '%s' "$CODEX_TASK_TOML" > /tmp/codex-secrets/config.toml
-            ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
-            export AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY"
+mkdir -p /tmp/codex-secrets "$CODEX_HOME"
+printf '%s' "$CODEX_TASK_TOML" > /tmp/codex-secrets/config.toml
+ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
+export AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY"
                             """
 
         else:
@@ -69,15 +96,17 @@ class Codex(HarborCodex):
         if mcp_command:
             setup_command += f"\n{mcp_command}"
 
-        return [
-            ExecInput(
-                command=setup_command,
-                env=env,
-            ),
-            ExecInput(
+        await self.exec_as_agent(
+            environment,
+            command=setup_command,
+            env=env,
+        )
+        try:
+            await self.exec_as_agent(
+                environment,
                 command=(
-                    ". ~/.nvm/nvm.sh; "
-                    "for attempt in 1 2 3 4 5; do "
+                    "trap 'rm -rf /tmp/codex-secrets \"$CODEX_HOME/auth.json\"' EXIT TERM INT; "
+                    "if [ -s ~/.nvm/nvm.sh ]; then . ~/.nvm/nvm.sh; fi; "
                     "codex exec "
                     "--dangerously-bypass-approvals-and-sandbox "
                     "--skip-git-repo-check "
@@ -87,18 +116,16 @@ class Codex(HarborCodex):
                     f"{reasoning_flag}"
                     "-- "  # end of flags
                     f"{escaped_instruction} "
-                    f"2>&1 | tee {
-                        EnvironmentPaths.agent_dir / self._OUTPUT_FILENAME
-                    }; "
-                    "exit_code=$?; "
-                    "echo \"[ATTEMPT $attempt] codex exit code: $exit_code\" >> {agent_log}; "
-                    "[ $exit_code -eq 0 ] && break; "
-                    "sleep $((attempt * 2)); "
-                    "done; "
-                    "[ $exit_code -ne 0 ] && echo \"[FINAL] All 3 attempts failed with exit code $exit_code\" >> {agent_log}"
-                ).format(
-                    agent_log=EnvironmentPaths.agent_dir / "retry.log"
+                    f"2>&1 </dev/null | tee {EnvironmentPaths.agent_dir / self._OUTPUT_FILENAME}"
                 ),
                 env=env,
-            ),
-        ]
+            )
+        finally:
+            try:
+                await self.exec_as_agent(
+                    environment,
+                    command='rm -rf /tmp/codex-secrets "$CODEX_HOME/auth.json"',
+                    env={"CODEX_HOME": EnvironmentPaths.agent_dir.as_posix()},
+                )
+            except Exception:
+                pass

@@ -1,6 +1,12 @@
 # Design
 
-This folder contains project design docs, brainstorm notes, and planning materials for MedCLI.
+This folder contains project design docs, brainstorm notes, planning materials, and related-work notes for MedCLI.
+
+For local workflow and benchmark-intake guidance in this directory, see [AGENTS.md](AGENTS.md).
+
+In particular, benchmark additions should start in `design/related_work/` and `design/tasks.md` before implementation work begins elsewhere in the repo.
+
+For manuscript-facing framing and the evolving paper draft, see `paper/draft.md`.
 
 ## Documents
 

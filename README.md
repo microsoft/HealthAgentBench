@@ -34,9 +34,8 @@ Important pointers:
 
 1. Harbor repo: https://github.com/harbor-framework/harbor
 2. Harbor docs/wiki: https://deepwiki.com/harbor-framework/harbor
-3. Pinned Harbor commit used here: https://github.com/harbor-framework/harbor/commit/c255479c1319f96f140b25e6ae0b86874ee05809
-   - Maintenance note: periodically check for a newer stable Harbor release or commit.
-   - Upgrade caution: Harbor upgrades can break custom agent integration interfaces such as `src/medcli/agents/harbor/installed/codex.py`.
+3. Stable Harbor version used here: `0.3.0`
+   - Upgrade caution: Harbor upgrades can break custom installed-agent integration interfaces such as `src/medcli/agents/harbor/installed/codex.py` and `src/medcli/agents/harbor/installed/copilot_cli.py`.
 4. Local Harbor job configs in this repo include `jobs/example.yaml` and benchmark-specific job configs under `jobs/`.
 
 ## Project Structure
@@ -49,7 +48,7 @@ MedCLI/
 ├── PLANS.md
 ├── .agent/plans/               # ExecPlans, including Harbor migration and cleanup plans
 ├── design/                     # Design docs, brainstorm notes, and planning materials not yet executed in the project
-├── paper/                      # Future paper-writing materials, for example LaTeX source files
+├── paper/                      # Manuscript draft, paper framing, and later paper-writing materials such as LaTeX sources
 ├── tasks/<benchmark>/          # Generated Harbor task for a benchmark
 ├── jobs/                       # Harbor job configs
 ├── debug/                      # Generic Harbor-oriented debug helpers and docs
@@ -80,6 +79,8 @@ See `tasks/README.md` for the full list of currently supported tasks and benchma
 ```bash
 # Option 1: Codex native auth (uses ~/.codex/auth.json)
 export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+# Ensure Codex auth exists locally
+codex login status
 
 # Option 2: Azure OpenAI auth (uses ~/.codex/config.toml)
 export AZURE_OPENAI_API_KEY="<your-azure-openai-api-key>"

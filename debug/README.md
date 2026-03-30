@@ -117,7 +117,6 @@ bash debug/down-task-env.sh
 ### 3. Manual task execution with Codex
 
 ```bash
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
 bash debug/build-task-env.sh
 bash debug/up-task-env.sh
 bash debug/setup-agent.sh
@@ -169,7 +168,6 @@ This prints the reward and writes verifier artifacts under `.tmp/<project>/verif
 After running Harbor normally:
 
 ```bash
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
 UV_CACHE_DIR=.uv-cache uv run harbor run -c jobs/example.yaml
 bash debug/show-task-logs.sh
 ```
@@ -180,5 +178,5 @@ bash debug/show-task-logs.sh
 - The debug stack uses Harbor's default `hb__<task-name>` image naming for the main task image.
 - `up-task-env.sh` intentionally runs `docker compose down --remove-orphans` before `up -d --wait` to match Harbor's `DockerEnvironment.start()` behavior.
 - `install-codex-agent.sh` mirrors Harbor's `install-codex.sh.j2` behavior closely: it installs NVM, Node 22, and `@openai/codex`, then prints the installed Codex version.
-- `prepare-codex-agent.sh` expects `CODEX_AUTH_JSON` in the host shell and writes the auth file into the live container using the same `/tmp/codex-secrets` and `/logs/agent/auth.json` layout as the Harbor-installed Codex wrapper.
+- `prepare-codex-agent.sh` expects a local Codex auth file at `~/.codex/auth.json` or `CODEX_AUTH_FILE` and copies it into the live container using the same `/tmp/codex-secrets` and `/logs/agent/auth.json` layout as the Harbor-installed Codex wrapper.
 - `setup-agent.sh` is the default generic post-`up-task-env.sh` step when Codex is the debug agent; task-specific wrappers can call it instead of duplicating install/setup commands.

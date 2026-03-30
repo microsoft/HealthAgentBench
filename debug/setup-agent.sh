@@ -11,7 +11,7 @@ hb::require_running_main
 
 case "${HB_DEFAULT_AGENT}" in
   codex)
-    hb::require_var CODEX_AUTH_JSON
+    hb::codex_auth_file >/dev/null
     bash "$(dirname "$0")/install-codex-agent.sh"
     bash "$(dirname "$0")/prepare-codex-agent.sh"
     ;;

@@ -35,7 +35,7 @@ These helpers assume the generated task lives at `tasks/medagentbench/`.
 
 4. `run-manually.sh`
 - Recommended one-command manual Codex workflow for MedAgentBench.
-- Requires `CODEX_AUTH_JSON` in the host shell.
+- Requires a local Codex auth file at `~/.codex/auth.json` or `CODEX_AUTH_FILE`.
 - Calls the generic `debug/setup-agent.sh`, then opens a shell where `codex` is already available.
 
 ## Recommended Wrapper Flow
@@ -43,7 +43,6 @@ These helpers assume the generated task lives at `tasks/medagentbench/`.
 Use the generic environment build/start steps, then hand off to the one-command benchmark wrapper:
 
 ```bash
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
 bash debug/build-task-env.sh
 bash debug/up-task-env.sh
 bash debug/medagentbench/run-manually.sh

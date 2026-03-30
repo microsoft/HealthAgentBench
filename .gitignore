@@ -19,3 +19,5 @@ results/
 # These are produced by setup.sh and generators, not source code
 scripts/ehrsql/assets/
 tasks/ehrsql
+# local convenience helpers
+resume-codex.sh

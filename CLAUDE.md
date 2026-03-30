@@ -66,11 +66,11 @@ source .venv/bin/activate
 
 ## Usage
 
-Important: you must export `CODEX_AUTH_JSON` before running Harbor with Codex. Harbor runs the agent inside Docker, and without this variable Codex cannot authenticate in the container environment.
+Important: Harbor Codex runs expect a local Codex login on the host so `~/.codex/auth.json` is available. You can override the default path with `CODEX_AUTH_FILE`.
 
 ```bash
-# Export Codex auth for this shell session
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+# Verify local Codex login state
+codex login status
 
 uv run harbor run -c jobs/<benchmark>.yaml
 ```

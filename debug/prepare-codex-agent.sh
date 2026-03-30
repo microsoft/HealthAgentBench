@@ -8,7 +8,8 @@ source "$(dirname "$0")/common.sh"
 
 hb::setup_task_env
 hb::require_running_main
-hb::require_var CODEX_AUTH_JSON
+
+HB_CODEX_AUTH_FILE="$(hb::codex_auth_file)"
 
 : "${HB_CODEX_MODEL:=gpt-5.1-codex-mini}"
 : "${HB_CODEX_REASONING_EFFORT:=medium}"
@@ -22,11 +23,15 @@ if ! hb::compose exec "${HB_MAIN_SERVICE}" bash -lc '. "$HOME/.nvm/nvm.sh" >/dev
   exit 1
 fi
 
-hb::compose exec -e CODEX_AUTH_JSON="${CODEX_AUTH_JSON}" "${HB_MAIN_SERVICE}" bash -lc "
+hb::compose exec "${HB_MAIN_SERVICE}" bash -lc "
 set -euo pipefail
 export CODEX_HOME=/logs/agent
 mkdir -p /tmp/codex-secrets \"\$CODEX_HOME\"
-printf '%s' \"\$CODEX_AUTH_JSON\" > /tmp/codex-secrets/auth.json
+"
+hb::compose cp "${HB_CODEX_AUTH_FILE}" "${HB_MAIN_SERVICE}:/tmp/codex-secrets/auth.json"
+hb::compose exec "${HB_MAIN_SERVICE}" bash -lc "
+set -euo pipefail
+export CODEX_HOME=/logs/agent
 ln -sf /tmp/codex-secrets/auth.json \"\$CODEX_HOME/auth.json\"
 "
 

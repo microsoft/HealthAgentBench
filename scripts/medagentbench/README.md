@@ -30,8 +30,8 @@ uv run python scripts/medagentbench/generate_harbor_tasks.py \
   --input-json scripts/medagentbench/assets/test_data_v2.json \
   --output-root tasks/medagentbench
 
-# 3) Export Codex auth for Harbor
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+# 3) Verify Codex auth is available on the host
+codex login status
 
 # 4) Run the Harbor meta-task
 uv run harbor run -c jobs/medagentbench_meta.yaml

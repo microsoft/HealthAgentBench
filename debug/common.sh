@@ -16,6 +16,19 @@ hb::instruction_path() {
   echo "${HB_TASK_DIR_ABS}/instruction.md"
 }
 
+hb::harbor_package_dir() {
+  local python_bin="${HB_PYTHON_BIN:-$(hb::repo_root)/.venv/bin/python}"
+  if [[ ! -x "${python_bin}" ]]; then
+    python_bin="${HB_FALLBACK_PYTHON:-python3}"
+  fi
+  "${python_bin}" - <<'PY'
+from pathlib import Path
+import harbor
+
+print(Path(harbor.__file__).resolve().parent)
+PY
+}
+
 # Fail fast when a required environment variable is missing.
 hb::require_var() {
   local name="$1"
@@ -23,6 +36,16 @@ hb::require_var() {
     echo "missing required env var: ${name}" >&2
     exit 1
   fi
+}
+
+hb::codex_auth_file() {
+  local path="${CODEX_AUTH_FILE:-$HOME/.codex/auth.json}"
+  if [[ ! -f "${path}" ]]; then
+    echo "missing Codex auth file: ${path}" >&2
+    echo "set CODEX_AUTH_FILE or login with codex to populate ~/.codex/auth.json" >&2
+    exit 1
+  fi
+  echo "${path}"
 }
 
 # Read one value from the task's task.toml [environment] section.
@@ -51,12 +74,14 @@ hb::setup_task_env() {
 
   local repo_root
   repo_root="$(hb::repo_root)"
+  local harbor_package_dir
+  harbor_package_dir="$(hb::harbor_package_dir)"
   export HB_REPO_ROOT="${repo_root}"
 
   export HB_TASK_DIR_ABS="${repo_root}/${HB_TASK_DIR}"
   export HB_ENV_DIR="${HB_TASK_DIR_ABS}/environment"
-  export HB_BASE_COMPOSE="${repo_root}/.venv/lib/python3.12/site-packages/harbor/environments/docker/docker-compose-base.yaml"
-  export HB_BUILD_COMPOSE="${repo_root}/.venv/lib/python3.12/site-packages/harbor/environments/docker/docker-compose-build.yaml"
+  export HB_BASE_COMPOSE="${harbor_package_dir}/environments/docker/docker-compose-base.yaml"
+  export HB_BUILD_COMPOSE="${harbor_package_dir}/environments/docker/docker-compose-build.yaml"
   export HB_TASK_COMPOSE="${HB_ENV_DIR}/docker-compose.yaml"
   : "${HB_MAIN_IMAGE_NAME:=hb__$(hb::task_name)}"
 
