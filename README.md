@@ -78,8 +78,12 @@ Python version requirement: `>=3.12`.
 See `tasks/README.md` for the full list of currently supported tasks and benchmarks.
 
 ```bash
-# Export Codex auth for this shell session
+# Option 1: Codex native auth (uses ~/.codex/auth.json)
 export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+
+# Option 2: Azure OpenAI auth (uses ~/.codex/config.toml)
+export AZURE_OPENAI_API_KEY="<your-azure-openai-api-key>"
+export CODEX_TASK_TOML="$(cat ~/.codex/config.toml)"
 
 uv run harbor run -c jobs/<benchmark>.yaml
 ```
