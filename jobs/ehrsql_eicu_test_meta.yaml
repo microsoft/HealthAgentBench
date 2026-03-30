@@ -1,9 +1,9 @@
-jobs_dir: results/harbor/ehrsql_eicu_test
+jobs_dir: results/harbor/ehrsql/eicu_test
 n_attempts: 1
 timeout_multiplier: 1.0
 orchestrator:
   type: local
-  n_concurrent_trials: 1
+  n_concurrent_trials: 5
   quiet: false
 
 environment:
@@ -11,17 +11,49 @@ environment:
   force_build: true
   delete: true
   env:
+    - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+    - CODEX_TASK_TOML=${CODEX_TASK_TOML}
     - CODEX_AUTH_JSON=${CODEX_AUTH_JSON}
 
 agents:
   - import_path: medcli.agents.harbor.installed.codex:Codex
-    model_name: gpt-5.1-codex-mini
+    model_name: gpt-5.3-codex
     kwargs:
       reasoning_effort: medium
 
 datasets:
-  - path: tasks
+  - path: tasks/ehrsql/eicu_test
     task_names:
-      - ehrsql_eicu_test
+      - worker_0
+      - worker_1
+      - worker_2
+      - worker_3
+      - worker_4
+      - worker_5
+      - worker_6
+      - worker_7
+      - worker_8
+      - worker_9
+      - worker_10
+      - worker_11
+      - worker_12
+      - worker_13
+      - worker_14
+      - worker_15
+      - worker_16
+      - worker_17
+      - worker_18
+      - worker_19
+      - worker_20
+      - worker_21
+      - worker_22
+      - worker_23
+      - worker_24
+      - worker_25
+      - worker_26
+      - worker_27
+      - worker_28
+      - worker_29
+
 artifacts:
   - /workspace/submission.json

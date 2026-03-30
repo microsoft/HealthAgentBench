@@ -45,49 +45,91 @@ scripts/ehrsql/assets/eicu/eicu.sqlite
 
 ### 2. Generate Harbor Task Artifact
 
-**Generate with all validation set tasks (2,239 tasks):**
+**Generate tasks:**
+
+We can run the command below to generate per-dataset validation/test task. Because the task data can be huge, we divide it into one-example-per-subtask by specifying split_task_by_n argument. 
 
 ```bash
-uv run python scripts/ehrsql/generate_harbor_tasks.py \
-  --output-root tasks/ehrsql \
-  --valid-json scripts/ehrsql/assets/mimic_iii/valid.json scripts/ehrsql/assets/eicu/valid.json
+uv run python scripts/ehrsql/generate_harbor_tasks.py \   
+  --output-root tasks/ehrsql/mimic_iii_valid/ \
+  --valid-json scripts/ehrsql/assets/mimic_iii/valid.json --split_task_by_n 250 --sample-size 250
+
+uv run python scripts/ehrsql/generate_harbor_tasks.py \   
+  --output-root tasks/ehrsql/mimic_iii_test/ \
+  --valid-json scripts/ehrsql/assets/mimic_iii/test.json --split_task_by_n 250 --sample-size 250
+
+uv run python scripts/ehrsql/generate_harbor_tasks.py \   
+  --output-root tasks/ehrsql/eicu_test/ \
+  --valid-json scripts/ehrsql/assets/eicu/test.json --split_task_by_n  250 --sample-size 250
+
+uv run python scripts/ehrsql/generate_harbor_tasks.py \   
+  --output-root tasks/ehrsql/eicu_valid/ \
+  --valid-json scripts/ehrsql/assets/eicu/valid.json --split_task_by_n  250 --sample-size 250
 ```
 
-**Or with default strategy:**
+This generates subtasks from the dataset, each subtask contains
+- `tasks/ehrsql/mimic_iii_valid/worker_{}/task.toml` — Harbor configuration
+- `tasks/ehrsql/mimic_iii_valid/worker_{}/instruction.md` — Agent instructions
+- `tasks/ehrsql/mimic_iii_valid/worker_{}/benchmark_tasks.json` — Public task list (2,239 or custom count)
+- `tasks/ehrsql/mimic_iii_valid/worker_{}/environment/workspace/` — Agent workspace with SQL primitives
+- `tasks/ehrsql/mimic_iii_valid/worker_{}/tests/task_answer_key.json` — Hidden answer keys
 
-```bash
-uv run python scripts/ehrsql/generate_harbor_tasks.py \
-  --output-root tasks/ehrsql
-```
-
-**Or with specific task IDs:**
-
-```bash
-uv run python scripts/ehrsql/generate_harbor_tasks.py \
-  --output-root tasks/ehrsql \
-  --selected-task-ids task_id1,task_id2,task_id3
-```
-
-This generates:
-- `tasks/ehrsql/task.toml` — Harbor configuration
-- `tasks/ehrsql/instruction.md` — Agent instructions
-- `tasks/ehrsql/benchmark_tasks.json` — Public task list (2,239 or custom count)
-- `tasks/ehrsql/environment/workspace/` — Agent workspace with SQL primitives
-- `tasks/ehrsql/tests/task_answer_key.json` — Hidden answer keys
-
-### 3. Run with Harbor
+### 3. Run with Harbor with parallelization on all subtasks
 
 ```bash
 export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
-uv run harbor run -c jobs/ehrsql_meta.yaml
+uv run harbor run -c jobs/ehrsql_mimic_iii_valid_meta.yaml
+uv run harbor run -c jobs/ehrsql_mimic_iii_test_meta.yaml
+uv run harbor run -c jobs/ehrsql_eicu_valid_meta.yaml
+uv run harbor run -c jobs/ehrsql_eicu_test_meta.yaml
 ```
+
+### 4. Run evaluation aggregation over all subtasks
+
+After all workers complete, aggregate submissions and compute the overall score:
+
+```bash
+uv run python scripts/ehrsql/aggregate_worker_submissions.py \
+  --run-dir results/harbor/ehrsql/mimic_iii_valid/<timestamp> \
+  --db-dir scripts/ehrsql/assets
+
+uv run python scripts/ehrsql/aggregate_worker_submissions.py \
+  --run-dir results/harbor/ehrsql/mimic_iii_test/<timestamp> \
+  --db-dir scripts/ehrsql/assets
+
+uv run python scripts/ehrsql/aggregate_worker_submissions.py \
+  --run-dir results/harbor/ehrsql/eicu_valid/<timestamp> \
+  --db-dir scripts/ehrsql/assets
+
+uv run python scripts/ehrsql/aggregate_worker_submissions.py \
+  --run-dir results/harbor/ehrsql/eicu_test/<timestamp> \
+  --db-dir scripts/ehrsql/assets
+```
+
+This script:
+1. Finds all `worker_*/artifacts/submission.json` files in the run directory
+2. Merges them into a single `merged_submission.json`
+3. Merges per-worker answer keys if no top-level answer key exists
+4. Runs `harbor_evaluator.py` to compute metrics against the gold SQL
+5. Outputs `merged_evaluation.json` with pass@1, answerability F1, and execution F1
+
+You can also pass multiple run directories if workers are spread across separate runs:
+
+```bash
+uv run python scripts/ehrsql/aggregate_worker_submissions.py \
+  --run-dir results/harbor/ehrsql/mimic_iii_valid/<timestamp1> \
+              results/harbor/ehrsql/mimic_iii_valid/<timestamp2> \
+  --db-dir scripts/ehrsql/assets
+```
+
+If `--run-dir` is omitted, the script auto-detects the latest run directory.
 
 ## Harbor Task Structure
 
 ### Generated Files
 
 ```
-tasks/ehrsql/
+tasks/ehrsql/mimic_III_valid/worker_{}
 ├── task.toml                      # Harbor meta-task config
 ├── instruction.md                 # Agent-facing instructions
 ├── benchmark_tasks.json           # Public task definitions
@@ -143,157 +185,9 @@ The verifier (`verify_meta_task.py`):
 }
 ```
 
-## Key Design Decisions
-
-1. **Task Type**: EHRSQL is `factual_qa` — Q&A over EHRs (SQL is implementation detail)
-2. **Answer Format**: Agent returns SQL string (or "null" for unanswerable)
-3. **Evaluation**: Execute both gold and predicted SQL, compare result sets (set-based, not string-based)
-4. **Unanswerable Tasks**: ~8.8% marked `is_impossible: true`; agent should return "null"
-5. **Databases**: Two databases (MIMIC-III, eICU) distinguished by `db_id` field
-
-
-## Multi-Dataset Experiments
-
-Run EHRSQL evaluation across multiple dataset splits (MIMIC-III and eICU, validation and test) with separate output directories for easy comparison.
-
-### Sampling from Specific Datasets
-
-When you provide `--valid-json` or `--test-json`, tasks are randomly sampled (deterministic with fixed seed=42):
-
-```bash
-# Sample 100 random tasks from MIMIC-III validation set
-uv run python scripts/ehrsql/generate_harbor_tasks.py \
-  --output-root tasks/ehrsql_mimic_iii_valid \
-  --valid-json scripts/ehrsql/assets/mimic_iii/valid.json \
-  --sample-size 100
-
-# Sample 100 random tasks from MIMIC-III test set
-uv run python scripts/ehrsql/generate_harbor_tasks.py \
-  --output-root tasks/ehrsql_mimic_iii_test \
-  --test-json scripts/ehrsql/assets/mimic_iii/test.json \
-  --sample-size 100
-
-# Sample 100 random tasks from eICU validation set
-uv run python scripts/ehrsql/generate_harbor_tasks.py \
-  --output-root tasks/ehrsql_eicu_valid \
-  --valid-json scripts/ehrsql/assets/eicu/valid.json \
-  --sample-size 100
-
-# Sample 100 random tasks from eICU test set
-uv run python scripts/ehrsql/generate_harbor_tasks.py \
-  --output-root tasks/ehrsql_eicu_test \
-  --test-json scripts/ehrsql/assets/eicu/test.json \
-  --sample-size 100
-```
-
-Output structure:
-```
-tasks/
-  ehrsql_mimic_iii_valid/
-  ehrsql_mimic_iii_test/
-  ehrsql_eicu_valid/
-  ehrsql_eicu_test/
-```
-
 ### Creating Job Configurations
+job configurations for each dataset-split combination is found in jobs/ehrsql_{data}_{split}_meta.yaml
 
-Create `jobs/ehrsql_mimic_iii_valid_meta.yaml`:
-```yaml
-jobs_dir: results/harbor/ehrsql_mimic_iii_valid
-n_attempts: 1
-orchestrator:
-  type: local
-  n_concurrent_trials: 1
-environment:
-  type: docker
-  force_build: true
-  env:
-    - CODEX_AUTH_JSON=${CODEX_AUTH_JSON}
-agents:
-  - import_path: medcli.agents.harbor.installed.codex:Codex
-    model_name: gpt-5.1-codex-mini
-datasets:
-  - path: tasks
-    task_names:
-      - ehrsql_mimic_iii_valid
-artifacts:
-  - /workspace/submission.json
-```
-
-Repeat for other splits (replace `mimic_iii_valid` with `mimic_iii_test`, `eicu_valid`, `eicu_test` in both the YAML filename, `jobs_dir`, and `task_names`).
-
-### Running Experiments
-
-Run all splits in parallel:
-```bash
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
-
-uv run harbor run -c jobs/ehrsql_mimic_iii_valid_meta.yaml &
-uv run harbor run -c jobs/ehrsql_mimic_iii_test_meta.yaml &
-uv run harbor run -c jobs/ehrsql_eicu_valid_meta.yaml &
-uv run harbor run -c jobs/ehrsql_eicu_test_meta.yaml &
-
-wait
-echo "All experiments completed"
-```
-
-Or run sequentially:
-```bash
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
-
-for split in mimic_iii_valid mimic_iii_test eicu_valid eicu_test; do
-  uv run harbor run -c jobs/ehrsql_${split}_meta.yaml
-done
-```
-
-### Comparing Results
-
-Results are organized by task split:
-```
-results/harbor/
-  ehrsql_mimic_iii_valid/          # Results for MIMIC-III validation
-    {timestamp}/
-      {task_id}__ABC123/
-        meta_results.json
-        detailed_results.json
-  ehrsql_mimic_iii_test/           # Results for MIMIC-III test
-    {timestamp}/
-      ...
-  ehrsql_eicu_valid/               # Results for eICU validation
-    {timestamp}/
-      ...
-  ehrsql_eicu_test/                # Results for eICU test
-    {timestamp}/
-      ...
-```
-
-Extract and compare accuracy across splits:
-```bash
-echo "MIMIC-III valid:  $(jq '.pass_at_1' results/harbor/ehrsql_mimic_iii_valid/*/ehrsql_mimic_iii_valid__*/meta_results.json | head -1)"
-echo "MIMIC-III test:   $(jq '.pass_at_1' results/harbor/ehrsql_mimic_iii_test/*/ehrsql_mimic_iii_test__*/meta_results.json | head -1)"
-echo "eICU valid:       $(jq '.pass_at_1' results/harbor/ehrsql_eicu_valid/*/ehrsql_eicu_valid__*/meta_results.json | head -1)"
-echo "eICU test:        $(jq '.pass_at_1' results/harbor/ehrsql_eicu_test/*/ehrsql_eicu_test__*/meta_results.json | head -1)"
-```
-
-## Sampling Strategy Notes
-
-- **Random sampling** (when `--valid-json` / `--test-json` provided): Draws a random sample of specified size from the provided JSON file. Deterministic with seed=42.
-- **Default strategy** (when no JSON files provided): Stratified sampling by database and importance level (balanced coverage).
-- **Explicit task IDs** (when `--selected-task-ids` provided): Uses exact task IDs, no sampling applied.
-
-## Troubleshooting
-
-**SQLite database not found**
-- Ensure `scripts/ehrsql/assets/mimic_iii/mimic_iii.sqlite` and `scripts/ehrsql/assets/eicu/eicu.sqlite` exist
-- Download from Google Drive links above
-
-**Primitivescripts fail in container**
-- Check that `/scripts/ehrsql/assets/` is mounted in Harbor container
-- Verify database files are readable (chmod +r)
-
-**Evaluation returns all failures**
-- Check database connectivity: `sqlite3 scripts/ehrsql/assets/mimic_iii/mimic_iii.sqlite ".tables"`
-- Verify answer key is present: `ls -la tasks/ehrsql/tests/task_answer_key.json`
 
 ## References
 

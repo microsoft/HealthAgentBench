@@ -9,6 +9,12 @@ Sampling Strategy:
 - Without JSON files: Uses default strategy (stratified sampling by database/importance)
 - With --selected-task-ids: Uses exact task IDs (no sampling)
 
+Splitting Strategy:
+- With --split_task_by_n N: Creates N worker subdirectories (worker_0, worker_1, ..., worker_{N-1})
+  Tasks are shuffled (deterministically, with seed=42) before splitting to balance difficulty across workers.
+  Each worker then gets a sequential chunk of the shuffled tasks.
+  Useful for parallel execution via Harbor with n_concurrent_trials=N.
+
 Usage (random sample 100 tasks from mimic_iii validation set):
     python scripts/ehrsql/generate_harbor_tasks.py \
       --output-root tasks/mimic_iii_valid \
@@ -24,6 +30,12 @@ Usage (specific task IDs):
 Usage (default strategy - 200 stratified tasks):
     python scripts/ehrsql/generate_harbor_tasks.py \
       --output-root tasks/ehrsql
+
+Usage (split into 10 parallel workers):
+    python scripts/ehrsql/generate_harbor_tasks.py \
+      --output-root tasks/ehrsql/ehrsql_mimic_iii_valid \
+      --valid-json scripts/ehrsql/assets/mimic_iii/valid.json \
+      --split_task_by_n 10
 """
 
 from __future__ import annotations
@@ -178,6 +190,34 @@ def _copy_verifier_script(tests_dir: Path) -> None:
         (tests_dir / "verify_meta_task.py").write_text(verifier_code)
 
 
+def _generate_stub_verifier(tests_dir: Path) -> None:
+    """Generate a minimal verifier that always passes (skips SQL evaluation)."""
+    (tests_dir / "verify_meta_task.py").write_text("""#!/usr/bin/env python3
+\"\"\"Stub verifier — always passes. Use aggregate_worker_submissions.py for evaluation.\"\"\"
+import json
+from pathlib import Path
+
+submission = json.loads(Path("/workspace/submission.json").read_text())
+filled = sum(1 for r in submission if r.get("final_answer", "").strip())
+total = len(submission)
+
+logs = Path("/logs/verifier")
+logs.mkdir(parents=True, exist_ok=True)
+
+reward = filled / total if total else 0.0
+(logs / "reward.txt").write_text(str(reward))
+(logs / "meta_results.json").write_text(json.dumps({
+    "status": "success",
+    "pass_at_1": reward,
+    "total_tasks": total,
+    "filled_tasks": filled,
+    "note": "stub verifier — fill rate only, no SQL evaluation"
+}))
+(logs / "submission.json").write_text(json.dumps(submission, indent=2))
+print(f"Stub verifier: {filled}/{total} filled ({reward:.1%})")
+""")
+
+
 def _generate_test_script(tests_dir: Path) -> None:
     """Generate test.sh script that Harbor calls to run the verifier."""
     (tests_dir / "test.sh").write_text("""#!/bin/bash
@@ -194,7 +234,7 @@ python verify_meta_task.py
     (tests_dir / "test.sh").chmod(0o755)
 
 
-def _generate_dockerfile(env_dir: Path) -> None:
+def _generate_dockerfile(env_dir: Path, db_id: str) -> None:
     """Generate Dockerfile for EHRSQL Harbor environment.
 
     Note: Build context should be harbor_tasks/ehrsql/ (parent directory)
@@ -233,7 +273,7 @@ CMD ["/bin/bash"]
 """)
 
 
-def _generate_docker_compose(env_dir: Path) -> None:
+def _generate_docker_compose(env_dir: Path, db_id: str) -> None:
     """Generate docker-compose.yaml for local EHRSQL Harbor environment.
 
     Build context is set to .. (tasks/ehrsql/) so Dockerfile can
@@ -241,7 +281,7 @@ def _generate_docker_compose(env_dir: Path) -> None:
     """
     # Get absolute path to data directory (resolve symlinks)
     repo_root = Path(__file__).parent.parent.parent
-    db_dir = (repo_root / "scripts" / "ehrsql" / "assets").resolve()
+    db_dir = (repo_root / "scripts" / "ehrsql" / "assets" / db_id).resolve()
 
     (env_dir / "docker-compose.yaml").write_text(f"""services:
   main:
@@ -249,7 +289,7 @@ def _generate_docker_compose(env_dir: Path) -> None:
       context: ..                    # Build from harbor_tasks/ehrsql/
       dockerfile: environment/Dockerfile
     volumes:
-      - {db_dir}:/data/ehrsql:ro  # Mount SQLite databases from scripts/ehrsql/assets (read-only)
+      - {db_dir}:/data/ehrsql/{db_id}:ro  # Mount {db_id} SQLite database (read-only)
     environment:
       - PYTHONUNBUFFERED=1
     # Resource limits for safe local testing
@@ -264,115 +304,173 @@ def _generate_docker_compose(env_dir: Path) -> None:
 """)
 
 
-def _generate_workspace_readme(workspace_dir: Path) -> None:
+def _generate_workspace_readme(workspace_dir: Path, db_id: str) -> None:
     """Generate README for agent workspace."""
-    (workspace_dir / "README.md").write_text("""# Workspace Files
+    db_name = _DB_DISPLAY_NAMES.get(db_id, db_id)
+    db_path = f"/data/ehrsql/{db_id}/{db_id}.sqlite"
+    (workspace_dir / "README.md").write_text(f"""# Workspace Files
 
 - `benchmark_tasks.json`: task definitions for SQL generation
 - `submission.json`: editable task rows; fill in `final_answer` (SQL query or "null")
 
-SQLite databases:
-- MIMIC-III: `/data/ehrsql/mimic_iii/mimic_iii.sqlite`
-- eICU: `/data/ehrsql/eicu/eicu.sqlite`
+SQLite database:
+- {db_name}: `{db_path}`
 
 The verifier reads `/workspace/submission.json` after the agent stops.
 """)
 
 
-def _generate_instruction_md() -> str:
-    """Generate minimal instruction.md for agent."""
-    return """# EHRSQL: Text-to-SQL over EHR Data
+_DB_DISPLAY_NAMES = {
+    "mimic_iii": "MIMIC-III",
+    "eicu": "eICU",
+}
 
-## Environment
-You have access to two SQLite databases mounted at `/data/ehrsql/`:
-- MIMIC-III: `/data/ehrsql/mimic_iii/mimic_iii.sqlite`
-- eICU: `/data/ehrsql/eicu/eicu.sqlite
-The task data is provided in `/workspace/benchmark_tasks.json`, and you should write your answers to `/workspace/submission.json`.
 
-## Helper Scripts
+def _generate_instruction_md(db_id: str) -> str:
+    """Generate database-specific instruction.md for agent."""
+    db_name = _DB_DISPLAY_NAMES.get(db_id, db_id)
+    db_path = f"/data/ehrsql/{db_id}/{db_id}.sqlite"
 
-Use these scripts to manage tasks:
+    return f"""# EHRSQL: Text-to-SQL over EHR Data
 
-```bash
-# Get a task by row index (0-indexed)
-./scripts/primitives/get_row.py 0
+You are working inside a task environment that contains:
 
-# Update answer for a task
-./scripts/primitives/set_answer.py 0 "SELECT * FROM patients WHERE ..."
-```
+- a {db_name} SQLite EHR database at `{db_path}`
+- task descriptions at `/workspace/benchmark_tasks.json`
+- editable task rows already prepared at `/workspace/submission.json`
 
-## Workflow
+Your final work product is `/workspace/submission.json`.
 
-**You must complete ALL rows in a single continuous run. Do not stop until every row is answered.**
+## Your Task
 
-Use a tight loop to systematically work through every row:
+Process every row in `/workspace/submission.json`. For each row:
 
-```python
-# Pseudocode for your workflow:
-for row_index in range(0, total_rows):
-    get_row(row_index)
-    generate SQL answer (or "null" if unanswerable)
-    set_answer(row_index, sql)
-    # Continue immediately to next row—do not pause
-```
+1. Read the task instruction
+2. Answer the question from the instruction with a SQL query or "null" if unanswerable
+3. Write your answer into the `final_answer` field of the same row in `/workspace/submission.json`
 
-For each row from `benchmark_tasks.json`:
+**You must complete all rows before stopping.**
 
-1. Run: `python ./scripts/primitives/get_row.py ROW_INDEX`
-2. Read the `instruction` field (natural language question)
-3. Generate a SQL query that answers it (or "null" if unanswerable)
-4. Run: `python ./scripts/primitives/set_answer.py ROW_INDEX "YOUR_SQL_QUERY"`
-5. **Immediately proceed to the next row** — do not stop or wait for user input
+## Submission Rules
 
-**This is a single, continuous task.** You will receive no further input once you start. Work through rows 0 → N (where N is the last row) without interruption.
+- Each row has fields: `task_id`, `instruction`, `final_answer`
+- Set `final_answer` to: a valid SQL query (answerable) OR the string `"null"` (unanswerable)
+- Do NOT modify `task_id`, `instruction`, or `payload` fields
+- Work autonomously until all rows are complete
 
-## Example: Continuous Execution
+## Important: Work Independently
 
-Row 0:
-```bash
-python ./scripts/primitives/get_row.py 0
-python ./scripts/primitives/set_answer.py 0 "SELECT COUNT(*) FROM patients"
-# ✓ Row 0 updated | Progress: 1/200 (0.5%)
-```
+- **Do not ask for user feedback, approval, or permission** to continue
+- **Do not ask to reprioritize tasks or wait for input**
+- You have all information needed: database, schema, task instructions
+- Work continuously until every row in the submission is filled
+- You will not receive responses to requests for user input
 
-Row 1 (immediately—no pause):
-```bash
-python ./scripts/primitives/get_row.py 1
-python ./scripts/primitives/set_answer.py 1 "SELECT dob FROM patients WHERE subject_id = 45601"
-# ✓ Row 1 updated | Progress: 2/200 (1.0%)
-```
+## Benchmark Integrity
 
-**Continue this loop through all rows without stopping or asking for input.**
+- Do not download EHRSQL datasets from external sources
+- Do not copy or look up answers online
+- Generate all SQL based on your own schema inspection and database experiments
 
-## Databases
+## Database
 
-- MIMIC-III: `/data/ehrsql/mimic_iii/mimic_iii.sqlite`
-- eICU: `/data/ehrsql/eicu/eicu.sqlite`
-
-## IMPORTANT: Benchmark Integrity
-
-**Do not look up answers online or in external sources.** This includes:
-- ❌ Downloading EHRSQL datasets from GitHub or other repositories
-- ❌ Searching for task instructions online to find expected answers
-- ❌ Using any pre-computed answer files or databases
-- ❌ Copying SQL from external EHRSQL implementations
-
-**You must generate SQL based on:**
-- ✓ Database schema inspection (using SQLite PRAGMA commands)
-- ✓ Experimentation with the mounted databases
-- ✓ Your understanding of the question and data
-
-Violating this will invalidate your submission and compromise the benchmark.
-
-## Evaluation
-
-Your submission is evaluated on:
-1. **Correctness**: Does your SQL return the right answer?
-2. **Answerability**: Did you correctly return "null" for truly unanswerable tasks?
-3. **Completion**: Did you answer **every single task**?
-
-**Your final work product is `/workspace/submission.json`.**
+- {db_name}: `{db_path}`
 """
+
+
+def _split_into_chunks(items: list[Any], n: int) -> list[list[Any]]:
+    """Split items into n sequential chunks deterministically.
+
+    Args:
+        items: List to split
+        n: Number of chunks
+
+    Returns:
+        List of n chunks, where each chunk is items[i*size:(i+1)*size]
+        The last chunk may be larger if len(items) is not divisible by n.
+    """
+    if n <= 0:
+        raise ValueError("n must be > 0")
+    if n > len(items):
+        n = len(items)
+
+    size = len(items) // n
+    chunks = []
+    for i in range(n - 1):
+        chunks.append(items[i * size : (i + 1) * size])
+    # Last chunk gets the remainder
+    chunks.append(items[(n - 1) * size :])
+    return chunks
+
+
+def _write_worker_task(
+    worker_dir: Path,
+    selected_task_ids: list[str],
+    benchmark_tasks_chunk: list[dict[str, Any]],
+    answer_key_chunk: list[dict[str, Any]],
+    submission_template_chunk: list[dict[str, Any]],
+    db_id: str,
+    skip_evaluator: bool = False,
+) -> None:
+    """Write a complete Harbor task for one worker."""
+    worker_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write task.toml (use chunk-specific task IDs, not the full list)
+    chunk_task_ids = [t["task_id"] for t in benchmark_tasks_chunk]
+    (worker_dir / "task.toml").write_text(
+        _generate_task_toml(worker_dir, chunk_task_ids, len(benchmark_tasks_chunk))
+    )
+
+    # Write instruction.md
+    (worker_dir / "instruction.md").write_text(_generate_instruction_md(db_id))
+
+    # Write root-level benchmark_tasks.json
+    (worker_dir / "benchmark_tasks.json").write_text(
+        json.dumps(benchmark_tasks_chunk, indent=2)
+    )
+
+    # Create environment directory
+    env_dir = worker_dir / "environment"
+    env_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create workspace
+    workspace_dir = env_dir / "workspace"
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write workspace submission.json
+    (workspace_dir / "submission.json").write_text(
+        json.dumps(submission_template_chunk, indent=2)
+    )
+
+    # Write workspace benchmark_tasks.json
+    (workspace_dir / "benchmark_tasks.json").write_text(
+        json.dumps(benchmark_tasks_chunk, indent=2)
+    )
+
+    # # Generate primitive scripts
+    # _generate_primitive_scripts(workspace_dir)
+
+    # Create tests directory
+    tests_dir = worker_dir / "tests"
+    tests_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write worker's answer key chunk (NOT the full key — this is just for the worker's tasks)
+    (tests_dir / "task_answer_key.json").write_text(
+        json.dumps(answer_key_chunk, indent=2)
+    )
+
+    # Copy evaluator and verifier modules (or stub if skipped)
+    if skip_evaluator:
+        _generate_stub_verifier(tests_dir)
+    else:
+        _copy_evaluator_module(tests_dir)
+        _copy_verifier_script(tests_dir)
+    _generate_test_script(tests_dir)
+
+    # Generate Dockerfile and docker-compose
+    _generate_dockerfile(env_dir, db_id)
+    _generate_docker_compose(env_dir, db_id)
+    _generate_workspace_readme(workspace_dir, db_id)
 
 
 def _generate_primitive_scripts(workspace_dir: Path) -> None:
@@ -460,8 +558,10 @@ def generate_harbor_task(
     raw_tasks: list[dict[str, Any]] | None = None,
     selected_task_ids: list[str] | None = None,
     sample_size: int | None = None,
+    split_task_by_n: int | None = None,
+    skip_evaluator: bool = False,
 ) -> None:
-    """Generate complete Harbor meta-task for EHRSQL.
+    """Generate complete Harbor meta-task for EHRSQL, optionally split into N workers.
 
     Args:
         output_root: Root directory for generated Harbor task
@@ -470,6 +570,11 @@ def generate_harbor_task(
                           If provided, uses exactly these tasks (no re-selection).
         sample_size: Number of tasks to select if using default strategy.
                      If None (default), uses ALL available tasks.
+        split_task_by_n: If provided, split the task into N worker subdirectories
+                        (e.g., worker_0, worker_1, ..., worker_{N-1}).
+                        Tasks are shuffled (deterministically) before splitting to balance
+                        difficulty across workers. Each worker then gets a sequential chunk.
+                        If None (default), generate a single task at output_root.
     """
     output_root = Path(output_root)
     output_root.mkdir(parents=True, exist_ok=True)
@@ -494,6 +599,17 @@ def generate_harbor_task(
 
     selected_tasks = select_tasks(raw_tasks, selected_task_ids)
 
+    # Detect database from tasks
+    db_ids = {t.get("db_id", "") for t in selected_tasks}
+    db_ids.discard("")
+    if len(db_ids) == 1:
+        db_id = db_ids.pop()
+    else:
+        raise ValueError(
+            f"Expected tasks from a single database, got: {db_ids}. "
+            "Pass a single --valid-json or --test-json per database."
+        )
+
     # Generate public benchmark_tasks
     benchmark_tasks = _generate_benchmark_tasks(selected_tasks)
 
@@ -503,60 +619,99 @@ def generate_harbor_task(
     # Generate submission template
     submission_template = _create_submission_template(benchmark_tasks)
 
-    # Write files
-    (output_root / "task.toml").write_text(
-        _generate_task_toml(output_root, selected_task_ids, len(selected_tasks))
-    )
+    # If split_task_by_n is provided, create N worker tasks
+    if split_task_by_n and split_task_by_n > 1:
+        # Shuffle tasks before splitting to balance difficulty across workers
+        # Create shuffled indices using deterministic seed
+        indices = list(range(len(benchmark_tasks)))
+        random.Random(42).shuffle(indices)
 
-    (output_root / "instruction.md").write_text(_generate_instruction_md())
+        # Apply same permutation to all three lists (keep them aligned)
+        benchmark_tasks = [benchmark_tasks[i] for i in indices]
+        answer_key = [answer_key[i] for i in indices]
+        submission_template = [submission_template[i] for i in indices]
 
-    (output_root / "benchmark_tasks.json").write_text(
-        json.dumps(benchmark_tasks, indent=2)
-    )
+        # Split data into N chunks
+        benchmark_chunks = _split_into_chunks(benchmark_tasks, split_task_by_n)
+        answer_key_chunks = _split_into_chunks(answer_key, split_task_by_n)
+        submission_chunks = _split_into_chunks(submission_template, split_task_by_n)
 
-    # Create environment directory
-    env_dir = output_root / "environment"
-    env_dir.mkdir(parents=True, exist_ok=True)
+        # Create N worker task directories
+        for i in range(len(benchmark_chunks)):
+            worker_dir = output_root / f"worker_{i}"
+            _write_worker_task(
+                worker_dir,
+                selected_task_ids,  # Original task IDs for task.toml
+                benchmark_chunks[i],
+                answer_key_chunks[i],
+                submission_chunks[i],
+                db_id,
+                skip_evaluator=skip_evaluator,
+            )
 
-    # Create workspace
-    workspace_dir = env_dir / "workspace"
-    workspace_dir.mkdir(parents=True, exist_ok=True)
+        print(f"✓ Generated {len(benchmark_chunks)} worker tasks at {output_root}")
+        for i, bm_chunk in enumerate(benchmark_chunks):
+            print(f"  - worker_{i}/: {len(bm_chunk)} tasks")
+        print(f"  Total: {len(benchmark_tasks)} tasks split into {len(benchmark_chunks)} workers")
+    else:
+        # Single task (no splitting)
+        # Write files
+        (output_root / "task.toml").write_text(
+            _generate_task_toml(output_root, selected_task_ids, len(selected_tasks))
+        )
 
-    (workspace_dir / "submission.json").write_text(
-        json.dumps(submission_template, indent=2)
-    )
+        (output_root / "instruction.md").write_text(_generate_instruction_md(db_id))
 
-    (workspace_dir / "benchmark_tasks.json").write_text(
-        json.dumps(benchmark_tasks, indent=2)
-    )
+        (output_root / "benchmark_tasks.json").write_text(
+            json.dumps(benchmark_tasks, indent=2)
+        )
 
-    # Generate primitive scripts
-    _generate_primitive_scripts(workspace_dir)
+        # Create environment directory
+        env_dir = output_root / "environment"
+        env_dir.mkdir(parents=True, exist_ok=True)
 
-    # Create tests directory
-    tests_dir = output_root / "tests"
-    tests_dir.mkdir(parents=True, exist_ok=True)
+        # Create workspace
+        workspace_dir = env_dir / "workspace"
+        workspace_dir.mkdir(parents=True, exist_ok=True)
 
-    (tests_dir / "task_answer_key.json").write_text(
-        json.dumps(answer_key, indent=2)
-    )
+        (workspace_dir / "submission.json").write_text(
+            json.dumps(submission_template, indent=2)
+        )
 
-    # Copy evaluator and verifier modules to make harbor_tasks self-contained
-    _copy_evaluator_module(tests_dir)
-    _copy_verifier_script(tests_dir)
-    _generate_test_script(tests_dir)
+        (workspace_dir / "benchmark_tasks.json").write_text(
+            json.dumps(benchmark_tasks, indent=2)
+        )
 
-    # Generate Dockerfile and docker-compose
-    _generate_dockerfile(env_dir)
-    _generate_docker_compose(env_dir)
-    _generate_workspace_readme(workspace_dir)
+        # # Generate primitive scripts
+        # _generate_primitive_scripts(workspace_dir)
 
-    print(f"✓ Generated Harbor meta-task at {output_root}")
-    print(f"  - {len(selected_tasks)} tasks selected")
-    print(f"  - task.toml, instruction.md, benchmark_tasks.json created")
-    print(f"  - workspace/ with submission template and README (minimal, no tools)")
-    print(f"  - environment/ with Dockerfile and docker-compose")
-    print(f"  - tests/ with answer key and evaluator module")
+        # Create tests directory
+        tests_dir = output_root / "tests"
+        tests_dir.mkdir(parents=True, exist_ok=True)
+
+        (tests_dir / "task_answer_key.json").write_text(
+            json.dumps(answer_key, indent=2)
+        )
+
+        # Copy evaluator and verifier modules (or stub if skipped)
+        if skip_evaluator:
+            _generate_stub_verifier(tests_dir)
+        else:
+            _copy_evaluator_module(tests_dir)
+            _copy_verifier_script(tests_dir)
+        _generate_test_script(tests_dir)
+
+        # Generate Dockerfile and docker-compose
+        _generate_dockerfile(env_dir, db_id)
+        _generate_docker_compose(env_dir, db_id)
+        _generate_workspace_readme(workspace_dir, db_id)
+
+        print(f"✓ Generated Harbor meta-task at {output_root}")
+        print(f"  - {len(selected_tasks)} tasks selected")
+        print(f"  - task.toml, instruction.md, benchmark_tasks.json created")
+        print(f"  - workspace/ with submission template and README (minimal, no tools)")
+        print(f"  - environment/ with Dockerfile and docker-compose")
+        print(f"  - tests/ with answer key and evaluator module")
 
 
 def main() -> None:
@@ -587,6 +742,17 @@ def main() -> None:
         type=int,
         default=None,
         help="Number of tasks to randomly sample (default: all available tasks)",
+    )
+    parser.add_argument(
+        "--split_task_by_n",
+        type=int,
+        default=None,
+        help="If provided, split the task into N worker subdirectories (worker_0, worker_1, ..., worker_{N-1}). Each worker gets a sequential, deterministic chunk of tasks. Useful for parallel execution.",
+    )
+    parser.add_argument(
+        "--skip-evaluator",
+        action="store_true",
+        help="Skip copying evaluator/verifier into each worker (saves ~20K per worker). Use aggregate_worker_submissions.py for post-run evaluation instead.",
     )
 
     args = parser.parse_args()
@@ -620,6 +786,8 @@ def main() -> None:
         raw_tasks=raw_tasks,
         selected_task_ids=selected_task_ids,
         sample_size=args.sample_size,
+        split_task_by_n=args.split_task_by_n,
+        skip_evaluator=args.skip_evaluator,
     )
 
 

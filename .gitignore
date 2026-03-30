@@ -14,3 +14,8 @@ results/
 
 # temporary files
 .tmp/
+
+# Downloaded benchmark data and generated artifacts
+# These are produced by setup.sh and generators, not source code
+scripts/ehrsql/assets/
+tasks/ehrsql
