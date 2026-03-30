@@ -9,7 +9,8 @@ import subprocess
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-from harbor.agents.installed.base import BaseInstalledAgent, CliFlag, ExecInput
+from harbor.agents.installed.base import BaseInstalledAgent, CliFlag, with_prompt_template
+from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 from harbor.models.trajectories import (
     Agent,
@@ -44,12 +45,42 @@ class CopilotCli(BaseInstalledAgent):
     def name() -> str:
         return "copilot-cli"
 
-    @property
-    def _install_agent_template_path(self) -> Path:
-        return Path(__file__).parent / "install-copilot-cli.sh.j2"
-
     def get_version_command(self) -> str | None:
-        return ". ~/.nvm/nvm.sh; copilot version"
+        return 'if [ -s "$HOME/.nvm/nvm.sh" ]; then . "$HOME/.nvm/nvm.sh"; fi; copilot version'
+
+    async def install(self, environment: BaseEnvironment) -> None:
+        await self.exec_as_root(
+            environment,
+            command=(
+                "if ldd --version 2>&1 | grep -qi musl || [ -f /etc/alpine-release ]; then"
+                "  apk add --no-cache bash curl nodejs npm;"
+                " elif command -v apt-get >/dev/null 2>&1; then"
+                "  apt-get update && apt-get install -y bash curl ca-certificates;"
+                " elif command -v yum >/dev/null 2>&1; then"
+                "  yum install -y bash curl ca-certificates;"
+                " else"
+                '  echo "No supported package manager found for Copilot CLI setup" >&2; exit 1;'
+                " fi"
+            ),
+            env={"DEBIAN_FRONTEND": "noninteractive"},
+        )
+        await self.exec_as_agent(
+            environment,
+            command=(
+                "set -euo pipefail; "
+                "if ldd --version 2>&1 | grep -qi musl || [ -f /etc/alpine-release ]; then"
+                "  npm install -g @github/copilot@latest;"
+                " else"
+                "  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash && "
+                '  export NVM_DIR="$HOME/.nvm" && '
+                '  . "$NVM_DIR/nvm.sh" && '
+                "  nvm install 22 && nvm alias default 22 && "
+                "  npm install -g @github/copilot@latest;"
+                " fi && "
+                'if [ -s "$HOME/.nvm/nvm.sh" ]; then . "$HOME/.nvm/nvm.sh"; fi; '
+                "copilot version"
+            ),
+        )
 
     @property
     def _trajectory_path(self) -> PurePosixPath:
@@ -367,7 +398,13 @@ class CopilotCli(BaseInstalledAgent):
 
         return token
 
-    def create_run_agent_commands(self, instruction: str) -> list[ExecInput]:
+    @with_prompt_template
+    async def run(
+        self,
+        instruction: str,
+        environment: BaseEnvironment,
+        context: AgentContext,
+    ) -> None:
         escaped_instruction = shlex.quote(instruction)
 
         if not self.model_name or not self.model_name.strip():
@@ -382,24 +419,23 @@ class CopilotCli(BaseInstalledAgent):
         cli_flags = self.build_cli_flags()
         extra_flags = f"{cli_flags} " if cli_flags else ""
 
-        return [
-            ExecInput(
-                command=(
-                    "mkdir -p /logs/agent/.copilot /logs/agent "
-                    "&& . ~/.nvm/nvm.sh; "
-                    "copilot "
-                    f"--model {model} "
-                    "--output-format text "
-                    "--yolo "
-                    "--no-ask-user "
-                    "--no-custom-instructions "
-                    f"{extra_flags}"
-                    f"-p {escaped_instruction} "
-                    f"2>&1 </dev/null | stdbuf -oL tee {EnvironmentPaths.agent_dir / self._OUTPUT_FILENAME}; "
-                    'status=${PIPESTATUS[0]}; '
-                    'chmod -R a+rX "$COPILOT_HOME" >/dev/null 2>&1 || true; '
-                    "exit $status"
-                ),
-                env=env,
-            )
-        ]
+        await self.exec_as_agent(
+            environment,
+            command=(
+                "mkdir -p /logs/agent/.copilot /logs/agent && "
+                'if [ -s "$HOME/.nvm/nvm.sh" ]; then . "$HOME/.nvm/nvm.sh"; fi; '
+                "copilot "
+                f"--model {model} "
+                "--output-format text "
+                "--yolo "
+                "--no-ask-user "
+                "--no-custom-instructions "
+                f"{extra_flags}"
+                f"-p {escaped_instruction} "
+                f"2>&1 </dev/null | stdbuf -oL tee {EnvironmentPaths.agent_dir / self._OUTPUT_FILENAME}; "
+                'status=${PIPESTATUS[0]}; '
+                'chmod -R a+rX "$COPILOT_HOME" >/dev/null 2>&1 || true; '
+                "exit $status"
+            ),
+            env=env,
+        )

@@ -1,10 +1,8 @@
 jobs_dir: results
 n_attempts: 1
 timeout_multiplier: 1.0
-orchestrator:
-  type: local
-  n_concurrent_trials: 1
-  quiet: false
+n_concurrent_trials: 1
+quiet: false
 
 environment:
   type: docker
@@ -25,8 +23,7 @@ datasets:
   # - path: examples/tasks
   #   task_names:
   #     - hello-world
-  - registry: {}
-    name: hello-world
+  - name: hello-world
     version: "1.0"
     task_names:
       - hello-world

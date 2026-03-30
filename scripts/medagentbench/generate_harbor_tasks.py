@@ -8,6 +8,7 @@ import inspect
 import json
 import shutil
 import subprocess
+import sys
 import textwrap
 from pathlib import Path
 from typing import Any
@@ -454,7 +455,7 @@ def _primitive_script_py(
                 "from fhir_common import _get, _simulate_post",
                 "",
                 "def main() -> None:",
-                f"    parser = argparse.ArgumentParser(",
+                "    parser = argparse.ArgumentParser(",
                 f"        description={description!r},",
                 "        formatter_class=argparse.RawTextHelpFormatter,",
                 f"        epilog={epilog!r},",
@@ -744,11 +745,15 @@ def _write_meta_task(
     tasks_parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         [
-            "harbor",
-            "tasks",
+            sys.executable,
+            "-m",
+            "harbor.cli.main",
             "init",
+            "--task",
             task_name,
-            "--tasks-dir",
+            "--org",
+            "medcli",
+            "--output-dir",
             str(tasks_parent),
             "--no-pytest",
             "--no-solution",

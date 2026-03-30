@@ -34,9 +34,8 @@ Important pointers:
 
 1. Harbor repo: https://github.com/harbor-framework/harbor
 2. Harbor docs/wiki: https://deepwiki.com/harbor-framework/harbor
-3. Pinned Harbor commit used here: https://github.com/harbor-framework/harbor/commit/c255479c1319f96f140b25e6ae0b86874ee05809
-   - Maintenance note: periodically check for a newer stable Harbor release or commit.
-   - Upgrade caution: Harbor upgrades can break custom agent integration interfaces such as `src/medcli/agents/harbor/installed/codex.py`.
+3. Stable Harbor version used here: `0.3.0`
+   - Upgrade caution: Harbor upgrades can break custom installed-agent integration interfaces such as `src/medcli/agents/harbor/installed/codex.py` and `src/medcli/agents/harbor/installed/copilot_cli.py`.
 4. Local Harbor job configs in this repo include `jobs/example.yaml` and benchmark-specific job configs under `jobs/`.
 
 ## Project Structure

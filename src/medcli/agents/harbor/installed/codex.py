@@ -2,7 +2,7 @@ import os
 import shlex
 from pathlib import Path
 
-from harbor.agents.installed.base import ExecInput
+from harbor.agents.installed.base import with_prompt_template
 from harbor.agents.installed.codex import Codex as HarborCodex
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
@@ -22,6 +22,7 @@ class Codex(HarborCodex):
             )
         return path
 
+    @with_prompt_template
     async def run(
         self,
         instruction: str,
@@ -29,14 +30,11 @@ class Codex(HarborCodex):
         context: AgentContext,
     ) -> None:
         auth_file = self._resolve_auth_file()
-        await environment.exec(command="mkdir -p /tmp/codex-secrets")
+        await self.exec_as_agent(environment, command="mkdir -p /tmp/codex-secrets")
         await environment.upload_file(
             source_path=auth_file,
             target_path="/tmp/codex-secrets/auth.json",
         )
-        await super().run(instruction, environment, context)
-
-    def create_run_agent_commands(self, instruction: str) -> list[ExecInput]:
         escaped_instruction = shlex.quote(instruction)
 
         if not self.model_name:
@@ -69,15 +67,17 @@ ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
         if mcp_command:
             setup_command += f"\n{mcp_command}"
 
-        return [
-            ExecInput(
-                command=setup_command,
-                env=env,
-            ),
-            ExecInput(
+        await self.exec_as_agent(
+            environment,
+            command=setup_command,
+            env=env,
+        )
+        try:
+            await self.exec_as_agent(
+                environment,
                 command=(
                     "trap 'rm -rf /tmp/codex-secrets \"$CODEX_HOME/auth.json\"' EXIT TERM INT; "
-                    ". ~/.nvm/nvm.sh; "
+                    "if [ -s ~/.nvm/nvm.sh ]; then . ~/.nvm/nvm.sh; fi; "
                     "codex exec "
                     "--dangerously-bypass-approvals-and-sandbox "
                     "--skip-git-repo-check "
@@ -87,10 +87,16 @@ ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
                     f"{reasoning_flag}"
                     "-- "  # end of flags
                     f"{escaped_instruction} "
-                    f"2>&1 </dev/null | stdbuf -oL tee {
-                        EnvironmentPaths.agent_dir / self._OUTPUT_FILENAME
-                    }"
+                    f"2>&1 </dev/null | tee {EnvironmentPaths.agent_dir / self._OUTPUT_FILENAME}"
                 ),
                 env=env,
-            ),
-        ]
+            )
+        finally:
+            try:
+                await self.exec_as_agent(
+                    environment,
+                    command='rm -rf /tmp/codex-secrets "$CODEX_HOME/auth.json"',
+                    env={"CODEX_HOME": EnvironmentPaths.agent_dir.as_posix()},
+                )
+            except Exception:
+                pass
