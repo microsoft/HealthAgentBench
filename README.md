@@ -49,7 +49,7 @@ MedCLI/
 ├── PLANS.md
 ├── .agent/plans/               # ExecPlans, including Harbor migration and cleanup plans
 ├── design/                     # Design docs, brainstorm notes, and planning materials not yet executed in the project
-├── paper/                      # Future paper-writing materials, for example LaTeX source files
+├── paper/                      # Manuscript draft, paper framing, and later paper-writing materials such as LaTeX sources
 ├── tasks/<benchmark>/          # Generated Harbor task for a benchmark
 ├── jobs/                       # Harbor job configs
 ├── debug/                      # Generic Harbor-oriented debug helpers and docs

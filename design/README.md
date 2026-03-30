@@ -6,6 +6,8 @@ For local workflow and benchmark-intake guidance in this directory, see [AGENTS.
 
 In particular, benchmark additions should start in `design/related_work/` and `design/tasks.md` before implementation work begins elsewhere in the repo.
 
+For manuscript-facing framing and the evolving paper draft, see `paper/draft.md`.
+
 ## Documents
 
 | Document | Description |
