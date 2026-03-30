@@ -78,8 +78,8 @@ Python version requirement: `>=3.12`.
 See `tasks/README.md` for the full list of currently supported tasks and benchmarks.
 
 ```bash
-# Export Codex auth for this shell session
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+# Ensure Codex auth exists locally
+codex login status
 
 uv run harbor run -c jobs/<benchmark>.yaml
 ```

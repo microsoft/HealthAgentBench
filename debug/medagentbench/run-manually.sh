@@ -13,7 +13,7 @@ export HB_READY_CODEX_SHELL=1
 
 hb::setup_task_env
 hb::require_running_main
-hb::require_var CODEX_AUTH_JSON
+hb::codex_auth_file >/dev/null
 
 cat <<EOF
 Recommended MedAgentBench manual workflow

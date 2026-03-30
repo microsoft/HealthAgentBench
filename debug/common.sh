@@ -25,6 +25,16 @@ hb::require_var() {
   fi
 }
 
+hb::codex_auth_file() {
+  local path="${CODEX_AUTH_FILE:-$HOME/.codex/auth.json}"
+  if [[ ! -f "${path}" ]]; then
+    echo "missing Codex auth file: ${path}" >&2
+    echo "set CODEX_AUTH_FILE or login with codex to populate ~/.codex/auth.json" >&2
+    exit 1
+  fi
+  echo "${path}"
+}
+
 # Read one value from the task's task.toml [environment] section.
 hb::task_config_value() {
   local key="$1"
