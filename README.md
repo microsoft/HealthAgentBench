@@ -42,19 +42,20 @@ Important pointers:
 
 ```text
 MedCLI/
+├── medcli_evaluate.sh          # Unified entry point for running benchmarks
 ├── README.md
-├── AGENTS.md
-├── CLAUDE.md
+├── AGENTS.md / CLAUDE.md       # Agent instructions (kept in sync)
 ├── PLANS.md
 ├── .agent/plans/               # ExecPlans, including Harbor migration and cleanup plans
-├── design/                     # Design docs, brainstorm notes, and planning materials not yet executed in the project
-├── paper/                      # Manuscript draft, paper framing, and later paper-writing materials such as LaTeX sources
-├── tasks/<benchmark>/          # Generated Harbor task for a benchmark
-├── jobs/                       # Harbor job configs
+├── design/                     # Design docs, brainstorm notes, and planning materials
+├── meta_instructions/          # How-to guides for adding tasks, extending the project etc. For agent to read
+├── paper/                      # Manuscript draft and paper-writing materials
+├── tasks/<benchmark>/          # Generated Harbor task artifacts and benchmark results
+├── jobs/                       # Harbor job configs (YAML)
 ├── debug/                      # Generic Harbor-oriented debug helpers and docs
 ├── src/medcli/
-│   └── agents/harbor/installed/ # Harbor installed-agent wrappers
-├── scripts/<benchmark>/        # Benchmark-specific setup, generation, and evaluation helpers
+│   └── agents/harbor/installed/ # Harbor installed-agent wrappers (e.g. Codex adapter)
+├── scripts/<benchmark>/        # Benchmark-specific setup, generation, evaluation, and run scripts
 ├── results/                    # Run and evaluation artifacts (gitignored)
 └── tests/
 ```
@@ -86,7 +87,7 @@ codex login status
 export AZURE_OPENAI_API_KEY="<your-azure-openai-api-key>"
 export CODEX_TASK_TOML="$(cat ~/.codex/config.toml)"
 
-uv run harbor run -c jobs/<benchmark>.yaml
+bash medcli_evaluate.sh --task <benchmark> --config jobs/<benchmark_task>_meta.yaml [--model model_name] [--ak key=value]
 ```
 
 ## Task Creation
