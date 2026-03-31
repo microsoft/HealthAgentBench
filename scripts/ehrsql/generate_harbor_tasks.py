@@ -43,7 +43,9 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -403,74 +405,80 @@ def _split_into_chunks(items: list[Any], n: int) -> list[list[Any]]:
     return chunks
 
 
-def _write_worker_task(
-    worker_dir: Path,
+def _write_json(path: Path, payload: Any) -> None:
+    """Write JSON payload to a file."""
+    path.write_text(json.dumps(payload, indent=2))
+
+
+def _write_meta_task(
+    *,
+    output_root: Path,
+    task_name: str,
+    benchmark_tasks: list[dict[str, Any]],
+    answer_key: list[dict[str, Any]],
+    submission_template: list[dict[str, Any]],
     selected_task_ids: list[str],
-    benchmark_tasks_chunk: list[dict[str, Any]],
-    answer_key_chunk: list[dict[str, Any]],
-    submission_template_chunk: list[dict[str, Any]],
     db_id: str,
     skip_evaluator: bool = False,
 ) -> None:
-    """Write a complete Harbor task for one worker."""
-    worker_dir.mkdir(parents=True, exist_ok=True)
+    """Write a complete Harbor meta-task, using `harbor init` for scaffolding."""
+    tasks_parent = output_root.parent
+    if output_root.exists():
+        shutil.rmtree(output_root)
+    tasks_parent.mkdir(parents=True, exist_ok=True)
 
-    # Write task.toml (use chunk-specific task IDs, not the full list)
-    chunk_task_ids = [t["task_id"] for t in benchmark_tasks_chunk]
-    (worker_dir / "task.toml").write_text(
-        _generate_task_toml(worker_dir, chunk_task_ids, len(benchmark_tasks_chunk))
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "harbor.cli.main",
+            "init",
+            "--task",
+            task_name,
+            "--org",
+            "medcli",
+            "--output-dir",
+            str(tasks_parent),
+            "--no-pytest",
+            "--no-solution",
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
     )
 
-    # Write instruction.md
-    (worker_dir / "instruction.md").write_text(_generate_instruction_md(db_id))
+    task_dir = output_root
 
-    # Write root-level benchmark_tasks.json
-    (worker_dir / "benchmark_tasks.json").write_text(
-        json.dumps(benchmark_tasks_chunk, indent=2)
+    # Root-level files
+    task_dir.joinpath("task.toml").write_text(
+        _generate_task_toml(task_dir, selected_task_ids, len(benchmark_tasks))
     )
+    task_dir.joinpath("instruction.md").write_text(
+        _generate_instruction_md(db_id)
+    )
+    _write_json(task_dir / "benchmark_tasks.json", benchmark_tasks)
 
-    # Create environment directory
-    env_dir = worker_dir / "environment"
-    env_dir.mkdir(parents=True, exist_ok=True)
-
-    # Create workspace
+    # Environment
+    env_dir = task_dir / "environment"
     workspace_dir = env_dir / "workspace"
     workspace_dir.mkdir(parents=True, exist_ok=True)
 
-    # Write workspace submission.json
-    (workspace_dir / "submission.json").write_text(
-        json.dumps(submission_template_chunk, indent=2)
-    )
+    _generate_dockerfile(env_dir, db_id)
+    _generate_docker_compose(env_dir, db_id)
+    _generate_workspace_readme(workspace_dir, db_id)
+    _write_json(workspace_dir / "benchmark_tasks.json", benchmark_tasks)
+    _write_json(workspace_dir / "submission.json", submission_template)
 
-    # Write workspace benchmark_tasks.json
-    (workspace_dir / "benchmark_tasks.json").write_text(
-        json.dumps(benchmark_tasks_chunk, indent=2)
-    )
-
-    # # Generate primitive scripts
-    # _generate_primitive_scripts(workspace_dir)
-
-    # Create tests directory
-    tests_dir = worker_dir / "tests"
+    # Tests
+    tests_dir = task_dir / "tests"
     tests_dir.mkdir(parents=True, exist_ok=True)
+    _write_json(tests_dir / "task_answer_key.json", answer_key)
 
-    # Write worker's answer key chunk (NOT the full key — this is just for the worker's tasks)
-    (tests_dir / "task_answer_key.json").write_text(
-        json.dumps(answer_key_chunk, indent=2)
-    )
-
-    # Copy evaluator and verifier modules (or stub if skipped)
     if skip_evaluator:
         _generate_stub_verifier(tests_dir)
     else:
         _copy_evaluator_module(tests_dir)
         _copy_verifier_script(tests_dir)
     _generate_test_script(tests_dir)
-
-    # Generate Dockerfile and docker-compose
-    _generate_dockerfile(env_dir, db_id)
-    _generate_docker_compose(env_dir, db_id)
-    _generate_workspace_readme(workspace_dir, db_id)
 
 
 def _generate_primitive_scripts(workspace_dir: Path) -> None:
@@ -638,14 +646,16 @@ def generate_harbor_task(
 
         # Create N worker task directories
         for i in range(len(benchmark_chunks)):
-            worker_dir = output_root / f"worker_{i}"
-            _write_worker_task(
-                worker_dir,
-                selected_task_ids,  # Original task IDs for task.toml
-                benchmark_chunks[i],
-                answer_key_chunks[i],
-                submission_chunks[i],
-                db_id,
+            task_name = f"worker_{i}"
+            chunk_task_ids = [t["task_id"] for t in benchmark_chunks[i]]
+            _write_meta_task(
+                output_root=output_root / task_name,
+                task_name=task_name,
+                benchmark_tasks=benchmark_chunks[i],
+                answer_key=answer_key_chunks[i],
+                submission_template=submission_chunks[i],
+                selected_task_ids=chunk_task_ids,
+                db_id=db_id,
                 skip_evaluator=skip_evaluator,
             )
 
@@ -655,63 +665,20 @@ def generate_harbor_task(
         print(f"  Total: {len(benchmark_tasks)} tasks split into {len(benchmark_chunks)} workers")
     else:
         # Single task (no splitting)
-        # Write files
-        (output_root / "task.toml").write_text(
-            _generate_task_toml(output_root, selected_task_ids, len(selected_tasks))
+        task_name = output_root.name
+        _write_meta_task(
+            output_root=output_root,
+            task_name=task_name,
+            benchmark_tasks=benchmark_tasks,
+            answer_key=answer_key,
+            submission_template=submission_template,
+            selected_task_ids=selected_task_ids,
+            db_id=db_id,
+            skip_evaluator=skip_evaluator,
         )
-
-        (output_root / "instruction.md").write_text(_generate_instruction_md(db_id))
-
-        (output_root / "benchmark_tasks.json").write_text(
-            json.dumps(benchmark_tasks, indent=2)
-        )
-
-        # Create environment directory
-        env_dir = output_root / "environment"
-        env_dir.mkdir(parents=True, exist_ok=True)
-
-        # Create workspace
-        workspace_dir = env_dir / "workspace"
-        workspace_dir.mkdir(parents=True, exist_ok=True)
-
-        (workspace_dir / "submission.json").write_text(
-            json.dumps(submission_template, indent=2)
-        )
-
-        (workspace_dir / "benchmark_tasks.json").write_text(
-            json.dumps(benchmark_tasks, indent=2)
-        )
-
-        # # Generate primitive scripts
-        # _generate_primitive_scripts(workspace_dir)
-
-        # Create tests directory
-        tests_dir = output_root / "tests"
-        tests_dir.mkdir(parents=True, exist_ok=True)
-
-        (tests_dir / "task_answer_key.json").write_text(
-            json.dumps(answer_key, indent=2)
-        )
-
-        # Copy evaluator and verifier modules (or stub if skipped)
-        if skip_evaluator:
-            _generate_stub_verifier(tests_dir)
-        else:
-            _copy_evaluator_module(tests_dir)
-            _copy_verifier_script(tests_dir)
-        _generate_test_script(tests_dir)
-
-        # Generate Dockerfile and docker-compose
-        _generate_dockerfile(env_dir, db_id)
-        _generate_docker_compose(env_dir, db_id)
-        _generate_workspace_readme(workspace_dir, db_id)
 
         print(f"✓ Generated Harbor meta-task at {output_root}")
         print(f"  - {len(selected_tasks)} tasks selected")
-        print(f"  - task.toml, instruction.md, benchmark_tasks.json created")
-        print(f"  - workspace/ with submission template and README (minimal, no tools)")
-        print(f"  - environment/ with Dockerfile and docker-compose")
-        print(f"  - tests/ with answer key and evaluator module")
 
 
 def main() -> None:

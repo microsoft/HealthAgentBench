@@ -20,7 +20,22 @@ Total: ~5,900 tasks across both databases.
 | `verify_meta_task.py` | Harbor verifier script (called after agent completion) |
 | `setup.sh` | Download and validate EHRSQL source data |
 
-## Workflow
+## Quick Start
+
+The `run_and_evaluate.sh` script handles data download, task generation, Harbor execution, and result aggregation in one command:
+
+```bash
+bash scripts/ehrsql/run_and_evaluate.sh jobs/ehrsql_mimic_iii_test_meta.yaml
+bash scripts/ehrsql/run_and_evaluate.sh jobs/ehrsql_eicu_valid_meta.yaml -m gpt-5.1-codex-mini --ak reasoning_effort=low
+```
+
+Or via the top-level entry point:
+
+```bash
+bash medcli_evaluate.sh --task ehrsql --config jobs/ehrsql_eicu_test_meta.yaml --model gpt-5.3-codex
+```
+
+## Workflow (Manual Steps)
 
 ### 1. Setup: Download Source Data
 
@@ -47,7 +62,7 @@ scripts/ehrsql/assets/eicu/eicu.sqlite
 
 **Generate tasks:**
 
-We can run the command below to generate per-dataset validation/test task. Because the task data can be huge, we divide it into one-example-per-subtask by specifying split_task_by_n argument. 
+We can run the command below to generate per-dataset validation/test task. Because the task data can be huge, we sample 250 examples and we divide it into one-example-per-subtask by specifying split_task_by_n argument to 250. This is in line with the harbor framework requirements. 
 
 ```bash
 uv run python scripts/ehrsql/generate_harbor_tasks.py \   

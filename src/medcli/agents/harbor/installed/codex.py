@@ -29,21 +29,14 @@ class Codex(HarborCodex):
         environment: BaseEnvironment,
         context: AgentContext,
     ) -> None:
-        auth_file = self._resolve_auth_file()
-        await self.exec_as_agent(environment, command="mkdir -p /tmp/codex-secrets")
-        await environment.upload_file(
-            source_path=auth_file,
-            target_path="/tmp/codex-secrets/auth.json",
-        )
         escaped_instruction = shlex.quote(instruction)
 
         if not self.model_name:
             raise ValueError("Model name is required")
 
         model = self.model_name.split("/")[-1]
-        self._resolve_auth_file()
         env = {
-            "CODEX_HOME": (EnvironmentPaths.agent_dir).as_posix(),
+            "CODEX_HOME": EnvironmentPaths.agent_dir.as_posix(),
         }
 
         codex_auth_json = os.environ.get("CODEX_AUTH_JSON", "").strip()
@@ -52,25 +45,26 @@ class Codex(HarborCodex):
 
         # Determine authentication mode
         if codex_auth_json:
-            env = {
-                "CODEX_AUTH_JSON": codex_auth_json,
-            }
+            auth_file = self._resolve_auth_file()
+            await self.exec_as_agent(environment, command="mkdir -p /tmp/codex-secrets")
+            await environment.upload_file(
+                source_path=auth_file,
+                target_path="/tmp/codex-secrets/auth.json",
+            )
+            env["CODEX_AUTH_JSON"] = codex_auth_json
             setup_command = """
-mkdir -p /tmp/codex-secrets "$CODEX_HOME"
+mkdir -p "$CODEX_HOME"
 ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
-                """
+"""
 
         elif azure_openai_api_key and codex_task_toml:
-            env = {
-                "AZURE_OPENAI_API_KEY": azure_openai_api_key,
-                "CODEX_TASK_TOML": codex_task_toml,
-            }
+            env["AZURE_OPENAI_API_KEY"] = azure_openai_api_key
+            env["CODEX_TASK_TOML"] = codex_task_toml
             setup_command = """
 mkdir -p /tmp/codex-secrets "$CODEX_HOME"
 printf '%s' "$CODEX_TASK_TOML" > /tmp/codex-secrets/config.toml
 ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
-export AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY"
-                            """
+"""
 
         else:
             raise ValueError(

@@ -13,7 +13,7 @@ Adding a task to MedCLI requires three main steps. **MedAgentBench** and **EHRSQ
 Create a **setup script** at `scripts/<task-name>/setup.sh` that:
 1. Downloads raw task JSON from an external source (GitHub, Box, etc.)
 2. Validates the schema
-3. Outputs JSON files to `data/<task-name>/`
+3. Outputs JSON files to `scripts/<task-name>/assets/`
 
 Run it once to prepare the data:
 ```bash
@@ -43,7 +43,7 @@ Each task object should contain:
 
 ### Real Examples
 - **MedAgentBench setup**: `scripts/medagentbench/setup.sh` → Downloads from GitHub + validates + backfills solutions
-- **EHRSQL setup**: `scripts/ehrsql/setup.sh` → Downloads task JSON from GitHub + validates schemas
+  - Output: `scripts/medagentbench/assets/test_data_v2.json`, `funcs_v1.json`, `refsol.py`
 
 ---
 
@@ -51,7 +51,7 @@ Each task object should contain:
 
 **Goal**: Create a `generate_harbor_tasks.py` script that builds the complete Harbor task artifact.
 
-The generator is responsible for creating everything in `harbor_tasks/<task-name>/`:
+The generator is responsible for creating everything in `tasks/<task-name>/`:
 - `task.toml` — Harbor configuration
 - `instruction.md` — Agent-facing instructions
 - `benchmark_tasks.json` — Normalized task list
@@ -103,7 +103,7 @@ Your generator should:
 
 ### Key Principle: Generator is Source of Truth
 
-⚠️ **Do NOT manually edit files in `harbor_tasks/<task-name>/`** — they are generated artifacts.
+⚠️ **Do NOT manually edit files in `tasks/<task-name>/`** — they are generated artifacts.
 
 To modify the Harbor task:
 - Change helper scripts? → Edit `_primitive_scripts()` in the generator
@@ -114,17 +114,82 @@ To modify the Harbor task:
 After modifying the generator, regenerate:
 ```bash
 uv run python scripts/<task-name>/generate_harbor_tasks.py \
-  --input-json data/<task-name>/raw_tasks.json \
-  --output-root harbor_tasks/<task-name>
+  --input-json scripts/<task-name>/assets/<raw-data>.json \
+  --output-root tasks/<task-name>
 ```
 
 ### Real Examples
 - **MedAgentBench**: `scripts/medagentbench/generate_harbor_tasks.py` (7 read helpers + 4 write helpers, FHIR-based)
-- **EHRSQL**: `scripts/ehrsql/generate_harbor_tasks.py` (2 SQL helpers, database-agnostic)
+  - Check: `scripts/medagentbench/normalization.py` and `scripts/medagentbench/harbor_evaluator.py`
 
 ---
 
-## Step 3: Documentation
+## Step 3: Evaluation Aggregation Script
+
+**Goal**: Create a script that aggregates results across workers and computes overall scores.
+
+### What to Implement
+
+Create `scripts/<task-name>/aggregate_worker_submissions.py` that:
+1. Finds all `worker_*/artifacts/submission.json` files from run directories
+2. Checks completeness (reports per-worker fill rates, flags empty answers)
+3. Merges per-worker answer keys by resolving task paths from each worker's `config.json`
+4. Runs the evaluator (`harbor_evaluator.py`) on the merged submission
+5. Outputs `merged_submission.json`, `merged_answer_key.json`, and `merged_evaluation.json`
+
+```python
+def find_worker_submissions(run_dir: Path) -> list[tuple[int, Path]]:
+    """Find all worker submission.json files."""
+
+def find_answer_key(run_dirs: list[Path], output_dir: Path) -> Path:
+    """Merge answer keys from each worker's config.json -> task.path."""
+
+def merge_submissions(submissions: list[tuple[int, Path]]) -> list[dict]:
+    """Merge submissions, reporting per-worker fill rates."""
+
+def run_evaluation(submission_path, answer_key_path, db_dir, output_dir) -> dict:
+    """Run harbor_evaluator on merged submission."""
+```
+
+### Real Examples
+- **EHRSQL**: `scripts/ehrsql/aggregate_worker_submissions.py` — merges across multiple run dirs, reports answerability F1 and execution F1
+
+---
+
+## Step 4: Run and Evaluate Script
+
+**Goal**: Create a bash wrapper that runs Harbor and aggregates results in one command.
+
+### What to Implement
+
+Create `scripts/<task-name>/run_and_evaluate.sh`:
+```bash
+#!/bin/bash
+set -euo pipefail
+JOB_YAML="$1"
+shift
+JOBS_DIR=$(grep '^jobs_dir:' "$JOB_YAML" | awk '{print $2}')
+
+uv run harbor run -c "$JOB_YAML" "$@"
+
+LATEST_RUN=$(ls -td "$JOBS_DIR"/*/ 2>/dev/null | head -1)
+uv run python scripts/<task-name>/aggregate_worker_submissions.py \
+    --run-dir "$LATEST_RUN" \
+    --db-dir <path-to-data>
+```
+
+This is called by the top-level `medcli_evaluate.sh`:
+```bash
+bash medcli_evaluate.sh --task <task-name> --config jobs/<task-name>_meta.yaml [--model model_name] [--ak key=value]
+```
+
+### Real Examples
+- **EHRSQL**: `scripts/ehrsql/run_and_evaluate.sh` — runs Harbor then aggregates with SQL evaluation
+- **MedAgentBench**: `scripts/medagentbench/run_and_evaluate.sh` — runs Harbor (uses built-in verifier, no aggregation needed)
+
+---
+
+## Step 5: Documentation
 
 **Goal**: Update project docs and create setup guides.
 
@@ -142,6 +207,7 @@ uv run python scripts/<task-name>/generate_harbor_tasks.py \
 3. **`scripts/<task-name>/README.md`** (new file):
    - How to download/prepare raw data
    - Generator script arguments and customization options
+   - How to run evaluation aggregation
    - Troubleshooting guide
    - References to original benchmark paper/repo
 
@@ -160,7 +226,7 @@ uv run python scripts/<task-name>/generate_harbor_tasks.py \
 # 0. Prepare and validate raw data
 bash scripts/<task-name>/setup.sh
 # This downloads raw JSON and validates schema
-# Outputs: data/<task-name>/raw_tasks.json (or task splits)
+# Outputs: scripts/<task-name>/assets/*.json
 
 # 1. Implement normalization
 # → scripts/<task-name>/normalization.py
@@ -172,19 +238,25 @@ bash scripts/<task-name>/setup.sh
 # → scripts/<task-name>/generate_harbor_tasks.py
 
 # 4. Generate Harbor task
+# Use the raw data file output by setup.sh (e.g., scripts/<task-name>/assets/test_data_v2.json)
 uv run python scripts/<task-name>/generate_harbor_tasks.py \
-  --input-json data/<task-name>/raw_tasks.json \
-  --output-root harbor_tasks/<task-name>
+  --input-json scripts/<task-name>/assets/<raw-data>.json \
+  --output-root tasks/<task-name>
 
-# 5. Create job config
+# 5. Implement evaluation aggregation
+# → scripts/<task-name>/aggregate_worker_submissions.py
+
+# 6. Create run_and_evaluate.sh wrapper
+# → scripts/<task-name>/run_and_evaluate.sh
+
+# 7. Create job config
 # → jobs/<task-name>_meta.yaml
 
-# 6. Update documentation
+# 8. Update documentation
 # → README.md, CLAUDE.md, AGENTS.md, scripts/<task-name>/README.md
 
-# 7. Run the task (after setting up auth)
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
-uv run harbor run -c jobs/<task-name>_meta.yaml
+# 9. Run the task (after setting up auth)
+bash medcli_evaluate.sh --task <task-name> --config jobs/<task-name>_meta.yaml
 ```
 
 ---
@@ -202,29 +274,21 @@ uv run harbor run -c jobs/<task-name>_meta.yaml
 ## Real Examples to Reference
 
 ### MedAgentBench (FHIR-based EHR tasks)
-- Raw data: `data/medagentbench/test_data_v2.json`
+- Raw data: `scripts/medagentbench/assets/test_data_v2.json`
 - Generator: `scripts/medagentbench/generate_harbor_tasks.py`
 - Normalization: `scripts/medagentbench/normalization.py`
 - Evaluator: `scripts/medagentbench/harbor_evaluator.py`
-- Generated task: `harbor_tasks/medagentbench/`
+- Generated task: `tasks/medagentbench/`
 - Setup guide: `scripts/medagentbench/README.md`
-
-### EHRSQL (Text-to-SQL tasks)
-- Raw data: `data/ehrsql/mimic_iii/valid.json`, `data/ehrsql/eicu/valid.json`
-- Generator: `scripts/ehrsql/generate_harbor_tasks.py`
-- Normalization: `scripts/ehrsql/normalization.py`
-- Evaluator: `scripts/ehrsql/harbor_evaluator.py`
-- Generated task: `harbor_tasks/ehrsql/`
-- Setup guide: `scripts/ehrsql/README.md`
 
 ---
 
 ## Appendix: Generated Harbor Task Structure
 
-After running the generator, your `harbor_tasks/<task-name>/` directory contains:
+After running the generator, your `tasks/<task-name>/` directory contains:
 
 ```
-harbor_tasks/<task-name>/
+tasks/<task-name>/
 ├── task.toml                          # Meta-task config
 ├── instruction.md                     # Agent-facing instructions
 ├── benchmark_tasks.json               # Reference copy of tasks

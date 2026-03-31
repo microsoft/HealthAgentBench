@@ -272,6 +272,10 @@ def main():
     print(f"   Total tasks: {evaluation_result.get('total_tasks', '?')}")
     print(f"   Passed: {evaluation_result.get('passed_tasks', '?')}")
     print(f"   Pass@1: {evaluation_result.get('pass_at_1', '?'):.1%}")
+    if "f1_ans" in evaluation_result:
+        print(f"   Precision (ans): {evaluation_result.get('precision_ans', '?')}%")
+        print(f"   Recall (ans): {evaluation_result.get('recall_ans', '?')}%")
+        print(f"   F1 (ans): {evaluation_result.get('f1_ans', '?')}%")
     if "precision_exec" in evaluation_result:
         print(f"   Precision (exec): {evaluation_result.get('precision_exec', '?')}%")
         print(f"   Recall (exec): {evaluation_result.get('recall_exec', '?')}%")
