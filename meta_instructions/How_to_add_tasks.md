@@ -44,6 +44,9 @@ Each task object should contain:
 ### Real Examples
 - **MedAgentBench setup**: `scripts/medagentbench/setup.sh` → Downloads from GitHub + validates + backfills solutions
   - Output: `scripts/medagentbench/assets/test_data_v2.json`, `funcs_v1.json`, `refsol.py`
+- **EHRSQL setup**: `scripts/ehrsql/setup.sh` → Downloads EHRSQL JSON files from GitHub + validates schemas
+  - Output: `scripts/ehrsql/assets/mimic_iii/{valid,test}.json`, `scripts/ehrsql/assets/eicu/{valid,test}.json`
+  - SQLite databases must be downloaded separately (see `scripts/ehrsql/README.md`)
 
 ---
 
@@ -94,12 +97,18 @@ Your generator should:
 3. **Create the generator script** at `scripts/<task-name>/generate_harbor_tasks.py` that:
    - Parses CLI args (input JSON, output directory, optional task selection)
    - Loads and normalizes raw tasks
+   - Uses `harbor init` for scaffolding via `_write_meta_task()`
    - Generates Harbor files using helper functions like:
-     - `_instruction_md()` — generates instruction.md
+     - `_instruction_md()` — generates instruction.md (can be domain-specific, e.g. per-database)
      - `_task_toml()` — generates task.toml
-     - `_primitive_scripts()` — generates domain-specific helper scripts
+     - `_primitive_scripts()` — generates domain-specific helper scripts (optional)
      - `_verify_meta_task_py()` — generates verifier template
-     - `_write_meta_task()` — writes all files to disk
+     - `_write_meta_task()` — scaffolds with `harbor init` then writes all files to disk
+
+   **For large datasets**, the generator should support:
+   - `--split_task_by_n N` — splits tasks into N per-worker subdirectories (`worker_0`, `worker_1`, ...) for parallel execution
+   - `--sample-size N` — randomly samples N tasks from the dataset
+   - `--skip-evaluator` — replaces full evaluator with a lightweight stub verifier (saves ~20K per worker); use `aggregate_worker_submissions.py` for post-run evaluation instead
 
 ### Key Principle: Generator is Source of Truth
 
@@ -120,7 +129,12 @@ uv run python scripts/<task-name>/generate_harbor_tasks.py \
 
 ### Real Examples
 - **MedAgentBench**: `scripts/medagentbench/generate_harbor_tasks.py` (7 read helpers + 4 write helpers, FHIR-based)
+  - Single task output, no worker splitting
   - Check: `scripts/medagentbench/normalization.py` and `scripts/medagentbench/harbor_evaluator.py`
+- **EHRSQL**: `scripts/ehrsql/generate_harbor_tasks.py` (per-database instruction/Dockerfile, worker splitting)
+  - Supports `--split_task_by_n`, `--sample-size`, `--skip-evaluator`
+  - Auto-detects database (MIMIC-III vs eICU) from input JSON
+  - Check: `scripts/ehrsql/normalization.py` and `scripts/ehrsql/harbor_evaluator.py`
 
 ---
 
@@ -162,21 +176,13 @@ def run_evaluation(submission_path, answer_key_path, db_dir, output_dir) -> dict
 
 ### What to Implement
 
-Create `scripts/<task-name>/run_and_evaluate.sh`:
-```bash
-#!/bin/bash
-set -euo pipefail
-JOB_YAML="$1"
-shift
-JOBS_DIR=$(grep '^jobs_dir:' "$JOB_YAML" | awk '{print $2}')
+Create `scripts/<task-name>/run_and_evaluate.sh` that handles the full workflow:
+1. Downloads data if not present (calls `setup.sh`)
+2. Generates tasks if not present (calls `generate_harbor_tasks.py`)
+3. Runs Harbor with forwarded flags
+4. Aggregates results (if applicable)
 
-uv run harbor run -c "$JOB_YAML" "$@"
-
-LATEST_RUN=$(ls -td "$JOBS_DIR"/*/ 2>/dev/null | head -1)
-uv run python scripts/<task-name>/aggregate_worker_submissions.py \
-    --run-dir "$LATEST_RUN" \
-    --db-dir <path-to-data>
-```
+See `scripts/ehrsql/run_and_evaluate.sh` for the complete pattern.
 
 This is called by the top-level `medcli_evaluate.sh`:
 ```bash
@@ -213,6 +219,12 @@ bash medcli_evaluate.sh --task <task-name> --config jobs/<task-name>_meta.yaml [
 
 4. **`jobs/<task-name>_meta.yaml`** (new file):
    - Harbor job configuration for running the benchmark
+
+5. **`tasks/README.md`**:
+   - Add benchmark entry to the task table and results summary
+
+6. **`design/tasks.md`**:
+   - Move benchmark from "Planned" to "Integrated" section
 
 ### Example Changes
 - **MedAgentBench docs**: `scripts/medagentbench/README.md`
@@ -278,21 +290,31 @@ bash medcli_evaluate.sh --task <task-name> --config jobs/<task-name>_meta.yaml
 - Generator: `scripts/medagentbench/generate_harbor_tasks.py`
 - Normalization: `scripts/medagentbench/normalization.py`
 - Evaluator: `scripts/medagentbench/harbor_evaluator.py`
+- Run script: `scripts/medagentbench/run_and_evaluate.sh`
 - Generated task: `tasks/medagentbench/`
 - Setup guide: `scripts/medagentbench/README.md`
+
+### EHRSQL (Text-to-SQL over EHR databases)
+- Raw data: `scripts/ehrsql/assets/{mimic_iii,eicu}/{valid,test}.json`
+- Generator: `scripts/ehrsql/generate_harbor_tasks.py`
+- Normalization: `scripts/ehrsql/normalization.py`
+- Evaluator: `scripts/ehrsql/harbor_evaluator.py`
+- Aggregation: `scripts/ehrsql/aggregate_worker_submissions.py`
+- Run script: `scripts/ehrsql/run_and_evaluate.sh`
+- Generated tasks: `tasks/ehrsql/{mimic_iii_valid,mimic_iii_test,eicu_valid,eicu_test}/`
+- Setup guide: `scripts/ehrsql/README.md`
 
 ---
 
 ## Appendix: Generated Harbor Task Structure
 
-After running the generator, your `tasks/<task-name>/` directory contains:
+### Single task (e.g. MedAgentBench)
 
 ```
 tasks/<task-name>/
 ├── task.toml                          # Meta-task config
 ├── instruction.md                     # Agent-facing instructions
 ├── benchmark_tasks.json               # Reference copy of tasks
-│
 ├── environment/
 │   ├── Dockerfile                     # Container definition
 │   ├── docker-compose.yaml            # (optional) Backend services
@@ -301,7 +323,6 @@ tasks/<task-name>/
 │       ├── benchmark_tasks.json       # Tasks for agent to read
 │       ├── submission.json            # Template for agent to fill in
 │       └── scripts/primitives/        # Domain-specific helper scripts
-│
 └── tests/
     ├── test.sh                        # Harbor test entry point
     ├── verify_meta_task.py            # Verifier script
@@ -309,4 +330,28 @@ tasks/<task-name>/
     └── task_answer_key.json           # Hidden answers (verifier-only)
 ```
 
-This is a self-contained, runnable Harbor meta-task. Harbor uses only these files at runtime.
+### Per-worker split (e.g. EHRSQL with `--split_task_by_n`)
+
+```
+tasks/<task-name>/<split>/
+├── worker_0/
+│   ├── task.toml
+│   ├── instruction.md
+│   ├── benchmark_tasks.json
+│   ├── environment/
+│   │   ├── Dockerfile
+│   │   ├── docker-compose.yaml
+│   │   └── workspace/
+│   │       ├── submission.json
+│   │       └── benchmark_tasks.json
+│   └── tests/
+│       ├── test.sh
+│       ├── verify_meta_task.py        # Full or stub verifier
+│       └── task_answer_key.json
+├── worker_1/
+│   └── ...
+└── worker_N/
+    └── ...
+```
+
+Each worker directory is a self-contained Harbor meta-task. With `--skip-evaluator`, the stub verifier reports fill rate only; use `aggregate_worker_submissions.py` for full evaluation.
