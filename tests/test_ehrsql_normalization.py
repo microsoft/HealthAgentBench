@@ -76,7 +76,7 @@ class TestInstructionBuilding:
         instr = build_instruction(base_question="What is X?", db_id="mimic_iii")
         assert "What is X?" in instr
         assert "MIMIC-III" in instr
-        assert "schema inspection" in instr.lower()
+        assert "sql" in instr.lower()
 
     def test_build_instruction_eicu(self):
         """Test instruction for eICU database."""
