@@ -422,7 +422,11 @@ class CopilotCli(BaseInstalledAgent):
         await self.exec_as_agent(
             environment,
             command=(
-                "mkdir -p /logs/agent/.copilot /logs/agent && "
+                "mkdir -p /logs/agent/.copilot /logs/agent; "
+                "umask 022; "
+                'chmod -R a+rX "$COPILOT_HOME" >/dev/null 2>&1 || true; '
+                '(while true; do chmod -R a+rX "$COPILOT_HOME" >/dev/null 2>&1 || true; sleep 1; done) & '
+                'perm_pid=$!; '
                 'if [ -s "$HOME/.nvm/nvm.sh" ]; then . "$HOME/.nvm/nvm.sh"; fi; '
                 "copilot "
                 f"--model {model} "
@@ -434,8 +438,10 @@ class CopilotCli(BaseInstalledAgent):
                 f"-p {escaped_instruction} "
                 f"2>&1 </dev/null | stdbuf -oL tee {EnvironmentPaths.agent_dir / self._OUTPUT_FILENAME}; "
                 'status=${PIPESTATUS[0]}; '
+                'kill "$perm_pid" >/dev/null 2>&1 || true; '
+                'wait "$perm_pid" >/dev/null 2>&1 || true; '
                 'chmod -R a+rX "$COPILOT_HOME" >/dev/null 2>&1 || true; '
-                "exit $status"
+                'exit "$status"'
             ),
             env=env,
         )
