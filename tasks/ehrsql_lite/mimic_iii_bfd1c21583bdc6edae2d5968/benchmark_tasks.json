@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_bfd1c21583bdc6edae2d5968",
-    "instruction": "What is the PCO2 change for patient 25965 from the second value measured during the last hospital visit compared to the first value measured during the last hospital visit?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

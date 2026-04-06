@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_f1d231a47c8d73df566d01ee",
-    "instruction": "What is the dose of the prescribed opioid for patient 008-24610?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

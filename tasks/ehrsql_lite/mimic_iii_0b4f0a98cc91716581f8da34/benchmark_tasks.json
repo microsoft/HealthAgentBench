@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_0b4f0a98cc91716581f8da34",
-    "instruction": "How tall was patient 7400 when last measured during their most recent hospital encounter?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

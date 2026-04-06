@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_a7f73f2948074ad76025a25b",
-    "instruction": "Did patient 2482 come to the hospital in 2105?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

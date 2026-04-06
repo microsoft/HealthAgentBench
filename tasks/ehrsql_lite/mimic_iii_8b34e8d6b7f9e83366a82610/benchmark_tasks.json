@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_8b34e8d6b7f9e83366a82610",
-    "instruction": "Do you know the drug that is not to be administered during the refus lmb/lmbsac pst/pst procedure?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

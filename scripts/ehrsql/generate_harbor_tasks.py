@@ -493,6 +493,11 @@ def _write_meta_task(
 
     task_dir = output_root
 
+    # Remove unnecessary files from harbor init scaffolding
+    gitignore = task_dir / ".gitignore"
+    if gitignore.exists():
+        gitignore.unlink()
+
     # Root-level files
     task_dir.joinpath("task.toml").write_text(
         _generate_task_toml(task_dir, selected_task_ids, len(benchmark_tasks))
@@ -500,7 +505,6 @@ def _write_meta_task(
     task_dir.joinpath("instruction.md").write_text(
         _generate_instruction_md(db_id)
     )
-    _write_json(task_dir / "benchmark_tasks.json", benchmark_tasks)
 
     # Environment
     env_dir = task_dir / "environment"

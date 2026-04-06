@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_244d37272ba1fb37070f779b",
-    "instruction": "How long was patient 015-75226's first hospital stay?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

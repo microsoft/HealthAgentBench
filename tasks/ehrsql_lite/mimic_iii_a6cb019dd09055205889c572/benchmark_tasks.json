@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_a6cb019dd09055205889c572",
-    "instruction": "What are the required documents for a hospital discharge?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

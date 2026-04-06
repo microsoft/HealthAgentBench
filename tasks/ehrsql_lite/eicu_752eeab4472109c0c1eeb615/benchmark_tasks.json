@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_752eeab4472109c0c1eeb615",
-    "instruction": "What was the name of the organism found in the first sputum, expectorated test of patient 031-1337 in 05/2105?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

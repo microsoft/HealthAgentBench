@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_f4d02a23b5adb8d90945b8fb",
-    "instruction": "What are the top ten side effects reported for potassium chloride crystal ER 20 mEq oral tablets?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

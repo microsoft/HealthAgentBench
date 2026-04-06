@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_0d5bc224f2ff6dc3ea1dd0d2",
-    "instruction": "since 4 years ago, how many patients received alcohol detoxification during the same hospital visit after the previous procedure of cont inv mec ven <96 hrs?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

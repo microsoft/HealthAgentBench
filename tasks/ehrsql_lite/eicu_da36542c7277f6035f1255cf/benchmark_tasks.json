@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_da36542c7277f6035f1255cf",
-    "instruction": "What was patient 009-7776's total urine output amount on 12/30/2105?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

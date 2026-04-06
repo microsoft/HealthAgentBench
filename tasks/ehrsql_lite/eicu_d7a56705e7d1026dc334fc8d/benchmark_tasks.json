@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_d7a56705e7d1026dc334fc8d",
-    "instruction": "Can you count the number of times patient 015-33415 was prescribed diazepam since 98 months ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

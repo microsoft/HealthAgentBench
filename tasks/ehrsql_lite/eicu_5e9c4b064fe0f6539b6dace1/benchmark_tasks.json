@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_5e9c4b064fe0f6539b6dace1",
-    "instruction": "What is the name of the procedure that patient 013-866 last received since 1 year ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

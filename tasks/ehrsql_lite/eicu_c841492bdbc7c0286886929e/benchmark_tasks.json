@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_c841492bdbc7c0286886929e",
-    "instruction": "What is the number of patients who requested a copy of their prescription while in the hospital?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

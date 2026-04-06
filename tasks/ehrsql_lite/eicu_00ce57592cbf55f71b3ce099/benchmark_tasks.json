@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_00ce57592cbf55f71b3ce099",
-    "instruction": "Has patient 009-11235 been tested for myoglobin since 2100?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

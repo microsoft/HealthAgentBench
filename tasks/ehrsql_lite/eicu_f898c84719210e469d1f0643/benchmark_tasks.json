@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_f898c84719210e469d1f0643",
-    "instruction": "Retrieve patient 016-35481's daily average weight since 44 months ago.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

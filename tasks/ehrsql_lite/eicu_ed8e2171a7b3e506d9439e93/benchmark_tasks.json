@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_ed8e2171a7b3e506d9439e93",
-    "instruction": "What is the drug that was prescribed to patient 012-63986 in the same hospital encounter after undergoing enteral feeds - tube feeding?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

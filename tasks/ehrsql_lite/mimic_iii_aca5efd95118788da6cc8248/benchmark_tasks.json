@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_aca5efd95118788da6cc8248",
-    "instruction": "This year, how many patients received exc/des hrt les,endovasc in the same month after being diagnosed with hypertension nos?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

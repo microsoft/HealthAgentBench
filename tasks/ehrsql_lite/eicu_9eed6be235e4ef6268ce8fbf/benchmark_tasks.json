@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_9eed6be235e4ef6268ce8fbf",
-    "instruction": "When was the last time patient 016-34426 had medication that should be taken regularly?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

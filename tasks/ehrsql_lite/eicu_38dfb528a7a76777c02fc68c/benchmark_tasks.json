@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_38dfb528a7a76777c02fc68c",
-    "instruction": "What lab test was given to patient 006-207754 for the last time since 38 months ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

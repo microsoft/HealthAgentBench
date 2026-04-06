@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_c25c08405fe23ef4f7a7c766",
-    "instruction": "How many patients have expired after being diagnosed with cardiac arrest - witnessed, < 15 minutes cpr within the same month since 2 years ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

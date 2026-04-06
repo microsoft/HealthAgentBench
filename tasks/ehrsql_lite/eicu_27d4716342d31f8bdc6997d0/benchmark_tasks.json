@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_27d4716342d31f8bdc6997d0",
-    "instruction": "What is the cost of the procedure known as internal fixation?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

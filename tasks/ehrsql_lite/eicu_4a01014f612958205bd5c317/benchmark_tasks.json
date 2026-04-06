@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_4a01014f612958205bd5c317",
-    "instruction": "What are the three most common specimen tests taken since 3 years ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

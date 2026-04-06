@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_3bb6748ef231b1b3e6fb01b2",
-    "instruction": "Is the calcium value for patient 021-111547 last measured during the current hospital visit less than the first value measured during the current hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

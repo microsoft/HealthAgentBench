@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_a96b4034f85bf3ff7b946f99",
-    "instruction": "Among patients who took spinal canal explor nec the previous year, what are the top four most frequent diagnoses that followed afterwards within the same month?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

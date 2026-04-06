@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_833e62f8a72d8a914636ece3",
-    "instruction": "If it is a cerebrovascular MRI, what is the reimbursement standard?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

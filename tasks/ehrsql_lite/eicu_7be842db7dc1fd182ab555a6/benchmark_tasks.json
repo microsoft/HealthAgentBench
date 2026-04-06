@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_7be842db7dc1fd182ab555a6",
-    "instruction": "Can you provide the top five most frequent drugs that patients were prescribed during the same hospital visit after being prescribed diphenhydramine 25 mg cap since 6 years ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

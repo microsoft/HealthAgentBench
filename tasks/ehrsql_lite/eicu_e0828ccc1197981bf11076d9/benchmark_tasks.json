@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_e0828ccc1197981bf11076d9",
-    "instruction": "What is the result of patient 017-49538's last COVID-19 test?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

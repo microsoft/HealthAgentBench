@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_b5566ab280897d125447729c",
-    "instruction": "Is the platelets x 1000 for patient 027-69449 last measured during the first hospital visit less than the second to last value measured during the first hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

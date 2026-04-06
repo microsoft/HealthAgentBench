@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_32cf9861011aa212a361c8a6",
-    "instruction": "What are the top three most prescribed drugs for patients who were also prescribed potassium chloride er at the same time since 4 years ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

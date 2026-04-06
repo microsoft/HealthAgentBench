@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_41e35b5ff345309139351185",
-    "instruction": "What medication does patient 006-172277 take after it is prescribed by the other department?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

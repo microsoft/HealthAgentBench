@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_9755b7625207a2dacb09a4b1",
-    "instruction": "Had patient 027-32001 been to the emergency room since 2105?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

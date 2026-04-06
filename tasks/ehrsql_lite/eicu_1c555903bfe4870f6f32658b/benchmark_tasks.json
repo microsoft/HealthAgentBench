@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_1c555903bfe4870f6f32658b",
-    "instruction": "Can someone tell me how many operating rooms there are right now?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

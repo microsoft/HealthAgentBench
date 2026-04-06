@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_ef8a8827f5537561364a7fe5",
-    "instruction": "How much does patient 022-30643 weigh based on their last measurement until 24 months ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

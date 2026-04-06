@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_65d24ee87fdbca24a26a138f",
-    "instruction": "What is the minimum Hct of patient 011-55642 in 02/this year?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

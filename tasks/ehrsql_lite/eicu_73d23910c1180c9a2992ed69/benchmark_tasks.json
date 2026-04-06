@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_73d23910c1180c9a2992ed69",
-    "instruction": "Are you asking if patient 013-11660 completed the consent form for a CT scan?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

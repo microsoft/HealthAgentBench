@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_2b2e36dc1c64c356cd971c32",
-    "instruction": "How much does patient 012-4131's weight change from the value measured on 2105-11-20 at 19:30:00 compared to the value measured on 2105-02-17 at 01:25:00?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

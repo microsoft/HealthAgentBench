@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_65bb9459bbbd73ea85f574e0",
-    "instruction": "Count the number of patients who were diagnosed with aortocoronary bypass within the same month after having already been diagnosed with depressive disorder NEC this year.\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

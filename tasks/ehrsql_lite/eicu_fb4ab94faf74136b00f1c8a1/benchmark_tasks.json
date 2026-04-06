@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_fb4ab94faf74136b00f1c8a1",
-    "instruction": "What were the four most frequent drugs prescribed during the same hospital encounter to patients aged 50s after they had been diagnosed with acute respiratory distress since 5 years ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

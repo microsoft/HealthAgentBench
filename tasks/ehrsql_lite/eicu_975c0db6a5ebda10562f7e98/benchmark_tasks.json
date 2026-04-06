@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_975c0db6a5ebda10562f7e98",
-    "instruction": "Retrieve the top four most common lab tests for patients aged 60 or above in this year.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

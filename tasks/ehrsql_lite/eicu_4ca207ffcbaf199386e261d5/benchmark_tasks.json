@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_4ca207ffcbaf199386e261d5",
-    "instruction": "Is there any microbiology test result for patient 031-24513 available up to 10/2105?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

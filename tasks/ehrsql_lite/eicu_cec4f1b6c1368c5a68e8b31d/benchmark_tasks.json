@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_cec4f1b6c1368c5a68e8b31d",
-    "instruction": "What is the name of the medicine that was prescribed to patient 030-42006 for the first time during their first hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

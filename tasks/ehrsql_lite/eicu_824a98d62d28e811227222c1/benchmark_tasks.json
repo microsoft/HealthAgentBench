@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_824a98d62d28e811227222c1",
-    "instruction": "What were the five most frequently ordered medications for patients who were also prescribed 37.5 g tube : dextrose (diabetic use) 40 % po gel at the same time a year before?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

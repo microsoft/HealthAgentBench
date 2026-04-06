@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_4204c7315ccd2b5bc8218cec",
-    "instruction": "What is the name of the drug prescribed for patient 138 within 2 days after they were diagnosed with urin tract infection nos in 11/2104?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

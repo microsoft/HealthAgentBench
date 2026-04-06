@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_22193e273d6e905d7f4657cb",
-    "instruction": "Count the number of times that patient 003-7849 has taken volume (ml) dopamine on their first intensive care unit visit.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

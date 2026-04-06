@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_mimic_iii_test_4b0cdddf17422b2bb4cce96d",
-    "instruction": "Up to until 1 year ago, how many patients were prescribed iso-osmotic dextrose within 2 months after being diagnosed with dysthymic disorder?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]

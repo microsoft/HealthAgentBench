@@ -1,8 +1,0 @@
-[
-  {
-    "task_id": "ehrsql_eicu_test_f46131fe25a0178cc6321c3e",
-    "instruction": "What drugs are being administered to patient 008-10139 as antibiotics?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
-    "final_answer": "",
-    "payload": null
-  }
-]
