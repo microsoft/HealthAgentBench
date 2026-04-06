@@ -86,6 +86,8 @@ The current benchmark in this repo is `medagentbench`.
 
 ## Task Creation
 
+For the canonical repo-level workflow for adding a new benchmark, see `design/benchmark_addition_workflow.md`.
+
 For benchmark-specific task creation details, see `scripts/<benchmark>/README.md`.
 
 For the current MedAgentBench benchmark, see `scripts/medagentbench/README.md`.

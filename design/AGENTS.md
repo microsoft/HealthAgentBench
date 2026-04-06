@@ -13,13 +13,16 @@ Use `design/` for work that clarifies what to build before implementation:
 
 ## Benchmark Intake Workflow
 
+The canonical repo-level workflow for benchmark implementation lives in `benchmark_addition_workflow.md`.
+
 When adding or considering a benchmark, follow this order:
 
 1. Add or update a benchmark note in `design/related_work/`.
 2. Update `design/tasks.md` in the `Benchmarks` section.
-3. Only after that, implement repo changes under `scripts/<benchmark>/`, `tasks/<benchmark>/`, `jobs/`, and `debug/` as needed.
+3. If the benchmark needs adaptation or redesign, do design back-and-forth first and strongly consider an ExecPlan under `.agent/plans/` before implementation.
+4. Only after that, implement repo changes under `scripts/<benchmark>/`, `tasks/<benchmark>/`, `jobs/`, and `debug/` as needed.
 
-Do not add a benchmark directly to implementation paths without first creating the design context in `design/`.
+Do not add a benchmark directly to implementation paths without first creating the design context in `design/`. Use `benchmark_addition_workflow.md` as the canonical decision point for whether a benchmark is straightforward or adapted.
 
 ## Benchmark Tables in `design/tasks.md`
 
