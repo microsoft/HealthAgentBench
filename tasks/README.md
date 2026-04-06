@@ -17,8 +17,8 @@ For benchmark-specific task generation details, see `scripts/<benchmark>/README.
 
 | Task | Split | Model | Score |
 |------|-------|-------|-------|
-| ehrsql | mimic_iii_test | gpt-5.3-codex | 42.4 |
-| ehrsql | eicu_test | gpt-5.3-codex | 36.63 |
+| ehrsql | mimic_iii_test | gpt-5.3-codex | 42.69 |
+| ehrsql | eicu_test | gpt-5.3-codex | 39.3 |
 
 
 ## Metric Definitions

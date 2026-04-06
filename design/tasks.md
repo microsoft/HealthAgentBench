@@ -11,7 +11,7 @@ Track benchmark integrations and benchmark candidates here. Any benchmark consid
 | Benchmark | Task Directory | Description | Notes | Details |
 | --- | --- | --- | --- | --- |
 | MedAgentBench | `medagentbench/` | Interactive EHR benchmark focused on multi-step retrieval, reasoning, and structured action tasks over clinical data. | Harbor-generated benchmark task built from raw benchmark assets under `scripts/medagentbench/`. | [MedAgentBench](related_work/medagentbench_2501.14654.md) |
-| EHRSQL | `ehrsql/` | Text-to-SQL benchmark over EHR databases (MIMIC-III, eICU). Agent generates SQL queries or identifies unanswerable questions. | Splits: `mimic_iii_valid`, `mimic_iii_test`, `eicu_valid`, `eicu_test`. Per-worker task splits generated via `scripts/ehrsql/generate_harbor_tasks.py`. | [EHRSQL](related_work/ehrsql_2301.07695.md) |
+| EHRSQL | `ehrsql/` | Text-to-SQL benchmark over EHR databases (MIMIC-III, eICU). Agent generates SQL queries or identifies unanswerable questions. | Tasks generated via `scripts/ehrsql/generate_harbor_tasks.py`. | [EHRSQL](related_work/ehrsql_2301.07695.md) |
 
 ### Planned
 
