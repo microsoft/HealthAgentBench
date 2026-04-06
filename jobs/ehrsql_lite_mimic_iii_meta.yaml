@@ -1,7 +1,7 @@
 jobs_dir: results/harbor/ehrsql_lite/mimic_iii
 n_attempts: 1
 timeout_multiplier: 1.0
-n_concurrent_trials: 10
+n_concurrent_trials: 20
 quiet: false
 
 environment:

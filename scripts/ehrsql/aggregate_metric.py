@@ -68,17 +68,17 @@ def main(input_path: Path, output_path: Path) -> None:
     pass_at_1 = sums["passed"] / sums["total"] if sums["total"] else 0.0
 
     result = {
-        "precision_ans": round(100.0 * precision_ans, 2),
-        "recall_ans": round(100.0 * recall_ans, 2),
-        "f1_ans": round(100.0 * f1_ans, 2),
+        "fill_rate": round(sums["filled"] / sums["total"], 4) if sums["total"] else 0.0,
+        "f1_exec": round(100.0 * f1_exec, 2),
         "precision_exec": round(100.0 * precision_exec, 2),
         "recall_exec": round(100.0 * recall_exec, 2),
-        "f1_exec": round(100.0 * f1_exec, 2),
+        "f1_ans": round(100.0 * f1_ans, 2),
+        "precision_ans": round(100.0 * precision_ans, 2),
+        "recall_ans": round(100.0 * recall_ans, 2),
         "pass_at_1": round(pass_at_1, 4),
         "total_tasks": sums["total"],
         "passed_tasks": sums["passed"],
         "filled_tasks": sums["filled"],
-        "fill_rate": round(sums["filled"] / sums["total"], 4) if sums["total"] else 0.0,
         "num_trials": n_trials,
     }
 
