@@ -1,0 +1,21 @@
+jobs_dir: results
+n_attempts: 1
+timeout_multiplier: 1.0
+n_concurrent_trials: 1
+quiet: false
+
+environment:
+  type: docker
+  force_build: true
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.copilot_cli:CopilotCli
+    model_name: gpt-5.4-mini
+    kwargs:
+      reasoning_effort: medium
+
+datasets:
+  - path: tasks
+    task_names:
+      - mimic_iv_meds

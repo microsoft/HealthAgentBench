@@ -1,0 +1,71 @@
+{
+  "required_metadata_files": [
+    "dataset.json",
+    "codes.parquet",
+    "subject_splits.parquet"
+  ],
+  "metadata": {
+    "dataset.json": {
+      "dataset_name": "MIMIC-IV",
+      "dataset_version": "3.1:0.0.7",
+      "etl_name": "MEDS_transforms",
+      "etl_version": "0.2.4"
+    },
+    "codes.parquet": {
+      "rows": 2661,
+      "columns": [
+        {
+          "name": "code",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "parent_codes",
+          "type": "list<element: string>"
+        },
+        {
+          "name": "itemid",
+          "type": "large_list<element: large_string>"
+        },
+        {
+          "name": "valueuom",
+          "type": "large_list<element: large_string>"
+        },
+        {
+          "name": "possibly_cpt_code",
+          "type": "large_list<element: large_string>"
+        }
+      ]
+    },
+    "subject_splits.parquet": {
+      "rows": 100,
+      "columns": [
+        {
+          "name": "subject_id",
+          "type": "int64"
+        },
+        {
+          "name": "split",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "data_files": [
+    {
+      "relative_path": "data/held_out/0.parquet",
+      "rows": 42554
+    },
+    {
+      "relative_path": "data/train/0.parquet",
+      "rows": 803992
+    },
+    {
+      "relative_path": "data/tuning/0.parquet",
+      "rows": 69620
+    }
+  ]
+}

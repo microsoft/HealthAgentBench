@@ -50,6 +50,11 @@ For adapted benchmarks, knock down these decisions first:
 6. How evaluation and scoring map from the original benchmark into Harbor.
 7. What new docs, artifacts, and validation commands will be required.
 
+Two patterns are worth calling out explicitly because they recur in real integrations:
+
+- If the original upstream path depends on live downloads or unstable external services, prefer staging the needed input in the task environment so the agent run itself is stable and reproducible.
+- If environment setup is part of the benchmark skill being evaluated, ship the task with the setup tool available, but require the agent to perform the setup steps itself and make the verifier check for observable setup artifacts.
+
 ## 3. Create the Benchmark Integration
 
 Create a benchmark-specific directory under `scripts/<benchmark>/`.
@@ -89,6 +94,8 @@ Typical required pieces are:
 
 If the benchmark is generated from raw assets, the generator should take source inputs from `scripts/<benchmark>/assets/` and produce the runnable task under `tasks/<benchmark>/`.
 
+For adapted ETL-style benchmarks, it is often correct for the runnable output to be a generated directory tree rather than a JSON answer file. In that case, make the agent-facing output path explicit in both `instruction.md` and `task.toml`.
+
 ## 5. Add the Run Path
 
 Every integrated benchmark needs a Harbor job config under `jobs/`.
@@ -117,6 +124,8 @@ Required updates:
 3. Update `tasks/README.md` once the benchmark is supported in this repo.
 4. Update `design/tasks.md` so the benchmark is listed under `Integrated`.
 
+When the verifier depends on a reference run, keep only a compact verifier-side summary in `scripts/<benchmark>/assets/`. Do not expose the gold reference output to the agent unless the benchmark is specifically about reproducing a known artifact byte-for-byte.
+
 Optional updates:
 
 - update `README.md` if the benchmark becomes a primary public entry point
@@ -134,6 +143,8 @@ Recommended checks:
 4. The Harbor job under `jobs/` runs successfully.
 5. Benchmark-specific tests pass.
 6. Benchmark-specific debug instructions are accurate if a debug path is documented.
+
+For adapted benchmarks that require agent-run setup, include at least one test that proves the verifier fails when the expected setup artifacts are missing even if the rest of the workspace shape looks plausible.
 
 Typical validation commands will look like:
 

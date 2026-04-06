@@ -11,6 +11,7 @@ Track benchmark integrations and benchmark candidates here. Any benchmark consid
 | Benchmark | Task Directory | Description | Notes | Details |
 | --- | --- | --- | --- | --- |
 | MedAgentBench | `medagentbench/` | Interactive EHR benchmark focused on multi-step retrieval, reasoning, and structured action tasks over clinical data. | Harbor-generated benchmark task built from raw benchmark assets under `scripts/medagentbench/`. | [MedAgentBench](related_work/medagentbench_2501.14654.md) |
+| MIMIC-IV MEDS Extraction ETL | `mimic_iv_meds/` | ETL benchmark for converting the open MIMIC-IV demo dataset into MEDS by following the pinned upstream `MIMIC_IV_MEDS` repo. | Adapted Harbor task with staged demo input, agent-run `uv` setup, and directory-output verification against a gold summary. | [MIMIC_IV_MEDS v0.0.7](related_work/mimic_iv_meds_0.0.7.md) |
 
 ### Planned
 
