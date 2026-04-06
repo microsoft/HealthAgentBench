@@ -19,22 +19,7 @@ This directory contains the Harbor-first MedAgentBench utilities.
 
 The MedAgentBench-compatible FHIR sidecar is now provided through the generated Harbor task environment and the debug workflow under `debug/`.
 
-## Quick Start
-
-The `run_and_evaluate.sh` script handles data download, task generation, and Harbor execution in one command:
-
-```bash
-bash scripts/medagentbench/run_and_evaluate.sh jobs/medagentbench_meta.yaml
-bash scripts/medagentbench/run_and_evaluate.sh jobs/medagentbench_meta.yaml -m gpt-5.1-codex-mini --ak reasoning_effort=low
-```
-
-Or via the top-level entry point:
-
-```bash
-bash medcli_evaluate.sh --task medagentbench --config jobs/medagentbench_meta.yaml
-```
-
-## Manual Workflow
+## Canonical Harbor Workflow
 
 ```bash
 # 1) Prepare benchmark assets
@@ -45,11 +30,8 @@ uv run python scripts/medagentbench/generate_harbor_tasks.py \
   --input-json scripts/medagentbench/assets/test_data_v2.json \
   --output-root tasks/medagentbench
 
-# 3) Set up auth (choose one)
-export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
-# or
-export AZURE_OPENAI_API_KEY="<key>"
-export CODEX_TASK_TOML="$(cat ~/.codex/config.toml)"
+# 3) Verify Codex auth is available on the host
+codex login status
 
 # 4) Run the Harbor meta-task
 uv run harbor run -c jobs/medagentbench_meta.yaml
