@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -82,7 +83,8 @@ def build_instruction(
     parts = [base_question.strip()]
 
     # Add database context
-    db_name = "MIMIC-III" if db_id == "mimic_iii" else "eICU"
+    db_display_names = {"mimic_iii": "MIMIC-III", "eicu": "eICU"}
+    db_name = db_display_names.get(db_id, db_id)
     parts.append(f"Database: {db_name}")
 
     # Add answer format requirements
@@ -114,8 +116,9 @@ def normalize_harbor_task(
     # Generate task_id combining db and index
     task_id = task.get("id")
     if not task_id:
-        # Fallback if no ID provided
-        task_id = f"ehrsql_{db_id}_{split}_{hash(question) % 10000:04d}"
+        # Stable fallback using sha1 (deterministic across runs, unlike hash())
+        digest = hashlib.sha1(f"{db_id}:{split}:{question}".encode()).hexdigest()[:12]
+        task_id = f"ehrsql_{db_id}_{split}_{digest}"
     else:
         task_id = f"ehrsql_{db_id}_{split}_{task_id}"
 
@@ -149,7 +152,8 @@ def build_harbor_answer_key(
     # Task ID (must match normalize_harbor_task)
     task_id = task.get("id")
     if not task_id:
-        task_id = f"ehrsql_{db_id}_{split}_{hash(question) % 10000:04d}"
+        digest = hashlib.sha1(f"{db_id}:{split}:{question}".encode()).hexdigest()[:12]
+        task_id = f"ehrsql_{db_id}_{split}_{digest}"
     else:
         task_id = f"ehrsql_{db_id}_{split}_{task_id}"
 

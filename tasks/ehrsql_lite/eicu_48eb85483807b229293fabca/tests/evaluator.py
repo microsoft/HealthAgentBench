@@ -177,9 +177,15 @@ def evaluate_submission_rows(
 
     for data_idx, sub in enumerate(submission_rows):
         task_id = sub.get('task_id')
-        pred_sql = sub.get('final_answer', '')
+        pred_sql = sub.get('final_answer', '').strip()
         key_row = answer_key.get(task_id, {})
-        expected_sql = key_row.get('expected_answer', '')
+        expected_sql = key_row.get('expected_answer', '').strip()
+
+        # Normalize empty/whitespace-only to "null" (unanswerable)
+        if not pred_sql:
+            pred_sql = 'null'
+        if not expected_sql:
+            expected_sql = 'null'
         db_id = key_row.get('db_id', 'mimic_iii')
 
         db_file = db_dir / db_id / f'{db_id}.sqlite'
@@ -243,7 +249,8 @@ def evaluate_submission_rows(
         results[idx]['reason'] = (
             'both_null' if ans_real == 'null' and ans_pred == 'null'
             else 'answerability_mismatch' if (ans_real == 'null') != (ans_pred == 'null')
-            else 'execution_error' if ans_pred.startswith('error_')
+            else 'timeout' if 'timeout_pred' in ans_pred
+            else 'execution_error' if 'error_pred' in ans_pred
             else 'result_match' if ans_real == ans_pred
             else 'result_mismatch'
         )

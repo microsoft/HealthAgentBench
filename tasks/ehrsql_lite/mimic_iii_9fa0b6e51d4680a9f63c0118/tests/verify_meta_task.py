@@ -5,7 +5,7 @@ This script is called by Harbor after the agent completes to evaluate the submis
 It reads submission.json, compares against answer_key.json, and outputs verification results.
 
 Usage (called by Harbor automatically):
-    python tasks/ehrsql/tests/verify_meta_task.py
+    python tasks/ehrsql_lite/tests/verify_meta_task.py
 
 Expected environment:
     - /workspace/submission.json — agent's answers
@@ -85,6 +85,9 @@ def main() -> int:
         }))
         return 1
 
+    # Count how many rows the agent actually filled before evaluation normalizes them
+    filled = sum(1 for r in submission if r.get("final_answer", "").strip())
+
     # Save agent's submission for inspection/debugging
     (logs_dir / "submission.json").write_text(json.dumps(submission, indent=2))
 
@@ -147,6 +150,7 @@ def main() -> int:
         "exec_match_given_real": 0,
         "total": 0,
         "passed": 0,
+        "filled": filled,
     }
     for r in eval_result["results"]:
         pred = r["predicted_result"]

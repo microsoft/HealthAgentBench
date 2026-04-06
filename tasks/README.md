@@ -7,7 +7,7 @@ Current benchmark tasks in this repo:
 | Benchmark | Task Directory | Description | Notes |
 |-----------|----------------|-------------|-------|
 | **MedAgentBench** | `medagentbench/` | Interactive EHR benchmark focused on multi-step retrieval, reasoning, and structured action tasks over clinical data. | Harbor-generated benchmark task built from raw benchmark assets under `scripts/medagentbench/`. |
-| **EHRSQL** | `ehrsql/` | Text-to-SQL benchmark over EHR databases (MIMIC-III, eICU). Agent generates SQL queries or identifies unanswerable questions. | Splits: `mimic_iii_valid`, `mimic_iii_test`, `eicu_valid`, `eicu_test`. Per-worker task splits generated via `scripts/ehrsql/generate_harbor_tasks.py`. We run on 250 random samples to report results.|
+| **EHRSQL_Lite** | `ehrsql/` | Text-to-SQL benchmark over EHR databases (MIMIC-III, eICU). We use a lite version that covers 250 samples from MIMIC-III and 250 samples from eicu. Agent generates SQL queries or identifies unanswerable questions. |THE harbor task directories are generated using `scripts/ehrsql/generate_harbor_tasks.py`.|
 
 For benchmark-specific task generation details, see `scripts/<benchmark>/README.md`.
 

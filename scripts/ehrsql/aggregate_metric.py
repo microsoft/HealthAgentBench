@@ -37,7 +37,7 @@ def main(input_path: Path, output_path: Path) -> None:
     keys = [
         "pred_not_null", "real_not_null", "both_not_null",
         "exec_match_given_pred", "exec_match_given_real",
-        "total", "passed",
+        "total", "passed", "filled",
     ]
     sums = {k: 0 for k in keys}
     n_trials = 0
@@ -77,6 +77,8 @@ def main(input_path: Path, output_path: Path) -> None:
         "pass_at_1": round(pass_at_1, 4),
         "total_tasks": sums["total"],
         "passed_tasks": sums["passed"],
+        "filled_tasks": sums["filled"],
+        "fill_rate": round(sums["filled"] / sums["total"], 4) if sums["total"] else 0.0,
         "num_trials": n_trials,
     }
 
@@ -93,6 +95,7 @@ def main(input_path: Path, output_path: Path) -> None:
     print(f"  Answer Recall:     {result['recall_ans']}%", file=sys.stderr)
     print(f"  Pass@1:            {result['pass_at_1']}", file=sys.stderr)
     print(f"  Passed:            {sums['passed']}/{sums['total']}", file=sys.stderr)
+    print(f"  Filled:            {sums['filled']}/{sums['total']} ({result['fill_rate']:.1%})", file=sys.stderr)
     print(f"{'='*44}", file=sys.stderr)
 
 
