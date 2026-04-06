@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_cab1b467da7b0fb6fe71201f",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select microbiologyevents.charttime from microbiologyevents where microbiologyevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 91249 ) and strftime('%y-%m',microbiologyevents.charttime) <= '2105-11' order by microbiologyevents.charttime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

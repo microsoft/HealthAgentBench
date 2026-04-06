@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2fbf3b1025875d0116ba0eb8",
+    "instruction": "What is the number of hours since patient 022-187132 received the first propofol 1000 mg/100 ml prescription in their current hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

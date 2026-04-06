@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8f730f841035d54da843b6ae",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select procedures_icd.charttime from procedures_icd where procedures_icd.icd9_code = ( select d_icd_procedures.icd9_code from d_icd_procedures where d_icd_procedures.short_title = 'remove tracheostomy tube' ) and procedures_icd.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 9241 ) and datetime(procedures_icd.charttime) >= datetime(current_time,'-1 year') order by procedures_icd.charttime desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

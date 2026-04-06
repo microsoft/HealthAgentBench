@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_49434d1364d2f87251c22602",
+    "instruction": "When did patient 025-5271 first receive a prescription in 05/2105?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

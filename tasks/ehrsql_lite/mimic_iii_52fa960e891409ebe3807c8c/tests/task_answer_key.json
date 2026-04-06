@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_52fa960e891409ebe3807c8c",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select d_items.label from d_items where d_items.itemid in ( select t1.itemid from ( select outputevents.itemid, dense_rank() over ( order by count(*) desc ) as c1 from outputevents where datetime(outputevents.charttime,'start of year') = datetime(current_time,'start of year','-0 year') group by outputevents.itemid ) as t1 where t1.c1 <= 5 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

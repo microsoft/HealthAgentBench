@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_870de3bb9a1ca09e676a3af8",
+    "instruction": "Can you get me the top five most common outputs?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

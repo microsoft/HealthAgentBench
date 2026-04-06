@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_916046ae231da6ea86f0b097",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '031-23605' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime desc limit 1 ) ) and intakeoutput.cellpath like '%intake%' and intakeoutput.celllabel = 'other meds'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

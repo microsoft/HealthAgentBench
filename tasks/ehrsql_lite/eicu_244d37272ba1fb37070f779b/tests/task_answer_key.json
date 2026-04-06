@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_244d37272ba1fb37070f779b",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select strftime('%j',patient.hospitaldischargetime) - strftime('%j',patient.hospitaladmittime) from patient where patient.uniquepid = '015-75226' and patient.hospitaladmittime is not null order by patient.hospitaladmittime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

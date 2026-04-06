@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_6b4236112f3f683a7155c715",
+    "instruction": "What is the arterial BP [diastolic] change for patient 10855 from the last value measured during the current ICU visit compared to the second to last value measured during the current ICU visit?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

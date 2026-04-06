@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2d56d20e3a829d6f8daeb5b8",
+    "instruction": "Tell me what to prepare before the esophagogastroduodenoscopy - with chemocautery procedure.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

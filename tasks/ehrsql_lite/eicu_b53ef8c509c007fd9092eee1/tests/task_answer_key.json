@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_b53ef8c509c007fd9092eee1",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "null",
+    "db_id": "eicu",
+    "is_impossible": true,
+    "importance": "n/a",
+    "payload": null
+  }
+]

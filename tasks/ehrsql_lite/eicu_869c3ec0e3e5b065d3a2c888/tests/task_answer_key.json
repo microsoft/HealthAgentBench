@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_869c3ec0e3e5b065d3a2c888",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from treatment where treatment.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '009-5001' and patient.hospitaldischargetime is null ) ) and treatment.treatmentname = 'neurology consultation'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

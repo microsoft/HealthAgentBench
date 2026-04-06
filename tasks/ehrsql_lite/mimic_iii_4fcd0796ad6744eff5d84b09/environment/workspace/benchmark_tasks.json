@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_4fcd0796ad6744eff5d84b09",
+    "instruction": "What was the first dose of calcium replacement (oncology) that was prescribed to patient 11362 in the previous month?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

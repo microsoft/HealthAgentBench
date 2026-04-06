@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_96e2e4af8b35c8dc0e2c90a3",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.drugname from ( select medication.drugname, count( medication.drugstarttime ) as c1 from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '012-4131' ) ) and datetime(medication.drugstarttime,'start of month') = datetime(current_time,'start of month','-1 month') group by medication.drugname ) as t1 where t1.c1 >= 2",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

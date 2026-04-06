@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_48eb85483807b229293fabca",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select medication.drugname from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '005-26011' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) ) order by medication.drugstarttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

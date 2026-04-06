@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_a1903ed02fb73ebb93bfa338",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct t1.uniquepid ) from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'sepsis' ) as t1 join ( select patient.uniquepid, medication.drugstarttime from medication join patient on medication.patientunitstayid = patient.patientunitstayid where medication.drugname = 'versed' ) as t2 where t1.diagnosistime < t2.drugstarttime and datetime(t2.drugstarttime) between datetime(t1.diagnosistime) and datetime(t1.diagnosistime,'+2 month')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

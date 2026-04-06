@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_dcef29ad586d6b63ebc00dab",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select sum( case when patients.dod is null then 1 when strftime('%j',patients.dod) - strftime('%j',t4.charttime) > 5 * 365 then 1 else 0 end ) * 100 / count(*) from ( select t2.subject_id, t2.charttime from ( select t1.subject_id, t1.charttime from ( select admissions.subject_id, diagnoses_icd.charttime from diagnoses_icd join admissions on diagnoses_icd.hadm_id = admissions.hadm_id where diagnoses_icd.icd9_code = ( select d_icd_diagnoses.icd9_code from d_icd_diagnoses where d_icd_diagnoses.short_title = 'cv dis nec-deliver w p/p' ) group by admissions.subject_id having min(diagnoses_icd.charttime) = diagnoses_icd.charttime ) as t1 where strftime('%j',current_time) - strftime('%j',t1.charttime) > 5 * 365 ) as t2 join ( select admissions.subject_id, prescriptions.startdate from prescriptions join admissions on prescriptions.hadm_id = admissions.hadm_id where prescriptions.drug = 'lr' ) as t3 on t2.subject_id = t3.subject_id where t2.charttime < t3.startdate ) as t4 join patients on t4.subject_id = patients.subject_id",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_edd6987146620d44b4b8082f",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select min(labevents.valuenum) from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 31300 ) and labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'protein, total' ) and strftime('%y',labevents.charttime) <= '2103' group by strftime('%y-%m',labevents.charttime)",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

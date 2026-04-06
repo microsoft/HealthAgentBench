@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_27c812bfdc956714d5dd9a08",
+    "instruction": "until 2104, how many patients diagnosed with stroke did not return to the hospital within 2 months?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

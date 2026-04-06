@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_5b3dca33857c749605971520",
+    "instruction": "When did the first lab test for patient 010-32430 occur until 07/2103?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

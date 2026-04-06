@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_cd309a0fb34ffca96b3d3148",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select microlab.culturetakentime from microlab where microlab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '031-23605' ) ) and microlab.culturesite = 'sputum, expectorated' and datetime(microlab.culturetakentime,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m',microlab.culturetakentime) = '08' order by microlab.culturetakentime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

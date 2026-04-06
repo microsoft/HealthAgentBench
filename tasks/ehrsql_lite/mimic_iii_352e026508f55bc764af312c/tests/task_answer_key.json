@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_352e026508f55bc764af312c",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct admissions.subject_id ) from admissions where admissions.dischtime is not null and datetime(admissions.dischtime,'start of year') = datetime(current_time,'start of year','-1 year')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

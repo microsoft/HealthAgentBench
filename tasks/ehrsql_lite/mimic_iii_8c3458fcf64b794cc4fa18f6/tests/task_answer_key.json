@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8c3458fcf64b794cc4fa18f6",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 12274 ) and prescriptions.drug = 'methadone' and datetime(prescriptions.startdate,'start of year') = datetime(current_time,'start of year','-0 year')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

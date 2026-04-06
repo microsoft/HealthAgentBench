@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_27c812bfdc956714d5dd9a08",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select ( select count( distinct t1.uniquepid ) from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'stroke' and strftime('%y',diagnosis.diagnosistime) <= '2104' ) as t1 ) - ( select count( distinct t2.uniquepid ) from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'stroke' and strftime('%y',diagnosis.diagnosistime) <= '2104' ) as t2 join patient on t2.uniquepid = patient.uniquepid where t2.diagnosistime < patient.hospitaladmittime and strftime('%y',patient.hospitaladmittime) <= '2104' and datetime(patient.hospitaladmittime) between datetime(t2.diagnosistime) and datetime(t2.diagnosistime,'+2 month') )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

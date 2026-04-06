@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_81184959a8230c83cca47f2f",
+    "instruction": "Has patient 002-13750 been admitted in this year?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_7be842db7dc1fd182ab555a6",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t3.drugname from ( select t2.drugname, dense_rank() over ( order by count(*) desc ) as c1 from ( select patient.uniquepid, medication.drugstarttime, patient.patienthealthsystemstayid from medication join patient on medication.patientunitstayid = patient.patientunitstayid where medication.drugname = 'diphenhydramine 25 mg cap' and datetime(medication.drugstarttime) >= datetime(current_time,'-6 year') ) as t1 join ( select patient.uniquepid, medication.drugname, medication.drugstarttime, patient.patienthealthsystemstayid from medication join patient on medication.patientunitstayid = patient.patientunitstayid where datetime(medication.drugstarttime) >= datetime(current_time,'-6 year') ) as t2 on t1.uniquepid = t2.uniquepid where t1.drugstarttime < t2.drugstarttime and t1.patienthealthsystemstayid = t2.patienthealthsystemstayid group by t2.drugname ) as t3 where t3.c1 <= 5",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

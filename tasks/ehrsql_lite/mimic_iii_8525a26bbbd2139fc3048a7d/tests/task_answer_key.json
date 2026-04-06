@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8525a26bbbd2139fc3048a7d",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*)>0 from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 808 and admissions.dischtime is null ) and prescriptions.drug in ( 'multivitamins', 'golytely', 'albuterol 0.083% neb soln' )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

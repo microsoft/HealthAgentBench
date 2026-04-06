@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_975c0db6a5ebda10562f7e98",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select t1.labname from ( select lab.labname, dense_rank() over ( order by count(*) desc ) as c1 from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.age >= 60 ) and datetime(lab.labresulttime,'start of year') = datetime(current_time,'start of year','-0 year') group by lab.labname ) as t1 where t1.c1 <= 4",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

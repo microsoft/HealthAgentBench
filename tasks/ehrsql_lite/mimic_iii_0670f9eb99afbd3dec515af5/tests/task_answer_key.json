@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_0670f9eb99afbd3dec515af5",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from inputevents_cv where inputevents_cv.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 8562 ) and icustays.outtime is not null order by icustays.intime desc limit 1 ) and inputevents_cv.itemid in ( select d_items.itemid from d_items where d_items.label = 'd10w' and d_items.linksto = 'inputevents_cv' )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

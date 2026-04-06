@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_ea2a11ee9365d4ddc5ea34f5",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select distinct prescriptions.route from prescriptions where prescriptions.drug = 'syringe (chemo)'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

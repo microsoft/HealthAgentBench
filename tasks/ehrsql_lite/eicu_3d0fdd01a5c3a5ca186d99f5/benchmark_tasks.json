@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_3d0fdd01a5c3a5ca186d99f5",
+    "instruction": "What documents are necessary for you to be discharged from the hospital?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

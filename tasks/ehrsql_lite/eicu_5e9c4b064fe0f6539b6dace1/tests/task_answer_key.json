@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_5e9c4b064fe0f6539b6dace1",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select treatment.treatmentname from treatment where treatment.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '013-866' ) ) and datetime(treatment.treatmenttime) >= datetime(current_time,'-1 year') order by treatment.treatmenttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_6a261929748c28288f0e9296",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select distinct patient.gender from patient where patient.uniquepid = '006-227759'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_cbbde523634c0a01974139f9",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select sum(intakeoutput.cellvaluenumeric) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-142451' ) and patient.unitdischargetime is null ) and intakeoutput.cellpath like '%intake%'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

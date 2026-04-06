@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_c54daf68ecc5b6b270a18e4a",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.diagnosisname from ( select diagnosis.diagnosisname, dense_rank() over ( order by count(*) desc ) as c1 from diagnosis where datetime(diagnosis.diagnosistime) >= datetime(current_time,'-3 year') group by diagnosis.diagnosisname ) as t1 where t1.c1 <= 3",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

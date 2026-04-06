@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_c598cc8f74776b74cb3185b9",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select d_icd_diagnoses.short_title from d_icd_diagnoses where d_icd_diagnoses.icd9_code in ( select t1.icd9_code from ( select diagnoses_icd.icd9_code, dense_rank() over ( order by count(*) desc ) as c1 from diagnoses_icd where diagnoses_icd.hadm_id in ( select admissions.hadm_id from admissions where admissions.age between 30 and 39 ) and strftime('%y',diagnoses_icd.charttime) >= '2102' group by diagnoses_icd.icd9_code ) as t1 where t1.c1 <= 3 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_bceb15a2ece470156e935ce7",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select d_icd_diagnoses.short_title from d_icd_diagnoses where d_icd_diagnoses.icd9_code in ( select t1.icd9_code from ( select diagnoses_icd.icd9_code, dense_rank() over ( order by count(*) desc ) as c1 from diagnoses_icd where datetime(diagnoses_icd.charttime,'start of year') = datetime(current_time,'start of year','-1 year') group by diagnoses_icd.icd9_code ) as t1 where t1.c1 <= 4 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

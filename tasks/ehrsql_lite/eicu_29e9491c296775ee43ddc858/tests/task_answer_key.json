@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_29e9491c296775ee43ddc858",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.labname from ( select lab.labname, dense_rank() over ( order by count(*) desc ) as c1 from lab where datetime(lab.labresulttime,'start of year') = datetime(current_time,'start of year','-0 year') group by lab.labname ) as t1 where t1.c1 <= 5",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

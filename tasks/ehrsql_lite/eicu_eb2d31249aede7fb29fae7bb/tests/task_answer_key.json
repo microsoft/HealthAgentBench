@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_eb2d31249aede7fb29fae7bb",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select ( select count( distinct t1.uniquepid ) from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'pancreatic tumor - pancreatic ca' and datetime(diagnosis.diagnosistime) <= datetime(current_time,'-4 year') ) as t1 ) - ( select count( distinct t2.uniquepid ) from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'pancreatic tumor - pancreatic ca' and datetime(diagnosis.diagnosistime) <= datetime(current_time,'-4 year') ) as t2 join patient on t2.uniquepid = patient.uniquepid where t2.diagnosistime < patient.hospitaladmittime and datetime(patient.hospitaladmittime) <= datetime(current_time,'-4 year') and datetime(t2.diagnosistime,'start of month') = datetime(patient.hospitaladmittime,'start of month') )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

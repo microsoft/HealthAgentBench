@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_88d82958a859b03d7d613f43",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '016-129' ) ) and medication.drugname = 'ondansetron (pf) (zofran) injection 4 mg'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

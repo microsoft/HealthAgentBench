@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_f5ee33647886fb8e5cad1be7",
+    "instruction": "What is the cost of Aspirin 81 mg chewable tablet?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

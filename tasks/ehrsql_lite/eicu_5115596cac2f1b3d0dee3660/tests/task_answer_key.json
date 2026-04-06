@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_5115596cac2f1b3d0dee3660",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select diagnosis.diagnosisname from diagnosis where diagnosis.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '033-9204' ) ) and strftime('%y',diagnosis.diagnosistime) <= '2104' order by diagnosis.diagnosistime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

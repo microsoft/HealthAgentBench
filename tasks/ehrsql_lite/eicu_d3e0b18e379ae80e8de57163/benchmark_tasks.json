@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_d3e0b18e379ae80e8de57163",
+    "instruction": "How many hours have passed since patient 016-38131 first received a laboratory test of calcium during their current hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

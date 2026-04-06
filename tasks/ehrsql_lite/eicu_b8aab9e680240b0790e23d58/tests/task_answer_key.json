@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_b8aab9e680240b0790e23d58",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select max(lab.labresult) from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '006-66713' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime desc limit 1 ) ) and lab.labname = 'bicarbonate'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

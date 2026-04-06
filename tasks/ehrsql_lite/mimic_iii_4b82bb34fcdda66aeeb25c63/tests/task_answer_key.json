@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_4b82bb34fcdda66aeeb25c63",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select d_labitems.label from d_labitems where d_labitems.itemid in ( select t1.itemid from ( select labevents.itemid, dense_rank() over ( order by count(*) desc ) as c1 from labevents where strftime('%y',labevents.charttime) <= '2100' group by labevents.itemid ) as t1 where t1.c1 <= 5 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

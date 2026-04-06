@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_7ed3f22f49d80d7d9d1dcdb0",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*)>0 from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 1372 ) and prescriptions.drug in ( 'quetiapine fumarate', 'phenylephrine', 'ondansetron' ) and strftime('%y-%m',prescriptions.startdate) <= '2101-05'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_2fbe9659ab5339da269f3f49",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select procedures_icd.charttime from procedures_icd where procedures_icd.icd9_code = ( select d_icd_procedures.icd9_code from d_icd_procedures where d_icd_procedures.short_title = 'entral infus nutrit sub' ) and procedures_icd.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 98177 and admissions.dischtime is not null order by admissions.admittime asc limit 1 ) order by procedures_icd.charttime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

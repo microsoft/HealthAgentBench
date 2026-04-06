@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4be2481e39ca68b47cf5e028",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select sum(intakeoutput.cellvaluenumeric) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '016-27397' ) ) and intakeoutput.celllabel = 'blood loss' and intakeoutput.cellpath like '%output%' and datetime(intakeoutput.intakeoutputtime,'start of month') = datetime(current_time,'start of month','-0 month') and strftime('%d',intakeoutput.intakeoutputtime) = '27'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

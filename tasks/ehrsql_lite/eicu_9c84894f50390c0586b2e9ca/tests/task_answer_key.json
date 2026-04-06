@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9c84894f50390c0586b2e9ca",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select patient.wardid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-5581' ) and datetime(patient.unitadmittime,'start of year') = datetime(current_time,'start of year','-1 year') order by patient.unitadmittime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

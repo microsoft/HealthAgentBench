@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_a6aafef419509bd3492ab525",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select t1.drugname from ( select medication.drugname, dense_rank() over ( order by count(*) desc ) as c1 from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.age between 30 and 39 ) and datetime(medication.drugstarttime) <= datetime(current_time,'-3 year') group by medication.drugname ) as t1 where t1.c1 <= 4",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

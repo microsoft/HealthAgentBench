@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_bc6ea5765b448b212c8effe7",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t3.drug from ( select t2.drug, dense_rank() over ( order by count(*) desc ) as c1 from ( select admissions.subject_id, prescriptions.startdate from prescriptions join admissions on prescriptions.hadm_id = admissions.hadm_id where prescriptions.drug = '*nf* basiliximab' and strftime('%y',prescriptions.startdate) = '2105' ) as t1 join ( select admissions.subject_id, prescriptions.drug, prescriptions.startdate from prescriptions join admissions on prescriptions.hadm_id = admissions.hadm_id where strftime('%y',prescriptions.startdate) = '2105' ) as t2 on t1.subject_id = t2.subject_id where datetime(t1.startdate) = datetime(t2.startdate) group by t2.drug ) as t3 where t3.c1 <= 4",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

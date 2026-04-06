@@ -1,0 +1,24 @@
+version = "1.0"
+
+[metadata]
+benchmark = "ehrsql"
+mode = "meta-task"
+description = "Text-to-SQL question answering over MIMIC-III and eICU EHR databases"
+selected_task_ids = ['ehrsql_eicu_test_e5e1a133b1fe2141c6fc7466']
+num_tasks = 1
+submission_path = "/workspace/submission.json"
+
+[verifier]
+timeout_sec = 1800.0
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+build_timeout_sec = 1800.0
+allow_internet = true
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+mcp_servers = []

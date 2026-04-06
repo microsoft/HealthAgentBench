@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_a96b4034f85bf3ff7b946f99",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select d_icd_diagnoses.short_title from d_icd_diagnoses where d_icd_diagnoses.icd9_code in ( select t3.icd9_code from ( select t2.icd9_code, dense_rank() over ( order by count(*) desc ) as c1 from ( select admissions.subject_id, procedures_icd.charttime from procedures_icd join admissions on procedures_icd.hadm_id = admissions.hadm_id where procedures_icd.icd9_code = ( select d_icd_procedures.icd9_code from d_icd_procedures where d_icd_procedures.short_title = 'spinal canal explor nec' ) and datetime(procedures_icd.charttime,'start of year') = datetime(current_time,'start of year','-1 year') ) as t1 join ( select admissions.subject_id, diagnoses_icd.icd9_code, diagnoses_icd.charttime from diagnoses_icd join admissions on diagnoses_icd.hadm_id = admissions.hadm_id where datetime(diagnoses_icd.charttime,'start of year') = datetime(current_time,'start of year','-1 year') ) as t2 on t1.subject_id = t2.subject_id where t1.charttime < t2.charttime and datetime(t1.charttime,'start of month') = datetime(t2.charttime,'start of month') group by t2.icd9_code ) as t3 where t3.c1 <= 4 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

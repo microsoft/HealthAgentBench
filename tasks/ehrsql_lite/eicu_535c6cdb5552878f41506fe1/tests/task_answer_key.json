@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_535c6cdb5552878f41506fe1",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select medication.drugname from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.uniquepid = '015-59552' ) and datetime(medication.drugstarttime,'start of day') = datetime(current_time,'start of day','-0 day') except select medication.drugname from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.uniquepid = '015-59552' ) and datetime(medication.drugstarttime,'start of day') = datetime(current_time,'start of day','-1 day')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

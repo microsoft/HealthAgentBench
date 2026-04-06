@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_5ebd92fa7f07d32fa314705e",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select d_items.label from d_items where d_items.itemid in ( select outputevents.itemid from outputevents where outputevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 7112 ) ) and datetime(outputevents.charttime,'start of day') = datetime(current_time,'start of day','-0 day') order by outputevents.charttime asc limit 1 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_f4173ac3dfa84806ff93a4d9",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from patient where patient.uniquepid = '013-28507' and datetime(patient.hospitaladmittime,'start of year') = datetime(current_time,'start of year','-0 year')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8276c62ffb5d1bf14f898609",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select strftime('%j',admissions.dischtime) - strftime('%j',admissions.admittime) from admissions where admissions.subject_id = 24762 and admissions.dischtime is not null order by admissions.admittime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

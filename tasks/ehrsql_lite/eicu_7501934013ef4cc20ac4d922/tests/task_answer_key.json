@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_7501934013ef4cc20ac4d922",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.labname from ( select lab.labname, dense_rank() over ( order by count(*) desc ) as c1 from lab group by lab.labname ) as t1 where t1.c1 <= 3",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

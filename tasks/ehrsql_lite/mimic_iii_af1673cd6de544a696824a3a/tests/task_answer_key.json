@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_af1673cd6de544a696824a3a",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select d_icd_procedures.short_title from d_icd_procedures where d_icd_procedures.icd9_code in ( select t1.icd9_code from ( select procedures_icd.icd9_code, dense_rank() over ( order by count(*) desc ) as c1 from procedures_icd where procedures_icd.hadm_id in ( select admissions.hadm_id from admissions where admissions.age between 40 and 49 ) and datetime(procedures_icd.charttime) >= datetime(current_time,'-6 year') group by procedures_icd.icd9_code ) as t1 where t1.c1 <= 4 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

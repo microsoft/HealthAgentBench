@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_09f9cb70953dd845afacae3e",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.celllabel from ( select intakeoutput.celllabel, dense_rank() over ( order by count(*) desc ) as c1 from intakeoutput where intakeoutput.cellpath like '%output%' and datetime(intakeoutput.intakeoutputtime) >= datetime(current_time,'-3 year') group by intakeoutput.celllabel ) as t1 where t1.c1 <= 5",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

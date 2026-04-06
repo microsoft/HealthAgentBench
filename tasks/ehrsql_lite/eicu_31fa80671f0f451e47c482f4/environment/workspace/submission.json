@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_31fa80671f0f451e47c482f4",
+    "instruction": "What was the time of the first microbiology test that patient 031-3355 had during the current hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

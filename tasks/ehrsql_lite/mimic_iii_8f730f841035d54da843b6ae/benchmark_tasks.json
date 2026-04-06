@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8f730f841035d54da843b6ae",
+    "instruction": "When was the last time since 1 year ago that patient 9241 had a remove tracheostomy tube procedure?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

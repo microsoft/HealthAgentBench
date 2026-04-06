@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_08f8938c784b777087fe2477",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select count( distinct admissions.subject_id ) from admissions where admissions.dischtime is null and admissions.age between 20 and 29",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_04391f8de195879b4052f8c4",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select d_labitems.label from d_labitems where d_labitems.itemid in ( select t1.itemid from ( select labevents.itemid, dense_rank() over ( order by count(*) desc ) as c1 from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.age between 20 and 29 ) and strftime('%y',labevents.charttime) <= '2104' group by labevents.itemid ) as t1 where t1.c1 <= 3 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

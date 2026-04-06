@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_9346a626f8ab5830ec48fe59",
+    "instruction": "How many patients expired within the past 2 months after being diagnosed with late effect CV dis NOS since 4 years ago?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

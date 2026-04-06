@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_f29a05ac11a914c46d516ec3",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from outputevents where outputevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 77053 ) ) and outputevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'or urine' and d_items.linksto = 'outputevents' ) and strftime('%y-%m',outputevents.charttime) = '2105-04'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

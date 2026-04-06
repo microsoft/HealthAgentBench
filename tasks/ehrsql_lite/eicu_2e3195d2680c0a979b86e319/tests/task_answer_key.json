@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2e3195d2680c0a979b86e319",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select sum(intakeoutput.cellvaluenumeric) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '025-27850' ) ) and intakeoutput.celllabel = 'indwelling catheter' and intakeoutput.cellpath like '%output%' and datetime(intakeoutput.intakeoutputtime,'start of month') = datetime(current_time,'start of month','-1 month') and strftime('%d',intakeoutput.intakeoutputtime) = '09'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

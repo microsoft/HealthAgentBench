@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_1a87016ad37753b2cb33d6c0",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t3.diagnosisname from ( select t2.diagnosisname, dense_rank() over ( order by count(*) desc ) as c1 from ( select patient.uniquepid, treatment.treatmenttime, patient.patienthealthsystemstayid from treatment join patient on treatment.patientunitstayid = patient.patientunitstayid where treatment.treatmentname = 'systemic antibiotics - vancomycin' and strftime('%y',treatment.treatmenttime) <= '2104' ) as t1 join ( select patient.uniquepid, diagnosis.diagnosisname, diagnosis.diagnosistime, patient.patienthealthsystemstayid from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where strftime('%y',diagnosis.diagnosistime) <= '2104' ) as t2 on t1.uniquepid = t2.uniquepid where t1.treatmenttime < t2.diagnosistime and t1.patienthealthsystemstayid = t2.patienthealthsystemstayid group by t2.diagnosisname ) as t3 where t3.c1 <= 5",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

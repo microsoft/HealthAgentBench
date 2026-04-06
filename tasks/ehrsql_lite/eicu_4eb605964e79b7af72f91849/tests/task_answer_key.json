@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4eb605964e79b7af72f91849",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '010-8740' ) ) and medication.drugname = 'nitroglycerin (nitrostat) sl tab 0.4 mg' and strftime('%y',medication.drugstarttime) <= '2104'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

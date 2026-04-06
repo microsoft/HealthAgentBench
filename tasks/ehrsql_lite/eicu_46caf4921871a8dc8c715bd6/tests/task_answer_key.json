@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_46caf4921871a8dc8c715bd6",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select sum( case when patient.hospitaldischargestatus = 'alive' then 1 when strftime('%j',patient.hospitaldischargetime) - strftime('%j',t4.diagnosistime) > 1 * 365 then 1 else 0 end ) * 100 / count(*) from ( select t2.uniquepid, t2.diagnosistime from ( select t1.uniquepid, t1.diagnosistime from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'pulmonary embolism - radiographically demonstrated, spiral ct' group by patient.uniquepid having min(diagnosis.diagnosistime) = diagnosis.diagnosistime ) as t1 ) as t2 join ( select patient.uniquepid, medication.drugstarttime from medication join patient on medication.patientunitstayid = patient.patientunitstayid where medication.drugname = '37.5 g tube : glucose 40 % po gel' ) as t3 on t2.uniquepid = t3.uniquepid where t2.diagnosistime < t3.drugstarttime ) as t4 join patient on t4.uniquepid = patient.uniquepid",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_b5566ab280897d125447729c",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select ( select lab.labresult from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-69449' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) ) and lab.labname = 'platelets x 1000' and lab.labresulttime = ( select distinct lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-69449' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) ) and lab.labname = 'platelets x 1000' order by lab.labresulttime desc limit 1 ) ) < ( select lab.labresult from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-69449' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) ) and lab.labname = 'platelets x 1000' and lab.labresulttime = ( select distinct lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-69449' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) ) and lab.labname = 'platelets x 1000' order by lab.labresulttime desc limit 1 offset 1 ) )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

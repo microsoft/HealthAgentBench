@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_65d24ee87fdbca24a26a138f",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select min(lab.labresult) from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '011-55642' ) ) and lab.labname = 'hct' and datetime(lab.labresulttime,'start of year') = datetime(current_time,'start of year','-0 year') and strftime('%m',lab.labresulttime) = '02'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

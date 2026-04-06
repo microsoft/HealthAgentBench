@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_87d9004fe7629cb7f255a4bf",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.treatmentname from ( select treatment.treatmentname, dense_rank() over ( order by count(*) desc ) as c1 from treatment where strftime('%y',treatment.treatmenttime) <= '2102' group by treatment.treatmentname ) as t1 where t1.c1 <= 4",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

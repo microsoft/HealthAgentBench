@@ -1,0 +1,18 @@
+services:
+  main:
+    build:
+      context: ..                    # Build from harbor_tasks/ehrsql/
+      dockerfile: environment/Dockerfile
+    volumes:
+      - /home/qianchuliu/projects/MedCLI/scripts/ehrsql/assets/mimic_iii:/data/ehrsql/mimic_iii  # Mount mimic_iii SQLite database
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Resource limits for safe local testing
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G

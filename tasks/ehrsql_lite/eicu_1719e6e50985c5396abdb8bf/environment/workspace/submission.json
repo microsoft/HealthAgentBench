@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_1719e6e50985c5396abdb8bf",
+    "instruction": "When was the first time patient 030-3372 had the minimum vancomycin - trough value until 03/2104?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

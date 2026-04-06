@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_631172701fb0caa814c62bc2",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select intakeoutput.celllabel from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '021-25705' ) ) and intakeoutput.cellpath like '%intake%' and strftime('%y-%m-%d',intakeoutput.intakeoutputtime) = '2105-05-28' order by intakeoutput.intakeoutputtime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

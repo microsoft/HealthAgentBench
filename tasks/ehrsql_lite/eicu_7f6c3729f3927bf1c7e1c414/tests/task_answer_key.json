@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_7f6c3729f3927bf1c7e1c414",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from patient where patient.uniquepid = '017-30318' and strftime('%y',patient.hospitaladmittime) >= '2105'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

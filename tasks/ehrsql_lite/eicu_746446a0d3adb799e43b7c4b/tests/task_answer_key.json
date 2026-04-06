@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_746446a0d3adb799e43b7c4b",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select strftime('%j',patient.unitdischargetime) - strftime('%j',patient.unitadmittime) from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '006-17553' ) and patient.unitadmittime is not null order by patient.unitadmittime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]
