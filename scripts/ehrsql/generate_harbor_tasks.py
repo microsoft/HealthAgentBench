@@ -236,6 +236,45 @@ python verify_meta_task.py
     (tests_dir / "test.sh").chmod(0o755)
 
 
+_GOOGLE_DRIVE_FILE_IDS = {
+    "mimic_iii": "17FkHhaQrmSz5-W2b7WEy90duKfvjBn5x",
+    "eicu": "1JG9DUdeJeuIXShK6DdEJ61NEyPiaGEKZ",
+}
+
+
+def _generate_entrypoint(env_dir: Path, db_id: str) -> None:
+    """Generate entrypoint script that checks for data and downloads if missing."""
+    file_id = _GOOGLE_DRIVE_FILE_IDS.get(db_id, "")
+    db_path = f"/data/ehrsql/{db_id}/{db_id}.sqlite"
+
+    (env_dir / "entrypoint.sh").write_text(f"""#!/bin/bash
+set -e
+
+DB_PATH="{db_path}"
+LOCK_FILE="${{DB_PATH}}.lock"
+
+if [ ! -f "$DB_PATH" ]; then
+  mkdir -p "$(dirname "$DB_PATH")"
+  # Use flock so only one worker downloads; others wait then see the file
+  (
+    flock 9
+    if [ ! -f "$DB_PATH" ]; then
+      echo "Database not found at $DB_PATH. Downloading..."
+      gdown "https://drive.google.com/uc?id={file_id}" -O "${{DB_PATH}}.tmp"
+      mv "${{DB_PATH}}.tmp" "$DB_PATH"
+      echo "Download complete."
+    fi
+  ) 9>"$LOCK_FILE"
+fi
+
+# Protect database from accidental writes during agent execution
+chmod 444 "$DB_PATH"
+
+exec "$@"
+""")
+    (env_dir / "entrypoint.sh").chmod(0o755)
+
+
 def _generate_dockerfile(env_dir: Path, db_id: str) -> None:
     """Generate Dockerfile for EHRSQL Harbor environment.
 
@@ -255,7 +294,8 @@ RUN apt-get update && apt-get install -y \\
 # Install Python dependencies required for evaluation
 RUN pip install --no-cache-dir \\
     func-timeout>=4.3.5 \\
-    numpy>=2.4.2
+    numpy>=2.4.2 \\
+    gdown
 
 # Set working directory
 WORKDIR /workspace
@@ -263,12 +303,17 @@ WORKDIR /workspace
 # Copy workspace files (build context is harbor_tasks/ehrsql/)
 COPY environment/workspace/ /workspace/
 
+# Copy entrypoint script
+COPY environment/entrypoint.sh /entrypoint.sh
+
 # DO NOT copy /tests directory (answer keys will be mounted at runtime by Harbor)
 # This prevents agent from accessing the answer key file during task execution
 # Harbor will mount tests/ directory for the verifier only
 
 # Make logs directory
 RUN mkdir -p /logs/verifier
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Default command (agent will be started by Harbor)
 CMD ["/bin/bash"]
@@ -291,7 +336,7 @@ def _generate_docker_compose(env_dir: Path, db_id: str) -> None:
       context: ..                    # Build from harbor_tasks/ehrsql/
       dockerfile: environment/Dockerfile
     volumes:
-      - {db_dir}:/data/ehrsql/{db_id}:ro  # Mount {db_id} SQLite database (read-only)
+      - {db_dir}:/data/ehrsql/{db_id}  # Mount {db_id} SQLite database
     environment:
       - PYTHONUNBUFFERED=1
     # Resource limits for safe local testing
@@ -462,6 +507,7 @@ def _write_meta_task(
     workspace_dir = env_dir / "workspace"
     workspace_dir.mkdir(parents=True, exist_ok=True)
 
+    _generate_entrypoint(env_dir, db_id)
     _generate_dockerfile(env_dir, db_id)
     _generate_docker_compose(env_dir, db_id)
     _generate_workspace_readme(workspace_dir, db_id)
@@ -634,19 +680,26 @@ def generate_harbor_task(
         indices = list(range(len(benchmark_tasks)))
         random.Random(42).shuffle(indices)
 
-        # Apply same permutation to all three lists (keep them aligned)
+        # Apply same permutation to all lists (keep them aligned)
+        selected_tasks = [selected_tasks[i] for i in indices]
         benchmark_tasks = [benchmark_tasks[i] for i in indices]
         answer_key = [answer_key[i] for i in indices]
         submission_template = [submission_template[i] for i in indices]
 
         # Split data into N chunks
+        raw_chunks = _split_into_chunks(selected_tasks, split_task_by_n)
         benchmark_chunks = _split_into_chunks(benchmark_tasks, split_task_by_n)
         answer_key_chunks = _split_into_chunks(answer_key, split_task_by_n)
         submission_chunks = _split_into_chunks(submission_template, split_task_by_n)
 
         # Create N worker task directories
         for i in range(len(benchmark_chunks)):
-            task_name = f"worker_{i}"
+            # Name by {db_id}_{raw_id} when each chunk is a single task
+            if len(raw_chunks[i]) == 1:
+                raw = raw_chunks[i][0]
+                task_name = f"{raw['db_id']}_{raw['id']}"
+            else:
+                task_name = f"worker_{i}"
             chunk_task_ids = [t["task_id"] for t in benchmark_chunks[i]]
             _write_meta_task(
                 output_root=output_root / task_name,
@@ -659,10 +712,14 @@ def generate_harbor_task(
                 skip_evaluator=skip_evaluator,
             )
 
-        print(f"✓ Generated {len(benchmark_chunks)} worker tasks at {output_root}")
-        for i, bm_chunk in enumerate(benchmark_chunks):
-            print(f"  - worker_{i}/: {len(bm_chunk)} tasks")
-        print(f"  Total: {len(benchmark_tasks)} tasks split into {len(benchmark_chunks)} workers")
+        print(f"✓ Generated {len(benchmark_chunks)} tasks at {output_root}")
+        for i, (raw_chunk, bm_chunk) in enumerate(zip(raw_chunks, benchmark_chunks)):
+            if len(raw_chunk) == 1:
+                name = f"{raw_chunk[0]['db_id']}_{raw_chunk[0]['id']}"
+            else:
+                name = f"worker_{i}"
+            print(f"  - {name}/: {len(bm_chunk)} tasks")
+        print(f"  Total: {len(benchmark_tasks)} tasks split into {len(benchmark_chunks)} chunks")
     else:
         # Single task (no splitting)
         task_name = output_root.name
@@ -689,6 +746,11 @@ def main() -> None:
         "--output-root",
         required=True,
         help="Root directory for generated Harbor task artifacts",
+    )
+    parser.add_argument(
+        "--input-json",
+        nargs="+",
+        help="Path(s) to EHRSQL JSON files. Split (valid/test) is auto-detected from the filename.",
     )
     parser.add_argument(
         "--valid-json",
@@ -724,9 +786,15 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    # Load tasks from specified paths
+    # Route --input-json paths into valid/test by filename
     valid_paths = [Path(p) for p in (args.valid_json or [])]
     test_paths = [Path(p) for p in (args.test_json or [])]
+    for p in (args.input_json or []):
+        path = Path(p)
+        if "valid" in path.stem:
+            valid_paths.append(path)
+        else:
+            test_paths.append(path)
 
     # Parse selected task IDs
     selected_task_ids = None

@@ -1,0 +1,29 @@
+jobs_dir: results/harbor/ehrsql_lite/mimic_iii
+n_attempts: 1
+timeout_multiplier: 1.0
+n_concurrent_trials: 10
+quiet: false
+
+environment:
+  type: docker
+  force_build: true
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.3-codex
+    kwargs:
+      reasoning_effort: medium
+
+metrics:
+  - type: uv-script
+    kwargs:
+      script_path: scripts/ehrsql/aggregate_metric.py
+
+datasets:
+  - path: tasks/ehrsql_lite
+    task_names:
+      - mimic_iii_*
+
+artifacts:
+  - /workspace/submission.json

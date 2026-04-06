@@ -49,7 +49,11 @@ def main() -> int:
             "error": f"Submission not found: {submission_path}",
         }
         (logs_dir / "meta_results.json").write_text(json.dumps(result, indent=2))
-        (logs_dir / "reward.txt").write_text("0.0")
+        (logs_dir / "reward.json").write_text(json.dumps({
+            "pred_not_null": 0, "real_not_null": 0, "both_not_null": 0,
+            "exec_match_given_pred": 0, "exec_match_given_real": 0,
+            "total": 0, "passed": 0,
+        }))
         return 1
 
     if not answer_key_path.exists():
@@ -58,7 +62,11 @@ def main() -> int:
             "error": f"Answer key not found: {answer_key_path}",
         }
         (logs_dir / "meta_results.json").write_text(json.dumps(result, indent=2))
-        (logs_dir / "reward.txt").write_text("0.0")
+        (logs_dir / "reward.json").write_text(json.dumps({
+            "pred_not_null": 0, "real_not_null": 0, "both_not_null": 0,
+            "exec_match_given_pred": 0, "exec_match_given_real": 0,
+            "total": 0, "passed": 0,
+        }))
         return 1
 
     try:
@@ -70,7 +78,11 @@ def main() -> int:
             "error": f"Failed to parse JSON: {str(e)}",
         }
         (logs_dir / "meta_results.json").write_text(json.dumps(result, indent=2))
-        (logs_dir / "reward.txt").write_text("0.0")
+        (logs_dir / "reward.json").write_text(json.dumps({
+            "pred_not_null": 0, "real_not_null": 0, "both_not_null": 0,
+            "exec_match_given_pred": 0, "exec_match_given_real": 0,
+            "total": 0, "passed": 0,
+        }))
         return 1
 
     # Save agent's submission for inspection/debugging
@@ -85,7 +97,11 @@ def main() -> int:
             "error": f"Evaluation failed: {str(e)}",
         }
         (logs_dir / "meta_results.json").write_text(json.dumps(result, indent=2))
-        (logs_dir / "reward.txt").write_text("0.0")
+        (logs_dir / "reward.json").write_text(json.dumps({
+            "pred_not_null": 0, "real_not_null": 0, "both_not_null": 0,
+            "exec_match_given_pred": 0, "exec_match_given_real": 0,
+            "total": 0, "passed": 0,
+        }))
         return 1
 
     # Format results
@@ -116,7 +132,44 @@ def main() -> int:
 
     # Write outputs
     (logs_dir / "meta_results.json").write_text(json.dumps(result, indent=2))
-    (logs_dir / "reward.txt").write_text(f"{eval_result['pass_at_1']:.4f}")
+
+    # Write structured rewards for Harbor metric aggregation.
+    # NOTE: Do NOT write reward.txt — Harbor prefers it over reward.json,
+    # and the aggregate metric needs the structured counts from reward.json.
+    # Emit raw binary indicators per question so the aggregate metric can
+    # sum across all tasks and compute global precision/recall/F1 exactly
+    # as harbor_evaluator.py does.
+    reward_json: dict[str, int] = {
+        "pred_not_null": 0,
+        "real_not_null": 0,
+        "both_not_null": 0,
+        "exec_match_given_pred": 0,
+        "exec_match_given_real": 0,
+        "total": 0,
+        "passed": 0,
+    }
+    for r in eval_result["results"]:
+        pred = r["predicted_result"]
+        real = r["expected_result"]
+        pred_ans = pred != "null"
+        real_ans = real != "null"
+        match = real == pred
+
+        reward_json["total"] += 1
+        if r["success"]:
+            reward_json["passed"] += 1
+        if pred_ans:
+            reward_json["pred_not_null"] += 1
+        if real_ans:
+            reward_json["real_not_null"] += 1
+        if pred_ans and real_ans:
+            reward_json["both_not_null"] += 1
+        if pred_ans and match:
+            reward_json["exec_match_given_pred"] += 1
+        if real_ans and match:
+            reward_json["exec_match_given_real"] += 1
+
+    (logs_dir / "reward.json").write_text(json.dumps(reward_json))
 
     # Save detailed results for debugging (SQL queries and outputs for each task)
     detailed_results = {
