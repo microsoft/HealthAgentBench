@@ -99,7 +99,7 @@ ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
             await self.exec_as_agent(
                 environment,
                 command=(
-                    "trap 'rm -rf /tmp/codex-secrets \"$CODEX_HOME/auth.json\"' EXIT TERM INT; "
+                    "trap 'rm -rf /tmp/codex-secrets \"$CODEX_HOME/auth.json\" \"$CODEX_HOME/config.toml\"' EXIT TERM INT; "
                     "if [ -s ~/.nvm/nvm.sh ]; then . ~/.nvm/nvm.sh; fi; "
                     "codex exec "
                     "--dangerously-bypass-approvals-and-sandbox "
@@ -118,7 +118,7 @@ ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
             try:
                 await self.exec_as_agent(
                     environment,
-                    command='rm -rf /tmp/codex-secrets "$CODEX_HOME/auth.json"',
+                    command='rm -rf /tmp/codex-secrets "$CODEX_HOME/auth.json" "$CODEX_HOME/config.toml"',
                     env={"CODEX_HOME": EnvironmentPaths.agent_dir.as_posix()},
                 )
             except Exception:
