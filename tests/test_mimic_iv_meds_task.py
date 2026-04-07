@@ -1,9 +1,103 @@
 import json
 import subprocess
+import textwrap
 from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
+
+
+DEFAULT_EVENT_CONFIG_TEXT = textwrap.dedent(
+    """\
+    subject_id_col: subject_id
+    hosp/admissions:
+      admission:
+        code:
+          - HOSPITAL_ADMISSION
+          - col(admission_type)
+          - col(admission_location)
+        time: col(admittime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+        insurance: insurance
+        language: language
+        marital_status: marital_status
+        race: race
+        hadm_id: hadm_id
+    hosp/omr:
+      omr:
+        code: col(result_name)
+        text_value: col(result_value)
+        time: col(chartdate)
+        time_format: "%Y-%m-%d"
+    icu/chartevents:
+      event:
+        code:
+          - LAB
+          - col(itemid)
+          - col(valueuom)
+        time: col(charttime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+    """
+)
+
+CUSTOM_EVENT_CONFIG_TEXT = textwrap.dedent(
+    """\
+    subject_id_col: subject_id
+    hosp/admissions:
+      admission:
+        code:
+          - HOSPITAL_ADMISSION
+          - col(admission_type)
+          - col(admission_location)
+        time: col(admittime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+        hadm_id: hadm_id
+      admission_insurance:
+        code:
+          - INSURANCE
+          - col(insurance)
+        time: col(admittime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+        hadm_id: hadm_id
+      admission_language:
+        code:
+          - LANGUAGE
+          - col(language)
+        time: col(admittime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+        hadm_id: hadm_id
+      admission_marital_status:
+        code:
+          - MARITAL_STATUS
+          - col(marital_status)
+        time: col(admittime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+        hadm_id: hadm_id
+      admission_race:
+        code:
+          - RACE
+          - col(race)
+        time: col(admittime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+        hadm_id: hadm_id
+    hosp/omr:
+      omr:
+        code:
+          - OMR
+          - col(result_name)
+        text_value: col(result_value)
+        time: col(chartdate)
+        time_format: "%Y-%m-%d"
+    icu/chartevents:
+      event:
+        code:
+          - CHARTEVENT
+          - col(itemid)
+          - col(valueuom)
+        time: col(charttime)
+        time_format: "%Y-%m-%d %H:%M:%S"
+    """
+)
 
 
 def _make_repo_setup(repo_dir: Path) -> None:
@@ -13,16 +107,62 @@ def _make_repo_setup(repo_dir: Path) -> None:
     (repo_dir / "uv.lock").write_text("# synthetic lock\n", encoding="utf-8")
 
 
+def _write_repo_configs(
+    repo_dir: Path,
+    *,
+    custom_config_text: str | None = CUSTOM_EVENT_CONFIG_TEXT,
+    default_config_text: str = DEFAULT_EVENT_CONFIG_TEXT,
+) -> None:
+    config_dir = repo_dir / "src" / "MIMIC_IV_MEDS" / "configs"
+    config_dir.mkdir(parents=True, exist_ok=True)
+    (config_dir / "event_configs.yaml").write_text(default_config_text, encoding="utf-8")
+    if custom_config_text is not None:
+        (config_dir / "custom_event_configs.yaml").write_text(
+            custom_config_text,
+            encoding="utf-8",
+        )
+
+
 def _write_codes_table(path: Path) -> None:
     table = pa.table(
         {
-            "code": pa.array(["LAB/A", "LAB/B"], type=pa.string()),
-            "description": pa.array(["alpha", "beta"], type=pa.string()),
-            "parent_codes": pa.array([["PARENT/A"], ["PARENT/B"]], type=pa.list_(pa.string())),
-            "itemid": pa.array([["1"], ["2"]], type=pa.large_list(pa.large_string())),
-            "valueuom": pa.array([["mg"], ["mL"]], type=pa.large_list(pa.large_string())),
+            "code": pa.array(
+                [
+                    "CHARTEVENT//220045//bpm",
+                    "OMR//BMI",
+                    "INSURANCE//Medicare",
+                    "LANGUAGE//ENGLISH",
+                    "MARITAL_STATUS//MARRIED",
+                    "RACE//WHITE",
+                ],
+                type=pa.string(),
+            ),
+            "description": pa.array(
+                ["heart rate", "body mass index", "coverage", "language", "status", "race"],
+                type=pa.string(),
+            ),
+            "parent_codes": pa.array(
+                [
+                    ["PARENT/CHARTEVENT"],
+                    ["PARENT/OMR"],
+                    ["PARENT/INSURANCE"],
+                    ["PARENT/LANGUAGE"],
+                    ["PARENT/MARITAL_STATUS"],
+                    ["PARENT/RACE"],
+                ],
+                type=pa.list_(pa.string()),
+            ),
+            "itemid": pa.array(
+                [["220045"], ["BMI"], ["insurance"], ["language"], ["marital_status"], ["race"]],
+                type=pa.large_list(pa.large_string()),
+            ),
+            "valueuom": pa.array(
+                [["bpm"], ["kg/m2"], [None], [None], [None], [None]],
+                type=pa.large_list(pa.large_string()),
+            ),
             "possibly_cpt_code": pa.array(
-                [["100"], ["200"]], type=pa.large_list(pa.large_string())
+                [[None], [None], [None], [None], [None], [None]],
+                type=pa.large_list(pa.large_string()),
             ),
         }
     )
@@ -43,14 +183,52 @@ def _write_subject_splits_table(path: Path) -> None:
 
 def _write_data_table(path: Path, rows: int, *, offset: int = 0) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    prefixes = [
+        "CHARTEVENT//220045//bpm",
+        "OMR//BMI",
+        "INSURANCE//Medicare",
+        "LANGUAGE//ENGLISH",
+        "MARITAL_STATUS//MARRIED",
+        "RACE//WHITE",
+    ]
     pq.write_table(
-        pa.table({"value": pa.array(list(range(offset, offset + rows)), type=pa.int32())}),
+        pa.table(
+            {
+                "value": pa.array(list(range(offset, offset + rows)), type=pa.int32()),
+                "code": pa.array(
+                    [prefixes[(offset + i) % len(prefixes)] for i in range(rows)],
+                    type=pa.string(),
+                ),
+            }
+        ),
+        path,
+    )
+
+
+def _write_default_style_data_table(path: Path, rows: int, *, offset: int = 0) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    prefixes = [
+        "LAB//220045//bpm",
+        "BMI",
+        "LAB//50809//mg/dL",
+    ]
+    pq.write_table(
+        pa.table(
+            {
+                "value": pa.array(list(range(offset, offset + rows)), type=pa.int32()),
+                "code": pa.array(
+                    [prefixes[(offset + i) % len(prefixes)] for i in range(rows)],
+                    type=pa.string(),
+                ),
+            }
+        ),
         path,
     )
 
 
 def _create_valid_output(repo_dir: Path, output_root: Path) -> None:
     _make_repo_setup(repo_dir)
+    _write_repo_configs(repo_dir)
 
     meds_root = output_root / "MEDS_cohort"
     metadata_dir = meds_root / "metadata"
@@ -73,9 +251,9 @@ def _create_valid_output(repo_dir: Path, output_root: Path) -> None:
     _write_codes_table(metadata_dir / "codes.parquet")
     _write_subject_splits_table(metadata_dir / "subject_splits.parquet")
 
-    _write_data_table(meds_root / "data" / "held_out" / "0.parquet", 3)
-    _write_data_table(meds_root / "data" / "train" / "0.parquet", 4)
-    _write_data_table(meds_root / "data" / "tuning" / "0.parquet", 2)
+    _write_data_table(meds_root / "data" / "held_out" / "0.parquet", 3, offset=0)
+    _write_data_table(meds_root / "data" / "train" / "0.parquet", 4, offset=3)
+    _write_data_table(meds_root / "data" / "tuning" / "0.parquet", 2, offset=1)
 
 
 def _build_gold_summary(output_root: Path, summary_out: Path) -> None:
@@ -155,6 +333,12 @@ def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path
     )
 
     assert "inspect the repository" in instruction.lower()
+    assert "create a new extraction config" in instruction.lower()
+    assert "custom_event_configs.yaml" in instruction
+    assert "leave the default config" in instruction.lower()
+    assert "separate events at the admission timestamp" in instruction.lower()
+    assert "chartevent//" in instruction.lower()
+    assert "omr//" in instruction.lower()
     assert "/workspace/MIMIC_IV_MEDS" in instruction
     assert "/workspace/staged_demo/raw_input" in instruction
     assert "/workspace/output/MEDS_cohort" in instruction
@@ -162,8 +346,13 @@ def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path
     assert "upstream" not in instruction.lower()
     assert "git checkout 9699e0865b050325459b11f3c4e226a9dbe5b496" in dockerfile
     assert "pyarrow==23.0.1" in dockerfile
+    assert "pyyaml==6.0.3" in dockerfile
     assert "ENV PYTHONPATH=/workspace/runtime_patch" in dockerfile
     assert "sitecustomize.py" in dockerfile or "/workspace/runtime_patch" in dockerfile
+    assert "missing_custom_config" in verifier
+    assert "default_config_modified" in verifier
+    assert "custom_config_invalid" in verifier
+    assert "custom_config_behavior_missing" in verifier
     assert "metadata_content_mismatch" in verifier
     assert "data_hash_mismatch" in verifier
     assert 'benchmark = "mimic_iv_meds"' in task_toml
@@ -218,15 +407,43 @@ def test_mimic_iv_meds_verifier_detects_metadata_and_data_content_drift(tmp_path
     pq.write_table(
         pa.table(
             {
-                "code": pa.array(["LAB/A", "LAB/B"], type=pa.string()),
-                "description": pa.array(["changed", "beta"], type=pa.string()),
-                "parent_codes": pa.array(
-                    [["PARENT/A"], ["PARENT/B"]], type=pa.list_(pa.string())
+                "code": pa.array(
+                    [
+                        "CHARTEVENT//220045//bpm",
+                        "OMR//BMI",
+                        "INSURANCE//Medicare",
+                        "LANGUAGE//ENGLISH",
+                        "MARITAL_STATUS//MARRIED",
+                        "RACE//WHITE",
+                    ],
+                    type=pa.string(),
                 ),
-                "itemid": pa.array([["1"], ["2"]], type=pa.large_list(pa.large_string())),
-                "valueuom": pa.array([["mg"], ["mL"]], type=pa.large_list(pa.large_string())),
+                "description": pa.array(
+                    ["changed", "body mass index", "coverage", "language", "status", "race"],
+                    type=pa.string(),
+                ),
+                "parent_codes": pa.array(
+                    [
+                        ["PARENT/CHARTEVENT"],
+                        ["PARENT/OMR"],
+                        ["PARENT/INSURANCE"],
+                        ["PARENT/LANGUAGE"],
+                        ["PARENT/MARITAL_STATUS"],
+                        ["PARENT/RACE"],
+                    ],
+                    type=pa.list_(pa.string()),
+                ),
+                "itemid": pa.array(
+                    [["220045"], ["BMI"], ["insurance"], ["language"], ["marital_status"], ["race"]],
+                    type=pa.large_list(pa.large_string()),
+                ),
+                "valueuom": pa.array(
+                    [["bpm"], ["kg/m2"], [None], [None], [None], [None]],
+                    type=pa.large_list(pa.large_string()),
+                ),
                 "possibly_cpt_code": pa.array(
-                    [["100"], ["200"]], type=pa.large_list(pa.large_string())
+                    [[None], [None], [None], [None], [None], [None]],
+                    type=pa.large_list(pa.large_string()),
                 ),
             }
         ),
@@ -240,7 +457,7 @@ def test_mimic_iv_meds_verifier_detects_metadata_and_data_content_drift(tmp_path
 
     _create_valid_output(repo_dir, output_root)
     _build_gold_summary(output_root, gold_summary)
-    _write_data_table(output_root / "MEDS_cohort" / "data" / "train" / "0.parquet", 4, offset=100)
+    _write_data_table(output_root / "MEDS_cohort" / "data" / "train" / "0.parquet", 4, offset=2)
 
     payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
     assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
@@ -263,3 +480,95 @@ def test_mimic_iv_meds_verifier_requires_uv_setup(tmp_path: Path):
     assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
     assert payload["passed"] is False
     assert payload["error_taxonomy"]["missing_uv_setup"] >= 1
+
+
+def test_mimic_iv_meds_verifier_requires_custom_config_file(tmp_path: Path):
+    repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
+    output_root = tmp_path / "workspace" / "output"
+    gold_summary = tmp_path / "gold.json"
+    reward_file = tmp_path / "logs" / "reward.txt"
+    error_file = tmp_path / "logs" / "error_analysis.json"
+
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+    (repo_dir / "src" / "MIMIC_IV_MEDS" / "configs" / "custom_event_configs.yaml").unlink()
+
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
+    assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
+    assert payload["passed"] is False
+    assert payload["error_taxonomy"]["missing_custom_config"] >= 1
+
+
+def test_mimic_iv_meds_verifier_detects_default_or_custom_config_problems(tmp_path: Path):
+    repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
+    output_root = tmp_path / "workspace" / "output"
+    gold_summary = tmp_path / "gold.json"
+    reward_file = tmp_path / "logs" / "reward.txt"
+    error_file = tmp_path / "logs" / "error_analysis.json"
+
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+    _write_repo_configs(repo_dir, default_config_text=CUSTOM_EVENT_CONFIG_TEXT)
+
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
+    assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
+    assert payload["passed"] is False
+    assert payload["error_taxonomy"]["default_config_modified"] >= 1
+
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+    _write_repo_configs(
+        repo_dir,
+        custom_config_text=DEFAULT_EVENT_CONFIG_TEXT,
+    )
+
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
+    assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
+    assert payload["passed"] is False
+    assert payload["error_taxonomy"]["custom_config_invalid"] >= 1
+
+
+def test_mimic_iv_meds_verifier_rejects_default_config_style_output(tmp_path: Path):
+    repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
+    output_root = tmp_path / "workspace" / "output"
+    gold_summary = tmp_path / "gold.json"
+    reward_file = tmp_path / "logs" / "reward.txt"
+    error_file = tmp_path / "logs" / "error_analysis.json"
+
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+
+    metadata_dir = output_root / "MEDS_cohort" / "metadata"
+    pq.write_table(
+        pa.table(
+            {
+                "code": pa.array(["LAB//220045//bpm", "BMI"], type=pa.string()),
+                "description": pa.array(["heart rate", "body mass index"], type=pa.string()),
+                "parent_codes": pa.array(
+                    [["PARENT/LAB"], ["PARENT/OMR"]],
+                    type=pa.list_(pa.string()),
+                ),
+                "itemid": pa.array(
+                    [["220045"], ["BMI"]],
+                    type=pa.large_list(pa.large_string()),
+                ),
+                "valueuom": pa.array(
+                    [["bpm"], ["kg/m2"]],
+                    type=pa.large_list(pa.large_string()),
+                ),
+                "possibly_cpt_code": pa.array(
+                    [[None], [None]],
+                    type=pa.large_list(pa.large_string()),
+                ),
+            }
+        ),
+        metadata_dir / "codes.parquet",
+    )
+    _write_default_style_data_table(output_root / "MEDS_cohort" / "data" / "held_out" / "0.parquet", 3)
+    _write_default_style_data_table(output_root / "MEDS_cohort" / "data" / "train" / "0.parquet", 4)
+    _write_default_style_data_table(output_root / "MEDS_cohort" / "data" / "tuning" / "0.parquet", 2)
+
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
+    assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
+    assert payload["passed"] is False
+    assert payload["error_taxonomy"]["custom_config_behavior_missing"] >= 1

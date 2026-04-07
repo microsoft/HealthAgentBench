@@ -13,6 +13,14 @@ REQUIRED_METADATA_FILES = (
     "codes.parquet",
     "subject_splits.parquet",
 )
+REQUIRED_CODE_PREFIXES = (
+    "CHARTEVENT//",
+    "OMR//",
+    "INSURANCE//",
+    "LANGUAGE//",
+    "MARITAL_STATUS//",
+    "RACE//",
+)
 
 
 def normalize_columns(columns: list[dict]) -> list[dict]:
@@ -34,7 +42,11 @@ def canonical_json_sha256(payload: object) -> str:
 
 
 def normalize_dataset_json(payload: dict) -> dict:
-    return {key: value for key, value in payload.items() if key != "created_at"}
+    normalized = {key: value for key, value in payload.items() if key != "created_at"}
+    dataset_version = normalized.get("dataset_version")
+    if isinstance(dataset_version, str) and ":" in dataset_version:
+        normalized["dataset_version"] = dataset_version.split(":", 1)[0]
+    return normalized
 
 
 def parquet_summary(path: Path) -> dict:
@@ -61,6 +73,20 @@ def parquet_content_sha256(path: Path, sort_by: list[str]) -> str:
     return canonical_json_sha256(payload)
 
 
+def data_code_prefix_counts(
+    data_dir: Path,
+    prefixes: tuple[str, ...],
+) -> dict[str, int]:
+    counts = {prefix: 0 for prefix in prefixes}
+    for path in sorted(data_dir.rglob("*.parquet")):
+        codes = pq.read_table(path, columns=["code"]).column("code").to_pylist()
+        for prefix in prefixes:
+            counts[prefix] += sum(
+                isinstance(code, str) and code.startswith(prefix) for code in codes
+            )
+    return counts
+
+
 def build_summary(output_root: Path) -> dict:
     meds_root = output_root / "MEDS_cohort"
     metadata_dir = meds_root / "metadata"
@@ -70,6 +96,9 @@ def build_summary(output_root: Path) -> dict:
         "required_metadata_files": list(REQUIRED_METADATA_FILES),
         "metadata": {},
         "data_files": [],
+        "semantic_expectations": {
+            "required_data_code_prefix_counts": {},
+        },
     }
 
     dataset_json = json.loads((metadata_dir / "dataset.json").read_text(encoding="utf-8"))
@@ -86,6 +115,11 @@ def build_summary(output_root: Path) -> dict:
             "sort_by": sort_by,
             "content_sha256": parquet_content_sha256(metadata_dir / name, sort_by),
         }
+
+    summary["semantic_expectations"]["required_data_code_prefix_counts"] = data_code_prefix_counts(
+        data_dir,
+        REQUIRED_CODE_PREFIXES,
+    )
 
     for path in sorted(data_dir.rglob("*.parquet")):
         table = pq.read_table(path)

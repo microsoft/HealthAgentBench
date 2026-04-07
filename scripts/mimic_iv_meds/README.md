@@ -15,8 +15,9 @@ This benchmark evaluates whether an agent can:
 
 1. inspect the pinned upstream repo checkout
 2. use `uv` inside the container to create the runnable environment
-3. run the MEDS extraction pipeline on the pre-staged open MIMIC-IV demo input
-4. produce a valid MEDS cohort directory under `/workspace/output/MEDS_cohort`
+3. create a new extraction config file while leaving the upstream default config unchanged
+4. run the MEDS extraction pipeline on the pre-staged open MIMIC-IV demo input
+5. produce a valid MEDS cohort directory under `/workspace/output/MEDS_cohort`
 
 ## Canonical Workflow
 

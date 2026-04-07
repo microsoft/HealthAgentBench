@@ -8,7 +8,7 @@
     "dataset.json": {
       "normalized_json": {
         "dataset_name": "MIMIC-IV",
-        "dataset_version": "3.1:0.0.7",
+        "dataset_version": "3.1",
         "etl_name": "MEDS_transforms",
         "etl_version": "0.2.4",
         "meds_version": "0.3.3"
@@ -69,18 +69,28 @@
   "data_files": [
     {
       "relative_path": "data/held_out/0.parquet",
-      "rows": 42554,
-      "sha256": "3d2001dc51157e44cd24f7981a8bd7348b156ec3fada918434b799bfac8ecf7e"
+      "rows": 42634,
+      "sha256": "442cb95f4651c8f905ac783b40f16f59e416ddbb8662080b9059c6be21bc3110"
     },
     {
       "relative_path": "data/train/0.parquet",
-      "rows": 803992,
-      "sha256": "01d392620112baf8df21165f8990af2964f093a36a34f1f1ea493de053b44c56"
+      "rows": 804944,
+      "sha256": "4969dc9b19298b02f858ed5c800535f786fb847e27b25fb3ce7d2ecf7a1af3d5"
     },
     {
       "relative_path": "data/tuning/0.parquet",
-      "rows": 69620,
-      "sha256": "8991faa800985f39562ade9ee759c18ce72c78c9350c8d4c313672c4dee6df93"
+      "rows": 69688,
+      "sha256": "49e79817dc57c6226d8cf337a4111473a4d677d8fdf1a4cb581a68caebdcdd4c"
     }
-  ]
+  ],
+  "semantic_expectations": {
+    "required_data_code_prefix_counts": {
+      "CHARTEVENT//": 668862,
+      "OMR//": 2838,
+      "INSURANCE//": 275,
+      "LANGUAGE//": 275,
+      "MARITAL_STATUS//": 275,
+      "RACE//": 275
+    }
+  }
 }

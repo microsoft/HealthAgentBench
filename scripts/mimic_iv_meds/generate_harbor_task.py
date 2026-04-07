@@ -14,6 +14,8 @@ DEMO_BASE_URL = "https://physionet.org/files/mimic-iv-demo/2.2"
 COMMON_BASE_URL = "https://raw.githubusercontent.com/MIT-LCP/mimic-code/v2.4.0/mimic-iv/concepts/concept_map"
 OUTPUT_ROOT_DEFAULT = Path("tasks/mimic_iv_meds")
 GOLD_SUMMARY_ASSET = Path("scripts/mimic_iv_meds/assets/gold_demo_summary.json")
+DEFAULT_EVENT_CONFIG_REL_PATH = "src/MIMIC_IV_MEDS/configs/event_configs.yaml"
+CUSTOM_EVENT_CONFIG_REL_PATH = "src/MIMIC_IV_MEDS/configs/custom_event_configs.yaml"
 
 DEMO_FILES = [
     "LICENSE.txt",
@@ -76,11 +78,21 @@ def write(path: Path, content: str) -> None:
 
 
 def build_instruction() -> str:
-    return """# MIMIC-IV MEDS Extraction ETL
+    return f"""# MIMIC-IV MEDS Extraction ETL
 
 Use the codebase at `/workspace/MIMIC_IV_MEDS` to run its ETL pipeline on the demo input at `/workspace/staged_demo/raw_input`.
 
 Inspect the repository, use `uv` from the repo root to install and run the pipeline, and write the final MEDS cohort under `/workspace/output/MEDS_cohort`.
+
+Create a new extraction config at `/workspace/MIMIC_IV_MEDS/{CUSTOM_EVENT_CONFIG_REL_PATH}` and use that new config for the ETL run.
+
+Leave the default config at `/workspace/MIMIC_IV_MEDS/{DEFAULT_EVENT_CONFIG_REL_PATH}` unchanged.
+
+The new config must produce a customized extraction so that the final MEDS cohort:
+
+- records admission-time `insurance`, `language`, `marital_status`, and `race` as separate events at the admission timestamp
+- uses a dedicated `CHARTEVENT//...` code family for ICU chart events instead of folding them into the generic `LAB//...` namespace
+- uses an `OMR//...` code family for OMR measurements
 
 You may use `/workspace/output` for intermediate outputs.
 
@@ -159,6 +171,18 @@ import json
 from pathlib import Path
 
 import pyarrow.parquet as pq
+import yaml
+
+
+DEFAULT_EVENT_CONFIG_REL_PATH = Path("DEFAULT_EVENT_CONFIG_REL_PATH_PLACEHOLDER")
+CUSTOM_EVENT_CONFIG_REL_PATH = Path("CUSTOM_EVENT_CONFIG_REL_PATH_PLACEHOLDER")
+DEFAULT_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+ADMISSION_DEMOGRAPHIC_COLS = {
+    "INSURANCE": "insurance",
+    "LANGUAGE": "language",
+    "MARITAL_STATUS": "marital_status",
+    "RACE": "race",
+}
 
 
 def normalize_columns(columns: list[dict]) -> list[dict]:
@@ -180,7 +204,11 @@ def canonical_json_sha256(payload: object) -> str:
 
 
 def normalize_dataset_json(payload: dict) -> dict:
-    return {key: value for key, value in payload.items() if key != "created_at"}
+    normalized = {key: value for key, value in payload.items() if key != "created_at"}
+    dataset_version = normalized.get("dataset_version")
+    if isinstance(dataset_version, str) and ":" in dataset_version:
+        normalized["dataset_version"] = dataset_version.split(":", 1)[0]
+    return normalized
 
 
 def parquet_summary(path: Path) -> dict:
@@ -205,6 +233,205 @@ def parquet_content_sha256(path: Path, sort_by: list[str]) -> str:
         "records": rows,
     }
     return canonical_json_sha256(payload)
+
+
+def data_code_prefix_counts(meds_root: Path, data_paths: list[str], prefixes: list[str]) -> dict[str, int]:
+    counts = {prefix: 0 for prefix in prefixes}
+    for rel_path in data_paths:
+        codes = pq.read_table(meds_root / rel_path, columns=["code"]).column("code").to_pylist()
+        for prefix in prefixes:
+            counts[prefix] += sum(isinstance(code, str) and code.startswith(prefix) for code in codes)
+    return counts
+
+
+def load_yaml(path: Path) -> dict:
+    payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError(f"Expected top-level YAML mapping in {path}.")
+    return payload
+
+
+def code_parts(value: object) -> list[str] | None:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list) and all(isinstance(part, str) for part in value):
+        return value
+    return None
+
+
+def has_expected_admission_demographic_event(admissions: dict, code_prefix: str, source_col: str) -> bool:
+    expected_code = [code_prefix, f"col({source_col})"]
+    for name, block in admissions.items():
+        if name == "admission" or not isinstance(block, dict):
+            continue
+        if code_parts(block.get("code")) != expected_code:
+            continue
+        if block.get("time") != "col(admittime)":
+            continue
+        if block.get("time_format") != DEFAULT_TIME_FORMAT:
+            continue
+        if block.get("hadm_id") != "hadm_id":
+            continue
+        return True
+    return False
+
+
+def validate_default_config(repo_dir: Path, error_taxonomy: dict[str, int], failures: list[dict]) -> None:
+    path = repo_dir / DEFAULT_EVENT_CONFIG_REL_PATH
+    if not path.exists():
+        fail(
+            error_taxonomy,
+            failures,
+            "default_config_missing",
+            f"Expected default config at {DEFAULT_EVENT_CONFIG_REL_PATH.as_posix()}.",
+        )
+        return
+
+    try:
+        payload = load_yaml(path)
+    except Exception as exc:
+        fail(
+            error_taxonomy,
+            failures,
+            "default_config_modified",
+            "Default extraction config could not be parsed.",
+            error=str(exc),
+        )
+        return
+
+    admissions = payload.get("hosp/admissions")
+    omr = payload.get("hosp/omr", {}).get("omr") if isinstance(payload.get("hosp/omr"), dict) else None
+    chartevents = (
+        payload.get("icu/chartevents", {}).get("event")
+        if isinstance(payload.get("icu/chartevents"), dict)
+        else None
+    )
+
+    if not isinstance(admissions, dict):
+        fail(
+            error_taxonomy,
+            failures,
+            "default_config_modified",
+            "Default config is missing the hosp/admissions block.",
+        )
+        return
+
+    admission = admissions.get("admission")
+    if not isinstance(admission, dict):
+        fail(
+            error_taxonomy,
+            failures,
+            "default_config_modified",
+            "Default config is missing the admission event block.",
+        )
+        return
+
+    missing_default_fields = [
+        key for key in ("insurance", "language", "marital_status", "race") if admission.get(key) != key
+    ]
+    unexpected_custom_blocks = [
+        name for name in ("admission_insurance", "admission_language", "admission_marital_status", "admission_race")
+        if name in admissions
+    ]
+    omr_code = code_parts(omr.get("code")) if isinstance(omr, dict) else None
+    chartevent_code = code_parts(chartevents.get("code")) if isinstance(chartevents, dict) else None
+
+    if (
+        missing_default_fields
+        or unexpected_custom_blocks
+        or omr_code != ["col(result_name)"]
+        or chartevent_code is None
+        or chartevent_code[:1] != ["LAB"]
+    ):
+        fail(
+            error_taxonomy,
+            failures,
+            "default_config_modified",
+            "Default extraction config was modified; it must remain unchanged.",
+            missing_default_fields=missing_default_fields,
+            unexpected_custom_blocks=unexpected_custom_blocks,
+            omr_code=omr_code,
+            chartevent_code=chartevent_code,
+        )
+
+
+def validate_custom_config(repo_dir: Path, error_taxonomy: dict[str, int], failures: list[dict]) -> None:
+    path = repo_dir / CUSTOM_EVENT_CONFIG_REL_PATH
+    if not path.exists():
+        fail(
+            error_taxonomy,
+            failures,
+            "missing_custom_config",
+            f"Expected custom config at {CUSTOM_EVENT_CONFIG_REL_PATH.as_posix()}.",
+        )
+        return
+
+    try:
+        payload = load_yaml(path)
+    except Exception as exc:
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_invalid",
+            "Custom extraction config could not be parsed.",
+            error=str(exc),
+        )
+        return
+
+    admissions = payload.get("hosp/admissions")
+    omr = payload.get("hosp/omr", {}).get("omr") if isinstance(payload.get("hosp/omr"), dict) else None
+    chartevents = (
+        payload.get("icu/chartevents", {}).get("event")
+        if isinstance(payload.get("icu/chartevents"), dict)
+        else None
+    )
+
+    if not isinstance(admissions, dict):
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_invalid",
+            "Custom config is missing the hosp/admissions block.",
+        )
+        return
+
+    admission = admissions.get("admission")
+    if not isinstance(admission, dict):
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_invalid",
+            "Custom config is missing the admission event block.",
+        )
+        return
+
+    retained_default_fields = [
+        key for key in ("insurance", "language", "marital_status", "race") if key in admission
+    ]
+    missing_custom_events = [
+        code_prefix
+        for code_prefix, source_col in ADMISSION_DEMOGRAPHIC_COLS.items()
+        if not has_expected_admission_demographic_event(admissions, code_prefix, source_col)
+    ]
+    omr_code = code_parts(omr.get("code")) if isinstance(omr, dict) else None
+    chartevent_code = code_parts(chartevents.get("code")) if isinstance(chartevents, dict) else None
+
+    if (
+        retained_default_fields
+        or missing_custom_events
+        or omr_code != ["OMR", "col(result_name)"]
+        or chartevent_code != ["CHARTEVENT", "col(itemid)", "col(valueuom)"]
+    ):
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_invalid",
+            "Custom extraction config does not encode the required behavior.",
+            retained_default_fields=retained_default_fields,
+            missing_custom_events=missing_custom_events,
+            omr_code=omr_code,
+            chartevent_code=chartevent_code,
+        )
 
 
 def fail(error_taxonomy: dict[str, int], failures: list[dict], kind: str, message: str, **extra) -> None:
@@ -244,6 +471,9 @@ def main() -> None:
     if not (venv_dir / "bin" / "MEDS_extract-MIMIC_IV").exists():
         fail(error_taxonomy, failures, "missing_uv_setup", "Expected MEDS_extract-MIMIC_IV in the repo-local uv environment.")
 
+    validate_default_config(repo_dir, error_taxonomy, failures)
+    validate_custom_config(repo_dir, error_taxonomy, failures)
+
     if not meds_root.exists():
         fail(error_taxonomy, failures, "missing_output", "Expected MEDS_cohort output directory.")
     else:
@@ -265,6 +495,31 @@ def main() -> None:
                 expected=expected_paths,
                 actual=data_paths,
             )
+
+        if all((metadata_dir / name).exists() for name in gold["required_metadata_files"]):
+            expected_prefix_counts = gold["semantic_expectations"]["required_data_code_prefix_counts"]
+            actual_prefix_counts = data_code_prefix_counts(
+                meds_root,
+                data_paths,
+                list(expected_prefix_counts),
+            )
+            missing_prefixes = {
+                prefix: {
+                    "expected_at_least": 1,
+                    "actual": actual_prefix_counts[prefix],
+                }
+                for prefix, expected_count in expected_prefix_counts.items()
+                if expected_count > 0 and actual_prefix_counts[prefix] == 0
+            }
+            if missing_prefixes:
+                fail(
+                    error_taxonomy,
+                    failures,
+                    "custom_config_behavior_missing",
+                    "Output is missing code families required by the customized extraction config.",
+                    missing_prefixes=missing_prefixes,
+                    actual_prefix_counts=actual_prefix_counts,
+                )
 
         if not failures:
             actual_dataset = normalize_dataset_json(
@@ -365,7 +620,13 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-'''
+'''.replace(
+        "DEFAULT_EVENT_CONFIG_REL_PATH_PLACEHOLDER",
+        DEFAULT_EVENT_CONFIG_REL_PATH,
+    ).replace(
+        "CUSTOM_EVENT_CONFIG_REL_PATH_PLACEHOLDER",
+        CUSTOM_EVENT_CONFIG_REL_PATH,
+    )
 
 
 def build_stage_demo_script() -> str:
@@ -455,7 +716,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends bash ca-certificates curl git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir uv=={UV_VERSION} pyarrow==23.0.1
+RUN pip install --no-cache-dir uv=={UV_VERSION} pyarrow==23.0.1 pyyaml==6.0.3
 
 WORKDIR /workspace
 COPY workspace/ /workspace/
