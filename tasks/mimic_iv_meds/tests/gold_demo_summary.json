@@ -6,10 +6,13 @@
   ],
   "metadata": {
     "dataset.json": {
-      "dataset_name": "MIMIC-IV",
-      "dataset_version": "3.1:0.0.7",
-      "etl_name": "MEDS_transforms",
-      "etl_version": "0.2.4"
+      "normalized_json": {
+        "dataset_name": "MIMIC-IV",
+        "dataset_version": "3.1:0.0.7",
+        "etl_name": "MEDS_transforms",
+        "etl_version": "0.2.4",
+        "meds_version": "0.3.3"
+      }
     },
     "codes.parquet": {
       "rows": 2661,
@@ -23,49 +26,61 @@
           "type": "string"
         },
         {
+          "name": "itemid",
+          "type": "large_list<element: large_string>"
+        },
+        {
           "name": "parent_codes",
           "type": "list<element: string>"
         },
         {
-          "name": "itemid",
+          "name": "possibly_cpt_code",
           "type": "large_list<element: large_string>"
         },
         {
           "name": "valueuom",
           "type": "large_list<element: large_string>"
-        },
-        {
-          "name": "possibly_cpt_code",
-          "type": "large_list<element: large_string>"
         }
-      ]
+      ],
+      "sort_by": [
+        "code"
+      ],
+      "content_sha256": "b7e9bcdf48b6366de2f23c96abb8a38bad9af168e1593c97e5b6dca6eed540aa"
     },
     "subject_splits.parquet": {
       "rows": 100,
       "columns": [
         {
-          "name": "subject_id",
-          "type": "int64"
-        },
-        {
           "name": "split",
           "type": "string"
+        },
+        {
+          "name": "subject_id",
+          "type": "int64"
         }
-      ]
+      ],
+      "sort_by": [
+        "subject_id",
+        "split"
+      ],
+      "content_sha256": "cfc4efd279c17463671a19019a9d895a50d6ef2999531cf023b7abd050cc5a33"
     }
   },
   "data_files": [
     {
       "relative_path": "data/held_out/0.parquet",
-      "rows": 42554
+      "rows": 42554,
+      "sha256": "3d2001dc51157e44cd24f7981a8bd7348b156ec3fada918434b799bfac8ecf7e"
     },
     {
       "relative_path": "data/train/0.parquet",
-      "rows": 803992
+      "rows": 803992,
+      "sha256": "01d392620112baf8df21165f8990af2964f093a36a34f1f1ea493de053b44c56"
     },
     {
       "relative_path": "data/tuning/0.parquet",
-      "rows": 69620
+      "rows": 69620,
+      "sha256": "8991faa800985f39562ade9ee759c18ce72c78c9350c8d4c313672c4dee6df93"
     }
   ]
 }

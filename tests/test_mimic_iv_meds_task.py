@@ -6,12 +6,6 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 
-def _load_gold_summary() -> dict:
-    return json.loads(
-        Path("scripts/mimic_iv_meds/assets/gold_demo_summary.json").read_text(encoding="utf-8")
-    )
-
-
 def _make_repo_setup(repo_dir: Path) -> None:
     (repo_dir / ".venv" / "bin").mkdir(parents=True, exist_ok=True)
     (repo_dir / ".venv" / "bin" / "python").write_text("", encoding="utf-8")
@@ -19,65 +13,110 @@ def _make_repo_setup(repo_dir: Path) -> None:
     (repo_dir / "uv.lock").write_text("# synthetic lock\n", encoding="utf-8")
 
 
-def _arrow_type(type_name: str) -> pa.DataType:
-    if type_name == "string":
-        return pa.string()
-    if type_name == "int64":
-        return pa.int64()
-    if type_name == "list<element: string>":
-        return pa.list_(pa.string())
-    if type_name == "large_list<element: large_string>":
-        return pa.large_list(pa.large_string())
-    raise ValueError(f"Unsupported test schema type: {type_name}")
-
-
-def _column_values(type_name: str, rows: int):
-    if type_name == "string":
-        return ["x"] * rows
-    if type_name == "int64":
-        return list(range(rows))
-    if type_name == "list<element: string>":
-        return [["x"]] * rows
-    if type_name == "large_list<element: large_string>":
-        return [["x"]] * rows
-    raise ValueError(f"Unsupported test schema type: {type_name}")
-
-
-def _write_metadata_table(path: Path, summary: dict) -> None:
-    arrays = []
-    names = []
-    for column in summary["columns"]:
-        column_type = _arrow_type(column["type"])
-        arrays.append(pa.array(_column_values(column["type"], summary["rows"]), type=column_type))
-        names.append(column["name"])
+def _write_codes_table(path: Path) -> None:
+    table = pa.table(
+        {
+            "code": pa.array(["LAB/A", "LAB/B"], type=pa.string()),
+            "description": pa.array(["alpha", "beta"], type=pa.string()),
+            "parent_codes": pa.array([["PARENT/A"], ["PARENT/B"]], type=pa.list_(pa.string())),
+            "itemid": pa.array([["1"], ["2"]], type=pa.large_list(pa.large_string())),
+            "valueuom": pa.array([["mg"], ["mL"]], type=pa.large_list(pa.large_string())),
+            "possibly_cpt_code": pa.array(
+                [["100"], ["200"]], type=pa.large_list(pa.large_string())
+            ),
+        }
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
-    pq.write_table(pa.Table.from_arrays(arrays, names=names), path)
+    pq.write_table(table, path)
 
 
-def _reorder_table_columns(path: Path, column_names: list[str]) -> None:
-    table = pq.read_table(path)
-    pq.write_table(table.select(column_names), path)
-
-
-def _write_data_table(path: Path, rows: int) -> None:
+def _write_subject_splits_table(path: Path) -> None:
+    table = pa.table(
+        {
+            "subject_id": pa.array([20, 10, 30], type=pa.int64()),
+            "split": pa.array(["tuning", "train", "held_out"], type=pa.string()),
+        }
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
-    pq.write_table(pa.table({"value": pa.array(list(range(rows)), type=pa.int32())}), path)
+    pq.write_table(table, path)
 
 
-def _create_valid_output(repo_dir: Path, output_root: Path, gold: dict) -> None:
+def _write_data_table(path: Path, rows: int, *, offset: int = 0) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    pq.write_table(
+        pa.table({"value": pa.array(list(range(offset, offset + rows)), type=pa.int32())}),
+        path,
+    )
+
+
+def _create_valid_output(repo_dir: Path, output_root: Path) -> None:
     _make_repo_setup(repo_dir)
 
     meds_root = output_root / "MEDS_cohort"
     metadata_dir = meds_root / "metadata"
     metadata_dir.mkdir(parents=True, exist_ok=True)
     (metadata_dir / "dataset.json").write_text(
-        json.dumps(gold["metadata"]["dataset.json"], indent=2) + "\n",
+        json.dumps(
+            {
+                "dataset_name": "MIMIC-IV",
+                "dataset_version": "3.1:0.0.7",
+                "etl_name": "MEDS_transforms",
+                "etl_version": "0.2.4",
+                "meds_version": "0.3.3",
+                "created_at": "2026-04-07T00:00:00",
+            },
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
-    for name in ("codes.parquet", "subject_splits.parquet"):
-        _write_metadata_table(metadata_dir / name, gold["metadata"][name])
-    for item in gold["data_files"]:
-        _write_data_table(meds_root / item["relative_path"], item["rows"])
+    _write_codes_table(metadata_dir / "codes.parquet")
+    _write_subject_splits_table(metadata_dir / "subject_splits.parquet")
+
+    _write_data_table(meds_root / "data" / "held_out" / "0.parquet", 3)
+    _write_data_table(meds_root / "data" / "train" / "0.parquet", 4)
+    _write_data_table(meds_root / "data" / "tuning" / "0.parquet", 2)
+
+
+def _build_gold_summary(output_root: Path, summary_out: Path) -> None:
+    subprocess.run(
+        [
+            ".venv/bin/python",
+            "scripts/mimic_iv_meds/build_reference_summary.py",
+            "--output-root",
+            str(output_root),
+            "--summary-out",
+            str(summary_out),
+        ],
+        check=True,
+    )
+
+
+def _run_verifier(
+    repo_dir: Path,
+    output_root: Path,
+    gold_summary: Path,
+    reward_file: Path,
+    error_file: Path,
+) -> dict:
+    subprocess.run(
+        [
+            ".venv/bin/python",
+            "tasks/mimic_iv_meds/tests/verify_output.py",
+            "--repo-dir",
+            str(repo_dir),
+            "--output-root",
+            str(output_root),
+            "--gold-summary",
+            str(gold_summary),
+            "--reward-file",
+            str(reward_file),
+            "--error-analysis-file",
+            str(error_file),
+        ],
+        check=True,
+    )
+    return json.loads(error_file.read_text(encoding="utf-8"))
 
 
 def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path):
@@ -99,6 +138,9 @@ def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path
     assert (output_root / "environment" / "workspace" / "README.md").exists()
     assert (output_root / "environment" / "workspace" / "scripts" / "stage_demo_data.py").exists()
     assert (
+        output_root / "environment" / "workspace" / "runtime_patch" / "sitecustomize.py"
+    ).exists()
+    assert not (
         output_root / "environment" / "workspace" / "scripts" / "patch_meds_transforms_lock.py"
     ).exists()
     assert (output_root / "tests" / "verify_output.py").exists()
@@ -112,79 +154,112 @@ def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path
         encoding="utf-8"
     )
 
-    assert "uv sync" in instruction
-    assert "patch_meds_transforms_lock.py" in instruction
-    assert "root_output_dir=/workspace/output" in instruction
-    assert "MEDS_cohort_dir=/workspace/output/MEDS_cohort" in instruction
+    assert "inspect the repository" in instruction.lower()
+    assert "/workspace/MIMIC_IV_MEDS" in instruction
+    assert "/workspace/staged_demo/raw_input" in instruction
+    assert "/workspace/output/MEDS_cohort" in instruction
+    assert "patch_meds_transforms_lock.py" not in instruction
+    assert "upstream" not in instruction.lower()
     assert "git checkout 9699e0865b050325459b11f3c4e226a9dbe5b496" in dockerfile
     assert "pyarrow==23.0.1" in dockerfile
-    assert "python /workspace/scripts/stage_demo_data.py" in dockerfile
-    assert "missing_uv_setup" in verifier
-    assert "data_row_mismatch" in verifier
+    assert "ENV PYTHONPATH=/workspace/runtime_patch" in dockerfile
+    assert "sitecustomize.py" in dockerfile or "/workspace/runtime_patch" in dockerfile
+    assert "metadata_content_mismatch" in verifier
+    assert "data_hash_mismatch" in verifier
     assert 'benchmark = "mimic_iv_meds"' in task_toml
     assert "allow_internet = true" in task_toml
-    assert "uv sync" in workspace_readme
+    assert "Expected agent workflow" not in workspace_readme
+    assert "uv sync" not in workspace_readme
+    assert "patch_meds_transforms_lock.py" not in workspace_readme
 
 
-def test_mimic_iv_meds_verifier_requires_uv_setup_and_accepts_matching_output(tmp_path: Path):
-    gold = _load_gold_summary()
+def test_mimic_iv_meds_verifier_accepts_created_at_and_column_order_variation(tmp_path: Path):
     repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
     output_root = tmp_path / "workspace" / "output"
+    gold_summary = tmp_path / "gold.json"
     reward_file = tmp_path / "logs" / "reward.txt"
     error_file = tmp_path / "logs" / "error_analysis.json"
 
-    _create_valid_output(repo_dir, output_root, gold)
-    _reorder_table_columns(
-        output_root / "MEDS_cohort" / "metadata" / "codes.parquet",
-        ["code", "description", "parent_codes", "possibly_cpt_code", "itemid", "valueuom"],
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+
+    metadata_dir = output_root / "MEDS_cohort" / "metadata"
+    codes = pq.read_table(metadata_dir / "codes.parquet")
+    pq.write_table(
+        codes.select(
+            ["code", "description", "parent_codes", "possibly_cpt_code", "itemid", "valueuom"]
+        ),
+        metadata_dir / "codes.parquet",
+    )
+    dataset_payload = json.loads((metadata_dir / "dataset.json").read_text(encoding="utf-8"))
+    dataset_payload["created_at"] = "2030-01-01T00:00:00"
+    (metadata_dir / "dataset.json").write_text(
+        json.dumps(dataset_payload, indent=2) + "\n",
+        encoding="utf-8",
     )
 
-    subprocess.run(
-        [
-            ".venv/bin/python",
-            "tasks/mimic_iv_meds/tests/verify_output.py",
-            "--repo-dir",
-            str(repo_dir),
-            "--output-root",
-            str(output_root),
-            "--gold-summary",
-            "tasks/mimic_iv_meds/tests/gold_demo_summary.json",
-            "--reward-file",
-            str(reward_file),
-            "--error-analysis-file",
-            str(error_file),
-        ],
-        check=True,
-    )
-
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
     assert reward_file.read_text(encoding="utf-8").strip() == "1.000000"
-    passed_payload = json.loads(error_file.read_text(encoding="utf-8"))
-    assert passed_payload["passed"] is True
-    assert passed_payload["failures"] == []
+    assert payload["passed"] is True
+    assert payload["failures"] == []
 
-    (repo_dir / ".venv").rename(repo_dir / ".venv_hidden")
-    reward_file.unlink()
-    error_file.unlink()
 
-    subprocess.run(
-        [
-            ".venv/bin/python",
-            "tasks/mimic_iv_meds/tests/verify_output.py",
-            "--repo-dir",
-            str(repo_dir),
-            "--output-root",
-            str(output_root),
-            "--gold-summary",
-            "tasks/mimic_iv_meds/tests/gold_demo_summary.json",
-            "--reward-file",
-            str(reward_file),
-            "--error-analysis-file",
-            str(error_file),
-        ],
-        check=True,
+def test_mimic_iv_meds_verifier_detects_metadata_and_data_content_drift(tmp_path: Path):
+    repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
+    output_root = tmp_path / "workspace" / "output"
+    gold_summary = tmp_path / "gold.json"
+    reward_file = tmp_path / "logs" / "reward.txt"
+    error_file = tmp_path / "logs" / "error_analysis.json"
+
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+
+    metadata_dir = output_root / "MEDS_cohort" / "metadata"
+    pq.write_table(
+        pa.table(
+            {
+                "code": pa.array(["LAB/A", "LAB/B"], type=pa.string()),
+                "description": pa.array(["changed", "beta"], type=pa.string()),
+                "parent_codes": pa.array(
+                    [["PARENT/A"], ["PARENT/B"]], type=pa.list_(pa.string())
+                ),
+                "itemid": pa.array([["1"], ["2"]], type=pa.large_list(pa.large_string())),
+                "valueuom": pa.array([["mg"], ["mL"]], type=pa.large_list(pa.large_string())),
+                "possibly_cpt_code": pa.array(
+                    [["100"], ["200"]], type=pa.large_list(pa.large_string())
+                ),
+            }
+        ),
+        metadata_dir / "codes.parquet",
     )
 
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
     assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
-    failed_payload = json.loads(error_file.read_text(encoding="utf-8"))
-    assert failed_payload["passed"] is False
-    assert failed_payload["error_taxonomy"]["missing_uv_setup"] >= 1
+    assert payload["passed"] is False
+    assert payload["error_taxonomy"]["metadata_content_mismatch"] >= 1
+
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+    _write_data_table(output_root / "MEDS_cohort" / "data" / "train" / "0.parquet", 4, offset=100)
+
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
+    assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
+    assert payload["passed"] is False
+    assert payload["error_taxonomy"]["data_hash_mismatch"] >= 1
+
+
+def test_mimic_iv_meds_verifier_requires_uv_setup(tmp_path: Path):
+    repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
+    output_root = tmp_path / "workspace" / "output"
+    gold_summary = tmp_path / "gold.json"
+    reward_file = tmp_path / "logs" / "reward.txt"
+    error_file = tmp_path / "logs" / "error_analysis.json"
+
+    _create_valid_output(repo_dir, output_root)
+    _build_gold_summary(output_root, gold_summary)
+    (repo_dir / ".venv").rename(repo_dir / ".venv_hidden")
+
+    payload = _run_verifier(repo_dir, output_root, gold_summary, reward_file, error_file)
+    assert reward_file.read_text(encoding="utf-8").strip() == "0.000000"
+    assert payload["passed"] is False
+    assert payload["error_taxonomy"]["missing_uv_setup"] >= 1

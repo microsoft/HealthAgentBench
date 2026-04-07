@@ -78,63 +78,28 @@ def write(path: Path, content: str) -> None:
 def build_instruction() -> str:
     return """# MIMIC-IV MEDS Extraction ETL
 
-You are working inside a task environment that contains:
+Use the codebase at `/workspace/MIMIC_IV_MEDS` to run its ETL pipeline on the demo input at `/workspace/staged_demo/raw_input`.
 
-- a pinned checkout of the upstream `MIMIC_IV_MEDS` repo at `/workspace/MIMIC_IV_MEDS`
-- pre-staged open MIMIC-IV demo inputs at `/workspace/staged_demo/raw_input`
-- a task-local helper script at `/workspace/scripts/patch_meds_transforms_lock.py`
-- an output root at `/workspace/output`
-- `uv` already installed in the container
+Inspect the repository, use `uv` from the repo root to install and run the pipeline, and write the final MEDS cohort under `/workspace/output/MEDS_cohort`.
 
-Your goal is to inspect the upstream repo, set up its runtime environment using `uv`, and run the ETL pipeline successfully on the pre-staged MIMIC-IV demo data.
-
-Expected workflow:
-
-1. Read `/workspace/MIMIC_IV_MEDS/README.md` and inspect the repo structure.
-2. From `/workspace/MIMIC_IV_MEDS`, create the runnable environment with `uv sync`.
-3. Apply the task-local compatibility patch:
-   - `python /workspace/scripts/patch_meds_transforms_lock.py /workspace/MIMIC_IV_MEDS/.venv`
-4. Run the ETL pipeline against the staged demo input using `uv run` from the repo root.
-5. Write the final MEDS output under `/workspace/output/MEDS_cohort`.
-
-Use this command shape from the repo root once the environment is set up:
-
-```bash
-uv run MEDS_extract-MIMIC_IV
-  root_output_dir=/workspace/output
-  raw_input_dir=/workspace/staged_demo/raw_input
-  pre_MEDS_dir=/workspace/output/pre_MEDS
-  MEDS_cohort_dir=/workspace/output/MEDS_cohort
-  do_download=False
-  do_copy=True
-  do_overwrite=True
-```
+You may use `/workspace/output` for intermediate outputs.
 
 Submission rules:
 
 - Do not modify files under `/tests`.
-- The verifier expects a repo-local `uv` environment at `/workspace/MIMIC_IV_MEDS/.venv`.
-- The verifier expects the final MEDS cohort under `/workspace/output/MEDS_cohort`.
 - The task is complete only when the ETL run succeeds and the expected MEDS files are present.
 """
 
 
 def build_workspace_readme() -> str:
-    return f"""# MIMIC-IV MEDS Task Workspace
+    return """# MIMIC-IV MEDS Task Workspace
 
-This workspace contains the pinned upstream repo checkout at `MIMIC_IV_MEDS/`.
+Available paths:
 
-Pinned upstream version:
-- tag: `{UPSTREAM_TAG}`
-- commit: `{UPSTREAM_COMMIT}`
-
-Staged demo input lives under `staged_demo/raw_input/`.
-
-Expected agent workflow:
-1. `cd /workspace/MIMIC_IV_MEDS`
-2. `uv sync`
-3. `python /workspace/scripts/patch_meds_transforms_lock.py /workspace/MIMIC_IV_MEDS/.venv`
-4. `uv run MEDS_extract-MIMIC_IV root_output_dir=/workspace/output raw_input_dir=/workspace/staged_demo/raw_input pre_MEDS_dir=/workspace/output/pre_MEDS MEDS_cohort_dir=/workspace/output/MEDS_cohort do_download=False do_copy=True do_overwrite=True`
+- `/workspace/MIMIC_IV_MEDS`: ETL codebase to inspect and run
+- `/workspace/staged_demo/raw_input`: staged MIMIC-IV demo input
+- `/workspace/output`: writable output directory
+- `/workspace/scripts/stage_demo_data.py`: helper used during image build to stage the demo input
 """
 
 
@@ -189,6 +154,7 @@ def build_verify_output_py() -> str:
     return r'''from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -199,6 +165,24 @@ def normalize_columns(columns: list[dict]) -> list[dict]:
     return sorted(columns, key=lambda column: column["name"])
 
 
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def canonical_json_sha256(payload: object) -> str:
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    ).hexdigest()
+
+
+def normalize_dataset_json(payload: dict) -> dict:
+    return {key: value for key, value in payload.items() if key != "created_at"}
+
+
 def parquet_summary(path: Path) -> dict:
     table = pq.read_table(path)
     return {
@@ -207,6 +191,20 @@ def parquet_summary(path: Path) -> dict:
             {"name": field.name, "type": str(field.type)} for field in table.schema
         ]),
     }
+
+
+def parquet_content_sha256(path: Path, sort_by: list[str]) -> str:
+    table = pq.read_table(path)
+    rows = table.to_pylist()
+    rows.sort(key=lambda row: tuple(row[key] for key in sort_by))
+    payload = {
+        "rows": table.num_rows,
+        "columns": normalize_columns(
+            [{"name": field.name, "type": str(field.type)} for field in table.schema]
+        ),
+        "records": rows,
+    }
+    return canonical_json_sha256(payload)
 
 
 def fail(error_taxonomy: dict[str, int], failures: list[dict], kind: str, message: str, **extra) -> None:
@@ -269,25 +267,27 @@ def main() -> None:
             )
 
         if not failures:
-            actual_dataset = json.loads((metadata_dir / "dataset.json").read_text(encoding="utf-8"))
-            expected_dataset = gold["metadata"]["dataset.json"]
-            for key, expected_value in expected_dataset.items():
-                actual_value = actual_dataset.get(key)
-                if actual_value != expected_value:
-                    fail(
-                        error_taxonomy,
-                        failures,
-                        "dataset_json_mismatch",
-                        f"dataset.json field {key!r} did not match.",
-                        expected=expected_value,
-                        actual=actual_value,
-                    )
+            actual_dataset = normalize_dataset_json(
+                json.loads((metadata_dir / "dataset.json").read_text(encoding="utf-8"))
+            )
+            expected_dataset = gold["metadata"]["dataset.json"]["normalized_json"]
+            if actual_dataset != expected_dataset:
+                fail(
+                    error_taxonomy,
+                    failures,
+                    "dataset_json_mismatch",
+                    "Normalized dataset.json content did not match.",
+                    expected=expected_dataset,
+                    actual=actual_dataset,
+                )
 
         if not failures:
             for name in ("codes.parquet", "subject_splits.parquet"):
                 actual = parquet_summary(metadata_dir / name)
-                expected = gold["metadata"][name]
-                expected["columns"] = normalize_columns(expected["columns"])
+                expected = {
+                    "rows": gold["metadata"][name]["rows"],
+                    "columns": normalize_columns(gold["metadata"][name]["columns"]),
+                }
                 if actual != expected:
                     fail(
                         error_taxonomy,
@@ -296,6 +296,23 @@ def main() -> None:
                         f"Metadata parquet summary mismatch for {name}.",
                         expected=expected,
                         actual=actual,
+                    )
+
+        if not failures:
+            for name in ("codes.parquet", "subject_splits.parquet"):
+                actual_hash = parquet_content_sha256(
+                    metadata_dir / name,
+                    gold["metadata"][name]["sort_by"],
+                )
+                expected_hash = gold["metadata"][name]["content_sha256"]
+                if actual_hash != expected_hash:
+                    fail(
+                        error_taxonomy,
+                        failures,
+                        "metadata_content_mismatch",
+                        f"Normalized parquet content mismatch for {name}.",
+                        expected=expected_hash,
+                        actual=actual_hash,
                     )
 
         if not failures:
@@ -312,6 +329,19 @@ def main() -> None:
                         f"Row count mismatch for {rel_path}.",
                         expected=expected_rows,
                         actual=actual_rows,
+                    )
+                    continue
+
+                actual_hash = file_sha256(meds_root / rel_path)
+                expected_hash = expected_by_path[rel_path]["sha256"]
+                if actual_hash != expected_hash:
+                    fail(
+                        error_taxonomy,
+                        failures,
+                        "data_hash_mismatch",
+                        f"Content hash mismatch for {rel_path}.",
+                        expected=expected_hash,
+                        actual=actual_hash,
                     )
 
     reward = 1.0 if not failures else 0.0
@@ -387,31 +417,34 @@ if __name__ == "__main__":
 '''
 
 
-def build_patch_script() -> str:
+def build_runtime_patch_sitecustomize() -> str:
     return r'''from __future__ import annotations
 
-import argparse
+import importlib
 from pathlib import Path
 
 PATTERN = "        lock.release()\n        lock_fp.unlink()\n"
 REPLACEMENT = "        lock.release()\n        if lock_fp.exists():\n            lock_fp.unlink()\n"
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("venv_dir", type=Path)
-    args = parser.parse_args()
+def _apply_meds_lock_patch() -> None:
+    try:
+        import MEDS_transforms.mapreduce.utils as utils
+    except Exception:
+        return
 
-    target = args.venv_dir / "lib" / "python3.11" / "site-packages" / "MEDS_transforms" / "mapreduce" / "utils.py"
+    target = Path(utils.__file__)
     text = target.read_text(encoding="utf-8")
+    if REPLACEMENT in text:
+        return
     if PATTERN not in text:
-        raise SystemExit(f"Expected patch target not found in {target}")
+        return
+
     target.write_text(text.replace(PATTERN, REPLACEMENT), encoding="utf-8")
-    print(f"Patched {target}")
+    importlib.reload(utils)
 
 
-if __name__ == "__main__":
-    main()
+_apply_meds_lock_patch()
 '''
 
 
@@ -426,6 +459,7 @@ RUN pip install --no-cache-dir uv=={UV_VERSION} pyarrow==23.0.1
 
 WORKDIR /workspace
 COPY workspace/ /workspace/
+ENV PYTHONPATH=/workspace/runtime_patch
 
 RUN git clone {UPSTREAM_REPO} /workspace/MIMIC_IV_MEDS \
     && cd /workspace/MIMIC_IV_MEDS \
@@ -445,7 +479,7 @@ def generate_task(output_root: Path) -> None:
     write(output_root / 'task.toml', build_task_toml())
     write(workspace_dir / 'README.md', build_workspace_readme())
     write(workspace_dir / 'scripts' / 'stage_demo_data.py', build_stage_demo_script())
-    write(workspace_dir / 'scripts' / 'patch_meds_transforms_lock.py', build_patch_script())
+    write(workspace_dir / 'runtime_patch' / 'sitecustomize.py', build_runtime_patch_sitecustomize())
     write(output_root / 'environment' / 'Dockerfile', build_dockerfile())
     write(tests_dir / 'test.sh', build_verify_test_sh())
     write(tests_dir / 'verify_output.py', build_verify_output_py())

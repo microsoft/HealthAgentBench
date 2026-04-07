@@ -6,6 +6,7 @@ RUN pip install --no-cache-dir uv==0.9.26 pyarrow==23.0.1
 
 WORKDIR /workspace
 COPY workspace/ /workspace/
+ENV PYTHONPATH=/workspace/runtime_patch
 
 RUN git clone https://github.com/Medical-Event-Data-Standard/MIMIC_IV_MEDS.git /workspace/MIMIC_IV_MEDS     && cd /workspace/MIMIC_IV_MEDS     && git checkout 9699e0865b050325459b11f3c4e226a9dbe5b496     && test "$(git rev-parse HEAD)" = "9699e0865b050325459b11f3c4e226a9dbe5b496"
 
