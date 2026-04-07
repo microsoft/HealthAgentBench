@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 RUN apt-get update     && apt-get install -y --no-install-recommends bash ca-certificates curl git     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir uv==0.9.26
+RUN pip install --no-cache-dir uv==0.9.26 pyarrow==23.0.1
 
 WORKDIR /workspace
 COPY workspace/ /workspace/

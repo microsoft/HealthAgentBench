@@ -54,6 +54,11 @@ def _write_metadata_table(path: Path, summary: dict) -> None:
     pq.write_table(pa.Table.from_arrays(arrays, names=names), path)
 
 
+def _reorder_table_columns(path: Path, column_names: list[str]) -> None:
+    table = pq.read_table(path)
+    pq.write_table(table.select(column_names), path)
+
+
 def _write_data_table(path: Path, rows: int) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     pq.write_table(pa.table({"value": pa.array(list(range(rows)), type=pa.int32())}), path)
@@ -112,6 +117,7 @@ def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path
     assert "root_output_dir=/workspace/output" in instruction
     assert "MEDS_cohort_dir=/workspace/output/MEDS_cohort" in instruction
     assert "git checkout 9699e0865b050325459b11f3c4e226a9dbe5b496" in dockerfile
+    assert "pyarrow==23.0.1" in dockerfile
     assert "python /workspace/scripts/stage_demo_data.py" in dockerfile
     assert "missing_uv_setup" in verifier
     assert "data_row_mismatch" in verifier
@@ -128,6 +134,10 @@ def test_mimic_iv_meds_verifier_requires_uv_setup_and_accepts_matching_output(tm
     error_file = tmp_path / "logs" / "error_analysis.json"
 
     _create_valid_output(repo_dir, output_root, gold)
+    _reorder_table_columns(
+        output_root / "MEDS_cohort" / "metadata" / "codes.parquet",
+        ["code", "description", "parent_codes", "possibly_cpt_code", "itemid", "valueuom"],
+    )
 
     subprocess.run(
         [

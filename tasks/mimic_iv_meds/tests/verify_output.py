@@ -7,13 +7,17 @@ from pathlib import Path
 import pyarrow.parquet as pq
 
 
+def normalize_columns(columns: list[dict]) -> list[dict]:
+    return sorted(columns, key=lambda column: column["name"])
+
+
 def parquet_summary(path: Path) -> dict:
     table = pq.read_table(path)
     return {
         "rows": table.num_rows,
-        "columns": [
+        "columns": normalize_columns([
             {"name": field.name, "type": str(field.type)} for field in table.schema
-        ],
+        ]),
     }
 
 
@@ -95,6 +99,7 @@ def main() -> None:
             for name in ("codes.parquet", "subject_splits.parquet"):
                 actual = parquet_summary(metadata_dir / name)
                 expected = gold["metadata"][name]
+                expected["columns"] = normalize_columns(expected["columns"])
                 if actual != expected:
                     fail(
                         error_taxonomy,
