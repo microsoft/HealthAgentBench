@@ -96,6 +96,8 @@ If the benchmark is generated from raw assets, the generator should take source 
 
 For adapted ETL-style benchmarks, it is often correct for the runnable output to be a generated directory tree rather than a JSON answer file. In that case, make the agent-facing output path explicit in both `instruction.md` and `task.toml`.
 
+Every integrated benchmark should also have a **canonical manual replay path**: a short, explicit sequence a human can run inside a clean task environment to reproduce the intended task workflow without depending on agent behavior. This manual replay path is how you answer the question "is this an agent failure or a task failure?" when a Harbor run goes wrong.
+
 ## 5. Add the Run Path
 
 Every integrated benchmark needs a Harbor job config under `jobs/`.
@@ -107,6 +109,8 @@ Typical job responsibilities:
 - define trial count and run parameters appropriate for the benchmark
 
 If the benchmark needs manual or iterative debugging support, add benchmark-specific helpers under `debug/<benchmark>/` and document them in `debug/<benchmark>/README.md`.
+
+If repo-level debug helpers or Harbor-adjacent tooling assume a particular task-environment shape, either make the benchmark satisfy those assumptions or document the divergence clearly in the benchmark-specific debug path. Do not let local debug-tooling drift masquerade as a task failure.
 
 Keep the split clear:
 
@@ -135,16 +139,38 @@ Optional updates:
 
 Before considering the benchmark integrated, validate the full Harbor path.
 
+When a run fails, debug it in isolation before changing the benchmark. The point of the debugging pass is to distinguish among four different failure classes:
+
+- **agent failure**: the task works manually, but the agent did not execute the required steps correctly
+- **task or environment failure**: the documented workflow cannot be replayed successfully in a clean task environment
+- **verifier failure**: the task completes, but the verifier crashes or rejects semantically correct output
+- **debug-tooling drift**: Harbor and the task are fine, but repo-local debug helpers assume a different environment shape
+
+Use this sequence:
+
+1. Inspect the Harbor run result and logs first.
+2. Determine whether the run reached evaluation or failed before the verifier ran.
+3. Reconstruct the agent's attempted command or workflow from the logs.
+4. Replay the documented benchmark workflow manually in a clean task environment.
+5. If the manual replay fails the same way, treat it as a task, environment, or verifier problem rather than an agent problem.
+6. If the manual replay succeeds, treat the original failure as likely agent-execution or instruction-following failure.
+7. Run the verifier separately against the manual output to isolate verifier bugs from task bugs.
+8. If Harbor succeeds but local debug helpers fail, treat that as tooling drift and fix or document the helper path separately.
+
 Recommended checks:
 
 1. Benchmark-specific setup/bootstrap succeeds, if present.
 2. Harbor task generation succeeds, if generation is part of the benchmark path.
-3. The generated or committed task under `tasks/<benchmark>/` is runnable.
-4. The Harbor job under `jobs/` runs successfully.
-5. Benchmark-specific tests pass.
-6. Benchmark-specific debug instructions are accurate if a debug path is documented.
+3. The generated or committed task under `tasks/<benchmark>/` can be built from scratch as a clean task environment.
+4. The benchmark's canonical workflow can be replayed manually inside that clean task environment using the same command shape or steps the agent is expected to follow.
+5. The verifier can be run separately against that manual output inside the shipped task environment.
+6. The Harbor job under `jobs/` runs successfully after the manual replay path and verifier path are both confirmed.
+7. Benchmark-specific tests pass.
+8. Benchmark-specific debug instructions are accurate if a debug path is documented.
 
 For adapted benchmarks that require agent-run setup, include at least one test that proves the verifier fails when the expected setup artifacts are missing even if the rest of the workspace shape looks plausible.
+
+For verifier design, prefer semantic checks over brittle incidental ones. Validate the invariants that matter for benchmark correctness, and avoid depending on formatting details, field ordering, or byte-level artifacts unless those details are explicitly part of the benchmark contract.
 
 Typical validation commands will look like:
 
@@ -177,6 +203,8 @@ A benchmark is integrated when all of the following are true:
 - Harbor job config exists under `jobs/`
 - benchmark-specific docs exist under `scripts/<benchmark>/README.md`
 - benchmark is listed in `tasks/README.md`
+- the documented task workflow can be replayed manually in a clean task environment
+- the verifier can run against that manual replay path using the shipped task environment
 - validation commands are documented and reproducible
 
 If any of those are missing, the benchmark is not fully integrated yet.
