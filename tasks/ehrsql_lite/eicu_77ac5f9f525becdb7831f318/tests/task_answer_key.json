@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_77ac5f9f525becdb7831f318",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct t1.uniquepid ) from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'hypotension' and datetime(diagnosis.diagnosistime) <= datetime(current_time,'-1 year') ) as t1 join ( select patient.uniquepid, treatment.treatmenttime from treatment join patient on treatment.patientunitstayid = patient.patientunitstayid where treatment.treatmentname = 'therapeutic antibacterials - fourth generation cephalosporin' and datetime(treatment.treatmenttime) <= datetime(current_time,'-1 year') ) as t2 where t1.diagnosistime < t2.treatmenttime and datetime(t1.diagnosistime,'start of month') = datetime(t2.treatmenttime,'start of month')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

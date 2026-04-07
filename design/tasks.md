@@ -11,6 +11,7 @@ Track benchmark integrations and benchmark candidates here. Any benchmark consid
 | Benchmark | Task Directory | Description | Notes | Details |
 | --- | --- | --- | --- | --- |
 | MedAgentBench | `medagentbench/` | Interactive EHR benchmark focused on multi-step retrieval, reasoning, and structured action tasks over clinical data. | Harbor-generated benchmark task built from raw benchmark assets under `scripts/medagentbench/`. | [MedAgentBench](related_work/medagentbench_2501.14654.md) |
+| EHRSQL | `ehrsql/` | Text-to-SQL benchmark over EHR databases (MIMIC-III, eICU). Agent generates SQL queries or identifies unanswerable questions. | Tasks generated via `scripts/ehrsql/generate_harbor_tasks.py`. | [EHRSQL](related_work/ehrsql_2301.07695.md) |
 
 ### Planned
 
@@ -18,6 +19,7 @@ Track benchmark integrations and benchmark candidates here. Any benchmark consid
 | --- | --- | --- | --- |
 | EHRSHOT | Longitudinal structured EHR benchmark for few-shot evaluation of foundation models across 15 prediction tasks. | Relevant benchmark candidate for structured-EHR evaluation, but not an interactive agent benchmark; would require a different task shape from MedAgentBench. | [EHRSHOT](related_work/ehrshot_2307.02028.md) |
 | MedCalc-Bench | Medical-calculation benchmark with 1,000+ manually reviewed instances across 55 calculator tasks. | Strong benchmark candidate for quantitative clinical reasoning, but static rather than interactive; would likely need a non-Harbor-environment task shape. | [MedCalc-Bench](related_work/medcalc_bench_2406.12036.md) |
+| Medical Billing Code | Medical billing and coding benchmark for generating ICD/CPT codes from clinical documentation. Agent reads clinical notes and assigns appropriate billing codes. | Relevant to real-world clinical NLP workflows; would require coding ontology data and evaluation against standard code sets. | |
 
 ### Review Queue
 

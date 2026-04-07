@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_f5c697a076f8bdf89404a244",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct patient.patientunitstayid ) from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '003-39724' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime desc limit 1 )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

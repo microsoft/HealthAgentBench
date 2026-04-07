@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_2f30eed47bc26891913b46de",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select prescriptions.drug from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 20862 ) and prescriptions.route = 'iv' and datetime(prescriptions.startdate) >= datetime(current_time,'-13 month') order by prescriptions.startdate asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

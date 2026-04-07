@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2afbee52de33c9bbd2ba62fa",
+    "instruction": "Calculate how many times patient 003-48563 had received a neuromuscular blocking agent - cisatracurium until 2104.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9562b52112e27502df30adc3",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select count(*) from medication where medication.drugname = 'catapres' and strftime('%y',medication.drugstarttime) <= '2104'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

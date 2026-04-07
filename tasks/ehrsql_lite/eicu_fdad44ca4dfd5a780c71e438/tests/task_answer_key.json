@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_fdad44ca4dfd5a780c71e438",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select ( select vitalperiodic.sao2 from vitalperiodic where vitalperiodic.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-165214' ) and patient.unitdischargetime is null ) and vitalperiodic.sao2 is not null and vitalperiodic.observationtime = ( select distinct vitalperiodic.observationtime from vitalperiodic where vitalperiodic.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-165214' ) and patient.unitdischargetime is null ) and vitalperiodic.sao2 is not null order by vitalperiodic.observationtime desc limit 1 ) ) > ( select vitalperiodic.sao2 from vitalperiodic where vitalperiodic.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-165214' ) and patient.unitdischargetime is null ) and vitalperiodic.sao2 is not null and vitalperiodic.observationtime = ( select distinct vitalperiodic.observationtime from vitalperiodic where vitalperiodic.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '027-165214' ) and patient.unitdischargetime is null ) and vitalperiodic.sao2 is not null order by vitalperiodic.observationtime asc limit 1 ) )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

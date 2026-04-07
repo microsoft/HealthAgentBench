@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_a71b3915f70e91dbf655d42e",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select vitalperiodic.systemicmean from vitalperiodic where vitalperiodic.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '030-52395' ) ) and vitalperiodic.systemicmean is not null and datetime(vitalperiodic.observationtime) <= datetime(current_time,'-110 day') and vitalperiodic.observationtime = ( select distinct vitalperiodic.observationtime from vitalperiodic where vitalperiodic.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '030-52395' ) ) and vitalperiodic.systemicmean is not null and datetime(vitalperiodic.observationtime) <= datetime(current_time,'-110 day') order by vitalperiodic.observationtime asc limit 1 )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

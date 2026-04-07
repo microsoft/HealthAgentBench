@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_2d0f86ba8db303bf47caaff4",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t1.spec_type_desc from ( select microbiologyevents.spec_type_desc, dense_rank() over ( order by count(*) desc ) as c1 from microbiologyevents where strftime('%y',microbiologyevents.charttime) = '2103' group by microbiologyevents.spec_type_desc ) as t1 where t1.c1 <= 5",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

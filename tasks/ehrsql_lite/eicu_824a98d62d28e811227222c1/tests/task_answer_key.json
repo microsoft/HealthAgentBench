@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_824a98d62d28e811227222c1",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t3.drugname from ( select t2.drugname, dense_rank() over ( order by count(*) desc ) as c1 from ( select patient.uniquepid, medication.drugstarttime from medication join patient on medication.patientunitstayid = patient.patientunitstayid where medication.drugname = '37.5 g tube : dextrose (diabetic use) 40 % po gel' and datetime(medication.drugstarttime,'start of year') = datetime(current_time,'start of year','-1 year') ) as t1 join ( select patient.uniquepid, medication.drugname, medication.drugstarttime from medication join patient on medication.patientunitstayid = patient.patientunitstayid where datetime(medication.drugstarttime,'start of year') = datetime(current_time,'start of year','-1 year') ) as t2 on t1.uniquepid = t2.uniquepid where datetime(t1.drugstarttime) = datetime(t2.drugstarttime) group by t2.drugname ) as t3 where t3.c1 <= 5",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

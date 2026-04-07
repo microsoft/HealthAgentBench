@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_de050124665f9f3e9f40d078",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select prescriptions.drug from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 1784 ) and datetime(prescriptions.startdate,'start of day') = datetime(current_time,'start of day','-0 day') except select prescriptions.drug from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 1784 ) and datetime(prescriptions.startdate,'start of day') = datetime(current_time,'start of day','-1 day')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

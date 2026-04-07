@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_0c96b7ca1761a3f2d419c16f",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '002-4486' and patient.hospitaldischargetime is null ) ) and lab.labname = 'hct' and lab.labresulttime = ( select distinct lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '002-4486' and patient.hospitaldischargetime is null ) ) and lab.labname = 'hct' order by lab.labresulttime desc limit 1 )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

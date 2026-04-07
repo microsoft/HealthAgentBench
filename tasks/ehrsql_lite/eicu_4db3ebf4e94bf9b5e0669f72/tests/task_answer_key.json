@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4db3ebf4e94bf9b5e0669f72",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select 1 * ( strftime('%j',current_time) - strftime('%j',medication.drugstarttime) ) from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '030-42006' ) and patient.hospitaldischargetime is null ) and medication.drugname = 'glucagon inj' order by medication.drugstarttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

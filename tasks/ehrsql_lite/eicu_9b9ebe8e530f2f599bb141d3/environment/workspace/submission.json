@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9b9ebe8e530f2f599bb141d3",
+    "instruction": "Tell me the top three diagnoses that have the highest four-year mortality rate.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

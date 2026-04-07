@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4c032ab0dc1aa87d23861051",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct patient.uniquepid ) from patient where patient.patientunitstayid in ( select intakeoutput.patientunitstayid from intakeoutput where intakeoutput.celllabel = 'cl flush: coated catheter ij r 7f' and intakeoutput.cellpath like '%input%' and datetime(intakeoutput.intakeoutputtime) >= datetime(current_time,'-1 year') )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

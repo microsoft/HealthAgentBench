@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_59ecdaebb23bbef3e46ca5e0",
+    "instruction": "How many days have passed since patient 016-9636 was first diagnosed with pleural effusion - large during this hospital encounter?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

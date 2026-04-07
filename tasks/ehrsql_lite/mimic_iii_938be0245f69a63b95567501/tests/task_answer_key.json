@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_938be0245f69a63b95567501",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select avg(labevents.valuenum) from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 25523 ) and labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'protein' ) and datetime(labevents.charttime,'start of year') = datetime(current_time,'start of year','-1 year') group by strftime('%y-%m-%d',labevents.charttime)",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

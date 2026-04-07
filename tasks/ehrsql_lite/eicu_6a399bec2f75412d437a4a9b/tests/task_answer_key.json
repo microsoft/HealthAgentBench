@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_6a399bec2f75412d437a4a9b",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select count(distinct medication.drugname) from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '010-11305' ) )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

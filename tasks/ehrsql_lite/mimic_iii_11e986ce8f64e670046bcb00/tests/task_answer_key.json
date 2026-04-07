@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_11e986ce8f64e670046bcb00",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select d_labitems.label from d_labitems where d_labitems.itemid in ( select t3.itemid from ( select t2.itemid, dense_rank() over ( order by count(*) desc ) as c1 from ( select admissions.subject_id, diagnoses_icd.charttime, admissions.hadm_id from diagnoses_icd join admissions on diagnoses_icd.hadm_id = admissions.hadm_id where diagnoses_icd.icd9_code = ( select d_icd_diagnoses.icd9_code from d_icd_diagnoses where d_icd_diagnoses.short_title = 'elev transaminase/ldh' ) and datetime(diagnoses_icd.charttime,'start of year') = datetime(current_time,'start of year','-0 year') ) as t1 join ( select admissions.subject_id, labevents.itemid, labevents.charttime, admissions.hadm_id from labevents join admissions on labevents.hadm_id = admissions.hadm_id where datetime(labevents.charttime,'start of year') = datetime(current_time,'start of year','-0 year') ) as t2 on t1.subject_id = t2.subject_id where t1.charttime < t2.charttime and t1.hadm_id = t2.hadm_id group by t2.itemid ) as t3 where t3.c1 <= 3 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

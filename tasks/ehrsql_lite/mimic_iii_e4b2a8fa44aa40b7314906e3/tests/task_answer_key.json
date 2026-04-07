@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_e4b2a8fa44aa40b7314906e3",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from inputevents_cv where inputevents_cv.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 19412 ) ) and inputevents_cv.itemid in ( select d_items.itemid from d_items where d_items.label = 'tpn' and d_items.linksto = 'inputevents_cv' ) and datetime(inputevents_cv.charttime,'start of day') = datetime(current_time,'start of day','-1 day')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

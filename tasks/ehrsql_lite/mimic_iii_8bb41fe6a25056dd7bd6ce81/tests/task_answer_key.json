@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8bb41fe6a25056dd7bd6ce81",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select max(labevents.valuenum) from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 5849 ) and labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'mchc' ) and datetime(labevents.charttime,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m',labevents.charttime) = '07'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

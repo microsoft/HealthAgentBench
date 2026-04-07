@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2afbee52de33c9bbd2ba62fa",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from treatment where treatment.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '003-48563' ) ) and treatment.treatmentname = 'neuromuscular blocking agent - cisatracurium' and strftime('%y',treatment.treatmenttime) <= '2104'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_4204c7315ccd2b5bc8218cec",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t2.drug from ( select admissions.subject_id, diagnoses_icd.charttime from diagnoses_icd join admissions on diagnoses_icd.hadm_id = admissions.hadm_id where admissions.subject_id = 138 and diagnoses_icd.icd9_code = ( select d_icd_diagnoses.icd9_code from d_icd_diagnoses where d_icd_diagnoses.short_title = 'urin tract infection nos' ) and strftime('%y-%m',diagnoses_icd.charttime) = '2104-11' ) as t1 join ( select admissions.subject_id, prescriptions.drug, prescriptions.startdate from prescriptions join admissions on prescriptions.hadm_id = admissions.hadm_id where admissions.subject_id = 138 and strftime('%y-%m',prescriptions.startdate) = '2104-11' ) as t2 on t1.subject_id = t2.subject_id where t1.charttime < t2.startdate and datetime(t2.startdate) between datetime(t1.charttime) and datetime(t1.charttime,'+2 day')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_c25c08405fe23ef4f7a7c766",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct t2.uniquepid ) from ( select t1.uniquepid, t1.diagnosistime from ( select patient.uniquepid, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where diagnosis.diagnosisname = 'cardiac arrest - witnessed, < 15 minutes cpr' ) as t1 group by t1.uniquepid having min(t1.diagnosistime) = t1.diagnosistime and datetime(t1.diagnosistime) >= datetime(current_time,'-2 year') ) as t2 join ( select patient.uniquepid, patient.patienthealthsystemstayid, patient.hospitaldischargetime from patient where patient.hospitaldischargestatus = 'expired' ) as t3 on t2.uniquepid = t3.uniquepid where datetime(t2.diagnosistime,'start of month') = datetime(t3.hospitaldischargetime,'start of month')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

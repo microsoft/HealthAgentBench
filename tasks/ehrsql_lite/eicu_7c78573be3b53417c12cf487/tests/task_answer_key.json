@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_7c78573be3b53417c12cf487",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select treatment.treatmentname from treatment where treatment.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '017-59454' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime desc limit 1 ) ) order by treatment.treatmenttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

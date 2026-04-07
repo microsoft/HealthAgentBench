@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_ab0984551c3811067603875d",
+    "instruction": "What are the top three most frequent medications prescribed within 2 months to patients aged 60 or above after being diagnosed with meth sus pneum d/t staph up to 2104?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

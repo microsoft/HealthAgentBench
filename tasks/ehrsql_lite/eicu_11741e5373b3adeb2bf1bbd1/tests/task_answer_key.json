@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_11741e5373b3adeb2bf1bbd1",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select medication.drugstarttime from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '032-4849' ) ) and medication.routeadmin = 'ivp' order by medication.drugstarttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

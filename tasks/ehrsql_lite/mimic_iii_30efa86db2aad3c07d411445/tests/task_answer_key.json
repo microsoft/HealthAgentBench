@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_30efa86db2aad3c07d411445",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select admissions.insurance from admissions where admissions.subject_id = 26667 and admissions.dischtime is not null order by admissions.admittime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

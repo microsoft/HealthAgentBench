@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_5097755e5476a3c9d01e8571",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from diagnoses_icd where diagnoses_icd.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 52604 and admissions.dischtime is not null order by admissions.admittime asc limit 1 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_ec62d9d0e4565bd9a038a1fe",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select medication.drugname from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '002-67875' ) ) and medication.routeadmin = 'po' and datetime(medication.drugstarttime,'start of year') = datetime(current_time,'start of year','-0 year') and strftime('%m',medication.drugstarttime) = '02' order by medication.drugstarttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_6a411e81f90b5d17c830cc72",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from admissions where admissions.subject_id = 8103 and admissions.admission_location = 'emergency room admit' and strftime('%y',admissions.admittime) >= '2104'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4a01014f612958205bd5c317",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t1.culturesite from ( select microlab.culturesite, dense_rank() over ( order by count(*) desc ) as c1 from microlab where datetime(microlab.culturetakentime) >= datetime(current_time,'-3 year') group by microlab.culturesite ) as t1 where t1.c1 <= 3",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4db3ebf4e94bf9b5e0669f72",
+    "instruction": "How many days has it been since patient 030-42006 was last prescribed glucagon inj during this hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

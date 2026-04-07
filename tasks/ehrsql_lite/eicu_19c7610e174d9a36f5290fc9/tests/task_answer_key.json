@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_19c7610e174d9a36f5290fc9",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '016-3041' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) ) and intakeoutput.cellpath like '%intake%' and intakeoutput.celllabel = 'cl flush: coated catheter subclavian r'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

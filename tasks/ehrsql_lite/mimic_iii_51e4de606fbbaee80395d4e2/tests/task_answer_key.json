@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_51e4de606fbbaee80395d4e2",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 42956 ) and prescriptions.drug = 'pantoprazole' and datetime(prescriptions.startdate) <= datetime(current_time,'-158 month')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

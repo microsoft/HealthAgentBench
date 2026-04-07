@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_a71b3915f70e91dbf655d42e",
+    "instruction": "What is the first systemicmean for patient 030-52395 until 110 days ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

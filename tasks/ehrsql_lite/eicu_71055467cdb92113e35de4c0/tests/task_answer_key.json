@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_71055467cdb92113e35de4c0",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '002-52932' ) ) and lab.labname = 'bun' and datetime(lab.labresulttime) <= datetime(current_time,'-69 month') and lab.labresulttime = ( select distinct lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '002-52932' ) ) and lab.labname = 'bun' and datetime(lab.labresulttime) <= datetime(current_time,'-69 month') order by lab.labresulttime asc limit 1 )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

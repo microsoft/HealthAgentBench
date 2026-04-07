@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_c99e9e958c28f2d2cb719b15",
+    "instruction": "Does patient 027-3046 receive MRI readings?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_1336e2a0ab11b64055e62f02",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select inputevents_cv.charttime from inputevents_cv where inputevents_cv.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 25951 ) ) and inputevents_cv.itemid in ( select d_items.itemid from d_items where d_items.label = 'pe 24 fs po' and d_items.linksto = 'inputevents_cv' ) and strftime('%y-%m-%d',inputevents_cv.charttime) = '2105-06-16' order by inputevents_cv.charttime desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

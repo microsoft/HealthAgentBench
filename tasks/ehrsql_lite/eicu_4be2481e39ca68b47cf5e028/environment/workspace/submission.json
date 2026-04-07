@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4be2481e39ca68b47cf5e028",
+    "instruction": "show me patient 016-27397's total amount of blood loss output on this month/27.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

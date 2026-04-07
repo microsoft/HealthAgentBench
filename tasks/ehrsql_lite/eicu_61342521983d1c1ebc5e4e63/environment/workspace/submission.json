@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_61342521983d1c1ebc5e4e63",
+    "instruction": "What name was the drug that patient 017-49538 had been prescribed two times until 25 months ago?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

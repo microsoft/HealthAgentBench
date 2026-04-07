@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_21021da200f9a72a5084e843",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from diagnosis where diagnosis.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '002-41152' ) ) and diagnosis.diagnosisname = 'thrombocytopenia - itp' and datetime(diagnosis.diagnosistime,'start of year') = datetime(current_time,'start of year','-0 year')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

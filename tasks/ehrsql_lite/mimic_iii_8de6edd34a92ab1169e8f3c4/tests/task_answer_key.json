@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8de6edd34a92ab1169e8f3c4",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select strftime('%j',icustays.outtime) - strftime('%j',icustays.intime) from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 88573 ) and icustays.outtime is not null order by icustays.intime desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

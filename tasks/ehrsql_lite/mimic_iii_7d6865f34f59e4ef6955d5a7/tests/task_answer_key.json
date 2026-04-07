@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_7d6865f34f59e4ef6955d5a7",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select prescriptions.startdate from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 9338 ) and prescriptions.drug = 'magnesium sulfate' and datetime(prescriptions.startdate,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m',prescriptions.startdate) = '02' order by prescriptions.startdate asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

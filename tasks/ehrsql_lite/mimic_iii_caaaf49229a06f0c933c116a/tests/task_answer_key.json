@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_caaaf49229a06f0c933c116a",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select min(t1.c1) from ( select sum(cost.cost) as c1 from cost where cost.hadm_id in ( select procedures_icd.hadm_id from procedures_icd where procedures_icd.icd9_code = ( select d_icd_procedures.icd9_code from d_icd_procedures where d_icd_procedures.short_title = 'closed liver biopsy' ) ) and strftime('%y',cost.chargetime) = '2104' group by cost.hadm_id ) as t1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

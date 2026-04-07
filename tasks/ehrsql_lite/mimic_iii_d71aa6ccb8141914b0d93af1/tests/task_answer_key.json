@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_d71aa6ccb8141914b0d93af1",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select sum(outputevents.value) from outputevents where outputevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 739 ) ) and datetime(outputevents.charttime,'start of month') = datetime(current_time,'start of month','-0 month') and strftime('%d',outputevents.charttime) = '17'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

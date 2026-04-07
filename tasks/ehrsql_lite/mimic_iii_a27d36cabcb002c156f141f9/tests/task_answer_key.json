@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_a27d36cabcb002c156f141f9",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select avg(chartevents.valuenum) from chartevents where chartevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 5865 and admissions.dischtime is not null order by admissions.admittime asc limit 1 ) ) and chartevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'temperature c (calc)' and d_items.linksto = 'chartevents' ) group by strftime('%y-%m-%d',chartevents.charttime)",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

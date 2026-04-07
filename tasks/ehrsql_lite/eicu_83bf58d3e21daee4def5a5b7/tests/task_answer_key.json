@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_83bf58d3e21daee4def5a5b7",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct t1.uniquepid ) from ( select patient.uniquepid, treatment.treatmenttime from treatment join patient on treatment.patientunitstayid = patient.patientunitstayid where treatment.treatmentname = 'enteral feeds - oral feeds' and strftime('%y',treatment.treatmenttime) = '2103' ) as t1 join ( select patient.uniquepid, treatment.treatmenttime from treatment join patient on treatment.patientunitstayid = patient.patientunitstayid where treatment.treatmentname = 'analgesics - narcotic analgesic' and strftime('%y',treatment.treatmenttime) = '2103' ) as t2 where t1.treatmenttime < t2.treatmenttime and datetime(t1.treatmenttime,'start of month') = datetime(t2.treatmenttime,'start of month')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

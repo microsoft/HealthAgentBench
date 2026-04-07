@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_dddd6fd860d7f03fbb1b984e",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select 1 * ( strftime('%j',current_time) - strftime('%j',patient.hospitaladmittime) ) from patient where patient.uniquepid = '021-111547' and patient.hospitaldischargetime is null",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

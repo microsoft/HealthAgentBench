@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2b2e36dc1c64c356cd971c32",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select ( select patient.admissionweight from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '012-4131' ) and patient.admissionweight is not null and patient.unitadmittime = '2105-11-20 19:30:00' ) - ( select patient.admissionweight from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '012-4131' ) and patient.admissionweight is not null and patient.unitadmittime = '2105-02-17 01:25:00' )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

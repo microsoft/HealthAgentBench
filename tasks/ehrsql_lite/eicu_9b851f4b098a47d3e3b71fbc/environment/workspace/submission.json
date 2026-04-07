@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9b851f4b098a47d3e3b71fbc",
+    "instruction": "Does patient 035-9193 have a plan to visit after the current hospital visit, including other departments?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

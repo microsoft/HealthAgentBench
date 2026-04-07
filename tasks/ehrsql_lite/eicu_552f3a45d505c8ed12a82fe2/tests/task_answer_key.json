@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_552f3a45d505c8ed12a82fe2",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select patient.wardid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '016-12011' ) and strftime('%y',patient.unitadmittime) >= '2102' order by patient.unitadmittime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

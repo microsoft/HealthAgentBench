@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_3247dbf0101727c6e704085b",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select distinct medication.routeadmin from medication where medication.drugname = 'clonidine'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_cb6f2b248a86a8d8d843b86b",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct patient.uniquepid ) from patient where patient.hospitaldischargetime is not null and datetime(patient.hospitaldischargetime,'start of year') = datetime(current_time,'start of year','-1 year')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

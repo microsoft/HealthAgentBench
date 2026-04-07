@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_74f3bb70aec02e4947ab6f19",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select labevents.charttime from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 15986 ) and datetime(labevents.charttime,'start of month') = datetime(current_time,'start of month','-0 month') order by labevents.charttime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

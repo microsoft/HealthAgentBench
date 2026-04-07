@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_272497c4e2ad21cff67d75cf",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from admissions where admissions.subject_id = 26057 and datetime(admissions.admittime,'start of year') = datetime(current_time,'start of year','-0 year')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

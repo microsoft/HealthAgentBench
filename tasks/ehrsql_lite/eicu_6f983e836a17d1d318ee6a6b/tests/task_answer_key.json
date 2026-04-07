@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_6f983e836a17d1d318ee6a6b",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select sum(cost.cost) from cost where cost.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '013-27480' ) and datetime(cost.chargetime,'start of year') = datetime(current_time,'start of year','-0 year')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

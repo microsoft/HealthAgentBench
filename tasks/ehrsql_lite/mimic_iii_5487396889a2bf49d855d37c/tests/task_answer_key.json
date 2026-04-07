@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_5487396889a2bf49d855d37c",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from microbiologyevents where microbiologyevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 23550 ) and microbiologyevents.spec_type_desc = 'immunology' and datetime(microbiologyevents.charttime,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m',microbiologyevents.charttime) = '02'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

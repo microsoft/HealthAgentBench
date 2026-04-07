@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_76d5e22b34fc1870bb40cb2a",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select inputevents_cv.charttime from inputevents_cv where inputevents_cv.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 15209 ) ) and datetime(inputevents_cv.charttime) >= datetime(current_time,'-1481 day') order by inputevents_cv.charttime desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

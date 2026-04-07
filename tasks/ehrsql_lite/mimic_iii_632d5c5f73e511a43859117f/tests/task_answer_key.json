@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_632d5c5f73e511a43859117f",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select 24 * ( strftime('%j',current_time) - strftime('%j',transfers.intime) ) from transfers where transfers.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 26057 and admissions.dischtime is null ) and transfers.careunit = 'tsicu' order by transfers.intime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

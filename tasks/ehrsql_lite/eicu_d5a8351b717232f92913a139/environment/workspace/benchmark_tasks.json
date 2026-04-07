@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_d5a8351b717232f92913a139",
+    "instruction": "What is the phone number of the doctor who is taking care of patient 015-23047?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

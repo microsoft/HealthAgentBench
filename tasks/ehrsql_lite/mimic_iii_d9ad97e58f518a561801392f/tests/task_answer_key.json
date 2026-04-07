@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_d9ad97e58f518a561801392f",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.drug from ( select prescriptions.drug, count( prescriptions.startdate ) as c1 from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 13703 ) and strftime('%y-%m',prescriptions.startdate) = '2102-04' group by prescriptions.drug ) as t1 where t1.c1 >= 2",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

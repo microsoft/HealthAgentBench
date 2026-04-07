@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_42c6e78cce39bdfad4497693",
+    "instruction": "Have you seen patient 006-80884 receiving additional blood, venipuncture tests?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

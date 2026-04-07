@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_bfd1c21583bdc6edae2d5968",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select ( select labevents.valuenum from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 25965 and admissions.dischtime is not null order by admissions.admittime desc limit 1 ) and labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'pco2' ) and labevents.charttime = ( select distinct labevents.charttime from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 25965 and admissions.dischtime is not null order by admissions.admittime desc limit 1 ) and labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'pco2' ) order by labevents.charttime asc limit 1 offset 1 ) ) - ( select labevents.valuenum from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 25965 and admissions.dischtime is not null order by admissions.admittime desc limit 1 ) and labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'pco2' ) and labevents.charttime = ( select distinct labevents.charttime from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 25965 and admissions.dischtime is not null order by admissions.admittime desc limit 1 ) and labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'pco2' ) order by labevents.charttime asc limit 1 ) )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_cd60fac87d2fde447eb1488a",
+    "instruction": "Get me the top four most common procedures since 2102.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]
