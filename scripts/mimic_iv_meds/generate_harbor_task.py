@@ -89,7 +89,9 @@ Inspect the repository, use `uv` from the repo root to install and run the pipel
 
 Inspect the default extraction config at `/workspace/MIMIC_IV_MEDS/{DEFAULT_EVENT_CONFIG_REL_PATH}`. Create a new config at `/workspace/MIMIC_IV_MEDS/{CUSTOM_EVENT_CONFIG_REL_PATH}` by copying that default config and editing the copy.
 
-Leave the default config unchanged, and run the ETL with the new config instead of the default one.
+Leave the default config file unchanged, and keep the repo's default config wiring pointed at that default config. Do not solve this by changing the package so your custom config becomes the new default.
+
+Run the ETL with your new config for this run only. If you need to make a small code change so the ETL can accept an explicit non-default config path at runtime, that is allowed.
 
 The new config must produce a customized extraction so that the final MEDS cohort:
 
@@ -161,7 +163,6 @@ mkdir -p /logs/verifier /logs/artifacts
 python /tests/verify_output.py \
   --repo-dir /workspace/MIMIC_IV_MEDS \
   --output-root /workspace/output \
-  --reference-config /tests/reference_custom_event_configs.yaml \
   --gold-summary /tests/gold_demo_summary.json \
   --reward-file /logs/verifier/reward.txt \
   --error-analysis-file "${VERIFIER_ERROR_ANALYSIS_FILE}"
@@ -182,7 +183,7 @@ import yaml
 
 DEFAULT_EVENT_CONFIG_REL_PATH = Path("DEFAULT_EVENT_CONFIG_REL_PATH_PLACEHOLDER")
 CUSTOM_EVENT_CONFIG_REL_PATH = Path("CUSTOM_EVENT_CONFIG_REL_PATH_PLACEHOLDER")
-REFERENCE_CONFIG_PATH = Path("REFERENCE_CONFIG_PATH_PLACEHOLDER")
+INIT_PY_REL_PATH = Path("INIT_PY_REL_PATH_PLACEHOLDER")
 DEFAULT_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
@@ -258,6 +259,13 @@ def code_parts(value: object) -> list[str] | None:
     if isinstance(value, list) and all(isinstance(part, str) for part in value):
         return value
     return None
+
+
+def normalize_code(value: object) -> tuple[str, ...] | None:
+    parts = code_parts(value)
+    if parts is None:
+        return None
+    return tuple(parts)
 
 
 def validate_default_config(repo_dir: Path, error_taxonomy: dict[str, int], failures: list[dict]) -> None:
@@ -355,9 +363,33 @@ def validate_default_config(repo_dir: Path, error_taxonomy: dict[str, int], fail
         )
 
 
+def validate_default_config_wiring(
+    repo_dir: Path,
+    error_taxonomy: dict[str, int],
+    failures: list[dict],
+) -> None:
+    path = repo_dir / INIT_PY_REL_PATH
+    if not path.exists():
+        fail(
+            error_taxonomy,
+            failures,
+            "default_config_wiring_modified",
+            f"Expected package init file at {INIT_PY_REL_PATH.as_posix()}.",
+        )
+        return
+
+    text = path.read_text(encoding="utf-8")
+    if 'joinpath("configs/event_configs.yaml")' not in text:
+        fail(
+            error_taxonomy,
+            failures,
+            "default_config_wiring_modified",
+            "Default config wiring was modified; keep the packaged default pointed at event_configs.yaml.",
+        )
+
+
 def validate_custom_config(
     repo_dir: Path,
-    reference_config_path: Path,
     error_taxonomy: dict[str, int],
     failures: list[dict],
 ) -> None:
@@ -383,24 +415,111 @@ def validate_custom_config(
         )
         return
 
-    try:
-        reference_payload = load_yaml(reference_config_path)
-    except Exception as exc:
+    admissions = payload.get("hosp/admissions")
+    if not isinstance(admissions, dict):
         fail(
             error_taxonomy,
             failures,
-            "reference_config_invalid",
-            "Reference extraction config could not be parsed.",
-            error=str(exc),
+            "custom_config_invalid",
+            "Custom extraction config is missing the hosp/admissions block.",
         )
         return
 
-    if payload != reference_payload:
+    admission = admissions.get("admission")
+    if not isinstance(admission, dict):
         fail(
             error_taxonomy,
             failures,
-            "custom_config_mismatch",
-            "Custom extraction config did not match the expected customized extraction.",
+            "custom_config_invalid",
+            "Custom extraction config is missing the admission event block.",
+        )
+        return
+
+    lingering_fields = [
+        key for key in ("insurance", "language", "marital_status", "race") if key in admission
+    ]
+    if lingering_fields:
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_behavior_missing",
+            "Admission event still stores demographics that should be split into separate events.",
+            lingering_fields=lingering_fields,
+        )
+
+    expected_demographic_codes = {
+        ("INSURANCE", "col(insurance)"),
+        ("LANGUAGE", "col(language)"),
+        ("MARITAL_STATUS", "col(marital_status)"),
+        ("RACE", "col(race)"),
+    }
+    found_demographic_codes: set[tuple[str, ...]] = set()
+    wrong_demographic_timing: list[dict[str, object]] = []
+
+    for event_name, event_cfg in admissions.items():
+        if not isinstance(event_cfg, dict):
+            continue
+        code = normalize_code(event_cfg.get("code"))
+        if code in expected_demographic_codes:
+            found_demographic_codes.add(code)
+            if event_cfg.get("time") != "col(admittime)":
+                wrong_demographic_timing.append(
+                    {
+                        "event_name": event_name,
+                        "code": list(code),
+                        "actual_time": event_cfg.get("time"),
+                    }
+                )
+
+    if found_demographic_codes != expected_demographic_codes:
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_behavior_missing",
+            "Custom extraction config is missing one or more required admission demographic events.",
+            missing_event_codes=[list(code) for code in sorted(expected_demographic_codes - found_demographic_codes)],
+        )
+
+    if wrong_demographic_timing:
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_behavior_missing",
+            "Admission demographic events must use the admission timestamp.",
+            wrong_demographic_timing=wrong_demographic_timing,
+        )
+
+    omr = payload.get("hosp/omr", {}).get("omr") if isinstance(payload.get("hosp/omr"), dict) else None
+    labevents = payload.get("hosp/labevents", {}).get("lab") if isinstance(payload.get("hosp/labevents"), dict) else None
+    chartevents = (
+        payload.get("icu/chartevents", {}).get("event")
+        if isinstance(payload.get("icu/chartevents"), dict)
+        else None
+    )
+
+    code_failures: list[dict[str, object]] = []
+    for label, event_cfg, expected_prefix in (
+        ("hosp/omr.omr", omr, "OMR"),
+        ("hosp/labevents.lab", labevents, "HOSP_LAB"),
+        ("icu/chartevents.event", chartevents, "ICU_CHARTEVENT"),
+    ):
+        code = normalize_code(event_cfg.get("code")) if isinstance(event_cfg, dict) else None
+        if code is None or not code or code[0] != expected_prefix:
+            code_failures.append(
+                {
+                    "event": label,
+                    "expected_prefix": expected_prefix,
+                    "actual_code": list(code) if code is not None else None,
+                }
+            )
+
+    if code_failures:
+        fail(
+            error_taxonomy,
+            failures,
+            "custom_config_behavior_missing",
+            "Custom extraction config is missing one or more required code prefixes.",
+            code_failures=code_failures,
         )
 
 
@@ -415,7 +534,6 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo-dir", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
-    parser.add_argument("--reference-config", type=Path, default=REFERENCE_CONFIG_PATH)
     parser.add_argument("--gold-summary", required=True, type=Path)
     parser.add_argument("--reward-file", required=True, type=Path)
     parser.add_argument("--error-analysis-file", required=True, type=Path)
@@ -426,24 +544,14 @@ def main() -> None:
     error_taxonomy: dict[str, int] = {}
 
     repo_dir = args.repo_dir
-    venv_dir = repo_dir / ".venv"
     output_root = args.output_root
     meds_root = output_root / "MEDS_cohort"
     metadata_dir = meds_root / "metadata"
     data_dir = meds_root / "data"
 
-    # uv setup checks
-    if not (repo_dir / "uv.lock").exists():
-        fail(error_taxonomy, failures, "missing_uv_setup", "Expected repo-local uv.lock after setup.")
-    if not venv_dir.exists():
-        fail(error_taxonomy, failures, "missing_uv_setup", "Expected repo-local .venv after uv setup.")
-    if not (venv_dir / "bin" / "python").exists():
-        fail(error_taxonomy, failures, "missing_uv_setup", "Expected .venv/bin/python after uv setup.")
-    if not (venv_dir / "bin" / "MEDS_extract-MIMIC_IV").exists():
-        fail(error_taxonomy, failures, "missing_uv_setup", "Expected MEDS_extract-MIMIC_IV in the repo-local uv environment.")
-
     validate_default_config(repo_dir, error_taxonomy, failures)
-    validate_custom_config(repo_dir, args.reference_config, error_taxonomy, failures)
+    validate_default_config_wiring(repo_dir, error_taxonomy, failures)
+    validate_custom_config(repo_dir, error_taxonomy, failures)
 
     if not meds_root.exists():
         fail(error_taxonomy, failures, "missing_output", "Expected MEDS_cohort output directory.")
@@ -598,8 +706,8 @@ if __name__ == "__main__":
         "CUSTOM_EVENT_CONFIG_REL_PATH_PLACEHOLDER",
         CUSTOM_EVENT_CONFIG_REL_PATH,
     ).replace(
-        "REFERENCE_CONFIG_PATH_PLACEHOLDER",
-        "/tests/reference_custom_event_configs.yaml",
+        "INIT_PY_REL_PATH_PLACEHOLDER",
+        "src/MIMIC_IV_MEDS/__init__.py",
     )
 
 

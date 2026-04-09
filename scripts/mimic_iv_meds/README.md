@@ -43,7 +43,7 @@ The verifier uses a hybrid gold artifact:
 
 - exact hashes for the stable final data parquet files
 - normalized semantic comparisons for metadata artifacts that are not byte-stable across runs
-- semantic YAML equality against `reference_custom_event_configs.yaml` for the agent-authored custom config
+- semantic validation of the agent-authored custom config against the task requirements, with `reference_custom_event_configs.yaml` kept as the canonical reference shape
 
 If the pinned upstream repo or the staged demo-input strategy changes, regenerate the summary from a known-good reference run:
 
@@ -52,3 +52,13 @@ uv run python scripts/mimic_iv_meds/build_reference_summary.py \
   --output-root /path/to/reference-run-root \
   --summary-out scripts/mimic_iv_meds/assets/gold_demo_summary.json
 ```
+
+## Harbor Artifacts
+
+The Harbor job at `jobs/mimic_iv_meds.yaml` retains these artifacts after each run:
+
+- `/workspace/output/MEDS_cohort`
+- `/workspace/output/.logs`
+- `/workspace/MIMIC_IV_MEDS/src/MIMIC_IV_MEDS/configs/custom_event_configs.yaml`
+
+This keeps the final cohort, pipeline logs, and authored custom config available for error analysis.

@@ -6,7 +6,9 @@ Inspect the repository, use `uv` from the repo root to install and run the pipel
 
 Inspect the default extraction config at `/workspace/MIMIC_IV_MEDS/src/MIMIC_IV_MEDS/configs/event_configs.yaml`. Create a new config at `/workspace/MIMIC_IV_MEDS/src/MIMIC_IV_MEDS/configs/custom_event_configs.yaml` by copying that default config and editing the copy.
 
-Leave the default config unchanged, and run the ETL with the new config instead of the default one.
+Leave the default config file unchanged, and keep the repo's default config wiring pointed at that default config. Do not solve this by changing the package so your custom config becomes the new default.
+
+Run the ETL with your new config for this run only. If you need to make a small code change so the ETL can accept an explicit non-default config path at runtime, that is allowed.
 
 The new config must produce a customized extraction so that the final MEDS cohort:
 

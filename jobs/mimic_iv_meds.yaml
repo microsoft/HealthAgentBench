@@ -19,3 +19,8 @@ datasets:
   - path: tasks
     task_names:
       - mimic_iv_meds
+
+artifacts:
+  - /workspace/output/MEDS_cohort
+  - /workspace/output/.logs
+  - /workspace/MIMIC_IV_MEDS/src/MIMIC_IV_MEDS/configs/custom_event_configs.yaml
