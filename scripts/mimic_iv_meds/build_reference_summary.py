@@ -14,7 +14,8 @@ REQUIRED_METADATA_FILES = (
     "subject_splits.parquet",
 )
 REQUIRED_CODE_PREFIXES = (
-    "CHARTEVENT//",
+    "HOSP_LAB//",
+    "ICU_CHARTEVENT//",
     "OMR//",
     "INSURANCE//",
     "LANGUAGE//",

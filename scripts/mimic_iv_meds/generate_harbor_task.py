@@ -14,6 +14,9 @@ DEMO_BASE_URL = "https://physionet.org/files/mimic-iv-demo/2.2"
 COMMON_BASE_URL = "https://raw.githubusercontent.com/MIT-LCP/mimic-code/v2.4.0/mimic-iv/concepts/concept_map"
 OUTPUT_ROOT_DEFAULT = Path("tasks/mimic_iv_meds")
 GOLD_SUMMARY_ASSET = Path("scripts/mimic_iv_meds/assets/gold_demo_summary.json")
+REFERENCE_CUSTOM_CONFIG_ASSET = Path(
+    "scripts/mimic_iv_meds/assets/reference_custom_event_configs.yaml"
+)
 DEFAULT_EVENT_CONFIG_REL_PATH = "src/MIMIC_IV_MEDS/configs/event_configs.yaml"
 CUSTOM_EVENT_CONFIG_REL_PATH = "src/MIMIC_IV_MEDS/configs/custom_event_configs.yaml"
 
@@ -84,15 +87,17 @@ Use the codebase at `/workspace/MIMIC_IV_MEDS` to run its ETL pipeline on the de
 
 Inspect the repository, use `uv` from the repo root to install and run the pipeline, and write the final MEDS cohort under `/workspace/output/MEDS_cohort`.
 
-Create a new extraction config at `/workspace/MIMIC_IV_MEDS/{CUSTOM_EVENT_CONFIG_REL_PATH}` and use that new config for the ETL run.
+Inspect the default extraction config at `/workspace/MIMIC_IV_MEDS/{DEFAULT_EVENT_CONFIG_REL_PATH}`. Create a new config at `/workspace/MIMIC_IV_MEDS/{CUSTOM_EVENT_CONFIG_REL_PATH}` by copying that default config and editing the copy.
 
-Leave the default config at `/workspace/MIMIC_IV_MEDS/{DEFAULT_EVENT_CONFIG_REL_PATH}` unchanged.
+Leave the default config unchanged, and run the ETL with the new config instead of the default one.
 
 The new config must produce a customized extraction so that the final MEDS cohort:
 
-- records admission-time `insurance`, `language`, `marital_status`, and `race` as separate events at the admission timestamp
-- uses a dedicated `CHARTEVENT//...` code family for ICU chart events instead of folding them into the generic `LAB//...` namespace
-- uses an `OMR//...` code family for OMR measurements
+- no longer stores `insurance`, `language`, `marital_status`, or `race` as fields on the hospital admission event
+- records each of those four admission-time demographics as its own event at the admission timestamp using the prefixes `INSURANCE//...`, `LANGUAGE//...`, `MARITAL_STATUS//...`, and `RACE//...`
+- uses `OMR//...` for outpatient OMR measurements
+- uses `HOSP_LAB//...` for hospital lab events from `hosp/labevents`
+- uses `ICU_CHARTEVENT//...` for ICU chart events from `icu/chartevents`
 
 You may use `/workspace/output` for intermediate outputs.
 
@@ -156,6 +161,7 @@ mkdir -p /logs/verifier /logs/artifacts
 python /tests/verify_output.py \
   --repo-dir /workspace/MIMIC_IV_MEDS \
   --output-root /workspace/output \
+  --reference-config /tests/reference_custom_event_configs.yaml \
   --gold-summary /tests/gold_demo_summary.json \
   --reward-file /logs/verifier/reward.txt \
   --error-analysis-file "${VERIFIER_ERROR_ANALYSIS_FILE}"
@@ -176,13 +182,8 @@ import yaml
 
 DEFAULT_EVENT_CONFIG_REL_PATH = Path("DEFAULT_EVENT_CONFIG_REL_PATH_PLACEHOLDER")
 CUSTOM_EVENT_CONFIG_REL_PATH = Path("CUSTOM_EVENT_CONFIG_REL_PATH_PLACEHOLDER")
+REFERENCE_CONFIG_PATH = Path("REFERENCE_CONFIG_PATH_PLACEHOLDER")
 DEFAULT_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-ADMISSION_DEMOGRAPHIC_COLS = {
-    "INSURANCE": "insurance",
-    "LANGUAGE": "language",
-    "MARITAL_STATUS": "marital_status",
-    "RACE": "race",
-}
 
 
 def normalize_columns(columns: list[dict]) -> list[dict]:
@@ -259,23 +260,6 @@ def code_parts(value: object) -> list[str] | None:
     return None
 
 
-def has_expected_admission_demographic_event(admissions: dict, code_prefix: str, source_col: str) -> bool:
-    expected_code = [code_prefix, f"col({source_col})"]
-    for name, block in admissions.items():
-        if name == "admission" or not isinstance(block, dict):
-            continue
-        if code_parts(block.get("code")) != expected_code:
-            continue
-        if block.get("time") != "col(admittime)":
-            continue
-        if block.get("time_format") != DEFAULT_TIME_FORMAT:
-            continue
-        if block.get("hadm_id") != "hadm_id":
-            continue
-        return True
-    return False
-
-
 def validate_default_config(repo_dir: Path, error_taxonomy: dict[str, int], failures: list[dict]) -> None:
     path = repo_dir / DEFAULT_EVENT_CONFIG_REL_PATH
     if not path.exists():
@@ -300,6 +284,8 @@ def validate_default_config(repo_dir: Path, error_taxonomy: dict[str, int], fail
         return
 
     admissions = payload.get("hosp/admissions")
+    patients = payload.get("hosp/patients")
+    labevents = payload.get("hosp/labevents")
     omr = payload.get("hosp/omr", {}).get("omr") if isinstance(payload.get("hosp/omr"), dict) else None
     chartevents = (
         payload.get("icu/chartevents", {}).get("event")
@@ -333,12 +319,24 @@ def validate_default_config(repo_dir: Path, error_taxonomy: dict[str, int], fail
         name for name in ("admission_insurance", "admission_language", "admission_marital_status", "admission_race")
         if name in admissions
     ]
+    gender_code = (
+        code_parts(patients.get("gender", {}).get("code"))
+        if isinstance(patients, dict) and isinstance(patients.get("gender"), dict)
+        else None
+    )
+    labevent_code = (
+        code_parts(labevents.get("lab", {}).get("code"))
+        if isinstance(labevents, dict) and isinstance(labevents.get("lab"), dict)
+        else None
+    )
     omr_code = code_parts(omr.get("code")) if isinstance(omr, dict) else None
     chartevent_code = code_parts(chartevents.get("code")) if isinstance(chartevents, dict) else None
 
     if (
         missing_default_fields
         or unexpected_custom_blocks
+        or gender_code != ["GENDER", "col(gender)"]
+        or labevent_code != ["LAB", "col(itemid)", "col(valueuom)"]
         or omr_code != ["col(result_name)"]
         or chartevent_code is None
         or chartevent_code[:1] != ["LAB"]
@@ -350,12 +348,19 @@ def validate_default_config(repo_dir: Path, error_taxonomy: dict[str, int], fail
             "Default extraction config was modified; it must remain unchanged.",
             missing_default_fields=missing_default_fields,
             unexpected_custom_blocks=unexpected_custom_blocks,
+            gender_code=gender_code,
+            labevent_code=labevent_code,
             omr_code=omr_code,
             chartevent_code=chartevent_code,
         )
 
 
-def validate_custom_config(repo_dir: Path, error_taxonomy: dict[str, int], failures: list[dict]) -> None:
+def validate_custom_config(
+    repo_dir: Path,
+    reference_config_path: Path,
+    error_taxonomy: dict[str, int],
+    failures: list[dict],
+) -> None:
     path = repo_dir / CUSTOM_EVENT_CONFIG_REL_PATH
     if not path.exists():
         fail(
@@ -378,59 +383,24 @@ def validate_custom_config(repo_dir: Path, error_taxonomy: dict[str, int], failu
         )
         return
 
-    admissions = payload.get("hosp/admissions")
-    omr = payload.get("hosp/omr", {}).get("omr") if isinstance(payload.get("hosp/omr"), dict) else None
-    chartevents = (
-        payload.get("icu/chartevents", {}).get("event")
-        if isinstance(payload.get("icu/chartevents"), dict)
-        else None
-    )
-
-    if not isinstance(admissions, dict):
+    try:
+        reference_payload = load_yaml(reference_config_path)
+    except Exception as exc:
         fail(
             error_taxonomy,
             failures,
-            "custom_config_invalid",
-            "Custom config is missing the hosp/admissions block.",
+            "reference_config_invalid",
+            "Reference extraction config could not be parsed.",
+            error=str(exc),
         )
         return
 
-    admission = admissions.get("admission")
-    if not isinstance(admission, dict):
+    if payload != reference_payload:
         fail(
             error_taxonomy,
             failures,
-            "custom_config_invalid",
-            "Custom config is missing the admission event block.",
-        )
-        return
-
-    retained_default_fields = [
-        key for key in ("insurance", "language", "marital_status", "race") if key in admission
-    ]
-    missing_custom_events = [
-        code_prefix
-        for code_prefix, source_col in ADMISSION_DEMOGRAPHIC_COLS.items()
-        if not has_expected_admission_demographic_event(admissions, code_prefix, source_col)
-    ]
-    omr_code = code_parts(omr.get("code")) if isinstance(omr, dict) else None
-    chartevent_code = code_parts(chartevents.get("code")) if isinstance(chartevents, dict) else None
-
-    if (
-        retained_default_fields
-        or missing_custom_events
-        or omr_code != ["OMR", "col(result_name)"]
-        or chartevent_code != ["CHARTEVENT", "col(itemid)", "col(valueuom)"]
-    ):
-        fail(
-            error_taxonomy,
-            failures,
-            "custom_config_invalid",
-            "Custom extraction config does not encode the required behavior.",
-            retained_default_fields=retained_default_fields,
-            missing_custom_events=missing_custom_events,
-            omr_code=omr_code,
-            chartevent_code=chartevent_code,
+            "custom_config_mismatch",
+            "Custom extraction config did not match the expected customized extraction.",
         )
 
 
@@ -445,6 +415,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo-dir", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--reference-config", type=Path, default=REFERENCE_CONFIG_PATH)
     parser.add_argument("--gold-summary", required=True, type=Path)
     parser.add_argument("--reward-file", required=True, type=Path)
     parser.add_argument("--error-analysis-file", required=True, type=Path)
@@ -472,7 +443,7 @@ def main() -> None:
         fail(error_taxonomy, failures, "missing_uv_setup", "Expected MEDS_extract-MIMIC_IV in the repo-local uv environment.")
 
     validate_default_config(repo_dir, error_taxonomy, failures)
-    validate_custom_config(repo_dir, error_taxonomy, failures)
+    validate_custom_config(repo_dir, args.reference_config, error_taxonomy, failures)
 
     if not meds_root.exists():
         fail(error_taxonomy, failures, "missing_output", "Expected MEDS_cohort output directory.")
@@ -626,6 +597,9 @@ if __name__ == "__main__":
     ).replace(
         "CUSTOM_EVENT_CONFIG_REL_PATH_PLACEHOLDER",
         CUSTOM_EVENT_CONFIG_REL_PATH,
+    ).replace(
+        "REFERENCE_CONFIG_PATH_PLACEHOLDER",
+        "/tests/reference_custom_event_configs.yaml",
     )
 
 
@@ -747,6 +721,8 @@ def generate_task(output_root: Path) -> None:
 
     gold_summary_text = GOLD_SUMMARY_ASSET.read_text(encoding='utf-8')
     write(tests_dir / 'gold_demo_summary.json', gold_summary_text)
+    reference_config_text = REFERENCE_CUSTOM_CONFIG_ASSET.read_text(encoding='utf-8')
+    write(tests_dir / 'reference_custom_event_configs.yaml', reference_config_text)
 
 
 def main() -> None:
