@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_3465d641a2334cbbf2bf5faf",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from patient where patient.uniquepid = '032-4849' and patient.hospitaladmitsource = 'emergency department' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

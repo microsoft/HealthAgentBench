@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_4ca207ffcbaf199386e261d5",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from microlab where microlab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '031-24513' ) ) and strftime('%y-%m',microlab.culturetakentime) <= '2105-10'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

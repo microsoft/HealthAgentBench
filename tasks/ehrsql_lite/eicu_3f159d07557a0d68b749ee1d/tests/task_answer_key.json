@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_3f159d07557a0d68b749ee1d",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select distinct cost.cost from cost where cost.eventtype = 'treatment' and cost.eventid in ( select treatment.treatmentid from treatment where treatment.treatmentname = 'bicarbonate - sodium bicarbonate' )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

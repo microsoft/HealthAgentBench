@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_7530715889251036b23c832c",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select ( select count( distinct t1.subject_id ) from ( select admissions.subject_id, diagnoses_icd.charttime from diagnoses_icd join admissions on diagnoses_icd.hadm_id = admissions.hadm_id where diagnoses_icd.icd9_code = ( select d_icd_diagnoses.icd9_code from d_icd_diagnoses where d_icd_diagnoses.short_title = 'acc cut/hem w heart cath' ) and datetime(diagnoses_icd.charttime) <= datetime(current_time,'-2 year') ) as t1 ) - ( select count( distinct t2.subject_id ) from ( select admissions.subject_id, diagnoses_icd.charttime from diagnoses_icd join admissions on diagnoses_icd.hadm_id = admissions.hadm_id where diagnoses_icd.icd9_code = ( select d_icd_diagnoses.icd9_code from d_icd_diagnoses where d_icd_diagnoses.short_title = 'acc cut/hem w heart cath' ) and datetime(diagnoses_icd.charttime) <= datetime(current_time,'-2 year') ) as t2 join admissions on t2.subject_id = admissions.subject_id where t2.charttime < admissions.admittime and datetime(admissions.admittime) <= datetime(current_time,'-2 year') and datetime(admissions.admittime) between datetime(t2.charttime) and datetime(t2.charttime,'+2 month') )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

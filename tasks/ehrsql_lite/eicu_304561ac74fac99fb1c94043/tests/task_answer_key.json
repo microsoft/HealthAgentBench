@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_304561ac74fac99fb1c94043",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '016-27397' ) ) and lab.labname = 'rbc' and datetime(lab.labresulttime,'start of year') = datetime(current_time,'start of year','-0 year') and strftime('%m',lab.labresulttime) = '12' order by lab.labresult asc, lab.labresulttime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

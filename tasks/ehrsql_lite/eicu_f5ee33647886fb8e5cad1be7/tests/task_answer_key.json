@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_f5ee33647886fb8e5cad1be7",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select distinct cost.cost from cost where cost.eventtype = 'medication' and cost.eventid in ( select medication.medicationid from medication where medication.drugname = 'aspirin 81 mg chewable tablet' )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_ce4d6431b5f05e15261a61cc",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select t1.drug from ( select prescriptions.drug, dense_rank() over ( order by count(*) desc ) as c1 from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.age between 30 and 39 ) and strftime('%y',prescriptions.startdate) = '2101' group by prescriptions.drug ) as t1 where t1.c1 <= 3",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

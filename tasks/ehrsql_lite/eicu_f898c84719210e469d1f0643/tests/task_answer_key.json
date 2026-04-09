@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_f898c84719210e469d1f0643",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select avg(patient.admissionweight) from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '016-35481' ) and patient.admissionweight is not null and datetime(patient.unitadmittime) >= datetime(current_time,'-44 month') group by strftime('%y-%m-%d',patient.unitadmittime)",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

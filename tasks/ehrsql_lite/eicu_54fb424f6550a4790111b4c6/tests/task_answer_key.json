@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_54fb424f6550a4790111b4c6",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select sum(intakeoutput.cellvaluenumeric) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '030-42006' ) ) and intakeoutput.celllabel = 'urinary catheter output: indwelling/continuous ure' and intakeoutput.cellpath like '%output%' and datetime(intakeoutput.intakeoutputtime,'start of day') = datetime(current_time,'start of day','-1 day')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

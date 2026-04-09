@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_870de3bb9a1ca09e676a3af8",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select t1.celllabel from ( select intakeoutput.celllabel, dense_rank() over ( order by count(*) desc ) as c1 from intakeoutput where intakeoutput.cellpath like '%output%' group by intakeoutput.celllabel ) as t1 where t1.c1 <= 5",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

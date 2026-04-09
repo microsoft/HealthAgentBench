@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_cb73f6174c6945673d7df43a",
+    "instruction": "What is the correct dosage of the prescribed opioid to patient 19428?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

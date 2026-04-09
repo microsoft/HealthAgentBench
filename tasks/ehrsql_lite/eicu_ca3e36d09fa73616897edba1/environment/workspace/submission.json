@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_ca3e36d09fa73616897edba1",
+    "instruction": "since 5 years ago, what are the top four most common drugs prescribed within the same month to male patients in their 50s after being diagnosed with pleural effusion - left?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_31fa80671f0f451e47c482f4",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select microlab.culturetakentime from microlab where microlab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '031-3355' and patient.hospitaldischargetime is null ) ) order by microlab.culturetakentime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

@@ -29,24 +29,50 @@ class Codex(HarborCodex):
         environment: BaseEnvironment,
         context: AgentContext,
     ) -> None:
-        auth_file = self._resolve_auth_file()
-        await self.exec_as_agent(environment, command="mkdir -p /tmp/codex-secrets")
-        await environment.upload_file(
-            source_path=auth_file,
-            target_path="/tmp/codex-secrets/auth.json",
-        )
         escaped_instruction = shlex.quote(instruction)
 
         if not self.model_name:
             raise ValueError("Model name is required")
 
         model = self.model_name.split("/")[-1]
-        self._resolve_auth_file()
-
         env = {
-            "CODEX_HOME": (EnvironmentPaths.agent_dir).as_posix(),
+            "CODEX_HOME": EnvironmentPaths.agent_dir.as_posix(),
         }
 
+        codex_auth_json = os.environ.get("CODEX_AUTH_JSON", "").strip()
+        codex_task_toml = os.environ.get("CODEX_TASK_TOML", "").strip()
+        azure_openai_api_key = os.environ.get("AZURE_OPENAI_API_KEY", "").strip()
+
+        # Determine authentication mode
+        if codex_auth_json:
+            auth_file = self._resolve_auth_file()
+            await self.exec_as_agent(environment, command="mkdir -p /tmp/codex-secrets")
+            await environment.upload_file(
+                source_path=auth_file,
+                target_path="/tmp/codex-secrets/auth.json",
+            )
+            env["CODEX_AUTH_JSON"] = codex_auth_json
+            setup_command = """
+mkdir -p "$CODEX_HOME"
+ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
+"""
+
+        elif azure_openai_api_key and codex_task_toml:
+            env["AZURE_OPENAI_API_KEY"] = azure_openai_api_key
+            env["CODEX_TASK_TOML"] = codex_task_toml
+            setup_command = """
+mkdir -p /tmp/codex-secrets "$CODEX_HOME"
+printf '%s' "$CODEX_TASK_TOML" > /tmp/codex-secrets/config.toml
+ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
+"""
+
+        else:
+            raise ValueError(
+                "Either CODEX_AUTH_JSON or AZURE_OPENAI_API_KEY and CODEX_TASK_TOML are required for Harbor Codex runs. "
+                "Export them before invoking Harbor."
+            )
+
+        # Add optional OPENAI_BASE_URL if provided
         if openai_base_url := os.environ.get("OPENAI_BASE_URL"):
             env["OPENAI_BASE_URL"] = openai_base_url
 
@@ -54,10 +80,7 @@ class Codex(HarborCodex):
         cli_flags = self.build_cli_flags()
         reasoning_flag = (cli_flags + " ") if cli_flags else ""
 
-        setup_command = """
-mkdir -p /tmp/codex-secrets "$CODEX_HOME"
-ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
-                """
+
 
         skills_command = self._build_register_skills_command()
         if skills_command:
@@ -76,7 +99,7 @@ ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
             await self.exec_as_agent(
                 environment,
                 command=(
-                    "trap 'rm -rf /tmp/codex-secrets \"$CODEX_HOME/auth.json\"' EXIT TERM INT; "
+                    "trap 'rm -rf /tmp/codex-secrets \"$CODEX_HOME/auth.json\" \"$CODEX_HOME/config.toml\"' EXIT TERM INT; "
                     "if [ -s ~/.nvm/nvm.sh ]; then . ~/.nvm/nvm.sh; fi; "
                     "codex exec "
                     "--dangerously-bypass-approvals-and-sandbox "
@@ -95,7 +118,7 @@ ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
             try:
                 await self.exec_as_agent(
                     environment,
-                    command='rm -rf /tmp/codex-secrets "$CODEX_HOME/auth.json"',
+                    command='rm -rf /tmp/codex-secrets "$CODEX_HOME/auth.json" "$CODEX_HOME/config.toml"',
                     env={"CODEX_HOME": EnvironmentPaths.agent_dir.as_posix()},
                 )
             except Exception:

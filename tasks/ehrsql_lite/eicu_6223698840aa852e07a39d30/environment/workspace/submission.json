@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_6223698840aa852e07a39d30",
+    "instruction": "How many enteral feeds - enteral formula procedures have taken place in this year?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_6139383e645475cdedd293e7",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select patients.gender from patients where patients.subject_id = 63700",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

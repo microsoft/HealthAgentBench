@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_cf6677374e131f7772d9c4a9",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select ( select patient.admissionweight from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '006-146580' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) and patient.admissionweight is not null and patient.unitadmittime = ( select distinct patient.unitadmittime from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '006-146580' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) and patient.admissionweight is not null order by patient.unitadmittime asc limit 1 offset 1 ) ) - ( select patient.admissionweight from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '006-146580' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) and patient.admissionweight is not null and patient.unitadmittime = ( select distinct patient.unitadmittime from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '006-146580' and patient.hospitaldischargetime is not null order by patient.hospitaladmittime asc limit 1 ) and patient.admissionweight is not null order by patient.unitadmittime asc limit 1 ) )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

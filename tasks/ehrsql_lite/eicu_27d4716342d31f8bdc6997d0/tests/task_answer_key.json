@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_27d4716342d31f8bdc6997d0",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select distinct cost.cost from cost where cost.eventtype = 'treatment' and cost.eventid in ( select treatment.treatmentid from treatment where treatment.treatmentname = 'internal fixation' )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

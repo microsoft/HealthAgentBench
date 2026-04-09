@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_00ce57592cbf55f71b3ce099",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '009-11235' ) ) and lab.labname = 'myoglobin' and strftime('%y',lab.labresulttime) >= '2100'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

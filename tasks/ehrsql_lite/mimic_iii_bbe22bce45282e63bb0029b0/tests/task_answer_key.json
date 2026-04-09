@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_bbe22bce45282e63bb0029b0",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select labevents.charttime from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 8324 ) and datetime(labevents.charttime,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m',labevents.charttime) = '08' order by labevents.charttime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

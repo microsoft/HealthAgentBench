@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_89193529e9ebed3f6291d238",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select d_icd_diagnoses.long_title from d_icd_diagnoses where d_icd_diagnoses.short_title = 'acc poison-antirheumatic' union select d_icd_procedures.long_title from d_icd_procedures where d_icd_procedures.short_title = 'acc poison-antirheumatic'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_ed8e2171a7b3e506d9439e93",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t2.drugname from ( select patient.uniquepid, treatment.treatmenttime, patient.patienthealthsystemstayid from treatment join patient on treatment.patientunitstayid = patient.patientunitstayid where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '012-63986' ) and treatment.treatmentname = 'enteral feeds - tube feeding' ) as t1 join ( select patient.uniquepid, medication.drugname, medication.drugstarttime, patient.patienthealthsystemstayid from medication join patient on medication.patientunitstayid = patient.patientunitstayid where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '012-63986' ) ) as t2 on t1.uniquepid = t2.uniquepid where t1.treatmenttime < t2.drugstarttime and t1.patienthealthsystemstayid = t2.patienthealthsystemstayid",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

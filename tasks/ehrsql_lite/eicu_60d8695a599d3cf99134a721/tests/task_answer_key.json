@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_60d8695a599d3cf99134a721",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select intakeoutput.intakeoutputtime from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '015-72608' ) ) and intakeoutput.cellpath like '%intake%' and intakeoutput.celllabel = 'per iv flush: antecubital r 18 gauge' and strftime('%y-%m-%d',intakeoutput.intakeoutputtime) <= '2105-12-00' order by intakeoutput.intakeoutputtime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

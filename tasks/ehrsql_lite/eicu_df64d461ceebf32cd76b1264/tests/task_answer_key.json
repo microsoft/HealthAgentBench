@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_df64d461ceebf32cd76b1264",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from treatment where treatment.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '015-15167' ) ) and treatment.treatmentname = 'tracheal suctioning' and datetime(treatment.treatmenttime) <= datetime(current_time,'-3 year')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

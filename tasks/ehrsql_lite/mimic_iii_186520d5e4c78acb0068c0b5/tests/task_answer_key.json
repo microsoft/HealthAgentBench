@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_186520d5e4c78acb0068c0b5",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 18237 ) and datetime(prescriptions.startdate,'start of year') = datetime(current_time,'start of year','-0 year')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

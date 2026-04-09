@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_c9a966d19c41c3bb4fca8b0a",
+    "instruction": "since 2 years ago, how many patients received a pulsation balloon implant within the same month after the previous treatment of cv cath plcmt w guidance?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

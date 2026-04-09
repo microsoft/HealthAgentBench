@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_60b77925e2d6d3f3c8d9e26e",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from inputevents_cv where inputevents_cv.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 27463 ) ) and inputevents_cv.itemid in ( select d_items.itemid from d_items where d_items.label = 'tpn d10.0' and d_items.linksto = 'inputevents_cv' ) and datetime(inputevents_cv.charttime,'start of year') = datetime(current_time,'start of year','-0 year') and strftime('%m',inputevents_cv.charttime) = '08'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

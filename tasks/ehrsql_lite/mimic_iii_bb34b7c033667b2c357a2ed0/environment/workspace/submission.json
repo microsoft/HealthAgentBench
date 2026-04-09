@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_bb34b7c033667b2c357a2ed0",
+    "instruction": "How many hours have passed since patient 12775 first received a pCO2 lab test on their current hospital encounter?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

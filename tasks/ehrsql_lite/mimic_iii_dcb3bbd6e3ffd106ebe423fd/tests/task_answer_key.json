@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_dcb3bbd6e3ffd106ebe423fd",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "null",
+    "db_id": "mimic_iii",
+    "is_impossible": true,
+    "importance": "n/a",
+    "payload": null
+  }
+]

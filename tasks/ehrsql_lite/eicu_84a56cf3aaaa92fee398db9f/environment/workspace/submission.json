@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_84a56cf3aaaa92fee398db9f",
+    "instruction": "When was the last time patient 025-24306 had medication that is taken all the time?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

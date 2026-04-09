@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_d8a2aeef850cbd91121e5116",
+    "instruction": "Count the number of patients in the hospital.\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

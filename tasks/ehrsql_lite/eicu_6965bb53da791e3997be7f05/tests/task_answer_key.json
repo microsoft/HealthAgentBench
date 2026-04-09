@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_6965bb53da791e3997be7f05",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select intakeoutput.intakeoutputtime from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '002-25577' ) ) and intakeoutput.cellpath like '%intake%' order by intakeoutput.intakeoutputtime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

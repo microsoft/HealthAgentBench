@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_3fe6cacb85bf22dd628af31e",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select count(distinct prescriptions.drug) from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 15257 ) and datetime(prescriptions.startdate) >= datetime(current_time,'-4 year')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

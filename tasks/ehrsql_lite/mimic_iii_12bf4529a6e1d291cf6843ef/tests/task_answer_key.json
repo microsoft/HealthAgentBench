@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_12bf4529a6e1d291cf6843ef",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select avg(chartevents.valuenum) from chartevents where chartevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 3677 ) ) and chartevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'admit wt' and d_items.linksto = 'chartevents' ) and datetime(chartevents.charttime) <= datetime(current_time,'-4 year') group by strftime('%y-%m',chartevents.charttime)",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

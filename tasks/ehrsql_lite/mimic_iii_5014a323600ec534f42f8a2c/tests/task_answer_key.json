@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_5014a323600ec534f42f8a2c",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select distinct t1.c1 from ( select labevents.valuenum, percent_rank() over ( order by labevents.valuenum ) as c1 from labevents where labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'ph' ) and labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.age = ( select admissions.age from admissions where admissions.subject_id = 28443 and admissions.dischtime is null ) ) ) as t1 where t1.valuenum = 7.33",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

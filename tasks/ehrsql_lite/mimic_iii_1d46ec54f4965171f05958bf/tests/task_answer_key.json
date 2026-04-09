@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_1d46ec54f4965171f05958bf",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select microbiologyevents.charttime from microbiologyevents where microbiologyevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 16088 ) order by microbiologyevents.charttime desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

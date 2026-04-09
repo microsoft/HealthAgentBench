@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_81e62c2cba6eb8bef2abc3d5",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t3.drug from ( select t2.drug, dense_rank() over ( order by count(*) desc ) as c1 from ( select admissions.subject_id, procedures_icd.charttime from procedures_icd join admissions on procedures_icd.hadm_id = admissions.hadm_id where procedures_icd.icd9_code = ( select d_icd_procedures.icd9_code from d_icd_procedures where d_icd_procedures.short_title = 'inject into thorax cavit' ) and datetime(procedures_icd.charttime,'start of year') = datetime(current_time,'start of year','-0 year') ) as t1 join ( select admissions.subject_id, prescriptions.drug, prescriptions.startdate from prescriptions join admissions on prescriptions.hadm_id = admissions.hadm_id where datetime(prescriptions.startdate,'start of year') = datetime(current_time,'start of year','-0 year') ) as t2 on t1.subject_id = t2.subject_id where t1.charttime < t2.startdate and datetime(t2.startdate) between datetime(t1.charttime) and datetime(t1.charttime,'+2 month') group by t2.drug ) as t3 where t3.c1 <= 5",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

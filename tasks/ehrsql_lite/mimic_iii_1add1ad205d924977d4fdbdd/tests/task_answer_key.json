@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_1add1ad205d924977d4fdbdd",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select sum(prescriptions.dose_val_rx) from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 63676 and admissions.dischtime is not null order by admissions.admittime asc limit 1 ) and prescriptions.drug = 'tizanidine hcl'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

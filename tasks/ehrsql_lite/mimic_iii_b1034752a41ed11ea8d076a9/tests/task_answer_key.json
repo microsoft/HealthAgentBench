@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_b1034752a41ed11ea8d076a9",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select labevents.charttime from labevents where labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'platelet count' ) and labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 95470 ) and strftime('%y-%m',labevents.charttime) <= '2104-01' order by labevents.charttime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

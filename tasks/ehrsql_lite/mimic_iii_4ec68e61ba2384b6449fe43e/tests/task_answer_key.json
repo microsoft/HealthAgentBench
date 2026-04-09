@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_4ec68e61ba2384b6449fe43e",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select prescriptions.startdate from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 26195 ) and datetime(prescriptions.startdate,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m',prescriptions.startdate) = '02' order by prescriptions.startdate desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

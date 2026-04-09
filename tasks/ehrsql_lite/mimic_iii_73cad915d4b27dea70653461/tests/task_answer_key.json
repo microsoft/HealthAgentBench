@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_73cad915d4b27dea70653461",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select sum(outputevents.value) from outputevents where outputevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 11362 ) ) and outputevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'gastric oral gastric' and d_items.linksto = 'outputevents' ) and datetime(outputevents.charttime,'start of month') = datetime(current_time,'start of month','-1 month') and strftime('%d',outputevents.charttime) = '25'",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

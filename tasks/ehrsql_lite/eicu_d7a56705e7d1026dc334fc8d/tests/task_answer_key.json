@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_d7a56705e7d1026dc334fc8d",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '015-33415' ) ) and medication.drugname = 'diazepam' and datetime(medication.drugstarttime) >= datetime(current_time,'-98 month')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

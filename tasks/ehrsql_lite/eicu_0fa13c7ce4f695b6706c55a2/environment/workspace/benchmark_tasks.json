@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_0fa13c7ce4f695b6706c55a2",
+    "instruction": "Can you tell me the name of a specimen test that patient 031-17834 first received in 10/2105?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

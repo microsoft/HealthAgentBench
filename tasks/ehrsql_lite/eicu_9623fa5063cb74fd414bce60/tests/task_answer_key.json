@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9623fa5063cb74fd414bce60",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select medication.drugname from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '030-44598' ) ) and strftime('%y-%m',medication.drugstarttime) = '2105-12' order by medication.drugstarttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

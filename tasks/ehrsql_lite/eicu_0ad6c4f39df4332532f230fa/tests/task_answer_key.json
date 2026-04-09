@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_0ad6c4f39df4332532f230fa",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '032-15494' ) and patient.unitdischargetime is not null order by patient.unitadmittime desc limit 1 ) and intakeoutput.cellpath like '%intake%' and intakeoutput.celllabel = 'saline flush (ml)'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

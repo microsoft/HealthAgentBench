@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_368eca81d7acb35f70c03835",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*)>0 from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '013-11660' ) ) and medication.drugname in ( 'metoclopramide', '50 ml syringe : dextrose 50 % iv soln', 'thiamine hcl' ) and datetime(medication.drugstarttime) >= datetime(current_time,'-3 year')",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

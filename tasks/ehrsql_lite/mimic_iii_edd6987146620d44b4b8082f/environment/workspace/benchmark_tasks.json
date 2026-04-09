@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_edd6987146620d44b4b8082f",
+    "instruction": "Calculate the monthly minimum protein, total level for patient 31300 up to 2103.\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

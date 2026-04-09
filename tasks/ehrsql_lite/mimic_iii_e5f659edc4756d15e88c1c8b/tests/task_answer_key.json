@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_e5f659edc4756d15e88c1c8b",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select patients.dob from patients where patients.subject_id = 19175",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

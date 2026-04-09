@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9b9ebe8e530f2f599bb141d3",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select t4.diagnosisname from ( select t3.diagnosisname, dense_rank() over ( order by t3.c1 desc ) as c2 from ( select t2.diagnosisname, 100 - sum( case when patient.hospitaldischargestatus = 'alive' then 1 when strftime('%j',patient.hospitaldischargetime) - strftime('%j',t2.diagnosistime) > 4 * 365 then 1 else 0 end ) * 100 / count(*) as c1 from ( select t1.uniquepid, t1.diagnosisname, t1.diagnosistime from ( select patient.uniquepid, diagnosis.diagnosisname, diagnosis.diagnosistime from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid group by patient.uniquepid, diagnosis.diagnosisname having min(diagnosis.diagnosistime) = diagnosis.diagnosistime ) as t1 where strftime('%j',current_time) - strftime('%j',t1.diagnosistime) > 4 * 365 ) as t2 join patient on t2.uniquepid = patient.uniquepid group by t2.diagnosisname ) as t3 ) as t4 where t4.c2 <= 3",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

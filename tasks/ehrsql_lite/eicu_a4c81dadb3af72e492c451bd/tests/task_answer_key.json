@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_a4c81dadb3af72e492c451bd",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select avg(lab.labresult) from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '010-33597' ) ) and lab.labname = 'ptt' and strftime('%y',lab.labresulttime) <= '2104' group by strftime('%y-%m',lab.labresulttime)",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

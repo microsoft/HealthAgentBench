@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_b054f41d3f6da352a0a90a39",
+    "instruction": "What is nitroglycerin 0.4 mg (1/150) SL tablet? What is its effect?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

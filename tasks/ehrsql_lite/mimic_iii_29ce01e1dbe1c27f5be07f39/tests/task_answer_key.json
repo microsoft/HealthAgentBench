@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_29ce01e1dbe1c27f5be07f39",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from outputevents where outputevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 92846 ) ) and outputevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'skin drainage bags' and d_items.linksto = 'outputevents' ) and datetime(outputevents.charttime) <= datetime(current_time,'-171 month')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

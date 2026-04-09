@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_93e5e6f4f1686c436b3837c3",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select avg(vitalperiodic.heartrate) from vitalperiodic where vitalperiodic.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '012-29464' ) ) and vitalperiodic.heartrate is not null and strftime('%y-%m',vitalperiodic.observationtime) = '2101-10' group by strftime('%y-%m-%d',vitalperiodic.observationtime)",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

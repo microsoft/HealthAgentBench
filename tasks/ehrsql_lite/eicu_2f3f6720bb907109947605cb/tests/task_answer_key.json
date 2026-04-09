@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2f3f6720bb907109947605cb",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select t3.diagnosisname from ( select t2.diagnosisname, dense_rank() over ( order by count(*) desc ) as c1 from ( select patient.uniquepid, treatment.treatmenttime, patient.patienthealthsystemstayid from treatment join patient on treatment.patientunitstayid = patient.patientunitstayid where treatment.treatmentname = 'wound care' and strftime('%y',treatment.treatmenttime) >= '2102' ) as t1 join ( select patient.uniquepid, diagnosis.diagnosisname, diagnosis.diagnosistime, patient.patienthealthsystemstayid from diagnosis join patient on diagnosis.patientunitstayid = patient.patientunitstayid where strftime('%y',diagnosis.diagnosistime) >= '2102' ) as t2 on t1.uniquepid = t2.uniquepid where t1.treatmenttime < t2.diagnosistime and t1.patienthealthsystemstayid = t2.patienthealthsystemstayid group by t2.diagnosisname ) as t3 where t3.c1 <= 4",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

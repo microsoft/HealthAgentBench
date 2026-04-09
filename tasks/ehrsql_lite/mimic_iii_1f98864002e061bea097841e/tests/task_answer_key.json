@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_1f98864002e061bea097841e",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select chartevents.charttime from chartevents where chartevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 28037 ) ) and chartevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'heart rate' and d_items.linksto = 'chartevents' ) and datetime(chartevents.charttime,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m-%d',chartevents.charttime) = '02-27' order by chartevents.valuenum asc, chartevents.charttime desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

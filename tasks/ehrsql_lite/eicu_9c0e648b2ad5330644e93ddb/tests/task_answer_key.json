@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9c0e648b2ad5330644e93ddb",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select count(*)>0 from microlab where microlab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '031-16123' ) ) and microlab.culturesite = 'wound, decubitus' and strftime('%y-%m',microlab.culturetakentime) <= '2105-11' order by microlab.culturetakentime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "n/a",
+    "payload": null
+  }
+]

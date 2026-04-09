@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_84618e3b3f8852cf3d9edf26",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select d_icd_diagnoses.short_title from d_icd_diagnoses where d_icd_diagnoses.icd9_code in ( select t4.icd9_code from ( select t3.icd9_code, dense_rank() over ( order by t3.c1 desc ) as c2 from ( select t2.icd9_code, 100 - sum( case when patients.dod is null then 1 when strftime('%j',patients.dod) - strftime('%j',t2.charttime) > 2 * 365 then 1 else 0 end ) * 100 / count(*) as c1 from ( select t1.subject_id, t1.icd9_code, t1.charttime from ( select admissions.subject_id, diagnoses_icd.icd9_code, diagnoses_icd.charttime from diagnoses_icd join admissions on diagnoses_icd.hadm_id = admissions.hadm_id group by admissions.subject_id, diagnoses_icd.icd9_code having min(diagnoses_icd.charttime) = diagnoses_icd.charttime ) as t1 where strftime('%j',current_time) - strftime('%j',t1.charttime) > 2 * 365 ) as t2 join patients on t2.subject_id = patients.subject_id group by t2.icd9_code ) as t3 ) as t4 where t4.c2 <= 4 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

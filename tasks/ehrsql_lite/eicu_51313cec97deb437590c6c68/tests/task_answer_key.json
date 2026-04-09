@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_51313cec97deb437590c6c68",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '016-35481' ) ) and intakeoutput.cellpath like '%output%' and intakeoutput.celllabel = 'urine' and datetime(intakeoutput.intakeoutputtime,'start of year') = datetime(current_time,'start of year','-0 year') and strftime('%m-%d',intakeoutput.intakeoutputtime) = '01-19'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

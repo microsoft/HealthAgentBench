@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_7528619aef7729806d1e2b90",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select prescriptions.startdate from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 13054 and admissions.dischtime is null ) and prescriptions.route = 'oral' order by prescriptions.startdate asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

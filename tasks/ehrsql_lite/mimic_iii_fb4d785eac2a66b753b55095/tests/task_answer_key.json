@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_fb4d785eac2a66b753b55095",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select labevents.charttime from labevents where labevents.itemid in ( select d_labitems.itemid from d_labitems where d_labitems.label = 'anion gap' ) and labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 14836 and admissions.dischtime is not null order by admissions.admittime asc limit 1 ) order by labevents.charttime desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

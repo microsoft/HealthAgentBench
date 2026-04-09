@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_0e0a2b0ee8fcec35e766a548",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select medication.drugstarttime from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '007-8693' ) ) and medication.drugname = 'furosemide 10 mg/ml inj soln' and datetime(medication.drugstarttime,'start of year') = datetime(current_time,'start of year','-1 year') and strftime('%m',medication.drugstarttime) = '10' order by medication.drugstarttime desc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

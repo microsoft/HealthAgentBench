@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_22193e273d6e905d7f4657cb",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count(*) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '003-7849' ) and patient.unitdischargetime is not null order by patient.unitadmittime asc limit 1 ) and intakeoutput.cellpath like '%intake%' and intakeoutput.celllabel = 'volume (ml) dopamine'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

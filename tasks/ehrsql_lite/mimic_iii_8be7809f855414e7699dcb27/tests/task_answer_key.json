@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_8be7809f855414e7699dcb27",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct icustays.icustay_id ) from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 14154 and admissions.dischtime is null )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

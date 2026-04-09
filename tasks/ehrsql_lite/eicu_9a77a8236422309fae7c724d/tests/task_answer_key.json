@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_9a77a8236422309fae7c724d",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select sum(intakeoutput.cellvaluenumeric) from intakeoutput where intakeoutput.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '004-32341' ) and patient.unitdischargetime is not null order by patient.unitadmittime desc limit 1 ) and intakeoutput.celllabel = 'urine' and intakeoutput.cellpath like '%output%'",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

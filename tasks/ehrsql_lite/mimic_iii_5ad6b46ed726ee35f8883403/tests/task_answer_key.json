@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_5ad6b46ed726ee35f8883403",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select prescriptions.startdate from prescriptions where prescriptions.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 65147 ) order by prescriptions.startdate desc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

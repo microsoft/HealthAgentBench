@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_b2be3a420f669927adb81384",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select max(chartevents.valuenum) from chartevents where chartevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 1815 ) ) and chartevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'arterial bp mean' and d_items.linksto = 'chartevents' ) and datetime(chartevents.charttime) >= datetime(current_time,'-1185 day')",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

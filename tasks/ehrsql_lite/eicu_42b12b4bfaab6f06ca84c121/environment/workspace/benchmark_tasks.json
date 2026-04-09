@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_42b12b4bfaab6f06ca84c121",
+    "instruction": "From what age is nitroglycerin 0.4 mg sublingual tablet permitted for use?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2161c1846d5890cc1a6920a4",
+    "instruction": "Did patient 006-158338 receive a prescription for a drug during their current hospital visit?\n\nDatabase: eICU\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

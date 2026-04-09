@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_e2a6837fedfa2337522abe32",
+    "category": "factual_qa",
+    "difficulty": "easy",
+    "expected_answer": "select transfers.wardid from transfers where transfers.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 630 ) and transfers.wardid is not null and strftime('%y',transfers.intime) = '2103' order by transfers.intime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "low",
+    "payload": null
+  }
+]

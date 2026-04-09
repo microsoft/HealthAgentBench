@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_c327d29d2202b3a63884c4db",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select chartevents.charttime from chartevents where chartevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 22648 ) ) and chartevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'arterial bp [diastolic]' and d_items.linksto = 'chartevents' ) and datetime(chartevents.charttime,'start of day') = datetime(current_time,'start of day','-1 day') order by chartevents.valuenum asc, chartevents.charttime asc limit 1",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

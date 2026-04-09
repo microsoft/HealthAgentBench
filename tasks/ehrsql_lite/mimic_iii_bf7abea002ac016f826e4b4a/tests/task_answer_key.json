@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_bf7abea002ac016f826e4b4a",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select count( distinct admissions.subject_id ) from admissions where admissions.hadm_id in ( select prescriptions.hadm_id from prescriptions where prescriptions.drug = '*nf* nicardipine hcl iv' and datetime(prescriptions.startdate,'start of year') = datetime(current_time,'start of year','-1 year') )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

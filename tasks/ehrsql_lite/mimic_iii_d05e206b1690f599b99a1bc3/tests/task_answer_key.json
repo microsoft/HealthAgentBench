@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_d05e206b1690f599b99a1bc3",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select sum(outputevents.value) from outputevents where outputevents.icustay_id in ( select icustays.icustay_id from icustays where icustays.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 10855 ) and icustays.outtime is null ) and outputevents.itemid in ( select d_items.itemid from d_items where d_items.label = 'urine out lt nephrostomy' and d_items.linksto = 'outputevents' )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

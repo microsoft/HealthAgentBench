@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_1719e6e50985c5396abdb8bf",
+    "category": "factual_qa",
+    "difficulty": "medium",
+    "expected_answer": "select lab.labresulttime from lab where lab.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '030-3372' ) ) and lab.labname = 'vancomycin - trough' and strftime('%y-%m',lab.labresulttime) <= '2104-03' order by lab.labresult asc, lab.labresulttime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "medium",
+    "payload": null
+  }
+]

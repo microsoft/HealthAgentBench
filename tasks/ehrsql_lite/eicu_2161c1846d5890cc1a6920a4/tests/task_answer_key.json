@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_2161c1846d5890cc1a6920a4",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select count(*)>0 from medication where medication.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '006-158338' and patient.hospitaldischargetime is null ) )",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

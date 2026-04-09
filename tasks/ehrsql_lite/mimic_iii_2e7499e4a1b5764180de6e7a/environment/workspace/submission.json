@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_2e7499e4a1b5764180de6e7a",
+    "instruction": "Can you tell me the phone number of the doctor who is in charge of patient 30826?\n\nDatabase: MIMIC-III\n\nYour task: Generate a SQL query that answers the question. If the question cannot be answered with the available data, return 'null'. ",
+    "final_answer": "",
+    "payload": null
+  }
+]

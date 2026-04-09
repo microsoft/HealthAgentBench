@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_mimic_iii_test_029743b89f55e9a67bd0317f",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select d_labitems.label from d_labitems where d_labitems.itemid in ( select labevents.itemid from labevents where labevents.hadm_id in ( select admissions.hadm_id from admissions where admissions.subject_id = 46422 and admissions.dischtime is not null order by admissions.admittime asc limit 1 ) order by labevents.charttime desc limit 1 )",
+    "db_id": "mimic_iii",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]

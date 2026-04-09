@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "ehrsql_eicu_test_e6ebe9004eabc59a497f0efc",
+    "category": "factual_qa",
+    "difficulty": "hard",
+    "expected_answer": "select treatment.treatmenttime from treatment where treatment.patientunitstayid in ( select patient.patientunitstayid from patient where patient.patienthealthsystemstayid in ( select patient.patienthealthsystemstayid from patient where patient.uniquepid = '009-11591' ) ) and strftime('%y',treatment.treatmenttime) >= '2104' order by treatment.treatmenttime asc limit 1",
+    "db_id": "eicu",
+    "is_impossible": false,
+    "importance": "high",
+    "payload": null
+  }
+]
