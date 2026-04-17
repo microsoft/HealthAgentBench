@@ -1034,6 +1034,17 @@ def build_task_section(
                 }
             )
 
+    # Collect the actual run-dir basenames used for this render so readers
+    # can trace any number back to raw Harbor output, even when --no-detailed
+    # suppresses the per-attempt table.
+    source_run_dirs = sorted(
+        {
+            Path(attempts[0].run_dir).name
+            for _, attempts, *_ in grouped_stats
+            if attempts and attempts[0].run_dir
+        }
+    )
+
     lines = [
         f"## {experiment.task_name}",
         "",
@@ -1041,6 +1052,10 @@ def build_task_section(
         f"- Generated at: `{run_timestamp}`",
         f"- Raw results root: `{output_root}`",
     ]
+    if source_run_dirs:
+        lines.append("- Source run dirs:")
+        for run_dir_name in source_run_dirs:
+            lines.append(f"  - `{run_dir_name}`")
     for note in experiment.notes:
         lines.append(f"- Note: {note}")
 

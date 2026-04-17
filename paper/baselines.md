@@ -58,19 +58,22 @@ uv run python scripts/run_harbor_baselines.py \
 ## mimic_report_gen
 
 - Task path: `tasks`
-- Generated at: `20260417T011058Z`
-- Raw results root: `/home/qianchuliu/projects/MedCLI/results/baselines/mimic_report_gen`
+- Generated at: `20260417T175549Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/mimic_report_gen`
+- Source run dirs:
+  - `mimic_report_gen__codex__gpt-5.3-codex__20260416T231648Z`
+  - `mimic_report_gen__codex__gpt-5.4__20260416T231648Z`
 
 ### Aggregate Summary
 
-| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | avg_rouge_l | avg_rouge_l_stdev | chexbert_f1_14_micro_f1 |
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | avg_rouge_l | avg_rouge_l_stdev | chexbert_f1_5_micro_f1 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mimic_report_gen | codex | gpt-5.4 | medium | 1 | 141 | 489.72 | 0.246 | 0.071 | 52.080 |
-| mimic_report_gen | codex | gpt-5.3-codex | medium | 1 | 141 | 431.13 | 0.222 | 0.059 | 53.850 |
+| mimic_report_gen | codex | gpt-5.4 | medium | 1 | 141 | 489.72 | 0.246 | 0.071 | 51.220 |
+| mimic_report_gen | codex | gpt-5.3-codex | medium | 1 | 141 | 431.13 | 0.222 | 0.059 | 55.000 |
 
 Per-trial metrics (mean ± sample stdev across subtasks): `avg_rouge_l`.
 
-Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `chexbert_f1_14_micro_f1`.
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `chexbert_f1_5_micro_f1`.
 
 ### Reproducibility
 
@@ -79,12 +82,12 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --task-name mimic_report_gen \
   --task-path tasks \
   --harness codex \
-  --output-root /home/qianchuliu/projects/MedCLI/results/baselines/mimic_report_gen \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/mimic_report_gen \
   --attempts 1 \
   --reasoning-effort medium \
   --no-detailed \
   --metric-to-report avg_rouge_l \
-  --metric-to-report chexbert_f1_14_micro_f1 \
+  --metric-to-report chexbert_f1_5_micro_f1 \
   --model gpt-5.3-codex \
   --model gpt-5.4
 ```
