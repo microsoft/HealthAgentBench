@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12145137_54833205",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nAgain identified is a left juxta-hilar mass adjacent to a fiducial\n seed and a right hilar mass.  Multiple other nodules are also identified but\n better delineated on recent CT. Otherwise, the lungs are without a focal\n consolidation or pneumothorax.  A small right pleural effusion is noted.  An\n overlying left subclavian central line is visualized in place. There is stable\n elevation of the left hemidiaphragm. No free air is noted in the abdomen.\n\nIMPRESSION:\nFindings consistent with known intrathoracic malignancy. No\n evidence of infection or other acute process.",
+    "expected_findings": "Again identified is a left juxta-hilar mass adjacent to a fiducial\n seed and a right hilar mass.  Multiple other nodules are also identified but\n better delineated on recent CT. Otherwise, the lungs are without a focal\n consolidation or pneumothorax.  A small right pleural effusion is noted.  An\n overlying left subclavian central line is visualized in place. There is stable\n elevation of the left hemidiaphragm. No free air is noted in the abdomen.",
+    "expected_impression": "Findings consistent with known intrathoracic malignancy. No\n evidence of infection or other acute process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  Evaluation of patient with abdominal pain and lactic acidosis.\n \n COMPARISON:  Chest CT from ___ and chest radiograph from\n ___.\n \n FINDINGS:   Again identified is a left juxta-hilar mass adjacent to a fiducial\n seed and a right hilar mass.  Multiple other nodules are also identified but\n better delineated on recent CT. Otherwise, the lungs are without a focal\n consolidation or pneumothorax.  A small right pleural effusion is noted.  An\n overlying left subclavian central line is visualized in place. There is stable\n elevation of the left hemidiaphragm. No free air is noted in the abdomen. \n \n IMPRESSION:  Findings consistent with known intrathoracic malignancy. No\n evidence of infection or other acute process.\n",
+    "subject_id": "12145137",
+    "target_study_id": "54833205",
+    "num_prior_studies": 1
+  }
+]

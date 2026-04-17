@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15792940_58501970",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe heart shows stable cardiomegaly.  The mediastinal and hilar\n contours are unremarkable.  The previously described left mid upper lung\n opacity has improved in appearance.  The left lower lobe consolidation appears\n similar.  Subtle blunting of the left costophrenic angle may also indicate a\n trace amount of pleural fluid in that locale.  There is no pneumothorax.\n\nIMPRESSION:\nImproving right upper lobe consolidation; stable appearance of\n the left lower lobe consolidation with probable trace pleural effusion on the\n left.",
+    "expected_findings": "The heart shows stable cardiomegaly.  The mediastinal and hilar\n contours are unremarkable.  The previously described left mid upper lung\n opacity has improved in appearance.  The left lower lobe consolidation appears\n similar.  Subtle blunting of the left costophrenic angle may also indicate a\n trace amount of pleural fluid in that locale.  There is no pneumothorax.",
+    "expected_impression": "Improving right upper lobe consolidation; stable appearance of\n the left lower lobe consolidation with probable trace pleural effusion on the\n left.",
+    "full_ground_truth_report": " PROVISIONAL FINDINGS IMPRESSION (PFI): ___ ___ 1:51 PM\n  Improving right upper lobe consolidation; stable appearance of the left lower\n  lobe consolidation with probable trace pleural effusion on the left.\n ______________________________________________________________________________\n                                 FINAL REPORT\n HISTORY:  ___-year-old male with recent pneumonia in need of interval\n assessment.\n \n STUDY:  Portable AP upright chest radiograph.\n \n COMPARISON:  ___.\n \n FINDINGS:  The heart shows stable cardiomegaly.  The mediastinal and hilar\n contours are unremarkable.  The previously described left mid upper lung\n opacity has improved in appearance.  The left lower lobe consolidation appears\n similar.  Subtle blunting of the left costophrenic angle may also indicate a\n trace amount of pleural fluid in that locale.  There is no pneumothorax.\n \n IMPRESSION:  Improving right upper lobe consolidation; stable appearance of\n the left lower lobe consolidation with probable trace pleural effusion on the\n left.\n",
+    "subject_id": "15792940",
+    "target_study_id": "58501970",
+    "num_prior_studies": 1
+  }
+]

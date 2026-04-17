@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_19150427_56013922",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nNo focal consolidation or pulmonary edema.  Moderate cardiomegaly.  No pleural\n effusions or pneumothorax.  Prior median sternotomy and CABG.\n\nIMPRESSION:\nNo acute cardiopulmonary process.",
+    "expected_findings": "No focal consolidation or pulmonary edema.  Moderate cardiomegaly.  No pleural\n effusions or pneumothorax.  Prior median sternotomy and CABG.",
+    "expected_impression": "No acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___ year old man with altered mental status, foot pain  // Please\n eval for PNA\n \n TECHNIQUE:  Portable\n \n COMPARISON:  ___\n \n FINDINGS: \n \n No focal consolidation or pulmonary edema.  Moderate cardiomegaly.  No pleural\n effusions or pneumothorax.  Prior median sternotomy and CABG.\n \n IMPRESSION: \n \n No acute cardiopulmonary process.\n",
+    "subject_id": "19150427",
+    "target_study_id": "56013922",
+    "num_prior_studies": 7
+  }
+]

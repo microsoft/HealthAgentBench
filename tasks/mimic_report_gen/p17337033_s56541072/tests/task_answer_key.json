@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17337033_56541072",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nHeart size is normal.  The aorta is tortuous.  Unchanged widening of the\n mediastinum attributable to mediastinal lipomatosis is re- demonstrated. \n Hilar contours are unremarkable.  Pulmonary vasculature is not engorged. \n Lungs are clear.  No pleural effusion, focal consolidation or pneumothorax is\n demonstrated.  There are no acute osseous abnormalities.\n\nIMPRESSION:\nNo acute cardiopulmonary abnormality.",
+    "expected_findings": "Heart size is normal.  The aorta is tortuous.  Unchanged widening of the\n mediastinum attributable to mediastinal lipomatosis is re- demonstrated. \n Hilar contours are unremarkable.  Pulmonary vasculature is not engorged. \n Lungs are clear.  No pleural effusion, focal consolidation or pneumothorax is\n demonstrated.  There are no acute osseous abnormalities.",
+    "expected_impression": "No acute cardiopulmonary abnormality.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PA AND LAT)\n \n INDICATION:  History: ___M with DM1 who is presenting with elevations of blood\n sugar, vomiting and abdominal pain.\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  Chest radiograph ___, CT chest ___\n \n FINDINGS: \n \n Heart size is normal.  The aorta is tortuous.  Unchanged widening of the\n mediastinum attributable to mediastinal lipomatosis is re- demonstrated. \n Hilar contours are unremarkable.  Pulmonary vasculature is not engorged. \n Lungs are clear.  No pleural effusion, focal consolidation or pneumothorax is\n demonstrated.  There are no acute osseous abnormalities.\n \n IMPRESSION: \n \n No acute cardiopulmonary abnormality.\n",
+    "subject_id": "17337033",
+    "target_study_id": "56541072",
+    "num_prior_studies": 4
+  }
+]

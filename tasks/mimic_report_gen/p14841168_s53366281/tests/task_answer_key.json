@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_14841168_53366281",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nNo definite focal consolidation is seen.  There is no pleural effusion or\n pneumothorax.  Cardiac and mediastinal silhouettes are grossly stable given\n differences in technique and inspiration.  Pulmonary vascular congestion is\n seen.  Slight prominence of the left hilum has been seen over several prior\n studies in likely relates to vascular structures.\n\nIMPRESSION:\nNo definite focal consolidation to suggest pneumonia.  Pulmonary vascular\n congestion.",
+    "expected_findings": "No definite focal consolidation is seen.  There is no pleural effusion or\n pneumothorax.  Cardiac and mediastinal silhouettes are grossly stable given\n differences in technique and inspiration.  Pulmonary vascular congestion is\n seen.  Slight prominence of the left hilum has been seen over several prior\n studies in likely relates to vascular structures.",
+    "expected_impression": "No definite focal consolidation to suggest pneumonia.  Pulmonary vascular\n congestion.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  History: ___F with AMS  // eval for pna\n \n TECHNIQUE:  Single frontal view of the chest\n \n COMPARISON:  ___\n \n FINDINGS: \n \n No definite focal consolidation is seen.  There is no pleural effusion or\n pneumothorax.  Cardiac and mediastinal silhouettes are grossly stable given\n differences in technique and inspiration.  Pulmonary vascular congestion is\n seen.  Slight prominence of the left hilum has been seen over several prior\n studies in likely relates to vascular structures.\n \n IMPRESSION: \n \n No definite focal consolidation to suggest pneumonia.  Pulmonary vascular\n congestion.\n",
+    "subject_id": "14841168",
+    "target_study_id": "53366281",
+    "num_prior_studies": 49
+  }
+]

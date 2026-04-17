@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16672854_57282583",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nPortable AP upright view of the chest provided.  Midline sternotomy\n wires and mediastinal clips are again noted.  There are lower lung opacities\n which is potential concern for pneumonia.  There is no large effusion or\n pneumothorax.  Mild central hilar congestion is somewhat improved from prior\n exam.  The heart size is top normal.  The mediastinal contour is unchanged. \n No definite signs of pneumothorax.  Bony structures appear grossly intact.\n\nIMPRESSION:\nLower lung opacities which could represent atelectasis versus\n pneumonia.  Possible mild congestion.",
+    "expected_findings": "Portable AP upright view of the chest provided.  Midline sternotomy\n wires and mediastinal clips are again noted.  There are lower lung opacities\n which is potential concern for pneumonia.  There is no large effusion or\n pneumothorax.  Mild central hilar congestion is somewhat improved from prior\n exam.  The heart size is top normal.  The mediastinal contour is unchanged. \n No definite signs of pneumothorax.  Bony structures appear grossly intact.",
+    "expected_impression": "Lower lung opacities which could represent atelectasis versus\n pneumonia.  Possible mild congestion.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n PORTABLE CHEST RADIOGRAPH PERFORMED ON ___ \n \n COMPARISON:  Prior exam from ___.\n \n CLINICAL HISTORY:  ___-year-old man with dyspnea and hypoxia, question acute\n intrathoracic process.\n \n FINDINGS:  Portable AP upright view of the chest provided.  Midline sternotomy\n wires and mediastinal clips are again noted.  There are lower lung opacities\n which is potential concern for pneumonia.  There is no large effusion or\n pneumothorax.  Mild central hilar congestion is somewhat improved from prior\n exam.  The heart size is top normal.  The mediastinal contour is unchanged. \n No definite signs of pneumothorax.  Bony structures appear grossly intact.\n \n IMPRESSION:  Lower lung opacities which could represent atelectasis versus\n pneumonia.  Possible mild congestion.\n",
+    "subject_id": "16672854",
+    "target_study_id": "57282583",
+    "num_prior_studies": 9
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13135946_55518195",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nSmall-to-moderate bilateral pleural effusions are most apparent on\n the lateral projections. Heart size is normal.  A right-sided PICC line tip\n terminates in the mid SVC.  Nasogastric tube extends below the field of view\n and mitral valve ring is in unchanged position.  Mediastinal clips and sternal\n wires are intact. Bibasilar atelectasis has improved since ___.\n\nIMPRESSION:\nBilateral small to moderate pleural effusions.",
+    "expected_findings": "Small-to-moderate bilateral pleural effusions are most apparent on\n the lateral projections. Heart size is normal.  A right-sided PICC line tip\n terminates in the mid SVC.  Nasogastric tube extends below the field of view\n and mitral valve ring is in unchanged position.  Mediastinal clips and sternal\n wires are intact. Bibasilar atelectasis has improved since ___.",
+    "expected_impression": "Bilateral small to moderate pleural effusions.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old woman status post mitral valve repair.  Evaluate for\n effusion and/or infiltrate.\n \n COMPARISONS:  ___ to ___.  \n \n FINDINGS:  Small-to-moderate bilateral pleural effusions are most apparent on\n the lateral projections. Heart size is normal.  A right-sided PICC line tip\n terminates in the mid SVC.  Nasogastric tube extends below the field of view\n and mitral valve ring is in unchanged position.  Mediastinal clips and sternal\n wires are intact. Bibasilar atelectasis has improved since ___.\n \n IMPRESSION:  Bilateral small to moderate pleural effusions.\n",
+    "subject_id": "13135946",
+    "target_study_id": "55518195",
+    "num_prior_studies": 16
+  }
+]

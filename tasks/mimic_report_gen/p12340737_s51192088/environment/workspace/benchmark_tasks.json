@@ -1,0 +1,40 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12340737_51192088",
+    "subject_id": "12340737",
+    "target_study": {
+      "study_id": "51192088",
+      "study_datetime": "2193-04-26 12:13:46",
+      "procedure": "CHEST (PORTABLE AP)",
+      "views": [
+        {
+          "dicom_id": "eae9b998-2b29a12b-6d6fd4c2-8227ce7b-7f1c4262",
+          "view_position": "AP",
+          "path": "/data/patient/2193-04-26_12-13-46_s51192088/eae9b998-2b29a12b-6d6fd4c2-8227ce7b-7f1c4262.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "A-fib, assess for acute cardiopulmonary abnormality",
+        "TECHNIQUE": "Portable supine chest radiograph"
+      }
+    },
+    "history": [
+      {
+        "study_id": "58757200",
+        "study_datetime": "2193-03-22 07:58:38",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "6eb24aca-5687f160-c7d0c498-3d8a1abf-05bf0b8c",
+            "view_position": "AP",
+            "path": "/data/patient/2193-03-22_07-58-38_s58757200/6eb24aca-5687f160-c7d0c498-3d8a1abf-05bf0b8c.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2193-03-22_07-58-38_s58757200/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 12340737\nTarget Study ID: 51192088\nTarget Study Date: 2193-04-26 12:13:46\nTarget Procedure: CHEST (PORTABLE AP)\nTarget Views: AP\n\nThis patient has 1 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: A-fib, assess for acute cardiopulmonary abnormality\n\nTECHNIQUE: Portable supine chest radiograph\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,87 @@
+[
+  {
+    "task_id": "mimic_cxr_report_18343726_55741690",
+    "subject_id": "18343726",
+    "target_study": {
+      "study_id": "55741690",
+      "study_datetime": "2148-06-01 16:22:22",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "01ceb247-fa13bc0e-8819e99f-9df1e9e8-bba88b3d",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2148-06-01_16-22-22_s55741690/01ceb247-fa13bc0e-8819e99f-9df1e9e8-bba88b3d.jpg"
+        },
+        {
+          "dicom_id": "2a5046e4-c023b60a-61a89d1b-464d705c-e2b1eae7",
+          "view_position": "PA",
+          "path": "/data/patient/2148-06-01_16-22-22_s55741690/2a5046e4-c023b60a-61a89d1b-464d705c-e2b1eae7.jpg"
+        }
+      ],
+      "given_sections": {
+        "EXAMINATION": "CHEST (PA AND LAT)",
+        "INDICATION": "___F to undergo discectomy, pre-op film",
+        "COMPARISON": "___"
+      }
+    },
+    "history": [
+      {
+        "study_id": "54661616",
+        "study_datetime": "2145-02-01 17:31:17",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "2bddb45e-b08f4b2d-f5594cc2-2512ff39-e6847371",
+            "view_position": "LL",
+            "path": "/data/patient/2145-02-01_17-31-17_s54661616/2bddb45e-b08f4b2d-f5594cc2-2512ff39-e6847371.jpg"
+          },
+          {
+            "dicom_id": "57dd992a-c736b67a-5a1f24e1-fcef3aea-76faae84",
+            "view_position": "PA",
+            "path": "/data/patient/2145-02-01_17-31-17_s54661616/57dd992a-c736b67a-5a1f24e1-fcef3aea-76faae84.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2145-02-01_17-31-17_s54661616/report.txt"
+      },
+      {
+        "study_id": "55340847",
+        "study_datetime": "2145-02-23 19:34:24",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "093baa2b-62a8c5b2-9255859f-2edf2dcf-4f5ed090",
+            "view_position": "PA",
+            "path": "/data/patient/2145-02-23_19-34-24_s55340847/093baa2b-62a8c5b2-9255859f-2edf2dcf-4f5ed090.jpg"
+          },
+          {
+            "dicom_id": "5064b93d-bccfde44-d9c94dc5-82bb5a09-7418caa6",
+            "view_position": "LL",
+            "path": "/data/patient/2145-02-23_19-34-24_s55340847/5064b93d-bccfde44-d9c94dc5-82bb5a09-7418caa6.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2145-02-23_19-34-24_s55340847/report.txt"
+      },
+      {
+        "study_id": "53012323",
+        "study_datetime": "2145-07-24 16:48:54",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "ceb97930-fe5ec7d6-6ee4c8aa-56e46341-d0fbfd43",
+            "view_position": "PA",
+            "path": "/data/patient/2145-07-24_16-48-54_s53012323/ceb97930-fe5ec7d6-6ee4c8aa-56e46341-d0fbfd43.jpg"
+          },
+          {
+            "dicom_id": "cf70ca08-0d94fd1b-e54c0121-98ae7205-8f0f48e4",
+            "view_position": "LL",
+            "path": "/data/patient/2145-07-24_16-48-54_s53012323/cf70ca08-0d94fd1b-e54c0121-98ae7205-8f0f48e4.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2145-07-24_16-48-54_s53012323/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 18343726\nTarget Study ID: 55741690\nTarget Study Date: 2148-06-01 16:22:22\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: LATERAL, PA\n\nThis patient has 3 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nEXAMINATION: CHEST (PA AND LAT)\n\nINDICATION: ___F to undergo discectomy, pre-op film\n\nCOMPARISON: ___\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17669276_53637827",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nRight internal jugular central line terminates in the mid SVC. \n Endotracheal tube is appropriately positioned 4.2 cm above the carina.  A left\n PICC terminates in the lower SVC.  Again seen are moderate pleural effusions,\n similar to the previous exam.  A vertical line in the right hemithorax\n represents a skinfold.  There is no pneumothorax or focal consolidation.  Mild\n pulmonary edema is stable.  Cardiomegaly is unchanged.\n\nIMPRESSION:\nNo significant interval change since the prior exam.",
+    "expected_findings": "Right internal jugular central line terminates in the mid SVC. \n Endotracheal tube is appropriately positioned 4.2 cm above the carina.  A left\n PICC terminates in the lower SVC.  Again seen are moderate pleural effusions,\n similar to the previous exam.  A vertical line in the right hemithorax\n represents a skinfold.  There is no pneumothorax or focal consolidation.  Mild\n pulmonary edema is stable.  Cardiomegaly is unchanged.",
+    "expected_impression": "No significant interval change since the prior exam.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  History of duodenal ulcer bleed, question interval change.\n \n COMPARISON:  Chest radiographs from ___.\n \n FINDINGS:  Right internal jugular central line terminates in the mid SVC. \n Endotracheal tube is appropriately positioned 4.2 cm above the carina.  A left\n PICC terminates in the lower SVC.  Again seen are moderate pleural effusions,\n similar to the previous exam.  A vertical line in the right hemithorax\n represents a skinfold.  There is no pneumothorax or focal consolidation.  Mild\n pulmonary edema is stable.  Cardiomegaly is unchanged.\n \n IMPRESSION:  No significant interval change since the prior exam.\n",
+    "subject_id": "17669276",
+    "target_study_id": "53637827",
+    "num_prior_studies": 14
+  }
+]

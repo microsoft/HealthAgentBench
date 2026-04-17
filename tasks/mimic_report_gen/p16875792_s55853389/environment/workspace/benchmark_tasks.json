@@ -1,0 +1,115 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16875792_55853389",
+    "subject_id": "16875792",
+    "target_study": {
+      "study_id": "55853389",
+      "study_datetime": "2181-06-16 15:19:23",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "0119e0a7-198160f8-7a4b361a-0b612edd-9b62bc13",
+          "view_position": "",
+          "path": "/data/patient/2181-06-16_15-19-23_s55853389/0119e0a7-198160f8-7a4b361a-0b612edd-9b62bc13.jpg"
+        },
+        {
+          "dicom_id": "2c27c769-9854b0e9-102ff0b0-b17773f0-052865d7",
+          "view_position": "",
+          "path": "/data/patient/2181-06-16_15-19-23_s55853389/2c27c769-9854b0e9-102ff0b0-b17773f0-052865d7.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "Evaluation of patient with persistent cough status post CABG.",
+        "COMPARISON": "Multiple prior chest radiographs including the most recent from\n ___ along with chest CT from ___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "52998783",
+        "study_datetime": "2181-05-23 12:53:51",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "66b2b4e8-470a1e57-77371a47-f3e6f263-0b7d1783",
+            "view_position": "AP",
+            "path": "/data/patient/2181-05-23_12-53-51_s52998783/66b2b4e8-470a1e57-77371a47-f3e6f263-0b7d1783.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2181-05-23_12-53-51_s52998783/report.txt"
+      },
+      {
+        "study_id": "50476602",
+        "study_datetime": "2181-06-02 12:42:18",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "b00146a8-daf7d7b9-b5b42300-46be81dc-b7c723c0",
+            "view_position": "AP",
+            "path": "/data/patient/2181-06-02_12-42-18_s50476602/b00146a8-daf7d7b9-b5b42300-46be81dc-b7c723c0.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2181-06-02_12-42-18_s50476602/report.txt"
+      },
+      {
+        "study_id": "58068113",
+        "study_datetime": "2181-06-02 14:18:38",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "f6eee07f-b610f72b-a8832d42-b5472b4d-7cc97271",
+            "view_position": "AP",
+            "path": "/data/patient/2181-06-02_14-18-38_s58068113/f6eee07f-b610f72b-a8832d42-b5472b4d-7cc97271.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2181-06-02_14-18-38_s58068113/report.txt"
+      },
+      {
+        "study_id": "57849643",
+        "study_datetime": "2181-06-04 07:36:49",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "a466a1e2-24db4349-c068db9b-aae250f4-030ceb1e",
+            "view_position": "AP",
+            "path": "/data/patient/2181-06-04_07-36-49_s57849643/a466a1e2-24db4349-c068db9b-aae250f4-030ceb1e.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2181-06-04_07-36-49_s57849643/report.txt"
+      },
+      {
+        "study_id": "58566283",
+        "study_datetime": "2181-06-04 08:48:15",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "f7bbdf2d-8612cba0-b5619cfe-072a43c1-6438f2be",
+            "view_position": "AP",
+            "path": "/data/patient/2181-06-04_08-48-15_s58566283/f7bbdf2d-8612cba0-b5619cfe-072a43c1-6438f2be.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2181-06-04_08-48-15_s58566283/report.txt"
+      },
+      {
+        "study_id": "50022945",
+        "study_datetime": "2181-06-05 17:16:13",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "4331c9eb-f6e0c046-8c50bffc-6f363a16-02f0f87f",
+            "view_position": "PA",
+            "path": "/data/patient/2181-06-05_17-16-13_s50022945/4331c9eb-f6e0c046-8c50bffc-6f363a16-02f0f87f.jpg"
+          },
+          {
+            "dicom_id": "58e18e8d-d3328bef-ffb23510-09ee6d7a-3a0d7e9b",
+            "view_position": "LL",
+            "path": "/data/patient/2181-06-05_17-16-13_s50022945/58e18e8d-d3328bef-ffb23510-09ee6d7a-3a0d7e9b.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2181-06-05_17-16-13_s50022945/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 16875792\nTarget Study ID: 55853389\nTarget Study Date: 2181-06-16 15:19:23\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: , \n\nThis patient has 6 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: Evaluation of patient with persistent cough status post CABG.\n\nCOMPARISON: Multiple prior chest radiographs including the most recent from\n ___ along with chest CT from ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

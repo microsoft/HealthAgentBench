@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16853729_54925240",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nLinear bibasilar opacity is likely atelectasis.  Blunting of the left lateral\n costophrenic angle is again seen, potentially due to additional atelectasis or\n potentially small effusion.  Elsewhere, lungs are clear.  Cardiomediastinal\n silhouette is stable.  Old healed right posterior rib fracture is again noted.\n No acute osseous abnormality.\n\nIMPRESSION:\nBibasilar atelectasis.  Possible trace left pleural effusion.  Otherwise no\n acute cardiopulmonary process.",
+    "expected_findings": "Linear bibasilar opacity is likely atelectasis.  Blunting of the left lateral\n costophrenic angle is again seen, potentially due to additional atelectasis or\n potentially small effusion.  Elsewhere, lungs are clear.  Cardiomediastinal\n silhouette is stable.  Old healed right posterior rib fracture is again noted.\n No acute osseous abnormality.",
+    "expected_impression": "Bibasilar atelectasis.  Possible trace left pleural effusion.  Otherwise no\n acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:   ___F with inflammation around g-tube, cough  // any acute pulm\n process?\n \n TECHNIQUE:  AP and lateral views the chest.\n \n COMPARISON:  ___.\n \n FINDINGS: \n \n Linear bibasilar opacity is likely atelectasis.  Blunting of the left lateral\n costophrenic angle is again seen, potentially due to additional atelectasis or\n potentially small effusion.  Elsewhere, lungs are clear.  Cardiomediastinal\n silhouette is stable.  Old healed right posterior rib fracture is again noted.\n No acute osseous abnormality.\n \n IMPRESSION: \n \n Bibasilar atelectasis.  Possible trace left pleural effusion.  Otherwise no\n acute cardiopulmonary process.\n",
+    "subject_id": "16853729",
+    "target_study_id": "54925240",
+    "num_prior_studies": 14
+  }
+]

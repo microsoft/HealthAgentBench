@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13078497_55575670",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe patient has a history of chronic interstitial lung disease with\n waxing and waning pulmonary edema and infection. Today it is largely unchanged\n with diffuse infiltrative and interstitial opacities stable since ___.  Bilateral pleural effusion is essentially the same.  Cardiomediastinal\n silhouette is stable and demonstrates mild cardiomegaly.  There is no\n pneumothorax.  Enteric tube is seen once again, entering the stomach and then\n out of field of view.  Right-sided PICC terminates within the mid SVC.  An\n endotracheal tube terminates no less than 6 cm from the carina.\n\nIMPRESSION:\nStudy is essentially unchanged from priors with unchanged diffuse\n infiltrative and interstitial opacities.",
+    "expected_findings": "The patient has a history of chronic interstitial lung disease with\n waxing and waning pulmonary edema and infection. Today it is largely unchanged\n with diffuse infiltrative and interstitial opacities stable since ___.  Bilateral pleural effusion is essentially the same.  Cardiomediastinal\n silhouette is stable and demonstrates mild cardiomegaly.  There is no\n pneumothorax.  Enteric tube is seen once again, entering the stomach and then\n out of field of view.  Right-sided PICC terminates within the mid SVC.  An\n endotracheal tube terminates no less than 6 cm from the carina.",
+    "expected_impression": "Study is essentially unchanged from priors with unchanged diffuse\n infiltrative and interstitial opacities.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old male with history of chronic interstitial lung\n disease, now intubated.\n \n COMPARISON:  Multiple chest radiographs dating back to ___, most\n recent ___, and CT chest ___.\n \n TECHNIQUE:  Semi-upright portable AP chest radiograph.\n \n FINDINGS:  The patient has a history of chronic interstitial lung disease with\n waxing and waning pulmonary edema and infection. Today it is largely unchanged\n with diffuse infiltrative and interstitial opacities stable since ___.  Bilateral pleural effusion is essentially the same.  Cardiomediastinal\n silhouette is stable and demonstrates mild cardiomegaly.  There is no\n pneumothorax.  Enteric tube is seen once again, entering the stomach and then\n out of field of view.  Right-sided PICC terminates within the mid SVC.  An\n endotracheal tube terminates no less than 6 cm from the carina.\n \n IMPRESSION:  Study is essentially unchanged from priors with unchanged diffuse\n infiltrative and interstitial opacities.\n",
+    "subject_id": "13078497",
+    "target_study_id": "55575670",
+    "num_prior_studies": 20
+  }
+]

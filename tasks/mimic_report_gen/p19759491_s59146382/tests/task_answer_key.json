@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_19759491_59146382",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nModerate cardiomegaly is unchanged. Pacer leads are in stable position. \n Hemodialysis catheter terminates in the right atrium, unchanged.  The lungs\n are essentially clear, and the right lung base is partially obscured by the\n overlying pacemaker generator. Prosthetic valves and sternal wires are\n unchanged. Blunting of left costophrenic angle likely indicates a small\n pleural effusion.\n\nIMPRESSION:\n1.  Stable moderate cardiomegaly and a likely small left pleural effusion.\n 2. Hemodialysis catheter terminating in the right atrium.",
+    "expected_findings": "Moderate cardiomegaly is unchanged. Pacer leads are in stable position. \n Hemodialysis catheter terminates in the right atrium, unchanged.  The lungs\n are essentially clear, and the right lung base is partially obscured by the\n overlying pacemaker generator. Prosthetic valves and sternal wires are\n unchanged. Blunting of left costophrenic angle likely indicates a small\n pleural effusion.",
+    "expected_impression": "1.  Stable moderate cardiomegaly and a likely small left pleural effusion.\n 2. Hemodialysis catheter terminating in the right atrium.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  History: ___F with PICC needs placement confirmed.\n \n TECHNIQUE:  Portable upright chest radiograph\n \n COMPARISON:  ___\n \n FINDINGS: \n \n Moderate cardiomegaly is unchanged. Pacer leads are in stable position. \n Hemodialysis catheter terminates in the right atrium, unchanged.  The lungs\n are essentially clear, and the right lung base is partially obscured by the\n overlying pacemaker generator. Prosthetic valves and sternal wires are\n unchanged. Blunting of left costophrenic angle likely indicates a small\n pleural effusion.\n \n IMPRESSION: \n \n 1.  Stable moderate cardiomegaly and a likely small left pleural effusion.\n 2. Hemodialysis catheter terminating in the right atrium.\n",
+    "subject_id": "19759491",
+    "target_study_id": "59146382",
+    "num_prior_studies": 25
+  }
+]

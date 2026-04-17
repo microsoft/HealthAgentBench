@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_14744884_57120452",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nLung volumes are slightly low, as before, with persistent mild pulmonary\n vascular congestion and mild cardiomegaly.  No focal consolidation concerning\n for pneumonia is identified.  There is no pneumothorax.  A metallic right\n subclavian vein stent is unchanged.\n\nIMPRESSION:\nStable mild pulmonary vascular congestion and mild cardiomegaly.",
+    "expected_findings": "Lung volumes are slightly low, as before, with persistent mild pulmonary\n vascular congestion and mild cardiomegaly.  No focal consolidation concerning\n for pneumonia is identified.  There is no pneumothorax.  A metallic right\n subclavian vein stent is unchanged.",
+    "expected_impression": "Stable mild pulmonary vascular congestion and mild cardiomegaly.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  Chest radiographs.\n \n INDICATION:  History: ___F with CP, SOB  // eval for consolidation\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  Chest radiographs:  ___.\n \n FINDINGS: \n \n Lung volumes are slightly low, as before, with persistent mild pulmonary\n vascular congestion and mild cardiomegaly.  No focal consolidation concerning\n for pneumonia is identified.  There is no pneumothorax.  A metallic right\n subclavian vein stent is unchanged.\n \n IMPRESSION: \n \n Stable mild pulmonary vascular congestion and mild cardiomegaly.\n",
+    "subject_id": "14744884",
+    "target_study_id": "57120452",
+    "num_prior_studies": 21
+  }
+]

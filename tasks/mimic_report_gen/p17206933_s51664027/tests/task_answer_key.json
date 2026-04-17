@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17206933_51664027",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nHeterogeneous opacities in the right upper lung and left lower lung\n are new compared to radiographs from ___ and concerning for\n infection.  A small to moderate left pleural effusion is substantially\n increased.  There is no definite right pleural effusion.  Heart size is top\n normal.  Unfolding of the thoracic aorta is unchanged.  Aortic calcifications\n are again noted.  Segmental left rib fractures are unchanged.\n\nIMPRESSION:\n1.  New right upper and left lower lung heterogeneous opacities are concerning\n for pneumonia.\n \n 3.  Increased small to moderate left pleural effusion.\n \n Findings were discussed with Dr. ___ by Dr. ___ at 2:46 a.m. via\n telephone on ___.",
+    "expected_findings": "Heterogeneous opacities in the right upper lung and left lower lung\n are new compared to radiographs from ___ and concerning for\n infection.  A small to moderate left pleural effusion is substantially\n increased.  There is no definite right pleural effusion.  Heart size is top\n normal.  Unfolding of the thoracic aorta is unchanged.  Aortic calcifications\n are again noted.  Segmental left rib fractures are unchanged.",
+    "expected_impression": "1.  New right upper and left lower lung heterogeneous opacities are concerning\n for pneumonia.\n \n 3.  Increased small to moderate left pleural effusion.\n \n Findings were discussed with Dr. ___ by Dr. ___ at 2:46 a.m. via\n telephone on ___.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  Hypoxia with shortness of breath.  Evaluate for CHF, pneumonia,\n and/or effusions.\n \n COMPARISON:  Chest radiograph from ___.\n \n FINDINGS:  Heterogeneous opacities in the right upper lung and left lower lung\n are new compared to radiographs from ___ and concerning for\n infection.  A small to moderate left pleural effusion is substantially\n increased.  There is no definite right pleural effusion.  Heart size is top\n normal.  Unfolding of the thoracic aorta is unchanged.  Aortic calcifications\n are again noted.  Segmental left rib fractures are unchanged.\n \n IMPRESSION:\n \n 1.  New right upper and left lower lung heterogeneous opacities are concerning\n for pneumonia.\n \n 3.  Increased small to moderate left pleural effusion.\n \n Findings were discussed with Dr. ___ by Dr. ___ at 2:46 a.m. via\n telephone on ___.\n",
+    "subject_id": "17206933",
+    "target_study_id": "51664027",
+    "num_prior_studies": 3
+  }
+]

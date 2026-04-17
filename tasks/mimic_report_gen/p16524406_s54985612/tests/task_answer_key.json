@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16524406_54985612",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nAssessment is slightly limited by patient rotation.  The endotracheal tube tip\n terminates approximately 6 cm from the carina.  An enteric tube tip is within\n the stomach.  Cardiac silhouette size appears mildly enlarged but unchanged. \n Assessment of the mediastinal and hilar contours is limited.  Pulmonary\n vasculature is not engorged.  Streaky bibasilar airspace opacities may reflect\n areas of atelectasis.  No pleural effusion or pneumothorax is identified. \n Marked degenerative changes are noted involving the right glenohumeral joint.\n\nIMPRESSION:\nLimited examination due to patient rotation.  Endotracheal and enteric tubes\n in standard positions.  Streaky bibasilar opacities, likely atelectasis.",
+    "expected_findings": "Assessment is slightly limited by patient rotation.  The endotracheal tube tip\n terminates approximately 6 cm from the carina.  An enteric tube tip is within\n the stomach.  Cardiac silhouette size appears mildly enlarged but unchanged. \n Assessment of the mediastinal and hilar contours is limited.  Pulmonary\n vasculature is not engorged.  Streaky bibasilar airspace opacities may reflect\n areas of atelectasis.  No pleural effusion or pneumothorax is identified. \n Marked degenerative changes are noted involving the right glenohumeral joint.",
+    "expected_impression": "Limited examination due to patient rotation.  Endotracheal and enteric tubes\n in standard positions.  Streaky bibasilar opacities, likely atelectasis.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  History: ___F with post intubation\n \n TECHNIQUE:  Portable upright AP view of the chest\n \n COMPARISON:  Chest radiograph ___\n \n FINDINGS: \n \n Assessment is slightly limited by patient rotation.  The endotracheal tube tip\n terminates approximately 6 cm from the carina.  An enteric tube tip is within\n the stomach.  Cardiac silhouette size appears mildly enlarged but unchanged. \n Assessment of the mediastinal and hilar contours is limited.  Pulmonary\n vasculature is not engorged.  Streaky bibasilar airspace opacities may reflect\n areas of atelectasis.  No pleural effusion or pneumothorax is identified. \n Marked degenerative changes are noted involving the right glenohumeral joint.\n \n IMPRESSION: \n \n Limited examination due to patient rotation.  Endotracheal and enteric tubes\n in standard positions.  Streaky bibasilar opacities, likely atelectasis.\n",
+    "subject_id": "16524406",
+    "target_study_id": "54985612",
+    "num_prior_studies": 2
+  }
+]

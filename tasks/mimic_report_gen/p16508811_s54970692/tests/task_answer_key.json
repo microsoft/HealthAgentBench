@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16508811_54970692",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nAP portable upright view of the chest.   Overlying EKG leads are present. \n Cardiomegaly is again noted with interval development of hilar congestion and\n mild interstitial pulmonary edema.  Asymmetric opacity in the right lung is\n concerning for a superimposed pneumonia.  No large effusion is seen.  No\n pneumothorax.  Bony structures appear intact.\n\nIMPRESSION:\nMild cardiomegaly, hilar congestion, probable mild interstitial pulmonary\n edema.  Right-sided pulmonary opacities concerning for pneumonia.",
+    "expected_findings": "AP portable upright view of the chest.   Overlying EKG leads are present. \n Cardiomegaly is again noted with interval development of hilar congestion and\n mild interstitial pulmonary edema.  Asymmetric opacity in the right lung is\n concerning for a superimposed pneumonia.  No large effusion is seen.  No\n pneumothorax.  Bony structures appear intact.",
+    "expected_impression": "Mild cardiomegaly, hilar congestion, probable mild interstitial pulmonary\n edema.  Right-sided pulmonary opacities concerning for pneumonia.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  ___M with fever, sob  // eval for pna\n \n COMPARISON:  ___\n \n FINDINGS: \n \n AP portable upright view of the chest.   Overlying EKG leads are present. \n Cardiomegaly is again noted with interval development of hilar congestion and\n mild interstitial pulmonary edema.  Asymmetric opacity in the right lung is\n concerning for a superimposed pneumonia.  No large effusion is seen.  No\n pneumothorax.  Bony structures appear intact.\n \n IMPRESSION: \n \n Mild cardiomegaly, hilar congestion, probable mild interstitial pulmonary\n edema.  Right-sided pulmonary opacities concerning for pneumonia.\n",
+    "subject_id": "16508811",
+    "target_study_id": "54970692",
+    "num_prior_studies": 35
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_10959054_53881360",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThere relatively low lung volumes. There is increased opacity projecting over\n the right hemi thorax likely due to increased right pleural effusion with\n overlying atelectasis, underlying infectious process not excluded.  Possible\n trace left pleural effusion. The cardiac silhouette is top-normal to mildly\n enlarged. Mediastinal contours are unremarkable. No pneumothorax is seen.\n\nIMPRESSION:\nIncreased opacity projecting over the right hemi thorax likely due to\n increased right pleural effusion with overlying atelectasis, underlying\n infectious process not excluded.",
+    "expected_findings": "There relatively low lung volumes. There is increased opacity projecting over\n the right hemi thorax likely due to increased right pleural effusion with\n overlying atelectasis, underlying infectious process not excluded.  Possible\n trace left pleural effusion. The cardiac silhouette is top-normal to mildly\n enlarged. Mediastinal contours are unremarkable. No pneumothorax is seen.",
+    "expected_impression": "Increased opacity projecting over the right hemi thorax likely due to\n increased right pleural effusion with overlying atelectasis, underlying\n infectious process not excluded.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  History: ___M with Pneumonia, Effusion, worsening SOB  // Eval for\n change in infiltrate\n \n TECHNIQUE:  Single frontal view of the chest\n \n COMPARISON:  ___\n \n FINDINGS: \n \n There relatively low lung volumes. There is increased opacity projecting over\n the right hemi thorax likely due to increased right pleural effusion with\n overlying atelectasis, underlying infectious process not excluded.  Possible\n trace left pleural effusion. The cardiac silhouette is top-normal to mildly\n enlarged. Mediastinal contours are unremarkable. No pneumothorax is seen.\n \n IMPRESSION: \n \n Increased opacity projecting over the right hemi thorax likely due to\n increased right pleural effusion with overlying atelectasis, underlying\n infectious process not excluded.\n",
+    "subject_id": "10959054",
+    "target_study_id": "53881360",
+    "num_prior_studies": 6
+  }
+]

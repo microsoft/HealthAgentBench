@@ -1,0 +1,123 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11879886_53021526",
+    "subject_id": "11879886",
+    "target_study": {
+      "study_id": "53021526",
+      "study_datetime": "2174-02-05 21:02:33",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "27a4f085-5eaad330-a1153870-3ec2cd19-20a604cd",
+          "view_position": "PA",
+          "path": "/data/patient/2174-02-05_21-02-33_s53021526/27a4f085-5eaad330-a1153870-3ec2cd19-20a604cd.jpg"
+        },
+        {
+          "dicom_id": "ea6b4ed1-85a1a289-da2233a9-5ff02b4c-e6290e00",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2174-02-05_21-02-33_s53021526/ea6b4ed1-85a1a289-da2233a9-5ff02b4c-e6290e00.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "___-year-old female with shortness of breath and history of aortic\n stenosis.  Evaluate for evidence of cardiopulmonary process.",
+        "COMPARISON": "___.",
+        "TECHNIQUE": "PA and lateral chest radiograph."
+      }
+    },
+    "history": [
+      {
+        "study_id": "54357764",
+        "study_datetime": "2173-10-24 01:43:58",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "94795c9f-9f6f801d-ed57d02c-5e9e02be-b35bf9a1",
+            "view_position": "AP",
+            "path": "/data/patient/2173-10-24_01-43-58_s54357764/94795c9f-9f6f801d-ed57d02c-5e9e02be-b35bf9a1.jpg"
+          },
+          {
+            "dicom_id": "9af84adc-9ec1d9e4-04c381af-f81edb77-c40f3fb4",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2173-10-24_01-43-58_s54357764/9af84adc-9ec1d9e4-04c381af-f81edb77-c40f3fb4.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2173-10-24_01-43-58_s54357764/report.txt"
+      },
+      {
+        "study_id": "56268607",
+        "study_datetime": "2173-10-25 08:39:34",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "da8cd0dd-573be530-0024ff8e-15e20b59-21e4a61d",
+            "view_position": "AP",
+            "path": "/data/patient/2173-10-25_08-39-34_s56268607/da8cd0dd-573be530-0024ff8e-15e20b59-21e4a61d.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2173-10-25_08-39-34_s56268607/report.txt"
+      },
+      {
+        "study_id": "51551069",
+        "study_datetime": "2173-10-28 13:28:17",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "1d47e5bb-33d97afb-bbb7fbb7-d59ed197-da8a12f7",
+            "view_position": "LL",
+            "path": "/data/patient/2173-10-28_13-28-17_s51551069/1d47e5bb-33d97afb-bbb7fbb7-d59ed197-da8a12f7.jpg"
+          },
+          {
+            "dicom_id": "58fedcf0-3247be4c-33428852-1d9d9fed-c613aa80",
+            "view_position": "PA",
+            "path": "/data/patient/2173-10-28_13-28-17_s51551069/58fedcf0-3247be4c-33428852-1d9d9fed-c613aa80.jpg"
+          },
+          {
+            "dicom_id": "e1c69c1e-96a9aa50-c3ed62f9-f424f43e-99fa854d",
+            "view_position": "LL",
+            "path": "/data/patient/2173-10-28_13-28-17_s51551069/e1c69c1e-96a9aa50-c3ed62f9-f424f43e-99fa854d.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2173-10-28_13-28-17_s51551069/report.txt"
+      },
+      {
+        "study_id": "54972841",
+        "study_datetime": "2173-11-07 18:44:55",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "12fcd1f0-96b6eb00-a6a5ee27-7e8d19ee-63f16bc2",
+            "view_position": "PA",
+            "path": "/data/patient/2173-11-07_18-44-55_s54972841/12fcd1f0-96b6eb00-a6a5ee27-7e8d19ee-63f16bc2.jpg"
+          },
+          {
+            "dicom_id": "d8d4b15b-0a338acd-c5176214-7794d508-468e6e07",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2173-11-07_18-44-55_s54972841/d8d4b15b-0a338acd-c5176214-7794d508-468e6e07.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2173-11-07_18-44-55_s54972841/report.txt"
+      },
+      {
+        "study_id": "56855230",
+        "study_datetime": "2173-11-16 07:24:31",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "2aadeb6e-8b5af4b3-f3ddd4f9-8d552d40-d8a5e821",
+            "view_position": "AP",
+            "path": "/data/patient/2173-11-16_07-24-31_s56855230/2aadeb6e-8b5af4b3-f3ddd4f9-8d552d40-d8a5e821.jpg"
+          },
+          {
+            "dicom_id": "a6f60ee9-d5a2f15e-67cea2a3-caf01923-79f4b71f",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2173-11-16_07-24-31_s56855230/a6f60ee9-d5a2f15e-67cea2a3-caf01923-79f4b71f.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2173-11-16_07-24-31_s56855230/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 11879886\nTarget Study ID: 53021526\nTarget Study Date: 2174-02-05 21:02:33\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: PA, LATERAL\n\nThis patient has 5 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: ___-year-old female with shortness of breath and history of aortic\n stenosis.  Evaluate for evidence of cardiopulmonary process.\n\nTECHNIQUE: PA and lateral chest radiograph.\n\nCOMPARISON: ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

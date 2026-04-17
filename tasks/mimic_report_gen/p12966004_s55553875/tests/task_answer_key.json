@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12966004_55553875",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nEndotracheal tube terminates 2.8 cm above the carina.  Nasogastric\n tube terminates within the body of the stomach.  Right internal jugular\n catheter ends in the lower SVC.  Previously described right upper lung opacity\n is less conspicuous than on the prior.  Bibasilar opacities are larger and\n could reflect atelectasis or an aspiration event.  Worsening infection cannot\n be excluded.  Small left pleural effusion is likely also present.  The heart\n is normal in size, normal cardiomediastinal silhouette.\n\nIMPRESSION:\nSlight improvement of right upper lung opacity with increased\n bibasilar opacities possibly reflecting atelectasis or aspiration though\n worsening infection cannot be fully excluded.",
+    "expected_findings": "Endotracheal tube terminates 2.8 cm above the carina.  Nasogastric\n tube terminates within the body of the stomach.  Right internal jugular\n catheter ends in the lower SVC.  Previously described right upper lung opacity\n is less conspicuous than on the prior.  Bibasilar opacities are larger and\n could reflect atelectasis or an aspiration event.  Worsening infection cannot\n be excluded.  Small left pleural effusion is likely also present.  The heart\n is normal in size, normal cardiomediastinal silhouette.",
+    "expected_impression": "Slight improvement of right upper lung opacity with increased\n bibasilar opacities possibly reflecting atelectasis or aspiration though\n worsening infection cannot be fully excluded.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  PE, status post PEA arrest, hypothermia protocol.  Assess for\n edema or infection.\n \n TECHNIQUE:  AP upright portable radiograph of the chest.\n \n COMPARISON:  Chest radiograph from ___.\n \n FINDINGS:  Endotracheal tube terminates 2.8 cm above the carina.  Nasogastric\n tube terminates within the body of the stomach.  Right internal jugular\n catheter ends in the lower SVC.  Previously described right upper lung opacity\n is less conspicuous than on the prior.  Bibasilar opacities are larger and\n could reflect atelectasis or an aspiration event.  Worsening infection cannot\n be excluded.  Small left pleural effusion is likely also present.  The heart\n is normal in size, normal cardiomediastinal silhouette.\n \n IMPRESSION:  Slight improvement of right upper lung opacity with increased\n bibasilar opacities possibly reflecting atelectasis or aspiration though\n worsening infection cannot be fully excluded.\n",
+    "subject_id": "12966004",
+    "target_study_id": "55553875",
+    "num_prior_studies": 2
+  }
+]

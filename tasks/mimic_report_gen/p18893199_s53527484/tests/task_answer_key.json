@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_18893199_53527484",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nSingle lead left-sided pacemaker is stable in position.  Cardiac silhouette\n size is top-normal.  Mediastinal contours are stable and unremarkable.  No\n focal consolidation is seen.  There is no pleural effusion or pneumothorax. \n Degenerative changes are partially imaged along the spine.\n\nIMPRESSION:\nNo acute cardiopulmonary process.",
+    "expected_findings": "Single lead left-sided pacemaker is stable in position.  Cardiac silhouette\n size is top-normal.  Mediastinal contours are stable and unremarkable.  No\n focal consolidation is seen.  There is no pleural effusion or pneumothorax. \n Degenerative changes are partially imaged along the spine.",
+    "expected_impression": "No acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:\n Chest:  Frontal and lateral views\n \n INDICATION:  History: ___M with anterior chest pain x3 hours  // Eval for acute\n process\n \n TECHNIQUE:  Chest:  Frontal and Lateral\n \n COMPARISON:  ___\n \n FINDINGS: \n \n Single lead left-sided pacemaker is stable in position.  Cardiac silhouette\n size is top-normal.  Mediastinal contours are stable and unremarkable.  No\n focal consolidation is seen.  There is no pleural effusion or pneumothorax. \n Degenerative changes are partially imaged along the spine.\n \n IMPRESSION: \n \n No acute cardiopulmonary process.\n",
+    "subject_id": "18893199",
+    "target_study_id": "53527484",
+    "num_prior_studies": 4
+  }
+]

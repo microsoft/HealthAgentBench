@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_18828251_56693397",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe patient is status post median sternotomy and CABG.  The heart remains\n moderately enlarged.  Aortic knob calcifications are again seen.  Low lung\n volumes are present with crowding of the bronchovascular structures.  There is\n no overt pulmonary edema, with a small left pleural effusion likely present. \n Retrocardiac opacity may reflect atelectasis.  Infection cannot be excluded. \n The right costophrenic angle is excluded, but no large right pleural effusion\n is demonstrated.  There is no pneumothorax.\n\nIMPRESSION:\nLeft basilar opacity may reflect atelectasis but infection is not excluded. \n Small left pleural effusion.  Low lung volumes.",
+    "expected_findings": "The patient is status post median sternotomy and CABG.  The heart remains\n moderately enlarged.  Aortic knob calcifications are again seen.  Low lung\n volumes are present with crowding of the bronchovascular structures.  There is\n no overt pulmonary edema, with a small left pleural effusion likely present. \n Retrocardiac opacity may reflect atelectasis.  Infection cannot be excluded. \n The right costophrenic angle is excluded, but no large right pleural effusion\n is demonstrated.  There is no pneumothorax.",
+    "expected_impression": "Left basilar opacity may reflect atelectasis but infection is not excluded. \n Small left pleural effusion.  Low lung volumes.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n HISTORY:  Hypotensive.\n \n TECHNIQUE:  Semi-upright AP view of the chest.\n \n COMPARISON:  ___.\n \n FINDINGS:\n \n The patient is status post median sternotomy and CABG.  The heart remains\n moderately enlarged.  Aortic knob calcifications are again seen.  Low lung\n volumes are present with crowding of the bronchovascular structures.  There is\n no overt pulmonary edema, with a small left pleural effusion likely present. \n Retrocardiac opacity may reflect atelectasis.  Infection cannot be excluded. \n The right costophrenic angle is excluded, but no large right pleural effusion\n is demonstrated.  There is no pneumothorax.\n \n IMPRESSION:\n \n Left basilar opacity may reflect atelectasis but infection is not excluded. \n Small left pleural effusion.  Low lung volumes.\n",
+    "subject_id": "18828251",
+    "target_study_id": "56693397",
+    "num_prior_studies": 6
+  }
+]

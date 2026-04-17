@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17327592_59568059",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nPA and lateral views of the chest provided.   Midline sternotomy wires noted. \n Stable elevation of the right hemidiaphragm is again seen with chronic right\n basal atelectasis. Subtle retrocardiac linear density may represent focal\n areas of scarring as this appears unchanged from prior exam. No convincing\n signs of pneumonia or CHF. No large effusion or pneumothorax is seen.\n Cardiomediastinal silhouette is stable. Bony structures are intact. No free\n air below the right hemidiaphragm.\n\nIMPRESSION:\nNo acute findings.",
+    "expected_findings": "PA and lateral views of the chest provided.   Midline sternotomy wires noted. \n Stable elevation of the right hemidiaphragm is again seen with chronic right\n basal atelectasis. Subtle retrocardiac linear density may represent focal\n areas of scarring as this appears unchanged from prior exam. No convincing\n signs of pneumonia or CHF. No large effusion or pneumothorax is seen.\n Cardiomediastinal silhouette is stable. Bony structures are intact. No free\n air below the right hemidiaphragm.",
+    "expected_impression": "No acute findings.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PA AND LAT)\n \n INDICATION:  ___F with chest pain.\n \n COMPARISON:  ___\n \n FINDINGS: \n \n PA and lateral views of the chest provided.   Midline sternotomy wires noted. \n Stable elevation of the right hemidiaphragm is again seen with chronic right\n basal atelectasis. Subtle retrocardiac linear density may represent focal\n areas of scarring as this appears unchanged from prior exam. No convincing\n signs of pneumonia or CHF. No large effusion or pneumothorax is seen.\n Cardiomediastinal silhouette is stable. Bony structures are intact. No free\n air below the right hemidiaphragm.\n \n IMPRESSION: \n \n No acute findings.\n",
+    "subject_id": "17327592",
+    "target_study_id": "59568059",
+    "num_prior_studies": 3
+  }
+]

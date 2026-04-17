@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17962324_50545797",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lungs are hyperinflated but clear of focal consolidation. There is\n relative increased lucency in the right upper lung which is similar compared\n to prior. Elsewhere, interstitial markings are somewhat more prominent when\n compared to prior suggesting pulmonary vascular congestion. There is no focal\n consolidation suspicious for pneumonia nor pleural effusion. Cardiac\n silhouette is moderately enlarged. Median sternotomy wires and mediastinal\n clips are noted. No acute osseous abnormalities.\n\nIMPRESSION:\nPulmonary vascular congestion without overt edema or focal consolidation.",
+    "expected_findings": "The lungs are hyperinflated but clear of focal consolidation. There is\n relative increased lucency in the right upper lung which is similar compared\n to prior. Elsewhere, interstitial markings are somewhat more prominent when\n compared to prior suggesting pulmonary vascular congestion. There is no focal\n consolidation suspicious for pneumonia nor pleural effusion. Cardiac\n silhouette is moderately enlarged. Median sternotomy wires and mediastinal\n clips are noted. No acute osseous abnormalities.",
+    "expected_impression": "Pulmonary vascular congestion without overt edema or focal consolidation.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___M with h/o cad w/ dyspnea and hypoxia  // chf?\n \n TECHNIQUE:  PA and lateral views of the chest.\n \n COMPARISON:  ___.\n \n FINDINGS: \n \n The lungs are hyperinflated but clear of focal consolidation. There is\n relative increased lucency in the right upper lung which is similar compared\n to prior. Elsewhere, interstitial markings are somewhat more prominent when\n compared to prior suggesting pulmonary vascular congestion. There is no focal\n consolidation suspicious for pneumonia nor pleural effusion. Cardiac\n silhouette is moderately enlarged. Median sternotomy wires and mediastinal\n clips are noted. No acute osseous abnormalities.\n \n IMPRESSION: \n \n Pulmonary vascular congestion without overt edema or focal consolidation.\n",
+    "subject_id": "17962324",
+    "target_study_id": "50545797",
+    "num_prior_studies": 4
+  }
+]

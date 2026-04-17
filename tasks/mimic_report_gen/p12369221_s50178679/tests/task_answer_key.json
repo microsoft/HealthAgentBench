@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12369221_50178679",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nSingle portable view of the chest is compared to previous exam from\n ___.\n \n As on prior, low lung volumes are seen.  Within this limitation, the lungs are\n grossly clear.  Linear opacity at the right lung base is suggestive of\n subsegmental atelectasis.  Cardiomediastinal silhouette is stable.  Dual-lead\n pacing device is again seen.  Degenerative changes seen at the right\n glenohumeral joint.  Surgical clips seen in the right upper quadrant.\n\nIMPRESSION:\nNo acute cardiopulmonary process based on this limited, portable\n examination.",
+    "expected_findings": "Single portable view of the chest is compared to previous exam from\n ___.\n \n As on prior, low lung volumes are seen.  Within this limitation, the lungs are\n grossly clear.  Linear opacity at the right lung base is suggestive of\n subsegmental atelectasis.  Cardiomediastinal silhouette is stable.  Dual-lead\n pacing device is again seen.  Degenerative changes seen at the right\n glenohumeral joint.  Surgical clips seen in the right upper quadrant.",
+    "expected_impression": "No acute cardiopulmonary process based on this limited, portable\n examination.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n PORTABLE CHEST, ___.\n \n HISTORY:  ___-year-old female with fever and cough, change in mental status.\n \n FINDINGS:  Single portable view of the chest is compared to previous exam from\n ___.\n \n As on prior, low lung volumes are seen.  Within this limitation, the lungs are\n grossly clear.  Linear opacity at the right lung base is suggestive of\n subsegmental atelectasis.  Cardiomediastinal silhouette is stable.  Dual-lead\n pacing device is again seen.  Degenerative changes seen at the right\n glenohumeral joint.  Surgical clips seen in the right upper quadrant.\n \n IMPRESSION:  No acute cardiopulmonary process based on this limited, portable\n examination.\n",
+    "subject_id": "12369221",
+    "target_study_id": "50178679",
+    "num_prior_studies": 1
+  }
+]

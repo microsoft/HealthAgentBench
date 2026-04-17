@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16116557_56362705",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lungs are clear, the cardiomediastinal silhouette and hila are\n normal.  There is no pleural effusion and no pneumothorax.  A replaced mitral\n valve is seen.\n\nIMPRESSION:\nNo acute cardiothoracic process.",
+    "expected_findings": "The lungs are clear, the cardiomediastinal silhouette and hila are\n normal.  There is no pleural effusion and no pneumothorax.  A replaced mitral\n valve is seen.",
+    "expected_impression": "No acute cardiothoracic process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old with HIV and fever.\n \n TECHNIQUE:  Frontal and lateral radiographs of the chest were obtained.\n \n COMPARISON:  Chest radiograph from ___.\n \n FINDINGS:  The lungs are clear, the cardiomediastinal silhouette and hila are\n normal.  There is no pleural effusion and no pneumothorax.  A replaced mitral\n valve is seen.\n \n IMPRESSION:  No acute cardiothoracic process.\n",
+    "subject_id": "16116557",
+    "target_study_id": "56362705",
+    "num_prior_studies": 1
+  }
+]

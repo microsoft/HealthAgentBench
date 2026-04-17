@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11413236_51943964",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nRight chest wall Port-A-Cath terminates in the upper SVC.  Postoperative\n mediastinum, including calcified left suprahilar lymph node, and cardiomegaly\n are unchanged from ___.  Bibasilar atelectasis is mild.\n\nIMPRESSION:\nNo evidence of pneumonia or pulmonary edema.",
+    "expected_findings": "Right chest wall Port-A-Cath terminates in the upper SVC.  Postoperative\n mediastinum, including calcified left suprahilar lymph node, and cardiomegaly\n are unchanged from ___.  Bibasilar atelectasis is mild.",
+    "expected_impression": "No evidence of pneumonia or pulmonary edema.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___F with CHF, h./o mast cell degranulation, sudden onset dyspnea,\n // please eval pna, pulm edema\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  Chest radiograph from ___.\n \n FINDINGS: \n \n Right chest wall Port-A-Cath terminates in the upper SVC.  Postoperative\n mediastinum, including calcified left suprahilar lymph node, and cardiomegaly\n are unchanged from ___.  Bibasilar atelectasis is mild.\n \n IMPRESSION: \n \n No evidence of pneumonia or pulmonary edema.\n",
+    "subject_id": "11413236",
+    "target_study_id": "51943964",
+    "num_prior_studies": 31
+  }
+]

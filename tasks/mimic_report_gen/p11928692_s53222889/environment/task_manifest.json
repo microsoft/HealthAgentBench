@@ -1,0 +1,73 @@
+{
+  "subject_id": "11928692",
+  "target_study_id": "53222889",
+  "studies": [
+    {
+      "folder": "2172-07-31_01-24-45_s54164323",
+      "study_id": "54164323",
+      "study_datetime": "2172-07-31 01:24:45",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "129d1cfc-6a372c68-c84b5eaf-53903d40-670d6d9c",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "3606dd6e-1d4e216a-0251de47-cb1445d6-fcb76ed3",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "405e6cc1-70b9d9b3-1c752677-010c4ee9-b217b783",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "5475bdcc-37f6b853-142a043b-3e6572f9-5b71d475",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2173-02-27_18-49-39_s55947318",
+      "study_id": "55947318",
+      "study_datetime": "2173-02-27 18:49:39",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "2c5c8a39-6ae3dd9e-2b4d5279-6bb07505-1b57f5ab",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "df66e950-78bfa09d-ccc14e43-193ef713-3c2bd5a4",
+          "view_position": "LATERAL"
+        }
+      ]
+    },
+    {
+      "folder": "2175-03-02_13-35-56_s53222889",
+      "study_id": "53222889",
+      "study_datetime": "2175-03-02 13:35:56",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": true,
+      "views": [
+        {
+          "dicom_id": "21d9c2b2-5e94a363-aa3b9d61-a6858503-795b84ab",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "2ea8f7b3-8e1fd4ff-87a29ebc-702190c4-45123977",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "6bd4c046-822ab57b-56c2ade0-5990ad2d-449af809",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "d1b9813f-08d920a6-85c9bb6f-c516c1ee-a56f9d38",
+          "view_position": "AP"
+        }
+      ]
+    }
+  ]
+}

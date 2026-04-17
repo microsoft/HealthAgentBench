@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13352405_53780576",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nChronic left-sided rib fractures are again noted.  The cardiomediastinal and\n hilar contours are unchanged from ___. Pleural thickening and blunting at the\n right costophrenic angle is again demonstrated, and is stable from the prior\n exam in ___ and likely represents pleural scarring and a small pleural\n effusion.  No focal consolidation or pneumothorax is identified.\n\nIMPRESSION:\nMultiple chronic appearing left-sided rib fractures.  No pneumothorax.\n Blunting of the costophrenic angle on the right likely represents pleural\n scarring and a small effusion, not significantly changed from ___.",
+    "expected_findings": "Chronic left-sided rib fractures are again noted.  The cardiomediastinal and\n hilar contours are unchanged from ___. Pleural thickening and blunting at the\n right costophrenic angle is again demonstrated, and is stable from the prior\n exam in ___ and likely represents pleural scarring and a small pleural\n effusion.  No focal consolidation or pneumothorax is identified.",
+    "expected_impression": "Multiple chronic appearing left-sided rib fractures.  No pneumothorax.\n Blunting of the costophrenic angle on the right likely represents pleural\n scarring and a small effusion, not significantly changed from ___.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PA AND LAT)\n \n INDICATION:  History: ___M with pain in chest few days ago  // chest pain\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  Chest radiograph on ___\n \n FINDINGS: \n \n Chronic left-sided rib fractures are again noted.  The cardiomediastinal and\n hilar contours are unchanged from ___. Pleural thickening and blunting at the\n right costophrenic angle is again demonstrated, and is stable from the prior\n exam in ___ and likely represents pleural scarring and a small pleural\n effusion.  No focal consolidation or pneumothorax is identified.\n \n IMPRESSION: \n \n Multiple chronic appearing left-sided rib fractures.  No pneumothorax.\n Blunting of the costophrenic angle on the right likely represents pleural\n scarring and a small effusion, not significantly changed from ___.\n",
+    "subject_id": "13352405",
+    "target_study_id": "53780576",
+    "num_prior_studies": 23
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_18570152_52210901",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nSingle lead pacemaker in situ with the lead tip in the right ventricle.  No\n cardiomegaly.  No features of cardiac decompensation.  Prominent pulmonary\n arteries suggesting pulmonary arterial hypertension.  No pleural effusion. \n Consolidation in the left lower lobe.\n\nIMPRESSION:\nSuspected left lower lobe pneumonia.",
+    "expected_findings": "Single lead pacemaker in situ with the lead tip in the right ventricle.  No\n cardiomegaly.  No features of cardiac decompensation.  Prominent pulmonary\n arteries suggesting pulmonary arterial hypertension.  No pleural effusion. \n Consolidation in the left lower lobe.",
+    "expected_impression": "Suspected left lower lobe pneumonia.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___ year old man with cough and fever and CLL  // r/o pneumonia\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  ___\n \n FINDINGS: \n \n Single lead pacemaker in situ with the lead tip in the right ventricle.  No\n cardiomegaly.  No features of cardiac decompensation.  Prominent pulmonary\n arteries suggesting pulmonary arterial hypertension.  No pleural effusion. \n Consolidation in the left lower lobe.\n \n IMPRESSION: \n \n Suspected left lower lobe pneumonia.\n \n NOTIFICATION:   The findings were discussed with ___, M.D. by ___\n ___, M.D. on the telephone on ___ at 3:36 PM, 10 minutes after\n discovery of the findings.\n",
+    "subject_id": "18570152",
+    "target_study_id": "52210901",
+    "num_prior_studies": 4
+  }
+]

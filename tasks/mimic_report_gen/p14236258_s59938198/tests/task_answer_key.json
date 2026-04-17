@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_14236258_59938198",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nAgain seen is a dual lumen central venous catheter which terminates in the\n lower SVC coursing through a brachiocephalic/SVC stent.  No definite\n consolidation is identified.  There is mild pulmonary vascular congestion. \n Cardiac silhouette is top normal.  There are likely small bilateral pleural\n effusions.  No pneumothorax is present.  Mediastinal contour with rightward\n deviation of the trachea secondary to a thyroid goiter is again noted.\n\nIMPRESSION:\nAs above.",
+    "expected_findings": "Again seen is a dual lumen central venous catheter which terminates in the\n lower SVC coursing through a brachiocephalic/SVC stent.  No definite\n consolidation is identified.  There is mild pulmonary vascular congestion. \n Cardiac silhouette is top normal.  There are likely small bilateral pleural\n effusions.  No pneumothorax is present.  Mediastinal contour with rightward\n deviation of the trachea secondary to a thyroid goiter is again noted.",
+    "expected_impression": "As above.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  History: ___M with hypotension, s/p fall  // Eval for acute\n process\n \n TECHNIQUE:  AP and lateral views of the chest.\n \n COMPARISON:  Chest x-ray from ___.\n \n FINDINGS: \n \n Again seen is a dual lumen central venous catheter which terminates in the\n lower SVC coursing through a brachiocephalic/SVC stent.  No definite\n consolidation is identified.  There is mild pulmonary vascular congestion. \n Cardiac silhouette is top normal.  There are likely small bilateral pleural\n effusions.  No pneumothorax is present.  Mediastinal contour with rightward\n deviation of the trachea secondary to a thyroid goiter is again noted.\n \n IMPRESSION: \n \n As above.\n",
+    "subject_id": "14236258",
+    "target_study_id": "59938198",
+    "num_prior_studies": 14
+  }
+]

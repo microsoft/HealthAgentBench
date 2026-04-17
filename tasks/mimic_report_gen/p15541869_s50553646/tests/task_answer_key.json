@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15541869_50553646",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nPortable AP semi-upright view of the chest was provided.  Patient\n is quite rotated to the left which limits the evaluation.  The heart is\n enlarged which could in part reflect leftward rotation.  There is a left\n pleural effusion which is small in size.  There is a small area of\n consolidation in the left upper lobe which could represent a small focus of\n pneumonia.  Mild pulmonary edema is present.  Atherosclerotic calcifications\n at the aortic knob noted.  Bony structures are intact.\n\nIMPRESSION:\nPulmonary edema, left upper lobe focal consolidation could\n represent pneumonia.  Small left pleural effusion.  Cardiomegaly.",
+    "expected_findings": "Portable AP semi-upright view of the chest was provided.  Patient\n is quite rotated to the left which limits the evaluation.  The heart is\n enlarged which could in part reflect leftward rotation.  There is a left\n pleural effusion which is small in size.  There is a small area of\n consolidation in the left upper lobe which could represent a small focus of\n pneumonia.  Mild pulmonary edema is present.  Atherosclerotic calcifications\n at the aortic knob noted.  Bony structures are intact.",
+    "expected_impression": "Pulmonary edema, left upper lobe focal consolidation could\n represent pneumonia.  Small left pleural effusion.  Cardiomegaly.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n CHEST RADIOGRAPH PERFORMED ON ___\n \n COMPARISON:  CTA chest from ___ as well as a chest radiograph from\n ___.\n \n CLINICAL HISTORY:  Sepsis unknown source, abdominal pain and altered mental\n status.\n \n FINDINGS:  Portable AP semi-upright view of the chest was provided.  Patient\n is quite rotated to the left which limits the evaluation.  The heart is\n enlarged which could in part reflect leftward rotation.  There is a left\n pleural effusion which is small in size.  There is a small area of\n consolidation in the left upper lobe which could represent a small focus of\n pneumonia.  Mild pulmonary edema is present.  Atherosclerotic calcifications\n at the aortic knob noted.  Bony structures are intact.\n \n IMPRESSION:  Pulmonary edema, left upper lobe focal consolidation could\n represent pneumonia.  Small left pleural effusion.  Cardiomegaly.\n",
+    "subject_id": "15541869",
+    "target_study_id": "50553646",
+    "num_prior_studies": 2
+  }
+]

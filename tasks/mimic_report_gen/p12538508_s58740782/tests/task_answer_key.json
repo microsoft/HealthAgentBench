@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12538508_58740782",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nSingle portable AP radiograph was provided.\n \n There is increased opacity at the right base which may be due to infectious\n process or aspiration. Rounded density projecting over the right ninth\n posterior rib is likely a nipple shadow and can be followed on subsequent\n radiographs. A chronic moderate-sized left pleural effusion is similar in\n appearance to the prior study.  Overlying opacities are likely atelectasis.\n Cardiomediastinal silhouette is unchanged.  Median sternotomy wires are\n intact.\n\nIMPRESSION:\nNew opacity at the right base may represent infection or\n aspiration. Stable moderate left pleural effusion with overlying atelectasis.",
+    "expected_findings": "Single portable AP radiograph was provided.\n \n There is increased opacity at the right base which may be due to infectious\n process or aspiration. Rounded density projecting over the right ninth\n posterior rib is likely a nipple shadow and can be followed on subsequent\n radiographs. A chronic moderate-sized left pleural effusion is similar in\n appearance to the prior study.  Overlying opacities are likely atelectasis.\n Cardiomediastinal silhouette is unchanged.  Median sternotomy wires are\n intact.",
+    "expected_impression": "New opacity at the right base may represent infection or\n aspiration. Stable moderate left pleural effusion with overlying atelectasis.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old man with cough, dyspnea, question pneumonia.\n \n COMPARISONS:  Portable AP radiograph from ___.\n \n FINDINGS:  Single portable AP radiograph was provided.\n \n There is increased opacity at the right base which may be due to infectious\n process or aspiration. Rounded density projecting over the right ninth\n posterior rib is likely a nipple shadow and can be followed on subsequent\n radiographs. A chronic moderate-sized left pleural effusion is similar in\n appearance to the prior study.  Overlying opacities are likely atelectasis.\n Cardiomediastinal silhouette is unchanged.  Median sternotomy wires are\n intact.\n \n IMPRESSION:  New opacity at the right base may represent infection or\n aspiration. Stable moderate left pleural effusion with overlying atelectasis.\n",
+    "subject_id": "12538508",
+    "target_study_id": "58740782",
+    "num_prior_studies": 2
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15659181_51363438",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lungs are clear without focal consolidation, pleural effusion or\n pneumothorax.  There is no pulmonary edema.  The heart is normal in size, and\n the mediastinal contours are normal.\n\nIMPRESSION:\nNo acute cardiopulmonary process.",
+    "expected_findings": "The lungs are clear without focal consolidation, pleural effusion or\n pneumothorax.  There is no pulmonary edema.  The heart is normal in size, and\n the mediastinal contours are normal.",
+    "expected_impression": "No acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old male with cough.  Please evaluate.\n \n TECHNIQUE:  PA and lateral chest radiographs were obtained.\n \n COMPARISON:  Chest radiographs from ___ and ___.\n \n FINDINGS: \n \n The lungs are clear without focal consolidation, pleural effusion or\n pneumothorax.  There is no pulmonary edema.  The heart is normal in size, and\n the mediastinal contours are normal.\n \n IMPRESSION: \n \n No acute cardiopulmonary process.\n",
+    "subject_id": "15659181",
+    "target_study_id": "51363438",
+    "num_prior_studies": 10
+  }
+]

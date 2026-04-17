@@ -1,0 +1,96 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17398573_51522722",
+    "subject_id": "17398573",
+    "target_study": {
+      "study_id": "51522722",
+      "study_datetime": "2187-11-21 01:21:25",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "4a102c0d-0f7d000d-98e8aac0-7509e4c8-b9d60545",
+          "view_position": "PA",
+          "path": "/data/patient/2187-11-21_01-21-25_s51522722/4a102c0d-0f7d000d-98e8aac0-7509e4c8-b9d60545.jpg"
+        },
+        {
+          "dicom_id": "f9ce0a6c-67455c98-67d8a2c9-c6e73fd9-9753b4aa",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2187-11-21_01-21-25_s51522722/f9ce0a6c-67455c98-67d8a2c9-c6e73fd9-9753b4aa.jpg"
+        }
+      ],
+      "given_sections": {
+        "EXAMINATION": "Chest:  Frontal and lateral views",
+        "INDICATION": "History: ___F with leukocytosis  // eval for pna",
+        "TECHNIQUE": "Chest:  Frontal and Lateral",
+        "COMPARISON": "Chest radiograph on ___"
+      }
+    },
+    "history": [
+      {
+        "study_id": "50918803",
+        "study_datetime": "2183-01-12 11:02:44",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "31c1ff27-efe0b34c-f8b81088-73df6e0c-836198d5",
+            "view_position": "LL",
+            "path": "/data/patient/2183-01-12_11-02-44_s50918803/31c1ff27-efe0b34c-f8b81088-73df6e0c-836198d5.jpg"
+          },
+          {
+            "dicom_id": "809123a3-3a8ec764-0d6f069f-d1b0935b-161bfff4",
+            "view_position": "PA",
+            "path": "/data/patient/2183-01-12_11-02-44_s50918803/809123a3-3a8ec764-0d6f069f-d1b0935b-161bfff4.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2183-01-12_11-02-44_s50918803/report.txt"
+      },
+      {
+        "study_id": "53325824",
+        "study_datetime": "2183-02-03 19:33:48",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "06381bf5-e227679d-9f9965ef-dbbb229c-281230a2",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2183-02-03_19-33-48_s53325824/06381bf5-e227679d-9f9965ef-dbbb229c-281230a2.jpg"
+          },
+          {
+            "dicom_id": "6a31f7f3-592b6144-a0b7e38c-d11761b4-bd2bf9e3",
+            "view_position": "PA",
+            "path": "/data/patient/2183-02-03_19-33-48_s53325824/6a31f7f3-592b6144-a0b7e38c-d11761b4-bd2bf9e3.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2183-02-03_19-33-48_s53325824/report.txt"
+      },
+      {
+        "study_id": "51909919",
+        "study_datetime": "2187-05-23 18:46:18",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "cc9633ee-0f1c87c6-d3eab33a-ac1eccd5-1bd7608f",
+            "view_position": "AP",
+            "path": "/data/patient/2187-05-23_18-46-18_s51909919/cc9633ee-0f1c87c6-d3eab33a-ac1eccd5-1bd7608f.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2187-05-23_18-46-18_s51909919/report.txt"
+      },
+      {
+        "study_id": "52640725",
+        "study_datetime": "2187-05-23 21:15:28",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "6722c21a-9a65dc03-dbc8707e-83f326f7-09e1768c",
+            "view_position": "AP",
+            "path": "/data/patient/2187-05-23_21-15-28_s52640725/6722c21a-9a65dc03-dbc8707e-83f326f7-09e1768c.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2187-05-23_21-15-28_s52640725/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 17398573\nTarget Study ID: 51522722\nTarget Study Date: 2187-11-21 01:21:25\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: PA, LATERAL\n\nThis patient has 4 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nEXAMINATION: Chest:  Frontal and lateral views\n\nINDICATION: History: ___F with leukocytosis  // eval for pna\n\nTECHNIQUE: Chest:  Frontal and Lateral\n\nCOMPARISON: Chest radiograph on ___\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

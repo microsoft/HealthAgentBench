@@ -1,0 +1,105 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17763117_54066754",
+    "subject_id": "17763117",
+    "target_study": {
+      "study_id": "54066754",
+      "study_datetime": "2197-04-06 05:51:20",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "2562051f-7aa8f63a-d00bafea-ddf082c6-838ba1fd",
+          "view_position": "AP",
+          "path": "/data/patient/2197-04-06_05-51-20_s54066754/2562051f-7aa8f63a-d00bafea-ddf082c6-838ba1fd.jpg"
+        },
+        {
+          "dicom_id": "42721071-6d96b2ed-f083c7d3-5f14b0d5-a7845fc1",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2197-04-06_05-51-20_s54066754/42721071-6d96b2ed-f083c7d3-5f14b0d5-a7845fc1.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "Cough.  Right back pain.",
+        "TECHNIQUE": "Two views of the chest.",
+        "COMPARISON": "Multiple prior examinations, most recent radiographs dated\n ___ in correlation with CT of the chest dated ___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "53177649",
+        "study_datetime": "2197-02-23 13:49:40",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "067df4f2-ba0ae770-919c7d21-9186536c-9c0f8174",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2197-02-23_13-49-40_s53177649/067df4f2-ba0ae770-919c7d21-9186536c-9c0f8174.jpg"
+          },
+          {
+            "dicom_id": "9b350f75-7f987b20-092a7bbf-84be3535-8bc72c1f",
+            "view_position": "AP",
+            "path": "/data/patient/2197-02-23_13-49-40_s53177649/9b350f75-7f987b20-092a7bbf-84be3535-8bc72c1f.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-02-23_13-49-40_s53177649/report.txt"
+      },
+      {
+        "study_id": "54899257",
+        "study_datetime": "2197-03-04 14:25:20",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "0c0e3903-2f744a5c-3750bad4-6d772736-6bf1c8a2",
+            "view_position": "LL",
+            "path": "/data/patient/2197-03-04_14-25-20_s54899257/0c0e3903-2f744a5c-3750bad4-6d772736-6bf1c8a2.jpg"
+          },
+          {
+            "dicom_id": "3e179ec6-2dd8aea9-b1ef694b-eafe6ce6-0a175813",
+            "view_position": "",
+            "path": "/data/patient/2197-03-04_14-25-20_s54899257/3e179ec6-2dd8aea9-b1ef694b-eafe6ce6-0a175813.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-03-04_14-25-20_s54899257/report.txt"
+      },
+      {
+        "study_id": "59357257",
+        "study_datetime": "2197-03-07 09:10:28",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "0cfc6f6a-9b1d6469-767358c3-8cba8b86-26a9c846",
+            "view_position": "LL",
+            "path": "/data/patient/2197-03-07_09-10-28_s59357257/0cfc6f6a-9b1d6469-767358c3-8cba8b86-26a9c846.jpg"
+          },
+          {
+            "dicom_id": "937a086b-d6d3022b-88e3053e-885699b2-46431cc5",
+            "view_position": "PA",
+            "path": "/data/patient/2197-03-07_09-10-28_s59357257/937a086b-d6d3022b-88e3053e-885699b2-46431cc5.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-03-07_09-10-28_s59357257/report.txt"
+      },
+      {
+        "study_id": "53418217",
+        "study_datetime": "2197-04-02 01:33:18",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "4c813a56-c3955f56-d8575305-9347eb08-6c581dc1",
+            "view_position": "AP",
+            "path": "/data/patient/2197-04-02_01-33-18_s53418217/4c813a56-c3955f56-d8575305-9347eb08-6c581dc1.jpg"
+          },
+          {
+            "dicom_id": "acddfc4f-6bf56983-900fa34f-f650d62f-a30c95af",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2197-04-02_01-33-18_s53418217/acddfc4f-6bf56983-900fa34f-f650d62f-a30c95af.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-04-02_01-33-18_s53418217/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 17763117\nTarget Study ID: 54066754\nTarget Study Date: 2197-04-06 05:51:20\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: AP, LATERAL\n\nThis patient has 4 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: Cough.  Right back pain.\n\nTECHNIQUE: Two views of the chest.\n\nCOMPARISON: Multiple prior examinations, most recent radiographs dated\n ___ in correlation with CT of the chest dated ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

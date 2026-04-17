@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16957952_59684377",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe heart remains enlarged.  The aorta is markedly tortuous.  Increased\n interstitial markings are seen throughout the lungs, similar to prior, and\n most compatible with edema.  No pneumothorax or consolidation or pleural\n effusion.  There is diffuse demineralization.  Incidental note is made of a\n right cervical rib.  Sternotomy sutures project over the mediastinum.  EKG\n leads overlie the chest wall.\n\nIMPRESSION:\n1. Mild pulmonary edema.\n 2. No pneumonia.",
+    "expected_findings": "The heart remains enlarged.  The aorta is markedly tortuous.  Increased\n interstitial markings are seen throughout the lungs, similar to prior, and\n most compatible with edema.  No pneumothorax or consolidation or pleural\n effusion.  There is diffuse demineralization.  Incidental note is made of a\n right cervical rib.  Sternotomy sutures project over the mediastinum.  EKG\n leads overlie the chest wall.",
+    "expected_impression": "1. Mild pulmonary edema.\n 2. No pneumonia.",
+    "full_ground_truth_report": " WET READ: ___ ___ ___ 4:43 AM\n  \n  1. Mild pulmonary edema.\n  2. No pneumonia.\n  \n ______________________________________________________________________________\n                                 FINAL REPORT\n INDICATION:  History: ___F with fatigue and weakness  // r/o pnuemonia\n \n TECHNIQUE:  Portable semi-upright chest radiograph.\n \n COMPARISON:  Chest radiographs dated ___ through ___.\n \n FINDINGS: \n \n The heart remains enlarged.  The aorta is markedly tortuous.  Increased\n interstitial markings are seen throughout the lungs, similar to prior, and\n most compatible with edema.  No pneumothorax or consolidation or pleural\n effusion.  There is diffuse demineralization.  Incidental note is made of a\n right cervical rib.  Sternotomy sutures project over the mediastinum.  EKG\n leads overlie the chest wall.\n \n IMPRESSION:\n \n \n 1. Mild pulmonary edema.\n 2. No pneumonia.\n",
+    "subject_id": "16957952",
+    "target_study_id": "59684377",
+    "num_prior_studies": 17
+  }
+]

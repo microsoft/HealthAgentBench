@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13475033_59862902",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nBilateral interstitial opacities likely represent interstitial edema.  There\n is no new focal consolidation, pleural effusion, or pneumothorax. \n Cardiomegaly persists.  The mediastinal and hilar contours are unchanged. \n Leftward scoliosis of the thoracic size stable.\n\nIMPRESSION:\nCardiomegaly and interstitial opacities, likely due to interstitial edema.  If\n the diagnosis is in doubt clinically, followup radiographs after diuresis may\n be helpful to exclude the possibility of an atypical interstitial pneumonia.",
+    "expected_findings": "Bilateral interstitial opacities likely represent interstitial edema.  There\n is no new focal consolidation, pleural effusion, or pneumothorax. \n Cardiomegaly persists.  The mediastinal and hilar contours are unchanged. \n Leftward scoliosis of the thoracic size stable.",
+    "expected_impression": "Cardiomegaly and interstitial opacities, likely due to interstitial edema.  If\n the diagnosis is in doubt clinically, followup radiographs after diuresis may\n be helpful to exclude the possibility of an atypical interstitial pneumonia.",
+    "full_ground_truth_report": " WET READ: ___ ___ ___ 9:54 AM\n  Mild interstitial edema and cardiomegaly. No new focal consolidation is\n  identified.\n WET READ VERSION #1 ___ ___ ___ 7:21 AM\n  Stable appearance of chronic interstitial lung markings and cardiomegaly. No\n  new focal consolidation is identified.\n ______________________________________________________________________________\n                                 FINAL REPORT\n EXAMINATION:  Chest radiograph\n \n INDICATION:  History: ___M with chills  // Eval for PNA\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  Chest radiograph from ___\n \n FINDINGS: \n \n Bilateral interstitial opacities likely represent interstitial edema.  There\n is no new focal consolidation, pleural effusion, or pneumothorax. \n Cardiomegaly persists.  The mediastinal and hilar contours are unchanged. \n Leftward scoliosis of the thoracic size stable.\n \n IMPRESSION: \n \n Cardiomegaly and interstitial opacities, likely due to interstitial edema.  If\n the diagnosis is in doubt clinically, followup radiographs after diuresis may\n be helpful to exclude the possibility of an atypical interstitial pneumonia.\n",
+    "subject_id": "13475033",
+    "target_study_id": "59862902",
+    "num_prior_studies": 53
+  }
+]

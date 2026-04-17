@@ -1,0 +1,111 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15446959_52616494",
+    "subject_id": "15446959",
+    "target_study": {
+      "study_id": "52616494",
+      "study_datetime": "2188-01-06 21:45:25",
+      "procedure": "CHEST (PORTABLE AP)",
+      "views": [
+        {
+          "dicom_id": "647c3bd0-6e8ea0e4-e367edee-d6eefb00-174fcf42",
+          "view_position": "AP",
+          "path": "/data/patient/2188-01-06_21-45-25_s52616494/647c3bd0-6e8ea0e4-e367edee-d6eefb00-174fcf42.jpg"
+        }
+      ],
+      "given_sections": {
+        "EXAMINATION": "CHEST RADIOGRAPH",
+        "INDICATION": "Fever.  Question consolidation.",
+        "COMPARISON": "___ and ___.",
+        "TECHNIQUE": "Chest, AP semi-upright."
+      }
+    },
+    "history": [
+      {
+        "study_id": "54058678",
+        "study_datetime": "2185-02-25 02:49:22",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "68adee87-49f72ff4-e7374407-bc547b35-ff118ba2",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2185-02-25_02-49-22_s54058678/68adee87-49f72ff4-e7374407-bc547b35-ff118ba2.jpg"
+          },
+          {
+            "dicom_id": "79efe8cb-356ec1b4-23153a48-35b3a64c-40e70a3a",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2185-02-25_02-49-22_s54058678/79efe8cb-356ec1b4-23153a48-35b3a64c-40e70a3a.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2185-02-25_02-49-22_s54058678/report.txt"
+      },
+      {
+        "study_id": "54692227",
+        "study_datetime": "2185-06-17 23:14:39",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "300d9c95-b211c988-74633e84-6f6bd759-d9bd6a93",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2185-06-17_23-14-39_s54692227/300d9c95-b211c988-74633e84-6f6bd759-d9bd6a93.jpg"
+          },
+          {
+            "dicom_id": "6bfb9064-03f991cd-bc8d36dd-fd64d740-edfaab18",
+            "view_position": "AP",
+            "path": "/data/patient/2185-06-17_23-14-39_s54692227/6bfb9064-03f991cd-bc8d36dd-fd64d740-edfaab18.jpg"
+          },
+          {
+            "dicom_id": "8aac9b0d-3eb736b0-4fca393e-8604330a-916a953b",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2185-06-17_23-14-39_s54692227/8aac9b0d-3eb736b0-4fca393e-8604330a-916a953b.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2185-06-17_23-14-39_s54692227/report.txt"
+      },
+      {
+        "study_id": "51765753",
+        "study_datetime": "2186-01-10 18:10:11",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "532b41c5-aa84f4e3-0680a169-3354c664-82013589",
+            "view_position": "PA",
+            "path": "/data/patient/2186-01-10_18-10-11_s51765753/532b41c5-aa84f4e3-0680a169-3354c664-82013589.jpg"
+          },
+          {
+            "dicom_id": "67521210-7de50506-706b3a67-39ab7d82-f96a75ad",
+            "view_position": "LL",
+            "path": "/data/patient/2186-01-10_18-10-11_s51765753/67521210-7de50506-706b3a67-39ab7d82-f96a75ad.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2186-01-10_18-10-11_s51765753/report.txt"
+      },
+      {
+        "study_id": "50714348",
+        "study_datetime": "2186-09-23 16:51:53",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "01994677-4cf1e7e3-d8b77337-b9e6e43d-e2b0bf7d",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2186-09-23_16-51-53_s50714348/01994677-4cf1e7e3-d8b77337-b9e6e43d-e2b0bf7d.jpg"
+          },
+          {
+            "dicom_id": "1404cb7d-9f235a77-48962ba3-bbce9034-07178c1b",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2186-09-23_16-51-53_s50714348/1404cb7d-9f235a77-48962ba3-bbce9034-07178c1b.jpg"
+          },
+          {
+            "dicom_id": "e5a35d58-daafa26b-836bd682-17f54c3c-a3f33527",
+            "view_position": "AP",
+            "path": "/data/patient/2186-09-23_16-51-53_s50714348/e5a35d58-daafa26b-836bd682-17f54c3c-a3f33527.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2186-09-23_16-51-53_s50714348/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 15446959\nTarget Study ID: 52616494\nTarget Study Date: 2188-01-06 21:45:25\nTarget Procedure: CHEST (PORTABLE AP)\nTarget Views: AP\n\nThis patient has 4 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nEXAMINATION: CHEST RADIOGRAPH\n\nINDICATION: Fever.  Question consolidation.\n\nTECHNIQUE: Chest, AP semi-upright.\n\nCOMPARISON: ___ and ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

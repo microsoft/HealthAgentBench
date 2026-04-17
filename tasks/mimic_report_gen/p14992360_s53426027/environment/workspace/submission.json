@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "mimic_cxr_report_14992360_53426027",
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 14992360\nTarget Study ID: 53426027\nTarget Study Date: 2194-03-12 09:10:10\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: LATERAL, AP, LATERAL\n\nThis patient has 5 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nEXAMINATION: CHEST RADIOGRAPH\n\nINDICATION: History: ___M with recent fall, weakness, eval for interval change\n // eval for PNA, worsening CHF      eval for PNA, worsening CHF\n\nTECHNIQUE: PA and lateral views of the chest.\n\nCOMPARISON: Chest radiograph from ___, chest radiograph from ___ and chest CT from ___\n\nNOTIFICATION: The findings were discussed by Dr. ___ with Dr. ___ on\n the telephone on ___ at 11:14 AM, 10 minutes after discovery of the\n findings.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

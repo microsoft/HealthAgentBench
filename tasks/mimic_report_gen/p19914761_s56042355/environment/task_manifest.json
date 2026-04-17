@@ -1,0 +1,44 @@
+{
+  "subject_id": "19914761",
+  "target_study_id": "56042355",
+  "studies": [
+    {
+      "folder": "2144-09-03_14-07-20_s52697084",
+      "study_id": "52697084",
+      "study_datetime": "2144-09-03 14:07:20",
+      "procedure": "",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "2f9cc5fb-ee49a77d-61586888-9ea3d166-e27de7ba",
+          "view_position": "LL"
+        },
+        {
+          "dicom_id": "a4a72137-eea8a09f-a1ac8c72-4c948dd3-57236f6e",
+          "view_position": "PA"
+        }
+      ]
+    },
+    {
+      "folder": "2145-07-10_15-56-27_s56042355",
+      "study_id": "56042355",
+      "study_datetime": "2145-07-10 15:56:27",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": true,
+      "views": [
+        {
+          "dicom_id": "04833a58-a2f015d6-5d9e4afe-efa203f9-cfd9c1c6",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "2273715a-2ad11b92-c64a1ab9-2d38c44a-e1e7d03a",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "43fd9f86-bafca6c3-8e89eb75-eccccb60-bdf29257",
+          "view_position": "AP"
+        }
+      ]
+    }
+  ]
+}

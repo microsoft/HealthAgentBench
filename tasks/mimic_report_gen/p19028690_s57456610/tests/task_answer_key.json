@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_19028690_57456610",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nSingle portable view of the chest.  There is a new right IJ central line with\n tip in the mid SVC.  There is no pneumothorax.  The lungs remain clear. \n Azygous fissure again noted.  Cardiomediastinal silhouette is stable noting\n prominence of the upper mediastinum due to fat, unchanged.\n\nIMPRESSION:\nNew right IJ line.  No pneumothorax.",
+    "expected_findings": "Single portable view of the chest.  There is a new right IJ central line with\n tip in the mid SVC.  There is no pneumothorax.  The lungs remain clear. \n Azygous fissure again noted.  Cardiomediastinal silhouette is stable noting\n prominence of the upper mediastinum due to fat, unchanged.",
+    "expected_impression": "New right IJ line.  No pneumothorax.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n HISTORY:  ___-year-old male with altered mental status with new right IJ line.\n \n COMPARISON:  ___.\n \n FINDINGS:\n \n Single portable view of the chest.  There is a new right IJ central line with\n tip in the mid SVC.  There is no pneumothorax.  The lungs remain clear. \n Azygous fissure again noted.  Cardiomediastinal silhouette is stable noting\n prominence of the upper mediastinum due to fat, unchanged. \n \n IMPRESSION:\n \n New right IJ line.  No pneumothorax.\n",
+    "subject_id": "19028690",
+    "target_study_id": "57456610",
+    "num_prior_studies": 12
+  }
+]

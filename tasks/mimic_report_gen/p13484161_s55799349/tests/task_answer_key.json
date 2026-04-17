@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13484161_55799349",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nFrontal and lateral views of the chest were obtained.  There is\n prominence of the interstitial markings suggesting moderate interstitial\n edema.  No large pleural effusion is seen.  There is no evidence of\n pneumothorax.  The cardiac silhouette is enlarged.  The aorta is tortuous.\n\nIMPRESSION:\nEnlarged cardiac silhouette and moderate interstitial edema.",
+    "expected_findings": "Frontal and lateral views of the chest were obtained.  There is\n prominence of the interstitial markings suggesting moderate interstitial\n edema.  No large pleural effusion is seen.  There is no evidence of\n pneumothorax.  The cardiac silhouette is enlarged.  The aorta is tortuous.",
+    "expected_impression": "Enlarged cardiac silhouette and moderate interstitial edema.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAM:  Chest, frontal and lateral views.\n \n CLINICAL INFORMATION:  Right-sided weakness and numbness.\n \n COMPARISON:  ___.\n \n FINDINGS:  Frontal and lateral views of the chest were obtained.  There is\n prominence of the interstitial markings suggesting moderate interstitial\n edema.  No large pleural effusion is seen.  There is no evidence of\n pneumothorax.  The cardiac silhouette is enlarged.  The aorta is tortuous.\n \n IMPRESSION:  Enlarged cardiac silhouette and moderate interstitial edema.\n",
+    "subject_id": "13484161",
+    "target_study_id": "55799349",
+    "num_prior_studies": 4
+  }
+]

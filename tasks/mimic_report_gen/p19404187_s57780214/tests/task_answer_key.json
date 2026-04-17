@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_19404187_57780214",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThere is still an area of increased density in the left upper lobe\n projecting over the anterior aspect of the second rib measuring approximately\n 2.9 x 2.2 cm, improved from ___.  The cardiomediastinal\n silhouette is normal.  There is no pleural effusion or pneumothorax.\n\nIMPRESSION:\nImproving left upper lung zone consolidation compared to ___.",
+    "expected_findings": "There is still an area of increased density in the left upper lobe\n projecting over the anterior aspect of the second rib measuring approximately\n 2.9 x 2.2 cm, improved from ___.  The cardiomediastinal\n silhouette is normal.  There is no pleural effusion or pneumothorax.",
+    "expected_impression": "Improving left upper lung zone consolidation compared to ___.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  Aspiration following EGD.  Concern for pneumonia.\n \n TECHNIQUE:  PA and lateral chest radiographs.\n \n COMPARISON:  ___.\n \n FINDINGS:  There is still an area of increased density in the left upper lobe\n projecting over the anterior aspect of the second rib measuring approximately\n 2.9 x 2.2 cm, improved from ___.  The cardiomediastinal\n silhouette is normal.  There is no pleural effusion or pneumothorax.\n \n IMPRESSION:  Improving left upper lung zone consolidation compared to ___.\n",
+    "subject_id": "19404187",
+    "target_study_id": "57780214",
+    "num_prior_studies": 6
+  }
+]

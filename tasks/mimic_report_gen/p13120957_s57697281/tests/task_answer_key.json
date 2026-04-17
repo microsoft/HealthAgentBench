@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13120957_57697281",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nLungs are clear.  There is no consolidation, effusion, or edema.  The\n cardiomediastinal silhouette is within normal limits.  No acute osseous\n abnormalities.\n\nIMPRESSION:\nNo acute cardiopulmonary process.",
+    "expected_findings": "Lungs are clear.  There is no consolidation, effusion, or edema.  The\n cardiomediastinal silhouette is within normal limits.  No acute osseous\n abnormalities.",
+    "expected_impression": "No acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:   ___M with patellar tendon rupture  // pre-op\n \n TECHNIQUE:  AP and lateral views of the chest.\n \n COMPARISON:  ___.\n \n FINDINGS: \n \n Lungs are clear.  There is no consolidation, effusion, or edema.  The\n cardiomediastinal silhouette is within normal limits.  No acute osseous\n abnormalities.\n \n IMPRESSION: \n \n No acute cardiopulmonary process.\n",
+    "subject_id": "13120957",
+    "target_study_id": "57697281",
+    "num_prior_studies": 1
+  }
+]

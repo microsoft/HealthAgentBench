@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17392550_51791247",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe patient is status post median sternotomy and aortic valve\n replacement.  The heart size is normal.  The aorta is diffusely calcified. \n The mediastinal and hilar contours are normal.  The lungs are hyperinflated\n with relative lucency within the lung apices, compatible with emphysema. \n Previously described nodular opacities on CT are not well demonstrated on the\n current radiograph.  No focal consolidation, pleural effusion or pneumothorax\n is detected.  Multiple compression deformities of the thoracic spine are\n unchanged as well as old bilateral rib deformities.\n\nIMPRESSION:\nNo focal consolidation to suggest pneumonia.  Emphysema. \n Previously noted nodular opacities seen on CT not clearly visualized on the\n current radiograph.",
+    "expected_findings": "The patient is status post median sternotomy and aortic valve\n replacement.  The heart size is normal.  The aorta is diffusely calcified. \n The mediastinal and hilar contours are normal.  The lungs are hyperinflated\n with relative lucency within the lung apices, compatible with emphysema. \n Previously described nodular opacities on CT are not well demonstrated on the\n current radiograph.  No focal consolidation, pleural effusion or pneumothorax\n is detected.  Multiple compression deformities of the thoracic spine are\n unchanged as well as old bilateral rib deformities.",
+    "expected_impression": "No focal consolidation to suggest pneumonia.  Emphysema. \n Previously noted nodular opacities seen on CT not clearly visualized on the\n current radiograph.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  Recent hospitalizations, cough, and increasing abdominal\n distention.\n \n COMPARISON:  Chest CTA, ___ and chest radiograph, ___.\n \n TECHNIQUE:  PA and lateral views of the chest.\n \n FINDINGS:  The patient is status post median sternotomy and aortic valve\n replacement.  The heart size is normal.  The aorta is diffusely calcified. \n The mediastinal and hilar contours are normal.  The lungs are hyperinflated\n with relative lucency within the lung apices, compatible with emphysema. \n Previously described nodular opacities on CT are not well demonstrated on the\n current radiograph.  No focal consolidation, pleural effusion or pneumothorax\n is detected.  Multiple compression deformities of the thoracic spine are\n unchanged as well as old bilateral rib deformities.\n \n IMPRESSION:  No focal consolidation to suggest pneumonia.  Emphysema. \n Previously noted nodular opacities seen on CT not clearly visualized on the\n current radiograph.\n",
+    "subject_id": "17392550",
+    "target_study_id": "51791247",
+    "num_prior_studies": 2
+  }
+]

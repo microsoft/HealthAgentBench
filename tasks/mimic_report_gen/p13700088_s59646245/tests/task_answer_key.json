@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13700088_59646245",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThere are low lung volumes, but the lungs are clear.  The heart is\n top-normal in size.  There is no pneumothorax or pleural effusion.\n\nIMPRESSION:\nNo acute cardiopulmonary process.",
+    "expected_findings": "There are low lung volumes, but the lungs are clear.  The heart is\n top-normal in size.  There is no pneumothorax or pleural effusion.",
+    "expected_impression": "No acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n HISTORY:  ___-year-old female with weakness. \n \n COMPARISON:  Comparison is made with chest radiographs from ___\n and ___.  \n \n FINDINGS:  There are low lung volumes, but the lungs are clear.  The heart is\n top-normal in size.  There is no pneumothorax or pleural effusion.\n \n IMPRESSION:  No acute cardiopulmonary process.\n",
+    "subject_id": "13700088",
+    "target_study_id": "59646245",
+    "num_prior_studies": 8
+  }
+]

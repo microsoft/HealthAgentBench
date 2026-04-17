@@ -1,0 +1,101 @@
+[
+  {
+    "task_id": "mimic_cxr_report_18893199_53527484",
+    "subject_id": "18893199",
+    "target_study": {
+      "study_id": "53527484",
+      "study_datetime": "2190-11-26 17:23:18",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "711f27df-b3aacd5a-c3fb842d-dcadab6d-36569853",
+          "view_position": "PA",
+          "path": "/data/patient/2190-11-26_17-23-18_s53527484/711f27df-b3aacd5a-c3fb842d-dcadab6d-36569853.jpg"
+        },
+        {
+          "dicom_id": "f16b5e80-1c4e9616-8ce2becb-1d966e2e-c84a01d5",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2190-11-26_17-23-18_s53527484/f16b5e80-1c4e9616-8ce2becb-1d966e2e-c84a01d5.jpg"
+        }
+      ],
+      "given_sections": {
+        "EXAMINATION": "Chest:  Frontal and lateral views",
+        "INDICATION": "History: ___M with anterior chest pain x3 hours  // Eval for acute\n process",
+        "TECHNIQUE": "Chest:  Frontal and Lateral",
+        "COMPARISON": "___"
+      }
+    },
+    "history": [
+      {
+        "study_id": "58971994",
+        "study_datetime": "2186-04-24 15:52:22",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "44388ee4-a43ff605-7edf7add-37dd01f3-7596e2a5",
+            "view_position": "AP",
+            "path": "/data/patient/2186-04-24_15-52-22_s58971994/44388ee4-a43ff605-7edf7add-37dd01f3-7596e2a5.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2186-04-24_15-52-22_s58971994/report.txt"
+      },
+      {
+        "study_id": "56948056",
+        "study_datetime": "2186-05-12 12:33:37",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "48e69f6e-d7d3b831-9c09eade-bb20bccd-c9102543",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2186-05-12_12-33-37_s56948056/48e69f6e-d7d3b831-9c09eade-bb20bccd-c9102543.jpg"
+          },
+          {
+            "dicom_id": "ee1b7363-7791f3b8-05250aa7-b16ae53b-f1d3e209",
+            "view_position": "PA",
+            "path": "/data/patient/2186-05-12_12-33-37_s56948056/ee1b7363-7791f3b8-05250aa7-b16ae53b-f1d3e209.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2186-05-12_12-33-37_s56948056/report.txt"
+      },
+      {
+        "study_id": "53091268",
+        "study_datetime": "2190-06-16 11:22:16",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "0200b4be-b53b9401-7151c4aa-5b17173d-1df6302b",
+            "view_position": "LL",
+            "path": "/data/patient/2190-06-16_11-22-16_s53091268/0200b4be-b53b9401-7151c4aa-5b17173d-1df6302b.jpg"
+          },
+          {
+            "dicom_id": "0d8631a3-76f811f9-2cdcf377-22f2f8eb-4d5a97e4",
+            "view_position": "PA",
+            "path": "/data/patient/2190-06-16_11-22-16_s53091268/0d8631a3-76f811f9-2cdcf377-22f2f8eb-4d5a97e4.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2190-06-16_11-22-16_s53091268/report.txt"
+      },
+      {
+        "study_id": "50170739",
+        "study_datetime": "2190-10-30 23:03:59",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "bb42be73-33be1577-a742e6e6-9c47b56b-95a9659e",
+            "view_position": "PA",
+            "path": "/data/patient/2190-10-30_23-03-59_s50170739/bb42be73-33be1577-a742e6e6-9c47b56b-95a9659e.jpg"
+          },
+          {
+            "dicom_id": "e15480a9-ae34c980-6051475b-93ac3b91-7f255d40",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2190-10-30_23-03-59_s50170739/e15480a9-ae34c980-6051475b-93ac3b91-7f255d40.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2190-10-30_23-03-59_s50170739/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 18893199\nTarget Study ID: 53527484\nTarget Study Date: 2190-11-26 17:23:18\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: PA, LATERAL\n\nThis patient has 4 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nEXAMINATION: Chest:  Frontal and lateral views\n\nINDICATION: History: ___M with anterior chest pain x3 hours  // Eval for acute\n process\n\nTECHNIQUE: Chest:  Frontal and Lateral\n\nCOMPARISON: ___\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

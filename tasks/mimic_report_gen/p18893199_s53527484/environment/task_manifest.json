@@ -1,0 +1,87 @@
+{
+  "subject_id": "18893199",
+  "target_study_id": "53527484",
+  "studies": [
+    {
+      "folder": "2186-04-24_15-52-22_s58971994",
+      "study_id": "58971994",
+      "study_datetime": "2186-04-24 15:52:22",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "44388ee4-a43ff605-7edf7add-37dd01f3-7596e2a5",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2186-05-12_12-33-37_s56948056",
+      "study_id": "56948056",
+      "study_datetime": "2186-05-12 12:33:37",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "48e69f6e-d7d3b831-9c09eade-bb20bccd-c9102543",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "ee1b7363-7791f3b8-05250aa7-b16ae53b-f1d3e209",
+          "view_position": "PA"
+        }
+      ]
+    },
+    {
+      "folder": "2190-06-16_11-22-16_s53091268",
+      "study_id": "53091268",
+      "study_datetime": "2190-06-16 11:22:16",
+      "procedure": "",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "0200b4be-b53b9401-7151c4aa-5b17173d-1df6302b",
+          "view_position": "LL"
+        },
+        {
+          "dicom_id": "0d8631a3-76f811f9-2cdcf377-22f2f8eb-4d5a97e4",
+          "view_position": "PA"
+        }
+      ]
+    },
+    {
+      "folder": "2190-10-30_23-03-59_s50170739",
+      "study_id": "50170739",
+      "study_datetime": "2190-10-30 23:03:59",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "bb42be73-33be1577-a742e6e6-9c47b56b-95a9659e",
+          "view_position": "PA"
+        },
+        {
+          "dicom_id": "e15480a9-ae34c980-6051475b-93ac3b91-7f255d40",
+          "view_position": "LATERAL"
+        }
+      ]
+    },
+    {
+      "folder": "2190-11-26_17-23-18_s53527484",
+      "study_id": "53527484",
+      "study_datetime": "2190-11-26 17:23:18",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": true,
+      "views": [
+        {
+          "dicom_id": "711f27df-b3aacd5a-c3fb842d-dcadab6d-36569853",
+          "view_position": "PA"
+        },
+        {
+          "dicom_id": "f16b5e80-1c4e9616-8ce2becb-1d966e2e-c84a01d5",
+          "view_position": "LATERAL"
+        }
+      ]
+    }
+  ]
+}

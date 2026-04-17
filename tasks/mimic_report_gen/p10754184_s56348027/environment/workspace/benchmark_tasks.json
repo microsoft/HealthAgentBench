@@ -1,0 +1,105 @@
+[
+  {
+    "task_id": "mimic_cxr_report_10754184_56348027",
+    "subject_id": "10754184",
+    "target_study": {
+      "study_id": "56348027",
+      "study_datetime": "2190-03-29 16:56:22",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "c979aaaa-4bb31072-c9884178-6e3ced8b-edf531fa",
+          "view_position": "AP",
+          "path": "/data/patient/2190-03-29_16-56-22_s56348027/c979aaaa-4bb31072-c9884178-6e3ced8b-edf531fa.jpg"
+        },
+        {
+          "dicom_id": "e88fa460-a2901f48-730373f3-89be4f0a-89e6e2a9",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2190-03-29_16-56-22_s56348027/e88fa460-a2901f48-730373f3-89be4f0a-89e6e2a9.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "___F with pancreatic CA, afib with left flank pain after fall\n from standing  // R/O rib fracture",
+        "TECHNIQUE": "Frontal and lateral views of the chest.",
+        "COMPARISON": "___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "54594848",
+        "study_datetime": "2187-08-24 10:43:30",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "36d187c2-a2f1c238-25e77d89-19d5e8b8-ca837472",
+            "view_position": "PA",
+            "path": "/data/patient/2187-08-24_10-43-30_s54594848/36d187c2-a2f1c238-25e77d89-19d5e8b8-ca837472.jpg"
+          },
+          {
+            "dicom_id": "9065147e-4fa65619-480eba86-8e159f3d-3d96acd4",
+            "view_position": "LL",
+            "path": "/data/patient/2187-08-24_10-43-30_s54594848/9065147e-4fa65619-480eba86-8e159f3d-3d96acd4.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2187-08-24_10-43-30_s54594848/report.txt"
+      },
+      {
+        "study_id": "51837636",
+        "study_datetime": "2187-09-28 08:58:28",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "2eb05c0b-30b37945-71fb6374-45cab675-82128ecc",
+            "view_position": "PA",
+            "path": "/data/patient/2187-09-28_08-58-28_s51837636/2eb05c0b-30b37945-71fb6374-45cab675-82128ecc.jpg"
+          },
+          {
+            "dicom_id": "47860d0e-7714c59f-fbe13df2-5e581eb8-60b60826",
+            "view_position": "LL",
+            "path": "/data/patient/2187-09-28_08-58-28_s51837636/47860d0e-7714c59f-fbe13df2-5e581eb8-60b60826.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2187-09-28_08-58-28_s51837636/report.txt"
+      },
+      {
+        "study_id": "54236662",
+        "study_datetime": "2187-12-10 09:14:36",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "17c56a39-e22f86fe-75387134-c9695d82-356794b0",
+            "view_position": "",
+            "path": "/data/patient/2187-12-10_09-14-36_s54236662/17c56a39-e22f86fe-75387134-c9695d82-356794b0.jpg"
+          },
+          {
+            "dicom_id": "2661a129-f2f4b642-9b833ee7-ab398d55-07a36871",
+            "view_position": "",
+            "path": "/data/patient/2187-12-10_09-14-36_s54236662/2661a129-f2f4b642-9b833ee7-ab398d55-07a36871.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2187-12-10_09-14-36_s54236662/report.txt"
+      },
+      {
+        "study_id": "56625924",
+        "study_datetime": "2188-08-15 10:43:48",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "526cdb3f-f4ef95d2-68e47227-531a01e7-b3f4744c",
+            "view_position": "LL",
+            "path": "/data/patient/2188-08-15_10-43-48_s56625924/526cdb3f-f4ef95d2-68e47227-531a01e7-b3f4744c.jpg"
+          },
+          {
+            "dicom_id": "e12e1dd7-9b6e4d27-63a06a72-937c9716-451f2db8",
+            "view_position": "PA",
+            "path": "/data/patient/2188-08-15_10-43-48_s56625924/e12e1dd7-9b6e4d27-63a06a72-937c9716-451f2db8.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2188-08-15_10-43-48_s56625924/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 10754184\nTarget Study ID: 56348027\nTarget Study Date: 2190-03-29 16:56:22\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: AP, LATERAL\n\nThis patient has 4 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: ___F with pancreatic CA, afib with left flank pain after fall\n from standing  // R/O rib fracture\n\nTECHNIQUE: Frontal and lateral views of the chest.\n\nCOMPARISON: ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

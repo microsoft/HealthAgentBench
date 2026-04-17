@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_10274145_53356050",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nChest PA and lateral radiograph demonstrates unchanged\n cardiomediastinal and hilar contours.  No overt pulmonary edema is evident\n though chronic mild interstitial abnormalities are stable.  Faint\n opacification projecting over the left mid lung may represent developing\n infectious process.  There is no definitive correlate on the lateral\n radiograph.  No pleural effusion or pneumothorax present.  Mild separation of\n superior aspect of sternotomy line with intact sternotomy sutures.\n\nIMPRESSION:\nFaint increased opacification in left mid lung may indicate\n developing infectious process. Could further evaluate with right anterior\n oblique view to further evaluate lung.",
+    "expected_findings": "Chest PA and lateral radiograph demonstrates unchanged\n cardiomediastinal and hilar contours.  No overt pulmonary edema is evident\n though chronic mild interstitial abnormalities are stable.  Faint\n opacification projecting over the left mid lung may represent developing\n infectious process.  There is no definitive correlate on the lateral\n radiograph.  No pleural effusion or pneumothorax present.  Mild separation of\n superior aspect of sternotomy line with intact sternotomy sutures.",
+    "expected_impression": "Faint increased opacification in left mid lung may indicate\n developing infectious process. Could further evaluate with right anterior\n oblique view to further evaluate lung.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  Erratic blood sugars.  Please evaluate for pneumonia.\n \n COMPARISON:  Comparison is made to chest radiograph performed ___.\n \n FINDINGS:  Chest PA and lateral radiograph demonstrates unchanged\n cardiomediastinal and hilar contours.  No overt pulmonary edema is evident\n though chronic mild interstitial abnormalities are stable.  Faint\n opacification projecting over the left mid lung may represent developing\n infectious process.  There is no definitive correlate on the lateral\n radiograph.  No pleural effusion or pneumothorax present.  Mild separation of\n superior aspect of sternotomy line with intact sternotomy sutures.\n \n IMPRESSION:  Faint increased opacification in left mid lung may indicate\n developing infectious process. Could further evaluate with right anterior\n oblique view to further evaluate lung.\n",
+    "subject_id": "10274145",
+    "target_study_id": "53356050",
+    "num_prior_studies": 4
+  }
+]

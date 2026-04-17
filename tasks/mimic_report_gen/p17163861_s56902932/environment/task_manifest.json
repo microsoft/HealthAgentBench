@@ -1,0 +1,137 @@
+{
+  "subject_id": "17163861",
+  "target_study_id": "56902932",
+  "studies": [
+    {
+      "folder": "2150-05-26_01-03-10_s55133499",
+      "study_id": "55133499",
+      "study_datetime": "2150-05-26 01:03:10",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "bd8fc3e9-687db5d6-574cb5a6-b78d18b2-2f5fb4de",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "db0c967e-30c9c887-b4196fb7-e0ba8546-1b9ad52e",
+          "view_position": "LATERAL"
+        }
+      ]
+    },
+    {
+      "folder": "2150-05-28_14-11-33_s51731956",
+      "study_id": "51731956",
+      "study_datetime": "2150-05-28 14:11:33",
+      "procedure": "Performed Desc",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "354f8abd-01f7f413-cb068ad1-1d47c651-7a17c514",
+          "view_position": "PA"
+        },
+        {
+          "dicom_id": "af4526a3-ed45d1ae-28409d1f-a7389574-8e977011",
+          "view_position": "LL"
+        }
+      ]
+    },
+    {
+      "folder": "2150-06-03_17-17-12_s50065267",
+      "study_id": "50065267",
+      "study_datetime": "2150-06-03 17:17:12",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "1f13c4be-a6bc48a6-5675f256-e95b8a28-c017e780",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "3d93e17d-7634fb78-ec7abdcd-a745490f-6eb6cc24",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "83502e58-5ada1fba-450984b0-07c9ec9e-2b5b91b4",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "bd3dc01c-c67b8f05-580c3880-de7352aa-4118828e",
+          "view_position": "LATERAL"
+        }
+      ]
+    },
+    {
+      "folder": "2151-08-17_14-36-04_s56013519",
+      "study_id": "56013519",
+      "study_datetime": "2151-08-17 14:36:04",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "0f513599-eb6bddc9-4306d15d-46c7c0c2-a3c6c854",
+          "view_position": "PA"
+        },
+        {
+          "dicom_id": "de7f2739-8c743a3a-6e0e37fb-635c58f5-a48a0ab7",
+          "view_position": "LATERAL"
+        }
+      ]
+    },
+    {
+      "folder": "2151-11-14_04-47-58_s52169517",
+      "study_id": "52169517",
+      "study_datetime": "2151-11-14 04:47:58",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "2ee8335e-c2cee8be-256455f2-9cc54604-d6b4c10d",
+          "view_position": "PA"
+        },
+        {
+          "dicom_id": "a9493b3c-4d63defd-55b09266-3147f2af-e73caba1",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "dd7f3873-773c451c-3500ff51-f62851f4-3a6116a9",
+          "view_position": "PA"
+        }
+      ]
+    },
+    {
+      "folder": "2153-01-30_21-54-48_s51599732",
+      "study_id": "51599732",
+      "study_datetime": "2153-01-30 21:54:48",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "7af50fb4-7220f1e6-2f232aa7-bdbbc51c-18f1c512",
+          "view_position": "AP"
+        },
+        {
+          "dicom_id": "c2d5f938-8ac36872-dfac1b06-126c490e-6f63e582",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2154-01-30_18-26-52_s56902932",
+      "study_id": "56902932",
+      "study_datetime": "2154-01-30 18:26:52",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": true,
+      "views": [
+        {
+          "dicom_id": "4e2deb58-2087d69f-a4c1a7c8-776af924-1bd0202d",
+          "view_position": "PA"
+        },
+        {
+          "dicom_id": "cafde7cd-b6e7a873-406f5371-358aca60-ed02bdc3",
+          "view_position": "LATERAL"
+        }
+      ]
+    }
+  ]
+}
