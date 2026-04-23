@@ -1,0 +1,22 @@
+jobs_dir: results/harbor/medagentbench_biomni_host
+n_attempts: 1
+timeout_multiplier: 1.0
+n_concurrent_trials: 1
+quiet: false
+
+environment:
+  type: docker
+  force_build: false
+  delete: false
+
+agents:
+  - import_path: medcli.agents.harbor.host.biomni:BiomniHostAgent
+    model_name: gpt-5.4-global
+
+datasets:
+  - path: tasks
+    task_names:
+      - medagentbench
+
+artifacts:
+  - /workspace/submission.json
