@@ -1,0 +1,99 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15438386_54350641",
+    "subject_id": "15438386",
+    "target_study": {
+      "study_id": "54350641",
+      "study_datetime": "2162-09-20 05:45:06",
+      "procedure": "CHEST (PORTABLE AP)",
+      "views": [
+        {
+          "dicom_id": "76e72399-4ee134f7-c1d4538e-8c0a7451-bacc3a48",
+          "view_position": "AP",
+          "path": "/data/patient/2162-09-20_05-45-06_s54350641/76e72399-4ee134f7-c1d4538e-8c0a7451-bacc3a48.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "Small-bowel obstruction, status post nasogastric tube placement. \n Evaluate tube position.",
+        "COMPARISON": "Chest radiograph from ___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "59022925",
+        "study_datetime": "2161-08-26 12:58:20",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "57f7f75e-91517fb3-4071303d-6f325ed5-5daca800",
+            "view_position": "AP",
+            "path": "/data/patient/2161-08-26_12-58-20_s59022925/57f7f75e-91517fb3-4071303d-6f325ed5-5daca800.jpg"
+          },
+          {
+            "dicom_id": "d51e424a-a44ba612-1f92bcc5-32008577-36bdedd0",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-08-26_12-58-20_s59022925/d51e424a-a44ba612-1f92bcc5-32008577-36bdedd0.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-08-26_12-58-20_s59022925/report.txt"
+      },
+      {
+        "study_id": "50994417",
+        "study_datetime": "2162-08-01 11:41:41",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "081b6db8-da3b5047-573fbc16-9aa955fa-d35d3cc2",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2162-08-01_11-41-41_s50994417/081b6db8-da3b5047-573fbc16-9aa955fa-d35d3cc2.jpg"
+          },
+          {
+            "dicom_id": "88452747-3f314c21-22193cd6-21965317-a568535d",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2162-08-01_11-41-41_s50994417/88452747-3f314c21-22193cd6-21965317-a568535d.jpg"
+          },
+          {
+            "dicom_id": "dd7b0ab6-fd3ea03d-b2a70c10-5eca94a7-a74d42be",
+            "view_position": "AP",
+            "path": "/data/patient/2162-08-01_11-41-41_s50994417/dd7b0ab6-fd3ea03d-b2a70c10-5eca94a7-a74d42be.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2162-08-01_11-41-41_s50994417/report.txt"
+      },
+      {
+        "study_id": "59891992",
+        "study_datetime": "2162-09-01 10:26:46",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "97e98c24-079ba543-3cfe0fbe-b97b30b8-bbd0e9a5",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2162-09-01_10-26-46_s59891992/97e98c24-079ba543-3cfe0fbe-b97b30b8-bbd0e9a5.jpg"
+          },
+          {
+            "dicom_id": "b6efc4df-c96de5ed-5551d21b-f99936ca-082ca79e",
+            "view_position": "AP",
+            "path": "/data/patient/2162-09-01_10-26-46_s59891992/b6efc4df-c96de5ed-5551d21b-f99936ca-082ca79e.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2162-09-01_10-26-46_s59891992/report.txt"
+      },
+      {
+        "study_id": "55060674",
+        "study_datetime": "2162-09-20 19:22:05",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "5f7fabe4-ef89e705-401654db-7da95115-a824cf01",
+            "view_position": "AP",
+            "path": "/data/patient/2162-09-20_19-22-05_s55060674/5f7fabe4-ef89e705-401654db-7da95115-a824cf01.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2162-09-20_19-22-05_s55060674/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 15438386\nTarget Study ID: 54350641\nTarget Study Date: 2162-09-20 05:45:06\nTarget Procedure: CHEST (PORTABLE AP)\nTarget Views: AP\n\nThis patient has 4 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: Small-bowel obstruction, status post nasogastric tube placement. \n Evaluate tube position.\n\nCOMPARISON: Chest radiograph from ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

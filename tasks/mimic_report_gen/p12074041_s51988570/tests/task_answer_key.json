@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12074041_51988570",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nFrontal and lateral views of the chest were obtained.  A\n single-lead left-sided AICD is again seen with lead extending to the expected\n position of the right ventricle.  There has been interval removal of a right\n internal jugular central venous catheter.  There is minimal interstitial\n edema.  No large pleural effusion or pneumothorax.  The cardiac silhouette\n remains mildly enlarged.  The aorta is tortuous.  No focal consolidation seen.\n\nIMPRESSION:\nMinimal interstitial edema and mild cardiomegaly.",
+    "expected_findings": "Frontal and lateral views of the chest were obtained.  A\n single-lead left-sided AICD is again seen with lead extending to the expected\n position of the right ventricle.  There has been interval removal of a right\n internal jugular central venous catheter.  There is minimal interstitial\n edema.  No large pleural effusion or pneumothorax.  The cardiac silhouette\n remains mildly enlarged.  The aorta is tortuous.  No focal consolidation seen.",
+    "expected_impression": "Minimal interstitial edema and mild cardiomegaly.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAM:  Chest frontal and lateral views.\n \n CLINICAL INFORMATION:  Fever.\n \n COMPARISON:  ___.\n \n FINDINGS:  Frontal and lateral views of the chest were obtained.  A\n single-lead left-sided AICD is again seen with lead extending to the expected\n position of the right ventricle.  There has been interval removal of a right\n internal jugular central venous catheter.  There is minimal interstitial\n edema.  No large pleural effusion or pneumothorax.  The cardiac silhouette\n remains mildly enlarged.  The aorta is tortuous.  No focal consolidation seen.\n \n IMPRESSION:  Minimal interstitial edema and mild cardiomegaly.\n",
+    "subject_id": "12074041",
+    "target_study_id": "51988570",
+    "num_prior_studies": 9
+  }
+]

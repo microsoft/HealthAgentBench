@@ -19,5 +19,6 @@ results/
 # Downloaded benchmark data and generated artifacts
 # These are produced by setup.sh and generators, not source code
 scripts/ehrsql/assets/
+scripts/mimic_report_gen/assets/
 # local convenience helpers
 resume-codex.sh

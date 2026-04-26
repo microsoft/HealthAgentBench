@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12699874_54061371",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nPA and lateral views of the chest were obtained.  Since prior\n radiograph, there has been development of small pleural effusion on the right\n with fluid within the fissure.  Opacity at the right base is similar as on\n prior radiographs and may represent atelectasis; however, infection cannot be\n excluded. There is atelectasis at left lung base.  Peripheral left upper lobe\n opacity is unchanged.  There is no pneumothorax.  Cardiomediastinal silhouette\n is stable.  There are degenerative changes in the thoracic spine.\n\nIMPRESSION:\nRe-accumulation of small right pleural effusion with opacity at\n the right base, with non-specific consolidation at right lung base which could\n be infectious.  Follow-up to resolution.",
+    "expected_findings": "PA and lateral views of the chest were obtained.  Since prior\n radiograph, there has been development of small pleural effusion on the right\n with fluid within the fissure.  Opacity at the right base is similar as on\n prior radiographs and may represent atelectasis; however, infection cannot be\n excluded. There is atelectasis at left lung base.  Peripheral left upper lobe\n opacity is unchanged.  There is no pneumothorax.  Cardiomediastinal silhouette\n is stable.  There are degenerative changes in the thoracic spine.",
+    "expected_impression": "Re-accumulation of small right pleural effusion with opacity at\n the right base, with non-specific consolidation at right lung base which could\n be infectious.  Follow-up to resolution.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old man with right Pleurx catheter due to recurrent\n pleural effusion, presents with fluid draining from old thoracentesis site,\n evaluate for right pleural effusion or interval changes.\n \n COMPARISON:  Multiple prior radiographs, most recently portable AP chest\n radiograph from ___.\n \n FINDINGS:  PA and lateral views of the chest were obtained.  Since prior\n radiograph, there has been development of small pleural effusion on the right\n with fluid within the fissure.  Opacity at the right base is similar as on\n prior radiographs and may represent atelectasis; however, infection cannot be\n excluded. There is atelectasis at left lung base.  Peripheral left upper lobe\n opacity is unchanged.  There is no pneumothorax.  Cardiomediastinal silhouette\n is stable.  There are degenerative changes in the thoracic spine.\n \n IMPRESSION: Re-accumulation of small right pleural effusion with opacity at\n the right base, with non-specific consolidation at right lung base which could\n be infectious.  Follow-up to resolution.\n",
+    "subject_id": "12699874",
+    "target_study_id": "54061371",
+    "num_prior_studies": 12
+  }
+]

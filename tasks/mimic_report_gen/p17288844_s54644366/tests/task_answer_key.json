@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17288844_54644366",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nMidline sternotomy wires and mediastinal clips are unchanged.  The\n heart size continues to be mildly enlarged.  The lungs show increasing opacity\n with worsening pulmonary vasculature engorgement as well as right lower lung\n consolidation with air bronchograms, all compatible with worsening pulmonary\n edema.  Neither costophrenic sulcus is distinctly sharp, suggesting small\n pleural effusions.\n\nIMPRESSION:\nWorsening pulmonary edema; findings discussed with ___\n at 11:00 am on ___ by ___ over the phone.",
+    "expected_findings": "Midline sternotomy wires and mediastinal clips are unchanged.  The\n heart size continues to be mildly enlarged.  The lungs show increasing opacity\n with worsening pulmonary vasculature engorgement as well as right lower lung\n consolidation with air bronchograms, all compatible with worsening pulmonary\n edema.  Neither costophrenic sulcus is distinctly sharp, suggesting small\n pleural effusions.",
+    "expected_impression": "Worsening pulmonary edema; findings discussed with ___\n at 11:00 am on ___ by ___ over the phone.",
+    "full_ground_truth_report": " PROVISIONAL FINDINGS IMPRESSION (PFI): ___ ___ ___ 11:00 AM\n  Worsening pulmonary edema.\n ______________________________________________________________________________\n                                 FINAL REPORT\n HISTORY:  ___-year-old male status post STEMI, now with new oxygen\n desaturations.\n \n STUDY:  Semi-erect portable AP chest radiograph.\n \n COMPARISON:  Multiple chest radiographs from ___ through ___.\n \n FINDINGS:  Midline sternotomy wires and mediastinal clips are unchanged.  The\n heart size continues to be mildly enlarged.  The lungs show increasing opacity\n with worsening pulmonary vasculature engorgement as well as right lower lung\n consolidation with air bronchograms, all compatible with worsening pulmonary\n edema.  Neither costophrenic sulcus is distinctly sharp, suggesting small\n pleural effusions.\n \n IMPRESSION:  Worsening pulmonary edema; findings discussed with ___\n at 11:00 am on ___ by ___ over the phone.\n",
+    "subject_id": "17288844",
+    "target_study_id": "54644366",
+    "num_prior_studies": 5
+  }
+]

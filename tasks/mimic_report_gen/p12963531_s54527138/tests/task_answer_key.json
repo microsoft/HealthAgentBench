@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12963531_54527138",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe right internal jugular dialysis catheter terminates within the\n right atrium.  There is no pneumothorax or pleural effusion.  The cardiac\n silhouette is severely enlarged, but unchanged.  The hilar structures are\n unremarkable.  There is no pleural effusion.  There is a chronic subclincal\n pulmonary edema appearance to the pulmonary vascularity without evidence for\n acute volume overload.\n\nIMPRESSION:\nSatisfactory right internal jugular dialysis catheter position\n without pneumothorax.  Unchanged severe cardiomegaly.",
+    "expected_findings": "The right internal jugular dialysis catheter terminates within the\n right atrium.  There is no pneumothorax or pleural effusion.  The cardiac\n silhouette is severely enlarged, but unchanged.  The hilar structures are\n unremarkable.  There is no pleural effusion.  There is a chronic subclincal\n pulmonary edema appearance to the pulmonary vascularity without evidence for\n acute volume overload.",
+    "expected_impression": "Satisfactory right internal jugular dialysis catheter position\n without pneumothorax.  Unchanged severe cardiomegaly.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n HISTORY:   Right IJ dialysis catheter, evaluate line placement.\n \n COMPARISON:  Chest radiographs of ___, ___ and ___.\n \n FINDINGS: The right internal jugular dialysis catheter terminates within the\n right atrium.  There is no pneumothorax or pleural effusion.  The cardiac\n silhouette is severely enlarged, but unchanged.  The hilar structures are\n unremarkable.  There is no pleural effusion.  There is a chronic subclincal\n pulmonary edema appearance to the pulmonary vascularity without evidence for\n acute volume overload.\n \n IMPRESSION: Satisfactory right internal jugular dialysis catheter position\n without pneumothorax.  Unchanged severe cardiomegaly.\n",
+    "subject_id": "12963531",
+    "target_study_id": "54527138",
+    "num_prior_studies": 7
+  }
+]

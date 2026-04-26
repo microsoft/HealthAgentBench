@@ -1,0 +1,40 @@
+{
+  "subject_id": "13120957",
+  "target_study_id": "57697281",
+  "studies": [
+    {
+      "folder": "2163-05-26_08-06-04_s55681597",
+      "study_id": "55681597",
+      "study_datetime": "2163-05-26 08:06:04",
+      "procedure": "",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "98fa0073-4a72a84a-07d17d1b-80f5bc40-e729e67e",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "d53ea806-f9b5f637-2a0ee3e9-a8409e3d-56e8cf0f",
+          "view_position": "PA"
+        }
+      ]
+    },
+    {
+      "folder": "2167-10-21_13-54-28_s57697281",
+      "study_id": "57697281",
+      "study_datetime": "2167-10-21 13:54:28",
+      "procedure": "CHEST (PA AND LAT)",
+      "is_target": true,
+      "views": [
+        {
+          "dicom_id": "159f8b16-a8da78c3-2dab8f92-5577b199-2d544ffc",
+          "view_position": "LATERAL"
+        },
+        {
+          "dicom_id": "95133322-5ad8fb3e-dea16125-70e718db-6cef790a",
+          "view_position": "AP"
+        }
+      ]
+    }
+  ]
+}

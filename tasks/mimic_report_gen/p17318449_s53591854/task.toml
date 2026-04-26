@@ -1,0 +1,25 @@
+version = "1.0"
+
+[metadata]
+benchmark = "mimic_cxr_report_generation"
+mode = "single-task"
+description = "Generate radiology report for patient 17318449"
+task_id = "mimic_cxr_report_17318449_53591854"
+submission_path = "/workspace/submission.json"
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+# First cold build downloads ~500 MB CheXbert weights + installs torch, so
+# give ourselves plenty of headroom. Cached rebuilds are much faster.
+build_timeout_sec = 1800.0
+allow_internet = true
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+mcp_servers = []

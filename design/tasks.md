@@ -13,6 +13,7 @@ Track benchmark integrations and benchmark candidates here. Any benchmark consid
 | MedAgentBench | `medagentbench/` | Interactive EHR benchmark focused on multi-step retrieval, reasoning, and structured action tasks over clinical data. | Harbor-generated benchmark task built from raw benchmark assets under `scripts/medagentbench/`. | [MedAgentBench](related_work/medagentbench_2501.14654.md) |
 | EHRSQL | `ehrsql/` | Text-to-SQL benchmark over EHR databases (MIMIC-III, eICU). Agent generates SQL queries or identifies unanswerable questions. | Tasks generated via `scripts/ehrsql/generate_harbor_tasks.py`. | [EHRSQL](related_work/ehrsql_2301.07695.md) |
 | MIMIC-IV MEDS Extraction ETL | `mimic_iv_meds/` | ETL benchmark for converting the open MIMIC-IV demo dataset into MEDS by following the pinned upstream `MIMIC_IV_MEDS` repo. | Adapted Harbor task with staged demo input, agent-run `uv` setup, and directory-output verification against a gold summary. | [MIMIC_IV_MEDS v0.0.7](related_work/mimic_iv_meds_0.0.7.md) |
+| MIMIC-CXR Report Generation | `mimic_report_gen/` | Patient-aware multimodal radiology-report generation: given the target study's images and the patient's prior imaging history, the agent drafts FINDINGS and IMPRESSION. | Adapted Harbor task generated from PhysioNet MIMIC-CXR v2.1.0. One task per patient. Pooled CheXbert F1-14 computed via a uv-script aggregator in addition to per-trial BLEU / ROUGE-L. | [MIMIC-CXR Report Generation](related_work/mimic_cxr_report_generation.md) |
 
 ### Planned
 

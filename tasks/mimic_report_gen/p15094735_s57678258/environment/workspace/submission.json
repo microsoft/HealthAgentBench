@@ -1,0 +1,8 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15094735_57678258",
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 15094735\nTarget Study ID: 57678258\nTarget Study Date: 2162-01-13 07:34:18\nTarget Procedure: CHEST (PORTABLE AP)\nTarget Views: AP\n\nThis patient has 1 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: Status post CABG with dyspnea.  Evaluate for edema.\n \n COMPARISONS:  Chest radiograph, ___.  Chest radiograph, ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

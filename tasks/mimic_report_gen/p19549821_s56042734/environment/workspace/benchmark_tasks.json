@@ -1,0 +1,145 @@
+[
+  {
+    "task_id": "mimic_cxr_report_19549821_56042734",
+    "subject_id": "19549821",
+    "target_study": {
+      "study_id": "56042734",
+      "study_datetime": "2118-06-09 14:18:57",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "7377346a-38f8250e-c3694853-37601fdd-b0ff4cb7",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2118-06-09_14-18-57_s56042734/7377346a-38f8250e-c3694853-37601fdd-b0ff4cb7.jpg"
+        },
+        {
+          "dicom_id": "a464fe33-f97c23c1-580d2988-155f758e-66524a5f",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2118-06-09_14-18-57_s56042734/a464fe33-f97c23c1-580d2988-155f758e-66524a5f.jpg"
+        },
+        {
+          "dicom_id": "c7c68b52-54b2bc92-e88ecc8c-e4048535-e3dbb409",
+          "view_position": "PA",
+          "path": "/data/patient/2118-06-09_14-18-57_s56042734/c7c68b52-54b2bc92-e88ecc8c-e4048535-e3dbb409.jpg"
+        }
+      ],
+      "given_sections": {
+        "HISTORY": "___-year-old female with hyperglycemia.  Evaluation for pneumonia.",
+        "COMPARISON": "Comparison is made to radiographs of the chest from ___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "56573421",
+        "study_datetime": "2116-07-30 14:31:07",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "35ba5821-6f988e43-c7ce7779-9947c2dc-064358ad",
+            "view_position": "LL",
+            "path": "/data/patient/2116-07-30_14-31-07_s56573421/35ba5821-6f988e43-c7ce7779-9947c2dc-064358ad.jpg"
+          },
+          {
+            "dicom_id": "bc763820-6af428a2-67311ece-8d067825-f6282dba",
+            "view_position": "PA",
+            "path": "/data/patient/2116-07-30_14-31-07_s56573421/bc763820-6af428a2-67311ece-8d067825-f6282dba.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2116-07-30_14-31-07_s56573421/report.txt"
+      },
+      {
+        "study_id": "59966980",
+        "study_datetime": "2117-08-19 16:24:01",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "c810fda6-49f22def-580efb22-d9ed1837-c3e002b1",
+            "view_position": "AP",
+            "path": "/data/patient/2117-08-19_16-24-01_s59966980/c810fda6-49f22def-580efb22-d9ed1837-c3e002b1.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2117-08-19_16-24-01_s59966980/report.txt"
+      },
+      {
+        "study_id": "55593187",
+        "study_datetime": "2117-09-05 18:22:41",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "318e2d2a-cd564b66-987b939f-2b0ded80-8fc82ad2",
+            "view_position": "AP",
+            "path": "/data/patient/2117-09-05_18-22-41_s55593187/318e2d2a-cd564b66-987b939f-2b0ded80-8fc82ad2.jpg"
+          },
+          {
+            "dicom_id": "b3e3cd04-672dd424-cb6d9ca6-59bdd243-0fa75b80",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2117-09-05_18-22-41_s55593187/b3e3cd04-672dd424-cb6d9ca6-59bdd243-0fa75b80.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2117-09-05_18-22-41_s55593187/report.txt"
+      },
+      {
+        "study_id": "59953900",
+        "study_datetime": "2117-09-07 04:46:43",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "a6af277c-9bba350e-4a71b3e8-137d82db-cb01dd0e",
+            "view_position": "AP",
+            "path": "/data/patient/2117-09-07_04-46-43_s59953900/a6af277c-9bba350e-4a71b3e8-137d82db-cb01dd0e.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2117-09-07_04-46-43_s59953900/report.txt"
+      },
+      {
+        "study_id": "54696287",
+        "study_datetime": "2117-09-08 10:12:56",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "9a4ccf98-58c3f0da-81d2cd90-38c242fb-cc48af1b",
+            "view_position": "PA",
+            "path": "/data/patient/2117-09-08_10-12-56_s54696287/9a4ccf98-58c3f0da-81d2cd90-38c242fb-cc48af1b.jpg"
+          },
+          {
+            "dicom_id": "bdd5a7d2-2ce12b6b-b5e7b44e-b9332707-80c08524",
+            "view_position": "LL",
+            "path": "/data/patient/2117-09-08_10-12-56_s54696287/bdd5a7d2-2ce12b6b-b5e7b44e-b9332707-80c08524.jpg"
+          },
+          {
+            "dicom_id": "f10aba88-cfb8f760-c3b288f6-c1d76c27-88bfb3e0",
+            "view_position": "LL",
+            "path": "/data/patient/2117-09-08_10-12-56_s54696287/f10aba88-cfb8f760-c3b288f6-c1d76c27-88bfb3e0.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2117-09-08_10-12-56_s54696287/report.txt"
+      },
+      {
+        "study_id": "56024784",
+        "study_datetime": "2117-10-11 09:37:26",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "3db433a8-9379d041-b4e9d173-f253fe8b-8ad21d0a",
+            "view_position": "LL",
+            "path": "/data/patient/2117-10-11_09-37-26_s56024784/3db433a8-9379d041-b4e9d173-f253fe8b-8ad21d0a.jpg"
+          },
+          {
+            "dicom_id": "41cf21eb-9d52be87-edeedec8-7aecd1ac-5e5662c4",
+            "view_position": "",
+            "path": "/data/patient/2117-10-11_09-37-26_s56024784/41cf21eb-9d52be87-edeedec8-7aecd1ac-5e5662c4.jpg"
+          },
+          {
+            "dicom_id": "4bb967c3-58f8c025-777fd624-8d104e92-18a9526a",
+            "view_position": "LL",
+            "path": "/data/patient/2117-10-11_09-37-26_s56024784/4bb967c3-58f8c025-777fd624-8d104e92-18a9526a.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2117-10-11_09-37-26_s56024784/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 19549821\nTarget Study ID: 56042734\nTarget Study Date: 2118-06-09 14:18:57\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: LATERAL, LATERAL, PA\n\nThis patient has 6 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nHISTORY: ___-year-old female with hyperglycemia.  Evaluation for pneumonia.\n\nCOMPARISON: Comparison is made to radiographs of the chest from ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

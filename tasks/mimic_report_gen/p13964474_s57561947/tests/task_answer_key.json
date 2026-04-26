@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13964474_57561947",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nPA and lateral chest radiographs were obtained.  Moderate right basilar\n atelectasis is similar.  The left lung is well inflated.  Ground-glass\n opacification in the right lower and middle lobes has improved since prior\n exam of ___ and significantly improved since ___.  No pneumothorax is\n present.  Cardiac and mediastinal contours are normal.\n\nIMPRESSION:\nImproved aeration of the right lower and middle lobes with persistent\n ground-glass opacity.  Suggest continued chest x-ray followup in one month to\n evaluate for continued evolution.",
+    "expected_findings": "PA and lateral chest radiographs were obtained.  Moderate right basilar\n atelectasis is similar.  The left lung is well inflated.  Ground-glass\n opacification in the right lower and middle lobes has improved since prior\n exam of ___ and significantly improved since ___.  No pneumothorax is\n present.  Cardiac and mediastinal contours are normal.",
+    "expected_impression": "Improved aeration of the right lower and middle lobes with persistent\n ground-glass opacity.  Suggest continued chest x-ray followup in one month to\n evaluate for continued evolution.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old man with esophageal perforation, respiratory failure\n and empyema.\n \n COMPARISON:  ___ to ___, CT chest ___.\n \n FINDINGS:\n \n PA and lateral chest radiographs were obtained.  Moderate right basilar\n atelectasis is similar.  The left lung is well inflated.  Ground-glass\n opacification in the right lower and middle lobes has improved since prior\n exam of ___ and significantly improved since ___.  No pneumothorax is\n present.  Cardiac and mediastinal contours are normal.\n \n IMPRESSION:\n \n Improved aeration of the right lower and middle lobes with persistent\n ground-glass opacity.  Suggest continued chest x-ray followup in one month to\n evaluate for continued evolution.\n",
+    "subject_id": "13964474",
+    "target_study_id": "57561947",
+    "num_prior_studies": 29
+  }
+]

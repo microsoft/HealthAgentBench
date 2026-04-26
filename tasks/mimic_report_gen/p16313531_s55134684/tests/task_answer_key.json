@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16313531_55134684",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nStable widening of cardiomediastinal contours with persistent\n silhouetting of left heart border due to a large left pleural effusion with\n adjacent atelectasis and/or consolidation in the left mid and lower lung\n region.  On the right, there is apparent elevation of the right hemidiaphragm\n with lateral peaking suggesting the presence of a subpulmonic pleural\n effusion.  Areas of adjacent atelectasis in the right mid and lower lung have\n slightly improved.\n\nIMPRESSION:\n1.  Large left pleural effusion with adjacent atelectasis and/or\n consolidation.\n \n 2.  Possible subpulmonic component of right pleural effusion.",
+    "expected_findings": "Stable widening of cardiomediastinal contours with persistent\n silhouetting of left heart border due to a large left pleural effusion with\n adjacent atelectasis and/or consolidation in the left mid and lower lung\n region.  On the right, there is apparent elevation of the right hemidiaphragm\n with lateral peaking suggesting the presence of a subpulmonic pleural\n effusion.  Areas of adjacent atelectasis in the right mid and lower lung have\n slightly improved.",
+    "expected_impression": "1.  Large left pleural effusion with adjacent atelectasis and/or\n consolidation.\n \n 2.  Possible subpulmonic component of right pleural effusion.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n PA AND LATERAL CHEST ___\n \n COMPARISON:  Chest x-ray ___.\n \n FINDINGS:  Stable widening of cardiomediastinal contours with persistent\n silhouetting of left heart border due to a large left pleural effusion with\n adjacent atelectasis and/or consolidation in the left mid and lower lung\n region.  On the right, there is apparent elevation of the right hemidiaphragm\n with lateral peaking suggesting the presence of a subpulmonic pleural\n effusion.  Areas of adjacent atelectasis in the right mid and lower lung have\n slightly improved.\n \n IMPRESSION:\n 1.  Large left pleural effusion with adjacent atelectasis and/or\n consolidation.\n \n 2.  Possible subpulmonic component of right pleural effusion.\n",
+    "subject_id": "16313531",
+    "target_study_id": "55134684",
+    "num_prior_studies": 10
+  }
+]

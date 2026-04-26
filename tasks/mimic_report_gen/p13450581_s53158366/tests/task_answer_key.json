@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13450581_53158366",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe previously described left upper lobe mass is not seen on this radiograph. \n Linear opacities in the left upper lobe can be and a sequelae of prior\n treatment lung carcinoma.  No pulmonary edema, pleural effusion or\n pneumothorax.  The cardiomediastinal contours are unchanged.\n\nIMPRESSION:\nLeft upper lobe linear opacities at site of prior treatment for lung\n carcinoma.\n \n RECOMMENDATION(S):  If clinically indicated a CT thorax can be considered to\n assess the left upper lobe in order to better differentiate post treatment\n scar from residual cancer.",
+    "expected_findings": "The previously described left upper lobe mass is not seen on this radiograph. \n Linear opacities in the left upper lobe can be and a sequelae of prior\n treatment lung carcinoma.  No pulmonary edema, pleural effusion or\n pneumothorax.  The cardiomediastinal contours are unchanged.",
+    "expected_impression": "Left upper lobe linear opacities at site of prior treatment for lung\n carcinoma.\n \n RECOMMENDATION(S):  If clinically indicated a CT thorax can be considered to\n assess the left upper lobe in order to better differentiate post treatment\n scar from residual cancer.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___ year old man with L shoulder pain, known mass L upper lone on\n pet scan, ?bigger.  // ?L upper lobe mass\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  ___\n \n FINDINGS: \n \n The previously described left upper lobe mass is not seen on this radiograph. \n Linear opacities in the left upper lobe can be and a sequelae of prior\n treatment lung carcinoma.  No pulmonary edema, pleural effusion or\n pneumothorax.  The cardiomediastinal contours are unchanged.\n \n IMPRESSION: \n \n Left upper lobe linear opacities at site of prior treatment for lung\n carcinoma.\n \n RECOMMENDATION(S):  If clinically indicated a CT thorax can be considered to\n assess the left upper lobe in order to better differentiate post treatment\n scar from residual cancer.\n",
+    "subject_id": "13450581",
+    "target_study_id": "53158366",
+    "num_prior_studies": 6
+  }
+]

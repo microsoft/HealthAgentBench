@@ -1,0 +1,89 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11928692_53222889",
+    "subject_id": "11928692",
+    "target_study": {
+      "study_id": "53222889",
+      "study_datetime": "2175-03-02 13:35:56",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "21d9c2b2-5e94a363-aa3b9d61-a6858503-795b84ab",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2175-03-02_13-35-56_s53222889/21d9c2b2-5e94a363-aa3b9d61-a6858503-795b84ab.jpg"
+        },
+        {
+          "dicom_id": "2ea8f7b3-8e1fd4ff-87a29ebc-702190c4-45123977",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2175-03-02_13-35-56_s53222889/2ea8f7b3-8e1fd4ff-87a29ebc-702190c4-45123977.jpg"
+        },
+        {
+          "dicom_id": "6bd4c046-822ab57b-56c2ade0-5990ad2d-449af809",
+          "view_position": "AP",
+          "path": "/data/patient/2175-03-02_13-35-56_s53222889/6bd4c046-822ab57b-56c2ade0-5990ad2d-449af809.jpg"
+        },
+        {
+          "dicom_id": "d1b9813f-08d920a6-85c9bb6f-c516c1ee-a56f9d38",
+          "view_position": "AP",
+          "path": "/data/patient/2175-03-02_13-35-56_s53222889/d1b9813f-08d920a6-85c9bb6f-c516c1ee-a56f9d38.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "___ year old woman with persistent cough and bilateral crackles \n // rule out pneumonia",
+        "TECHNIQUE": "Chest PA and lateral",
+        "COMPARISON": "Prior radiographs the chest dated ___ to ___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "54164323",
+        "study_datetime": "2172-07-31 01:24:45",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "129d1cfc-6a372c68-c84b5eaf-53903d40-670d6d9c",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2172-07-31_01-24-45_s54164323/129d1cfc-6a372c68-c84b5eaf-53903d40-670d6d9c.jpg"
+          },
+          {
+            "dicom_id": "3606dd6e-1d4e216a-0251de47-cb1445d6-fcb76ed3",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2172-07-31_01-24-45_s54164323/3606dd6e-1d4e216a-0251de47-cb1445d6-fcb76ed3.jpg"
+          },
+          {
+            "dicom_id": "405e6cc1-70b9d9b3-1c752677-010c4ee9-b217b783",
+            "view_position": "AP",
+            "path": "/data/patient/2172-07-31_01-24-45_s54164323/405e6cc1-70b9d9b3-1c752677-010c4ee9-b217b783.jpg"
+          },
+          {
+            "dicom_id": "5475bdcc-37f6b853-142a043b-3e6572f9-5b71d475",
+            "view_position": "AP",
+            "path": "/data/patient/2172-07-31_01-24-45_s54164323/5475bdcc-37f6b853-142a043b-3e6572f9-5b71d475.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2172-07-31_01-24-45_s54164323/report.txt"
+      },
+      {
+        "study_id": "55947318",
+        "study_datetime": "2173-02-27 18:49:39",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "2c5c8a39-6ae3dd9e-2b4d5279-6bb07505-1b57f5ab",
+            "view_position": "AP",
+            "path": "/data/patient/2173-02-27_18-49-39_s55947318/2c5c8a39-6ae3dd9e-2b4d5279-6bb07505-1b57f5ab.jpg"
+          },
+          {
+            "dicom_id": "df66e950-78bfa09d-ccc14e43-193ef713-3c2bd5a4",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2173-02-27_18-49-39_s55947318/df66e950-78bfa09d-ccc14e43-193ef713-3c2bd5a4.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2173-02-27_18-49-39_s55947318/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 11928692\nTarget Study ID: 53222889\nTarget Study Date: 2175-03-02 13:35:56\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: LATERAL, LATERAL, AP, AP\n\nThis patient has 2 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: ___ year old woman with persistent cough and bilateral crackles \n // rule out pneumonia\n\nTECHNIQUE: Chest PA and lateral\n\nCOMPARISON: Prior radiographs the chest dated ___ to ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

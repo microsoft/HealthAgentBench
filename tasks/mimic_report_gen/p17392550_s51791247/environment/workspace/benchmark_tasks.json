@@ -1,0 +1,69 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17392550_51791247",
+    "subject_id": "17392550",
+    "target_study": {
+      "study_id": "51791247",
+      "study_datetime": "2139-01-03 19:52:00",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "9adf1edf-b9cd0878-60c0cc62-6a5125d2-d77223ee",
+          "view_position": "AP",
+          "path": "/data/patient/2139-01-03_19-52-00_s51791247/9adf1edf-b9cd0878-60c0cc62-6a5125d2-d77223ee.jpg"
+        },
+        {
+          "dicom_id": "aa0846b4-d00f5edd-d3cfefd0-2318b977-1c035245",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2139-01-03_19-52-00_s51791247/aa0846b4-d00f5edd-d3cfefd0-2318b977-1c035245.jpg"
+        },
+        {
+          "dicom_id": "b016415e-902049d0-94f8ea46-c19425cf-f3a5dfb6",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2139-01-03_19-52-00_s51791247/b016415e-902049d0-94f8ea46-c19425cf-f3a5dfb6.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "Recent hospitalizations, cough, and increasing abdominal\n distention.",
+        "COMPARISON": "Chest CTA, ___ and chest radiograph, ___.",
+        "TECHNIQUE": "PA and lateral views of the chest."
+      }
+    },
+    "history": [
+      {
+        "study_id": "53641457",
+        "study_datetime": "2138-11-29 14:13:12",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "6029ba23-5d73e768-c1fe417b-73eb330f-9c507e77",
+            "view_position": "PA",
+            "path": "/data/patient/2138-11-29_14-13-12_s53641457/6029ba23-5d73e768-c1fe417b-73eb330f-9c507e77.jpg"
+          },
+          {
+            "dicom_id": "c08e8ebb-14a3a1f0-0da1ea4e-1b2412fb-f2d4da54",
+            "view_position": "LL",
+            "path": "/data/patient/2138-11-29_14-13-12_s53641457/c08e8ebb-14a3a1f0-0da1ea4e-1b2412fb-f2d4da54.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2138-11-29_14-13-12_s53641457/report.txt"
+      },
+      {
+        "study_id": "57779343",
+        "study_datetime": "2138-12-26 08:06:16",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "04df00d4-612ef140-93265d75-e89c65e2-d6451eb9",
+            "view_position": "AP",
+            "path": "/data/patient/2138-12-26_08-06-16_s57779343/04df00d4-612ef140-93265d75-e89c65e2-d6451eb9.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2138-12-26_08-06-16_s57779343/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 17392550\nTarget Study ID: 51791247\nTarget Study Date: 2139-01-03 19:52:00\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: AP, LATERAL, LATERAL\n\nThis patient has 2 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: Recent hospitalizations, cough, and increasing abdominal\n distention.\n\nTECHNIQUE: PA and lateral views of the chest.\n\nCOMPARISON: Chest CTA, ___ and chest radiograph, ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

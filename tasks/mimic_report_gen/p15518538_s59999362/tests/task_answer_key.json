@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15518538_59999362",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lungs are clear without focal consolidation.  No pleural effusion or\n pneumothorax is seen. The cardiac and mediastinal silhouettes are\n unremarkable.  The patient is status post median sternotomy with the superior\n most 2 sternotomy wires again seen to be fractured.\n\nIMPRESSION:\nNo acute cardiopulmonary process.",
+    "expected_findings": "The lungs are clear without focal consolidation.  No pleural effusion or\n pneumothorax is seen. The cardiac and mediastinal silhouettes are\n unremarkable.  The patient is status post median sternotomy with the superior\n most 2 sternotomy wires again seen to be fractured.",
+    "expected_impression": "No acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:\n Chest:  Frontal and lateral views\n \n INDICATION:  History: ___M with c/o CP  // ? PNA\n \n TECHNIQUE:  Chest Frontal and Lateral\n \n COMPARISON:  ___\n \n FINDINGS: \n \n The lungs are clear without focal consolidation.  No pleural effusion or\n pneumothorax is seen. The cardiac and mediastinal silhouettes are\n unremarkable.  The patient is status post median sternotomy with the superior\n most 2 sternotomy wires again seen to be fractured.\n \n IMPRESSION: \n \n No acute cardiopulmonary process.\n",
+    "subject_id": "15518538",
+    "target_study_id": "59999362",
+    "num_prior_studies": 4
+  }
+]

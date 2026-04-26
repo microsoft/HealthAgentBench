@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15114531_51986565",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nLungs are well inflated.  Mild bilateral apical scarring noted.  Subtle\n peribronchial opacity only seen on frontal view in the left lung superior and\n lateral to the left hilus is unchanged since prior examination.  The lungs are\n otherwise clear.  No pleural effusion or pneumothorax.  Heart size,\n mediastinal contour, and hila are unremarkable.\n \n Visualized osseous structures are notable for anterior cervical spine fusion\n device.  Mediastinal clips are again seen within the left upper quadrant.\n\nIMPRESSION:\nPersistent subtle peribronchial opacity in left lung is worrisome for early\n pneumonia in the appropriate clinical setting.",
+    "expected_findings": "Lungs are well inflated.  Mild bilateral apical scarring noted.  Subtle\n peribronchial opacity only seen on frontal view in the left lung superior and\n lateral to the left hilus is unchanged since prior examination.  The lungs are\n otherwise clear.  No pleural effusion or pneumothorax.  Heart size,\n mediastinal contour, and hila are unremarkable.\n \n Visualized osseous structures are notable for anterior cervical spine fusion\n device.  Mediastinal clips are again seen within the left upper quadrant.",
+    "expected_impression": "Persistent subtle peribronchial opacity in left lung is worrisome for early\n pneumonia in the appropriate clinical setting.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  Chest radiograph.\n \n INDICATION:  ___ year old woman with cough, sob.  Assess for pneumonia,\n pulmonary edema, interval change\n \n TECHNIQUE:  Chest PA and lateral\n \n COMPARISON:  Chest radiographs ___, ___, ___,\n ___.\n \n FINDINGS: \n \n Lungs are well inflated.  Mild bilateral apical scarring noted.  Subtle\n peribronchial opacity only seen on frontal view in the left lung superior and\n lateral to the left hilus is unchanged since prior examination.  The lungs are\n otherwise clear.  No pleural effusion or pneumothorax.  Heart size,\n mediastinal contour, and hila are unremarkable.\n \n Visualized osseous structures are notable for anterior cervical spine fusion\n device.  Mediastinal clips are again seen within the left upper quadrant.\n \n IMPRESSION: \n \n Persistent subtle peribronchial opacity in left lung is worrisome for early\n pneumonia in the appropriate clinical setting.\n",
+    "subject_id": "15114531",
+    "target_study_id": "51986565",
+    "num_prior_studies": 36
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11474065_56451222",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThere is persistent right base atelectasis/ scarring.  No new focal\n consolidation is seen.  There is no large pleural effusion or pneumothorax. \n Cardiac and mediastinal silhouettes are stable.\n\nIMPRESSION:\nNo significant interval change.",
+    "expected_findings": "There is persistent right base atelectasis/ scarring.  No new focal\n consolidation is seen.  There is no large pleural effusion or pneumothorax. \n Cardiac and mediastinal silhouettes are stable.",
+    "expected_impression": "No significant interval change.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  History: ___F with dyspnea  // infiltrate?\n \n TECHNIQUE:  Single frontal view of the chest\n \n COMPARISON:  ___\n \n FINDINGS: \n \n There is persistent right base atelectasis/ scarring.  No new focal\n consolidation is seen.  There is no large pleural effusion or pneumothorax. \n Cardiac and mediastinal silhouettes are stable.\n \n IMPRESSION: \n \n No significant interval change.\n",
+    "subject_id": "11474065",
+    "target_study_id": "56451222",
+    "num_prior_studies": 27
+  }
+]

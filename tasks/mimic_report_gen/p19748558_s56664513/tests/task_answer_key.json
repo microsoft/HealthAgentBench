@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_19748558_56664513",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nLung volumes are somewhat low, which accentuates bronchovascular markings but\n the lungs appear clear.  The cardiomediastinal and hilar contours are within\n normal limits.  There is no focal consolidation, pleural effusion or\n pneumothorax identified. No osseous abnormalities are identified.\n\nIMPRESSION:\nLow lung volumes. No acute cardiopulmonary abnormality.",
+    "expected_findings": "Lung volumes are somewhat low, which accentuates bronchovascular markings but\n the lungs appear clear.  The cardiomediastinal and hilar contours are within\n normal limits.  There is no focal consolidation, pleural effusion or\n pneumothorax identified. No osseous abnormalities are identified.",
+    "expected_impression": "Low lung volumes. No acute cardiopulmonary abnormality.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  ___ year old man with hypoxia, leukocytosis, and AMS.  // Please\n eval for e/o pneumonia or aspiration.\n \n TECHNIQUE:  Single AP view of the chest\n \n COMPARISON:  Multiple chest radiographs the most recent on ___\n \n FINDINGS: \n \n Lung volumes are somewhat low, which accentuates bronchovascular markings but\n the lungs appear clear.  The cardiomediastinal and hilar contours are within\n normal limits.  There is no focal consolidation, pleural effusion or\n pneumothorax identified. No osseous abnormalities are identified.\n \n IMPRESSION: \n \n Low lung volumes. No acute cardiopulmonary abnormality.\n",
+    "subject_id": "19748558",
+    "target_study_id": "56664513",
+    "num_prior_studies": 7
+  }
+]

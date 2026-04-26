@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11934114_57363067",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThere is interval worsening of now mild-to-moderate interstitial pulmonary\n edema and small-to-moderate bilateral layering pleural effusions.  There is no\n evidence of pneumothorax.  There is associated bibasilar atelectasis with no\n focal opacities concerning for pneumonia.  The cardiomediastinal and hilar\n contours are stable demonstrating moderate cardiomegaly.  Note is made of\n multiple left-sided rib fractures that in retrospect can be demonstrated on\n radiographs from ___.\n\nIMPRESSION:\n1.  Worsened now mild-to-moderate interstitial pulmonary edema and\n small-to-moderate bilateral layering pleural effusions.\n \n 2.  Left-sided rib fractures in retrospect apparent since at least ___.",
+    "expected_findings": "There is interval worsening of now mild-to-moderate interstitial pulmonary\n edema and small-to-moderate bilateral layering pleural effusions.  There is no\n evidence of pneumothorax.  There is associated bibasilar atelectasis with no\n focal opacities concerning for pneumonia.  The cardiomediastinal and hilar\n contours are stable demonstrating moderate cardiomegaly.  Note is made of\n multiple left-sided rib fractures that in retrospect can be demonstrated on\n radiographs from ___.",
+    "expected_impression": "1.  Worsened now mild-to-moderate interstitial pulmonary edema and\n small-to-moderate bilateral layering pleural effusions.\n \n 2.  Left-sided rib fractures in retrospect apparent since at least ___.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old female with urosepsis and respiratory distress with\n new oxygen requirement.  Evaluate for acute prior cardiopulmonary process.\n \n EXAMINATION:  Multiple frontal chest radiographs.\n \n COMPARISONS:  ___ and ___.\n \n FINDINGS:\n \n There is interval worsening of now mild-to-moderate interstitial pulmonary\n edema and small-to-moderate bilateral layering pleural effusions.  There is no\n evidence of pneumothorax.  There is associated bibasilar atelectasis with no\n focal opacities concerning for pneumonia.  The cardiomediastinal and hilar\n contours are stable demonstrating moderate cardiomegaly.  Note is made of\n multiple left-sided rib fractures that in retrospect can be demonstrated on\n radiographs from ___.\n \n IMPRESSION:\n 1.  Worsened now mild-to-moderate interstitial pulmonary edema and\n small-to-moderate bilateral layering pleural effusions.\n \n 2.  Left-sided rib fractures in retrospect apparent since at least ___.\n",
+    "subject_id": "11934114",
+    "target_study_id": "57363067",
+    "num_prior_studies": 11
+  }
+]

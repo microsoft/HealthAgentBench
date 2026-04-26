@@ -1,0 +1,92 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17288844_54644366",
+    "subject_id": "17288844",
+    "target_study": {
+      "study_id": "54644366",
+      "study_datetime": "2197-09-02 01:01:24",
+      "procedure": "CHEST (PORTABLE AP)",
+      "views": [
+        {
+          "dicom_id": "adcf4325-aa59cd31-be329869-32fd0147-d3cd1387",
+          "view_position": "AP",
+          "path": "/data/patient/2197-09-02_01-01-24_s54644366/adcf4325-aa59cd31-be329869-32fd0147-d3cd1387.jpg"
+        }
+      ],
+      "given_sections": {
+        "HISTORY": "___-year-old male status post STEMI, now with new oxygen\n desaturations.\n \n STUDY:  Semi-erect portable AP chest radiograph.",
+        "COMPARISON": "Multiple chest radiographs from ___ through ___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "53298293",
+        "study_datetime": "2197-08-29 13:51:47",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "c6b71b77-d56881b6-ee8c63bc-6ee0be88-89856367",
+            "view_position": "AP",
+            "path": "/data/patient/2197-08-29_13-51-47_s53298293/c6b71b77-d56881b6-ee8c63bc-6ee0be88-89856367.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-08-29_13-51-47_s53298293/report.txt"
+      },
+      {
+        "study_id": "52481016",
+        "study_datetime": "2197-08-29 02:52:36",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "c57c824d-1eddb1d5-5933f11b-3da0b20b-0bd14eef",
+            "view_position": "AP",
+            "path": "/data/patient/2197-08-29_02-52-36_s52481016/c57c824d-1eddb1d5-5933f11b-3da0b20b-0bd14eef.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-08-29_02-52-36_s52481016/report.txt"
+      },
+      {
+        "study_id": "51904170",
+        "study_datetime": "2197-08-30 07:43:34",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "cf6229c4-0dbb5dd3-64610954-17ed414a-c7d2837d",
+            "view_position": "AP",
+            "path": "/data/patient/2197-08-30_07-43-34_s51904170/cf6229c4-0dbb5dd3-64610954-17ed414a-c7d2837d.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-08-30_07-43-34_s51904170/report.txt"
+      },
+      {
+        "study_id": "52302794",
+        "study_datetime": "2197-08-31 08:23:40",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "e12f3c50-f3483123-b58a8f99-6e949bb7-98729b1a",
+            "view_position": "AP",
+            "path": "/data/patient/2197-08-31_08-23-40_s52302794/e12f3c50-f3483123-b58a8f99-6e949bb7-98729b1a.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-08-31_08-23-40_s52302794/report.txt"
+      },
+      {
+        "study_id": "53092956",
+        "study_datetime": "2197-09-01 07:33:32",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "930dd047-b21f81bf-197ca30e-463d627b-aedbcdc3",
+            "view_position": "AP",
+            "path": "/data/patient/2197-09-01_07-33-32_s53092956/930dd047-b21f81bf-197ca30e-463d627b-aedbcdc3.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2197-09-01_07-33-32_s53092956/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 17288844\nTarget Study ID: 54644366\nTarget Study Date: 2197-09-02 01:01:24\nTarget Procedure: CHEST (PORTABLE AP)\nTarget Views: AP\n\nThis patient has 5 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nHISTORY: ___-year-old male status post STEMI, now with new oxygen\n desaturations.\n \n STUDY:  Semi-erect portable AP chest radiograph.\n\nCOMPARISON: Multiple chest radiographs from ___ through ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

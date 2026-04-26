@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_12340737_51192088",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lungs are low in volume but otehrwise clear. Left hemidiaphragm\n is somewhat obscured in its lateral-most component, though this could be\n projectional. The left lung base is poorly imaged. There is no definite\n pleural effusion or pneumothorax.  Stable marked cardiomegaly is noted.\n\nIMPRESSION:\nQuestionable opacity in left base. When the patient's clinical\n status improves, repeat evaluation by PA and lateral chest radiograph is\n recommended to exclude a pleural effusion or left basilar parenchymal process.",
+    "expected_findings": "The lungs are low in volume but otehrwise clear. Left hemidiaphragm\n is somewhat obscured in its lateral-most component, though this could be\n projectional. The left lung base is poorly imaged. There is no definite\n pleural effusion or pneumothorax.  Stable marked cardiomegaly is noted.",
+    "expected_impression": "Questionable opacity in left base. When the patient's clinical\n status improves, repeat evaluation by PA and lateral chest radiograph is\n recommended to exclude a pleural effusion or left basilar parenchymal process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION: A-fib, assess for acute cardiopulmonary abnormality\n \n TECHNIQUE: Portable supine chest radiograph\n \n FINDINGS:  The lungs are low in volume but otehrwise clear. Left hemidiaphragm\n is somewhat obscured in its lateral-most component, though this could be\n projectional. The left lung base is poorly imaged. There is no definite\n pleural effusion or pneumothorax.  Stable marked cardiomegaly is noted.\n \n IMPRESSION: Questionable opacity in left base. When the patient's clinical\n status improves, repeat evaluation by PA and lateral chest radiograph is\n recommended to exclude a pleural effusion or left basilar parenchymal process.\n",
+    "subject_id": "12340737",
+    "target_study_id": "51192088",
+    "num_prior_studies": 1
+  }
+]

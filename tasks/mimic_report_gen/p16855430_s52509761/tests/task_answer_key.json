@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_16855430_52509761",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nSemi-upright portable chest radiograph demonstrates interval\n improved aeration of the bilateral upper lungs; however, there is persistent\n if not slightly improved bibasilar opacifications, possibly due to atelectasis\n and bilateral pleural effusions, though superimposed infectious process is not\n excluded.\n\nIMPRESSION:\nImproved aeration of upper lungs with stable if not slightly\n improved bibasilar opacifications, likely a combination of atelectasis and\n effusions, though pneumonia is not excluded.",
+    "expected_findings": "Semi-upright portable chest radiograph demonstrates interval\n improved aeration of the bilateral upper lungs; however, there is persistent\n if not slightly improved bibasilar opacifications, possibly due to atelectasis\n and bilateral pleural effusions, though superimposed infectious process is not\n excluded.",
+    "expected_impression": "Improved aeration of upper lungs with stable if not slightly\n improved bibasilar opacifications, likely a combination of atelectasis and\n effusions, though pneumonia is not excluded.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  Shortness of breath, afebrile, assess for pulmonary edema.\n \n COMPARISON:  Comparison is made to multiple prior chest radiographs, most\n recently dated ___.\n \n FINDINGS:  Semi-upright portable chest radiograph demonstrates interval\n improved aeration of the bilateral upper lungs; however, there is persistent\n if not slightly improved bibasilar opacifications, possibly due to atelectasis\n and bilateral pleural effusions, though superimposed infectious process is not\n excluded.\n \n IMPRESSION:  Improved aeration of upper lungs with stable if not slightly\n improved bibasilar opacifications, likely a combination of atelectasis and\n effusions, though pneumonia is not excluded.\n",
+    "subject_id": "16855430",
+    "target_study_id": "52509761",
+    "num_prior_studies": 21
+  }
+]

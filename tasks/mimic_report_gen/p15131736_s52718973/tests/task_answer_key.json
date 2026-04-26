@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15131736_52718973",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nRe- demonstrated is enlargement of the cardiomediastinal silhouette.  There is\n elevation of the right hemidiaphragm.  Evaluation of the left lung base is\n less than optimal due to underpenetration from overlying body habitus although\n no definite focal consolidation is seen.  Pulmonary edema persists.  No large\n pleural effusion seen.\n\nIMPRESSION:\nPulmonary edema and enlargement of the cardiac silhouette.  No definite focal\n consolidation to suggest pneumonia.",
+    "expected_findings": "Re- demonstrated is enlargement of the cardiomediastinal silhouette.  There is\n elevation of the right hemidiaphragm.  Evaluation of the left lung base is\n less than optimal due to underpenetration from overlying body habitus although\n no definite focal consolidation is seen.  Pulmonary edema persists.  No large\n pleural effusion seen.",
+    "expected_impression": "Pulmonary edema and enlargement of the cardiac silhouette.  No definite focal\n consolidation to suggest pneumonia.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  History: ___F with AMS  // ?pneumonia\n \n TECHNIQUE:  Single frontal view of the chest\n \n COMPARISON:  ___\n \n FINDINGS: \n \n Re- demonstrated is enlargement of the cardiomediastinal silhouette.  There is\n elevation of the right hemidiaphragm.  Evaluation of the left lung base is\n less than optimal due to underpenetration from overlying body habitus although\n no definite focal consolidation is seen.  Pulmonary edema persists.  No large\n pleural effusion seen.\n \n IMPRESSION: \n \n Pulmonary edema and enlargement of the cardiac silhouette.  No definite focal\n consolidation to suggest pneumonia.\n",
+    "subject_id": "15131736",
+    "target_study_id": "52718973",
+    "num_prior_studies": 77
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_14081759_50184397",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe heart is at the upper limits of normal size.  The mediastinal\n and hilar contours appear unchanged.  Hyperinflation is noted with persistent\n reticular opacities projecting over the left lower lung but markedly improved\n since the prior radiographs.  Thin flowing anterior syndesmophytes are present\n throughout the thoracic spine.  This appearance has an association with\n spondyloarthropathies.\n\nIMPRESSION:\n1.  Improving pneumonia.\n \n 2.  Thin spinal syndesmophytes suggesting the possibility of an inflammatory\n arthropathy such as could be seen with ankylosing spondylitis; clinical\n correlation is suggested.",
+    "expected_findings": "The heart is at the upper limits of normal size.  The mediastinal\n and hilar contours appear unchanged.  Hyperinflation is noted with persistent\n reticular opacities projecting over the left lower lung but markedly improved\n since the prior radiographs.  Thin flowing anterior syndesmophytes are present\n throughout the thoracic spine.  This appearance has an association with\n spondyloarthropathies.",
+    "expected_impression": "1.  Improving pneumonia.\n \n 2.  Thin spinal syndesmophytes suggesting the possibility of an inflammatory\n arthropathy such as could be seen with ankylosing spondylitis; clinical\n correlation is suggested.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n CHEST RADIOGRAPHS\n \n HISTORY:  Known pneumocystis pneumonia.\n \n COMPARISONS:  ___.\n \n TECHNIQUE:  Chest, AP upright and lateral.\n \n FINDINGS:  The heart is at the upper limits of normal size.  The mediastinal\n and hilar contours appear unchanged.  Hyperinflation is noted with persistent\n reticular opacities projecting over the left lower lung but markedly improved\n since the prior radiographs.  Thin flowing anterior syndesmophytes are present\n throughout the thoracic spine.  This appearance has an association with\n spondyloarthropathies.\n \n IMPRESSION: \n  \n 1.  Improving pneumonia.\n \n 2.  Thin spinal syndesmophytes suggesting the possibility of an inflammatory\n arthropathy such as could be seen with ankylosing spondylitis; clinical\n correlation is suggested.\n",
+    "subject_id": "14081759",
+    "target_study_id": "50184397",
+    "num_prior_studies": 2
+  }
+]

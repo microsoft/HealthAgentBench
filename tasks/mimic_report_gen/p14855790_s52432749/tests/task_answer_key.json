@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_14855790_52432749",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nNo significant change compared to the prior exam. The lungs are well-expanded\n and clear. No focal consolidation, pleural effusion, pulmonary edema, or\n pneumothorax. The cardiomediastinal silhouette, hila, and pleura are within\n normal limits. No acute osseous abnormality.\n\nIMPRESSION:\nNo acute cardiopulmonary process, including no focal consolidation to suggest\n pneumonia.",
+    "expected_findings": "No significant change compared to the prior exam. The lungs are well-expanded\n and clear. No focal consolidation, pleural effusion, pulmonary edema, or\n pneumothorax. The cardiomediastinal silhouette, hila, and pleura are within\n normal limits. No acute osseous abnormality.",
+    "expected_impression": "No acute cardiopulmonary process, including no focal consolidation to suggest\n pneumonia.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n EXAMINATION:  CHEST (PA AND LAT)\n \n INDICATION:  ___-year-old man with HTN, HLD, CAD s/p PCI ___, DM2 presenting\n with chest pressure, also productive cough x 4 weeks; evaluate for focal\n consolidation to suggest PNA, airway disease?\n \n COMPARISON:  Chest radiograph dated ___.\n \n FINDINGS: \n \n No significant change compared to the prior exam. The lungs are well-expanded\n and clear. No focal consolidation, pleural effusion, pulmonary edema, or\n pneumothorax. The cardiomediastinal silhouette, hila, and pleura are within\n normal limits. No acute osseous abnormality.\n \n IMPRESSION: \n \n No acute cardiopulmonary process, including no focal consolidation to suggest\n pneumonia.\n",
+    "subject_id": "14855790",
+    "target_study_id": "52432749",
+    "num_prior_studies": 2
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "subject_id": "15792940",
+  "target_study_id": "58501970",
+  "studies": [
+    {
+      "folder": "2162-02-08_19-26-47_s52559222",
+      "study_id": "52559222",
+      "study_datetime": "2162-02-08 19:26:47",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "e1b1e9b3-4c57d726-b37866dd-872d5448-027a7484",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2162-02-11_13-02-23_s58501970",
+      "study_id": "58501970",
+      "study_datetime": "2162-02-11 13:02:23",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": true,
+      "views": [
+        {
+          "dicom_id": "6a53a787-2e1025f2-59359f42-140f8938-45899305",
+          "view_position": "AP"
+        }
+      ]
+    }
+  ]
+}

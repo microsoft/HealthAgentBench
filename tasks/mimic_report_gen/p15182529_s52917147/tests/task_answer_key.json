@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15182529_52917147",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lungs are well expanded and clear.  There is scarring in the\n left lung base, unchanged from prior exam.  Cardiomediastinal silhouette is\n unremarkable.  There is no pneumothorax or pleural effusion.  Visualized\n osseous structures are unremarkable.\n\nIMPRESSION:\nNo acute cardiopulmonary process.",
+    "expected_findings": "The lungs are well expanded and clear.  There is scarring in the\n left lung base, unchanged from prior exam.  Cardiomediastinal silhouette is\n unremarkable.  There is no pneumothorax or pleural effusion.  Visualized\n osseous structures are unremarkable.",
+    "expected_impression": "No acute cardiopulmonary process.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n HISTORY:  Worsening weakness with fall in shower 2 days ago and head injury.  \n \n COMPARISON:  Comparison exam chest radiographs from ___ and ___.  \n \n FINDINGS:  The lungs are well expanded and clear.  There is scarring in the\n left lung base, unchanged from prior exam.  Cardiomediastinal silhouette is\n unremarkable.  There is no pneumothorax or pleural effusion.  Visualized\n osseous structures are unremarkable.  \n \n IMPRESSION:  No acute cardiopulmonary process.\n",
+    "subject_id": "15182529",
+    "target_study_id": "52917147",
+    "num_prior_studies": 2
+  }
+]

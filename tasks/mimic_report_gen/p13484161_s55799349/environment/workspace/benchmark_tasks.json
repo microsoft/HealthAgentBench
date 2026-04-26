@@ -1,0 +1,93 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13484161_55799349",
+    "subject_id": "13484161",
+    "target_study": {
+      "study_id": "55799349",
+      "study_datetime": "2179-09-11 21:06:51",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "08614ec0-0b852187-5ffa5362-16e023b7-1366cc0f",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2179-09-11_21-06-51_s55799349/08614ec0-0b852187-5ffa5362-16e023b7-1366cc0f.jpg"
+        },
+        {
+          "dicom_id": "d45a4f1c-aa9b0b1d-714e476e-b6f28f01-34d6bcdc",
+          "view_position": "AP",
+          "path": "/data/patient/2179-09-11_21-06-51_s55799349/d45a4f1c-aa9b0b1d-714e476e-b6f28f01-34d6bcdc.jpg"
+        }
+      ],
+      "given_sections": {
+        "COMPARISON": "___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "54526081",
+        "study_datetime": "2177-10-03 09:22:52",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "95906129-89721086-cc8154fa-07c91f7e-3c5ea511",
+            "view_position": "AP",
+            "path": "/data/patient/2177-10-03_09-22-52_s54526081/95906129-89721086-cc8154fa-07c91f7e-3c5ea511.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2177-10-03_09-22-52_s54526081/report.txt"
+      },
+      {
+        "study_id": "56546504",
+        "study_datetime": "2177-10-16 11:46:20",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "1d7ab682-be7aac39-ca9dd307-1d094e9c-b2f306d6",
+            "view_position": "LL",
+            "path": "/data/patient/2177-10-16_11-46-20_s56546504/1d7ab682-be7aac39-ca9dd307-1d094e9c-b2f306d6.jpg"
+          },
+          {
+            "dicom_id": "c771fda7-294984e2-40d6b8b3-eeec5c1c-95760ad3",
+            "view_position": "PA",
+            "path": "/data/patient/2177-10-16_11-46-20_s56546504/c771fda7-294984e2-40d6b8b3-eeec5c1c-95760ad3.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2177-10-16_11-46-20_s56546504/report.txt"
+      },
+      {
+        "study_id": "51009376",
+        "study_datetime": "2177-10-16 08:37:33",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "e120ed69-a974706b-30acf181-38be212f-48eb872d",
+            "view_position": "AP",
+            "path": "/data/patient/2177-10-16_08-37-33_s51009376/e120ed69-a974706b-30acf181-38be212f-48eb872d.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2177-10-16_08-37-33_s51009376/report.txt"
+      },
+      {
+        "study_id": "55812727",
+        "study_datetime": "2178-10-16 14:16:35",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "0f3b10cd-b3e6a500-20370ada-6e3ab8b3-ad1019c5",
+            "view_position": "PA",
+            "path": "/data/patient/2178-10-16_14-16-35_s55812727/0f3b10cd-b3e6a500-20370ada-6e3ab8b3-ad1019c5.jpg"
+          },
+          {
+            "dicom_id": "42c8ec81-8a76040b-dacb834e-034b24d0-da9eedbe",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2178-10-16_14-16-35_s55812727/42c8ec81-8a76040b-dacb834e-034b24d0-da9eedbe.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2178-10-16_14-16-35_s55812727/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 13484161\nTarget Study ID: 55799349\nTarget Study Date: 2179-09-11 21:06:51\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: LATERAL, AP\n\nThis patient has 4 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nCOMPARISON: ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13120957_57697281",
+    "subject_id": "13120957",
+    "target_study": {
+      "study_id": "57697281",
+      "study_datetime": "2167-10-21 13:54:28",
+      "procedure": "CHEST (PA AND LAT)",
+      "views": [
+        {
+          "dicom_id": "159f8b16-a8da78c3-2dab8f92-5577b199-2d544ffc",
+          "view_position": "LATERAL",
+          "path": "/data/patient/2167-10-21_13-54-28_s57697281/159f8b16-a8da78c3-2dab8f92-5577b199-2d544ffc.jpg"
+        },
+        {
+          "dicom_id": "95133322-5ad8fb3e-dea16125-70e718db-6cef790a",
+          "view_position": "AP",
+          "path": "/data/patient/2167-10-21_13-54-28_s57697281/95133322-5ad8fb3e-dea16125-70e718db-6cef790a.jpg"
+        }
+      ],
+      "given_sections": {
+        "INDICATION": "___M with patellar tendon rupture  // pre-op",
+        "TECHNIQUE": "AP and lateral views of the chest.",
+        "COMPARISON": "___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "55681597",
+        "study_datetime": "2163-05-26 08:06:04",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "98fa0073-4a72a84a-07d17d1b-80f5bc40-e729e67e",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2163-05-26_08-06-04_s55681597/98fa0073-4a72a84a-07d17d1b-80f5bc40-e729e67e.jpg"
+          },
+          {
+            "dicom_id": "d53ea806-f9b5f637-2a0ee3e9-a8409e3d-56e8cf0f",
+            "view_position": "PA",
+            "path": "/data/patient/2163-05-26_08-06-04_s55681597/d53ea806-f9b5f637-2a0ee3e9-a8409e3d-56e8cf0f.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2163-05-26_08-06-04_s55681597/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 13120957\nTarget Study ID: 57697281\nTarget Study Date: 2167-10-21 13:54:28\nTarget Procedure: CHEST (PA AND LAT)\nTarget Views: LATERAL, AP\n\nThis patient has 1 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nINDICATION: ___M with patellar tendon rupture  // pre-op\n\nTECHNIQUE: AP and lateral views of the chest.\n\nCOMPARISON: ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11378150_52705433",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nAP and lateral views of the chest are compared to previous exam\n from ___.  Postoperative changes of left upper lobectomy are again\n seen with resection cavity completely opacified, without visualized\n pneumothorax.  Slightly increased linear right basilar opacity is seen. \n Elsewhere, the lungs are hyperinflated but clear of confluent consolidation. \n Cardiomediastinal silhouette is stable as are the osseous and soft tissue\n structures.\n\nIMPRESSION:\nRight basilar opacity may be due to atelectasis; however,\n infection is not completely excluded.  Stable postoperative changes of left\n upper lobectomy.",
+    "expected_findings": "AP and lateral views of the chest are compared to previous exam\n from ___.  Postoperative changes of left upper lobectomy are again\n seen with resection cavity completely opacified, without visualized\n pneumothorax.  Slightly increased linear right basilar opacity is seen. \n Elsewhere, the lungs are hyperinflated but clear of confluent consolidation. \n Cardiomediastinal silhouette is stable as are the osseous and soft tissue\n structures.",
+    "expected_impression": "Right basilar opacity may be due to atelectasis; however,\n infection is not completely excluded.  Stable postoperative changes of left\n upper lobectomy.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n CHEST, TWO VIEWS:  ___\n \n HISTORY:  ___-year-old male with lung cancer and COPD, on chemotherapy. \n History of left upper lobectomy.\n \n FINDINGS:  AP and lateral views of the chest are compared to previous exam\n from ___.  Postoperative changes of left upper lobectomy are again\n seen with resection cavity completely opacified, without visualized\n pneumothorax.  Slightly increased linear right basilar opacity is seen. \n Elsewhere, the lungs are hyperinflated but clear of confluent consolidation. \n Cardiomediastinal silhouette is stable as are the osseous and soft tissue\n structures.\n \n IMPRESSION:  Right basilar opacity may be due to atelectasis; however,\n infection is not completely excluded.  Stable postoperative changes of left\n upper lobectomy.\n",
+    "subject_id": "11378150",
+    "target_study_id": "52705433",
+    "num_prior_studies": 6
+  }
+]

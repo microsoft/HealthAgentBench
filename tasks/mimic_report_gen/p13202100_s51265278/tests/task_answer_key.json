@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13202100_51265278",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lung volumes are low.  There is similar mild relative elevation\n of the right hemidiaphragm.  The heart is at the upper limits of normal size. \n The lungs appear clear.  There are no pleural effusions or pneumothorax. \n There has been little if any change.\n\nIMPRESSION:\nNo evidence of acute disease.",
+    "expected_findings": "The lung volumes are low.  There is similar mild relative elevation\n of the right hemidiaphragm.  The heart is at the upper limits of normal size. \n The lungs appear clear.  There are no pleural effusions or pneumothorax. \n There has been little if any change.",
+    "expected_impression": "No evidence of acute disease.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n CHEST RADIOGRAPH\n \n COMPARISONS:  ___.\n \n TECHNIQUE:  Chest, portable AP view.\n \n FINDINGS:  The lung volumes are low.  There is similar mild relative elevation\n of the right hemidiaphragm.  The heart is at the upper limits of normal size. \n The lungs appear clear.  There are no pleural effusions or pneumothorax. \n There has been little if any change.\n \n IMPRESSION:  No evidence of acute disease.\n",
+    "subject_id": "13202100",
+    "target_study_id": "51265278",
+    "num_prior_studies": 1
+  }
+]

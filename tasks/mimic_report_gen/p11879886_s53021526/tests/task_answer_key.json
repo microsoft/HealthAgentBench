@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11879886_53021526",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nA left hilar mass is noted, which appears new compared with prior\n exam of ___.  There is also increased vascular markings in the\n remaining lung fields as well as a new left-sided pleural effusion.  There is\n mild-to-moderate cardiomegaly which appears to be slightly worsened compared\n with prior exam.  There is no pneumothorax.  Sternotomy wires are intact. \n Multiple surgical clips are noted in the left hemithorax.\n\nIMPRESSION:\n1.  New left hilar mass.  A CT is recommended for further assessment. \n 2.  Cardiomegaly associated to increased vascular markings and pleural\n effusion suggests pulmonary vascular congestion.",
+    "expected_findings": "A left hilar mass is noted, which appears new compared with prior\n exam of ___.  There is also increased vascular markings in the\n remaining lung fields as well as a new left-sided pleural effusion.  There is\n mild-to-moderate cardiomegaly which appears to be slightly worsened compared\n with prior exam.  There is no pneumothorax.  Sternotomy wires are intact. \n Multiple surgical clips are noted in the left hemithorax.",
+    "expected_impression": "1.  New left hilar mass.  A CT is recommended for further assessment. \n 2.  Cardiomegaly associated to increased vascular markings and pleural\n effusion suggests pulmonary vascular congestion.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old female with shortness of breath and history of aortic\n stenosis.  Evaluate for evidence of cardiopulmonary process.\n \n COMPARISON:  ___.\n \n TECHNIQUE:  PA and lateral chest radiograph.\n \n FINDINGS:  A left hilar mass is noted, which appears new compared with prior\n exam of ___.  There is also increased vascular markings in the\n remaining lung fields as well as a new left-sided pleural effusion.  There is\n mild-to-moderate cardiomegaly which appears to be slightly worsened compared\n with prior exam.  There is no pneumothorax.  Sternotomy wires are intact. \n Multiple surgical clips are noted in the left hemithorax.\n \n IMPRESSION:  \n 1.  New left hilar mass.  A CT is recommended for further assessment. \n 2.  Cardiomegaly associated to increased vascular markings and pleural\n effusion suggests pulmonary vascular congestion.\n",
+    "subject_id": "11879886",
+    "target_study_id": "53021526",
+    "num_prior_studies": 5
+  }
+]

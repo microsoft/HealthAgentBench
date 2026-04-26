@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_13762730_54472974",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nCardiac silhouette is markedly enlarged, but stable in size, with\n indwelling right atrial and right ventricular pacing leads unchanged in\n position.  The lungs are well expanded and grossly clear except for a small\n calcified granuloma at the left lung apex.  There are no pleural effusions or\n acute skeletal findings.\n\nIMPRESSION:\nStable marked cardiomegaly without evidence of pulmonary edema.",
+    "expected_findings": "Cardiac silhouette is markedly enlarged, but stable in size, with\n indwelling right atrial and right ventricular pacing leads unchanged in\n position.  The lungs are well expanded and grossly clear except for a small\n calcified granuloma at the left lung apex.  There are no pleural effusions or\n acute skeletal findings.",
+    "expected_impression": "Stable marked cardiomegaly without evidence of pulmonary edema.",
+    "full_ground_truth_report": " WET READ: ___ ___ 9:39 PM\n  Severe cardiomegaly. L Pacemaker leads in place. No acute process.\n  \n WET READ VERSION #1 \n ______________________________________________________________________________\n                                 FINAL REPORT\n PA AND LATERAL CHEST OF ___\n \n COMPARISON:  ___ radiograph.\n \n FINDINGS:  Cardiac silhouette is markedly enlarged, but stable in size, with\n indwelling right atrial and right ventricular pacing leads unchanged in\n position.  The lungs are well expanded and grossly clear except for a small\n calcified granuloma at the left lung apex.  There are no pleural effusions or\n acute skeletal findings.\n \n IMPRESSION:  Stable marked cardiomegaly without evidence of pulmonary edema.\n",
+    "subject_id": "13762730",
+    "target_study_id": "54472974",
+    "num_prior_studies": 4
+  }
+]

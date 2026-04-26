@@ -1,0 +1,84 @@
+{
+  "subject_id": "17288844",
+  "target_study_id": "54644366",
+  "studies": [
+    {
+      "folder": "2197-08-29_13-51-47_s53298293",
+      "study_id": "53298293",
+      "study_datetime": "2197-08-29 13:51:47",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "c6b71b77-d56881b6-ee8c63bc-6ee0be88-89856367",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2197-08-29_02-52-36_s52481016",
+      "study_id": "52481016",
+      "study_datetime": "2197-08-29 02:52:36",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "c57c824d-1eddb1d5-5933f11b-3da0b20b-0bd14eef",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2197-08-30_07-43-34_s51904170",
+      "study_id": "51904170",
+      "study_datetime": "2197-08-30 07:43:34",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "cf6229c4-0dbb5dd3-64610954-17ed414a-c7d2837d",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2197-08-31_08-23-40_s52302794",
+      "study_id": "52302794",
+      "study_datetime": "2197-08-31 08:23:40",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "e12f3c50-f3483123-b58a8f99-6e949bb7-98729b1a",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2197-09-01_07-33-32_s53092956",
+      "study_id": "53092956",
+      "study_datetime": "2197-09-01 07:33:32",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": false,
+      "views": [
+        {
+          "dicom_id": "930dd047-b21f81bf-197ca30e-463d627b-aedbcdc3",
+          "view_position": "AP"
+        }
+      ]
+    },
+    {
+      "folder": "2197-09-02_01-01-24_s54644366",
+      "study_id": "54644366",
+      "study_datetime": "2197-09-02 01:01:24",
+      "procedure": "CHEST (PORTABLE AP)",
+      "is_target": true,
+      "views": [
+        {
+          "dicom_id": "adcf4325-aa59cd31-be329869-32fd0147-d3cd1387",
+          "view_position": "AP"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,622 @@
+[
+  {
+    "task_id": "mimic_cxr_report_15114531_51986565",
+    "subject_id": "15114531",
+    "target_study": {
+      "study_id": "51986565",
+      "study_datetime": "2163-04-15 10:58:12",
+      "procedure": "Performed Desc",
+      "views": [
+        {
+          "dicom_id": "232aed3a-74900285-3fa279f4-43c5af2a-e8406c03",
+          "view_position": "PA",
+          "path": "/data/patient/2163-04-15_10-58-12_s51986565/232aed3a-74900285-3fa279f4-43c5af2a-e8406c03.jpg"
+        },
+        {
+          "dicom_id": "cfc5e042-6a1ddb0b-cce9c058-196b90bb-66e5851f",
+          "view_position": "LL",
+          "path": "/data/patient/2163-04-15_10-58-12_s51986565/cfc5e042-6a1ddb0b-cce9c058-196b90bb-66e5851f.jpg"
+        }
+      ],
+      "given_sections": {
+        "EXAMINATION": "Chest radiograph.",
+        "INDICATION": "___ year old woman with cough, sob.  Assess for pneumonia,\n pulmonary edema, interval change",
+        "TECHNIQUE": "Chest PA and lateral",
+        "COMPARISON": "Chest radiographs ___, ___, ___,\n ___."
+      }
+    },
+    "history": [
+      {
+        "study_id": "50498321",
+        "study_datetime": "2158-06-30 12:34:38",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "ea1dfe84-8bf677b6-f51b1859-160571df-4fd62876",
+            "view_position": "",
+            "path": "/data/patient/2158-06-30_12-34-38_s50498321/ea1dfe84-8bf677b6-f51b1859-160571df-4fd62876.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2158-06-30_12-34-38_s50498321/report.txt"
+      },
+      {
+        "study_id": "59217597",
+        "study_datetime": "2158-06-30 13:17:28",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "3221691b-9c2cf204-25e1b236-0413b961-50de4d2e",
+            "view_position": "",
+            "path": "/data/patient/2158-06-30_13-17-28_s59217597/3221691b-9c2cf204-25e1b236-0413b961-50de4d2e.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2158-06-30_13-17-28_s59217597/report.txt"
+      },
+      {
+        "study_id": "53975458",
+        "study_datetime": "2158-10-15 10:38:01",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "4f1bb588-0dc670a4-6ec07af4-aa421e00-6bd3d8db",
+            "view_position": "PA",
+            "path": "/data/patient/2158-10-15_10-38-01_s53975458/4f1bb588-0dc670a4-6ec07af4-aa421e00-6bd3d8db.jpg"
+          },
+          {
+            "dicom_id": "cfb89eed-31e856eb-8dd16dc1-b7337ecf-1bec8801",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2158-10-15_10-38-01_s53975458/cfb89eed-31e856eb-8dd16dc1-b7337ecf-1bec8801.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2158-10-15_10-38-01_s53975458/report.txt"
+      },
+      {
+        "study_id": "51380921",
+        "study_datetime": "2158-10-17 14:47:11",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "0d36ddb1-6fc61579-9d388097-85a29b72-2b1223b9",
+            "view_position": "LL",
+            "path": "/data/patient/2158-10-17_14-47-11_s51380921/0d36ddb1-6fc61579-9d388097-85a29b72-2b1223b9.jpg"
+          },
+          {
+            "dicom_id": "a628980c-8235948c-af0bf50a-9aec5850-fcd593fc",
+            "view_position": "PA",
+            "path": "/data/patient/2158-10-17_14-47-11_s51380921/a628980c-8235948c-af0bf50a-9aec5850-fcd593fc.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2158-10-17_14-47-11_s51380921/report.txt"
+      },
+      {
+        "study_id": "51762961",
+        "study_datetime": "2159-02-05 10:20:56",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "550025f0-fb28013b-e174e563-a9c2dc35-c3f0b4d0",
+            "view_position": "PA",
+            "path": "/data/patient/2159-02-05_10-20-56_s51762961/550025f0-fb28013b-e174e563-a9c2dc35-c3f0b4d0.jpg"
+          },
+          {
+            "dicom_id": "6f0df7c5-cee98aac-b4fc19b7-744a0567-9bae6dfa",
+            "view_position": "LL",
+            "path": "/data/patient/2159-02-05_10-20-56_s51762961/6f0df7c5-cee98aac-b4fc19b7-744a0567-9bae6dfa.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-02-05_10-20-56_s51762961/report.txt"
+      },
+      {
+        "study_id": "51118326",
+        "study_datetime": "2159-02-17 14:27:17",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "9f940d3e-d1174f8b-3c498fc6-91b43ca9-e9c4d278",
+            "view_position": "LL",
+            "path": "/data/patient/2159-02-17_14-27-17_s51118326/9f940d3e-d1174f8b-3c498fc6-91b43ca9-e9c4d278.jpg"
+          },
+          {
+            "dicom_id": "d36468b8-28879f9b-60f283a2-3c470f80-1d2c2b39",
+            "view_position": "PA",
+            "path": "/data/patient/2159-02-17_14-27-17_s51118326/d36468b8-28879f9b-60f283a2-3c470f80-1d2c2b39.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-02-17_14-27-17_s51118326/report.txt"
+      },
+      {
+        "study_id": "54953521",
+        "study_datetime": "2159-02-21 15:02:17",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "bd752951-5d4e5b88-c3f34820-c9e7fcd4-1d2b4af7",
+            "view_position": "AP",
+            "path": "/data/patient/2159-02-21_15-02-17_s54953521/bd752951-5d4e5b88-c3f34820-c9e7fcd4-1d2b4af7.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-02-21_15-02-17_s54953521/report.txt"
+      },
+      {
+        "study_id": "57221524",
+        "study_datetime": "2159-02-22 01:37:02",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "f43ed85f-f693419c-ca41ad14-854149c7-81bf7afe",
+            "view_position": "AP",
+            "path": "/data/patient/2159-02-22_01-37-02_s57221524/f43ed85f-f693419c-ca41ad14-854149c7-81bf7afe.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-02-22_01-37-02_s57221524/report.txt"
+      },
+      {
+        "study_id": "57624554",
+        "study_datetime": "2159-08-17 10:15:37",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "cc20a4e8-45bd956d-683185d2-3f0e8eef-1e3d8993",
+            "view_position": "AP",
+            "path": "/data/patient/2159-08-17_10-15-37_s57624554/cc20a4e8-45bd956d-683185d2-3f0e8eef-1e3d8993.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-08-17_10-15-37_s57624554/report.txt"
+      },
+      {
+        "study_id": "55783830",
+        "study_datetime": "2159-09-04 21:14:12",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "55f894b1-3ca82dcd-410935e9-581ee95c-1273b576",
+            "view_position": "AP",
+            "path": "/data/patient/2159-09-04_21-14-12_s55783830/55f894b1-3ca82dcd-410935e9-581ee95c-1273b576.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-09-04_21-14-12_s55783830/report.txt"
+      },
+      {
+        "study_id": "59999832",
+        "study_datetime": "2159-10-16 11:03:59",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "01b9b26f-ff910315-d75bbc0e-5d092e8b-30ae245b",
+            "view_position": "LL",
+            "path": "/data/patient/2159-10-16_11-03-59_s59999832/01b9b26f-ff910315-d75bbc0e-5d092e8b-30ae245b.jpg"
+          },
+          {
+            "dicom_id": "0636d0c0-a771097e-ac0c52a9-9124a5d0-95b0bc51",
+            "view_position": "PA",
+            "path": "/data/patient/2159-10-16_11-03-59_s59999832/0636d0c0-a771097e-ac0c52a9-9124a5d0-95b0bc51.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-10-16_11-03-59_s59999832/report.txt"
+      },
+      {
+        "study_id": "55940912",
+        "study_datetime": "2159-10-18 14:17:24",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "77627414-f5a7090e-25aa3533-2b99b3af-0c5abf63",
+            "view_position": "LL",
+            "path": "/data/patient/2159-10-18_14-17-24_s55940912/77627414-f5a7090e-25aa3533-2b99b3af-0c5abf63.jpg"
+          },
+          {
+            "dicom_id": "a025f08e-de9dddc4-8716a1ac-899ce213-d7289c7a",
+            "view_position": "PA",
+            "path": "/data/patient/2159-10-18_14-17-24_s55940912/a025f08e-de9dddc4-8716a1ac-899ce213-d7289c7a.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-10-18_14-17-24_s55940912/report.txt"
+      },
+      {
+        "study_id": "52411503",
+        "study_datetime": "2159-10-21 10:40:36",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "a5d43c71-b0543e47-518c2349-26b2fed4-a34fd3bc",
+            "view_position": "PA",
+            "path": "/data/patient/2159-10-21_10-40-36_s52411503/a5d43c71-b0543e47-518c2349-26b2fed4-a34fd3bc.jpg"
+          },
+          {
+            "dicom_id": "c5b2349b-993253c3-5e0604c4-cc708efd-796c13af",
+            "view_position": "LL",
+            "path": "/data/patient/2159-10-21_10-40-36_s52411503/c5b2349b-993253c3-5e0604c4-cc708efd-796c13af.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-10-21_10-40-36_s52411503/report.txt"
+      },
+      {
+        "study_id": "54440330",
+        "study_datetime": "2159-10-24 18:36:17",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "6e40a0ff-0f24e50f-e0dbabb8-6b7a3207-d50720d0",
+            "view_position": "AP",
+            "path": "/data/patient/2159-10-24_18-36-17_s54440330/6e40a0ff-0f24e50f-e0dbabb8-6b7a3207-d50720d0.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-10-24_18-36-17_s54440330/report.txt"
+      },
+      {
+        "study_id": "53033654",
+        "study_datetime": "2159-10-27 22:39:43",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "3a432ca2-728bb41b-d1d64eb8-cbab2f76-a11945ef",
+            "view_position": "LL",
+            "path": "/data/patient/2159-10-27_22-39-43_s53033654/3a432ca2-728bb41b-d1d64eb8-cbab2f76-a11945ef.jpg"
+          },
+          {
+            "dicom_id": "92d9fd50-81412806-b71e4d05-9ef38071-6b25204c",
+            "view_position": "PA",
+            "path": "/data/patient/2159-10-27_22-39-43_s53033654/92d9fd50-81412806-b71e4d05-9ef38071-6b25204c.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2159-10-27_22-39-43_s53033654/report.txt"
+      },
+      {
+        "study_id": "50613163",
+        "study_datetime": "2160-04-03 02:20:12",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "705d8098-599ee69b-ab0b9267-00def4fb-b2410a5d",
+            "view_position": "AP",
+            "path": "/data/patient/2160-04-03_02-20-12_s50613163/705d8098-599ee69b-ab0b9267-00def4fb-b2410a5d.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2160-04-03_02-20-12_s50613163/report.txt"
+      },
+      {
+        "study_id": "56295717",
+        "study_datetime": "2160-05-30 12:56:15",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "63d37384-184136e7-97b99c44-25b314ac-ecd14631",
+            "view_position": "AP",
+            "path": "/data/patient/2160-05-30_12-56-15_s56295717/63d37384-184136e7-97b99c44-25b314ac-ecd14631.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2160-05-30_12-56-15_s56295717/report.txt"
+      },
+      {
+        "study_id": "52266880",
+        "study_datetime": "2160-06-10 19:42:49",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "117eb2b7-898e9ead-83d83cb1-c1bd5852-60ba72f4",
+            "view_position": "PA",
+            "path": "/data/patient/2160-06-10_19-42-49_s52266880/117eb2b7-898e9ead-83d83cb1-c1bd5852-60ba72f4.jpg"
+          },
+          {
+            "dicom_id": "2d4ccede-25c8c78f-2cd4c037-4558ffea-2317badd",
+            "view_position": "LL",
+            "path": "/data/patient/2160-06-10_19-42-49_s52266880/2d4ccede-25c8c78f-2cd4c037-4558ffea-2317badd.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2160-06-10_19-42-49_s52266880/report.txt"
+      },
+      {
+        "study_id": "50027153",
+        "study_datetime": "2160-06-15 22:00:34",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "4347b81b-2a702858-6a330ca4-e115c0ac-f1017427",
+            "view_position": "PA",
+            "path": "/data/patient/2160-06-15_22-00-34_s50027153/4347b81b-2a702858-6a330ca4-e115c0ac-f1017427.jpg"
+          },
+          {
+            "dicom_id": "a7d67b35-718b5b5e-9bf046ea-18c54b0d-4b153123",
+            "view_position": "LL",
+            "path": "/data/patient/2160-06-15_22-00-34_s50027153/a7d67b35-718b5b5e-9bf046ea-18c54b0d-4b153123.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2160-06-15_22-00-34_s50027153/report.txt"
+      },
+      {
+        "study_id": "52117264",
+        "study_datetime": "2160-06-19 22:28:59",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "18fa01c7-38307c4a-1dd8c7be-5e380391-098fa83f",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2160-06-19_22-28-59_s52117264/18fa01c7-38307c4a-1dd8c7be-5e380391-098fa83f.jpg"
+          },
+          {
+            "dicom_id": "78abcbc7-6b5aa7c5-013f4e3b-2fd7d3b6-6a5986ee",
+            "view_position": "PA",
+            "path": "/data/patient/2160-06-19_22-28-59_s52117264/78abcbc7-6b5aa7c5-013f4e3b-2fd7d3b6-6a5986ee.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2160-06-19_22-28-59_s52117264/report.txt"
+      },
+      {
+        "study_id": "54918942",
+        "study_datetime": "2161-01-03 09:40:21",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "2a443c5b-911d577f-f0f52f16-9d2662c4-4c3a0fad",
+            "view_position": "PA",
+            "path": "/data/patient/2161-01-03_09-40-21_s54918942/2a443c5b-911d577f-f0f52f16-9d2662c4-4c3a0fad.jpg"
+          },
+          {
+            "dicom_id": "5c46aa81-80ce61d5-b0876cbf-447acc20-e262c237",
+            "view_position": "LL",
+            "path": "/data/patient/2161-01-03_09-40-21_s54918942/5c46aa81-80ce61d5-b0876cbf-447acc20-e262c237.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-01-03_09-40-21_s54918942/report.txt"
+      },
+      {
+        "study_id": "57377735",
+        "study_datetime": "2161-01-10 18:45:19",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "9b7221b8-2d0ff716-48b063be-059cbf7f-d53d72e1",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-01-10_18-45-19_s57377735/9b7221b8-2d0ff716-48b063be-059cbf7f-d53d72e1.jpg"
+          },
+          {
+            "dicom_id": "eaf779dc-f580b7b8-168b1b3c-53ee66c1-21268250",
+            "view_position": "PA",
+            "path": "/data/patient/2161-01-10_18-45-19_s57377735/eaf779dc-f580b7b8-168b1b3c-53ee66c1-21268250.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-01-10_18-45-19_s57377735/report.txt"
+      },
+      {
+        "study_id": "57132221",
+        "study_datetime": "2161-04-09 12:54:35",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "38a9b23d-4349cfb4-451a3bfd-346ed01f-b4360327",
+            "view_position": "PA",
+            "path": "/data/patient/2161-04-09_12-54-35_s57132221/38a9b23d-4349cfb4-451a3bfd-346ed01f-b4360327.jpg"
+          },
+          {
+            "dicom_id": "939fd73d-90b151b7-0fd1e28a-f74c0f61-e2cb7917",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-04-09_12-54-35_s57132221/939fd73d-90b151b7-0fd1e28a-f74c0f61-e2cb7917.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-04-09_12-54-35_s57132221/report.txt"
+      },
+      {
+        "study_id": "55107790",
+        "study_datetime": "2161-04-13 06:02:15",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "39c36e59-7b5c308e-a9153759-84676a45-4cadadf0",
+            "view_position": "PA",
+            "path": "/data/patient/2161-04-13_06-02-15_s55107790/39c36e59-7b5c308e-a9153759-84676a45-4cadadf0.jpg"
+          },
+          {
+            "dicom_id": "e3175ea1-01a77a5f-f7f0522d-d4eaa2ff-222ad571",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-04-13_06-02-15_s55107790/e3175ea1-01a77a5f-f7f0522d-d4eaa2ff-222ad571.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-04-13_06-02-15_s55107790/report.txt"
+      },
+      {
+        "study_id": "53595850",
+        "study_datetime": "2161-04-16 15:54:27",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "5d38b235-8992ecec-2b630078-d290f396-00fdf5db",
+            "view_position": "PA",
+            "path": "/data/patient/2161-04-16_15-54-27_s53595850/5d38b235-8992ecec-2b630078-d290f396-00fdf5db.jpg"
+          },
+          {
+            "dicom_id": "b43f1646-506a2bd6-50a28dbd-2d7d2162-eda74210",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-04-16_15-54-27_s53595850/b43f1646-506a2bd6-50a28dbd-2d7d2162-eda74210.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-04-16_15-54-27_s53595850/report.txt"
+      },
+      {
+        "study_id": "54616688",
+        "study_datetime": "2161-04-20 20:25:27",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "df768ec0-58930767-c9b998d4-d99867af-9f1ef7c6",
+            "view_position": "LL",
+            "path": "/data/patient/2161-04-20_20-25-27_s54616688/df768ec0-58930767-c9b998d4-d99867af-9f1ef7c6.jpg"
+          },
+          {
+            "dicom_id": "fd043f2e-fb851408-681f3799-13b1ec21-5a635d01",
+            "view_position": "PA",
+            "path": "/data/patient/2161-04-20_20-25-27_s54616688/fd043f2e-fb851408-681f3799-13b1ec21-5a635d01.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-04-20_20-25-27_s54616688/report.txt"
+      },
+      {
+        "study_id": "53909940",
+        "study_datetime": "2161-04-26 16:54:01",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "3a00ab90-4563967d-ad46d969-ae884a78-c7f2dd2b",
+            "view_position": "PA",
+            "path": "/data/patient/2161-04-26_16-54-01_s53909940/3a00ab90-4563967d-ad46d969-ae884a78-c7f2dd2b.jpg"
+          },
+          {
+            "dicom_id": "d165b008-6569b2ab-6899ea6b-f3f5f10e-481cc0dd",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-04-26_16-54-01_s53909940/d165b008-6569b2ab-6899ea6b-f3f5f10e-481cc0dd.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-04-26_16-54-01_s53909940/report.txt"
+      },
+      {
+        "study_id": "52114176",
+        "study_datetime": "2161-07-05 17:30:17",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "076a4be2-5c874ed2-8924ba25-a91078bf-433b46a2",
+            "view_position": "PA",
+            "path": "/data/patient/2161-07-05_17-30-17_s52114176/076a4be2-5c874ed2-8924ba25-a91078bf-433b46a2.jpg"
+          },
+          {
+            "dicom_id": "63b80213-438bb6c2-4d070fea-92d5e59e-87611ef8",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-07-05_17-30-17_s52114176/63b80213-438bb6c2-4d070fea-92d5e59e-87611ef8.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-07-05_17-30-17_s52114176/report.txt"
+      },
+      {
+        "study_id": "57554056",
+        "study_datetime": "2161-11-13 07:27:45",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "b4ea00dd-29a8687d-10b1e7eb-d6d1cd5b-ebd65d6c",
+            "view_position": "PA",
+            "path": "/data/patient/2161-11-13_07-27-45_s57554056/b4ea00dd-29a8687d-10b1e7eb-d6d1cd5b-ebd65d6c.jpg"
+          },
+          {
+            "dicom_id": "e4e80f9c-ef266d33-c4aa87bf-f8071057-a744c102",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-11-13_07-27-45_s57554056/e4e80f9c-ef266d33-c4aa87bf-f8071057-a744c102.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-11-13_07-27-45_s57554056/report.txt"
+      },
+      {
+        "study_id": "52731689",
+        "study_datetime": "2161-12-23 21:17:53",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "4395551b-f2717eed-fcd629df-804bb762-a356218d",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2161-12-23_21-17-53_s52731689/4395551b-f2717eed-fcd629df-804bb762-a356218d.jpg"
+          },
+          {
+            "dicom_id": "b91c97ed-5177ed0b-fa1759b1-28b3e6ac-e518d525",
+            "view_position": "PA",
+            "path": "/data/patient/2161-12-23_21-17-53_s52731689/b91c97ed-5177ed0b-fa1759b1-28b3e6ac-e518d525.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2161-12-23_21-17-53_s52731689/report.txt"
+      },
+      {
+        "study_id": "52382860",
+        "study_datetime": "2162-08-16 01:53:43",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "bbe6ecaf-aac06564-603fea4c-3e3026e0-8a5cb7c8",
+            "view_position": "AP",
+            "path": "/data/patient/2162-08-16_01-53-43_s52382860/bbe6ecaf-aac06564-603fea4c-3e3026e0-8a5cb7c8.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2162-08-16_01-53-43_s52382860/report.txt"
+      },
+      {
+        "study_id": "56753331",
+        "study_datetime": "2162-08-21 09:23:11",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "3fc3893f-6a756dad-3cfcb050-5d1e7080-9ef06032",
+            "view_position": "AP",
+            "path": "/data/patient/2162-08-21_09-23-11_s56753331/3fc3893f-6a756dad-3cfcb050-5d1e7080-9ef06032.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2162-08-21_09-23-11_s56753331/report.txt"
+      },
+      {
+        "study_id": "51865597",
+        "study_datetime": "2163-01-10 20:14:24",
+        "procedure": "CHEST (PORTABLE AP)",
+        "views": [
+          {
+            "dicom_id": "ea89b622-63cd1a03-7338ee75-9ccef395-57d58bdc",
+            "view_position": "AP",
+            "path": "/data/patient/2163-01-10_20-14-24_s51865597/ea89b622-63cd1a03-7338ee75-9ccef395-57d58bdc.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2163-01-10_20-14-24_s51865597/report.txt"
+      },
+      {
+        "study_id": "59942551",
+        "study_datetime": "2163-01-19 11:17:43",
+        "procedure": "Performed Desc",
+        "views": [
+          {
+            "dicom_id": "4e536fbd-1d3c1f99-c3494ba6-918a4177-3e3b72ff",
+            "view_position": "PA",
+            "path": "/data/patient/2163-01-19_11-17-43_s59942551/4e536fbd-1d3c1f99-c3494ba6-918a4177-3e3b72ff.jpg"
+          },
+          {
+            "dicom_id": "63613222-d2216c2e-d4ff5b88-43805695-99256e40",
+            "view_position": "LL",
+            "path": "/data/patient/2163-01-19_11-17-43_s59942551/63613222-d2216c2e-d4ff5b88-43805695-99256e40.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2163-01-19_11-17-43_s59942551/report.txt"
+      },
+      {
+        "study_id": "59688743",
+        "study_datetime": "2163-02-12 06:37:39",
+        "procedure": "CHEST (PA AND LAT)",
+        "views": [
+          {
+            "dicom_id": "09eef487-ce5f18a5-ba553a04-30f2617c-4f4a6692",
+            "view_position": "PA",
+            "path": "/data/patient/2163-02-12_06-37-39_s59688743/09eef487-ce5f18a5-ba553a04-30f2617c-4f4a6692.jpg"
+          },
+          {
+            "dicom_id": "0e446eb6-02bb584e-6ef1f95a-ad6430c9-f5669b5c",
+            "view_position": "LATERAL",
+            "path": "/data/patient/2163-02-12_06-37-39_s59688743/0e446eb6-02bb584e-6ef1f95a-ad6430c9-f5669b5c.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2163-02-12_06-37-39_s59688743/report.txt"
+      },
+      {
+        "study_id": "59791814",
+        "study_datetime": "2163-04-13 13:54:00",
+        "procedure": "",
+        "views": [
+          {
+            "dicom_id": "31639564-55c66aa7-7df2435c-cd3f159f-35b723f1",
+            "view_position": "PA",
+            "path": "/data/patient/2163-04-13_13-54-00_s59791814/31639564-55c66aa7-7df2435c-cd3f159f-35b723f1.jpg"
+          },
+          {
+            "dicom_id": "3f51e0cc-57c81b2d-9141e165-0ca2c8c7-b04610ed",
+            "view_position": "LL",
+            "path": "/data/patient/2163-04-13_13-54-00_s59791814/3f51e0cc-57c81b2d-9141e165-0ca2c8c7-b04610ed.jpg"
+          }
+        ],
+        "report_path": "/data/patient/2163-04-13_13-54-00_s59791814/report.txt"
+      }
+    ],
+    "instruction": "Generate the FINDINGS and IMPRESSION sections of a radiology report\nfor the target chest X-ray study.\n\nPatient ID: 15114531\nTarget Study ID: 51986565\nTarget Study Date: 2163-04-15 10:58:12\nTarget Procedure: Performed Desc\nTarget Views: PA, LL\n\nThis patient has 36 prior study/studies available for reference.\nPrior reports and images are provided in the task data.\n\n## Provided sections of the target report\n\nThese sections of the target study's report are GIVEN to you. Use them\nas context but do NOT include them in your output.\n\nEXAMINATION: Chest radiograph.\n\nINDICATION: ___ year old woman with cough, sob.  Assess for pneumonia,\n pulmonary edema, interval change\n\nTECHNIQUE: Chest PA and lateral\n\nCOMPARISON: Chest radiographs ___, ___, ___,\n ___.\n\n## Your output\n\nProduce only the FINDINGS and IMPRESSION sections, formatted exactly as:\n\nFINDINGS:\n<your findings text>\n\nIMPRESSION:\n<your impression text>\n\nUse the target study's images, the provided sections above, and the patient's\nprior imaging history to write accurate, clinically appropriate findings and\nan impression. Do not repeat the EXAMINATION/INDICATION/TECHNIQUE/COMPARISON/HISTORY sections.",
+    "final_answer": "",
+    "payload": null
+  }
+]

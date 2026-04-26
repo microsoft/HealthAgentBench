@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_11893091_53024166",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe lungs are relatively hyperinflated.  There is no focal\n consolidation concerning for pneumonia.  No pleural effusion or pneumothorax\n is detected.  The pulmonary vasculature is not engorged and there is no overt\n pulmonary edema.  The cardiac silhouette is top normal in size, as before.  A\n left pectoral pacemaker is in place with dual leads terminating in the right\n atrium and right ventricle.  The mediastinal and hilar contours are within\n normal limits.\n\nIMPRESSION:\nNo focal consolidation concerning for pneumonia.",
+    "expected_findings": "The lungs are relatively hyperinflated.  There is no focal\n consolidation concerning for pneumonia.  No pleural effusion or pneumothorax\n is detected.  The pulmonary vasculature is not engorged and there is no overt\n pulmonary edema.  The cardiac silhouette is top normal in size, as before.  A\n left pectoral pacemaker is in place with dual leads terminating in the right\n atrium and right ventricle.  The mediastinal and hilar contours are within\n normal limits.",
+    "expected_impression": "No focal consolidation concerning for pneumonia.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  Malaise, here to evaluate for pneumonia.\n \n COMPARISON:  Chest radiograph dated ___, ___ and\n ___.\n \n TECHNIQUE:  PA and lateral radiographs of the chest.\n \n FINDINGS:  The lungs are relatively hyperinflated.  There is no focal\n consolidation concerning for pneumonia.  No pleural effusion or pneumothorax\n is detected.  The pulmonary vasculature is not engorged and there is no overt\n pulmonary edema.  The cardiac silhouette is top normal in size, as before.  A\n left pectoral pacemaker is in place with dual leads terminating in the right\n atrium and right ventricle.  The mediastinal and hilar contours are within\n normal limits.\n \n IMPRESSION:  No focal consolidation concerning for pneumonia.\n",
+    "subject_id": "11893091",
+    "target_study_id": "53024166",
+    "num_prior_studies": 9
+  }
+]

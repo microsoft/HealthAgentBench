@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_18079481_54657781",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nAn endotracheal tube terminates at the thoracic inlet in standard placement. \n Lung volumes are low, but the lungs are grossly clear. There is no\n pneumothorax.  Old healed bilateral rib fractures are unchanged. The heart and\n mediastinum are magnified by the projection.\n\nIMPRESSION:\nEndotracheal tube terminates at the thoracic inlet.\n Grossly clear lungs.",
+    "expected_findings": "An endotracheal tube terminates at the thoracic inlet in standard placement. \n Lung volumes are low, but the lungs are grossly clear. There is no\n pneumothorax.  Old healed bilateral rib fractures are unchanged. The heart and\n mediastinum are magnified by the projection.",
+    "expected_impression": "Endotracheal tube terminates at the thoracic inlet.\n Grossly clear lungs.",
+    "full_ground_truth_report": " WET READ: ___ ___ ___ 8:06 AM\n  Endotracheal tube terminates in the mid thoracic trachea. There is again\n  deviation of the trachea towards the right likely from the aortic arch.  The\n  heart is mildly enlarged. No focal consolidation.\n WET READ VERSION #1 ___ ___ 6:55 PM\n  Endotracheal tube terminates in the mid thoracic trachea.  There is again\n  deviation of the trachea towards the right likely from the aortic arch.  The\n  heart is mildly enlarged.  No focal consolidation.\n ______________________________________________________________________________\n                                 FINAL REPORT\n EXAMINATION:  CHEST (PORTABLE AP)\n \n INDICATION:  ___ year old man with GI bleed s/p ET tube placement // ET tube\n placement\n \n TECHNIQUE:  Portable AP radiograph of the chest.\n \n COMPARISON:  ___.\n \n FINDINGS: \n \n An endotracheal tube terminates at the thoracic inlet in standard placement. \n Lung volumes are low, but the lungs are grossly clear. There is no\n pneumothorax.  Old healed bilateral rib fractures are unchanged. The heart and\n mediastinum are magnified by the projection.\n \n IMPRESSION: \n \n Endotracheal tube terminates at the thoracic inlet.\n Grossly clear lungs.\n",
+    "subject_id": "18079481",
+    "target_study_id": "54657781",
+    "num_prior_studies": 13
+  }
+]

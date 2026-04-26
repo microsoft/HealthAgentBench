@@ -1,0 +1,14 @@
+[
+  {
+    "task_id": "mimic_cxr_report_17838301_50037760",
+    "category": "report_generation",
+    "difficulty": "hard",
+    "expected_answer": "FINDINGS:\nThe patient's chin obscures visualization of the lung apices. \n Stable linear opacification in the left mid lung likely represents atelectasis\n or scarring.  Calcified bilateral pleural plaques are again seen.  No new\n focal consolidation, pleural effusion, pneumothorax, or pulmonary edema is\n detected. Cardiomegaly persists.  The aorta is tortuous with calcification.\n\nIMPRESSION:\nStable cardiomegaly without radiographic evidence for acute\n change.",
+    "expected_findings": "The patient's chin obscures visualization of the lung apices. \n Stable linear opacification in the left mid lung likely represents atelectasis\n or scarring.  Calcified bilateral pleural plaques are again seen.  No new\n focal consolidation, pleural effusion, pneumothorax, or pulmonary edema is\n detected. Cardiomegaly persists.  The aorta is tortuous with calcification.",
+    "expected_impression": "Stable cardiomegaly without radiographic evidence for acute\n change.",
+    "full_ground_truth_report": "                                 FINAL REPORT\n INDICATION:  ___-year-old male with altered mental status and history of\n pneumonia.\n \n COMPARISON:  ___.\n \n TECHNIQUE:  Single frontal chest radiograph was obtained portably with the\n patient in an upright position.\n \n FINDINGS:  The patient's chin obscures visualization of the lung apices. \n Stable linear opacification in the left mid lung likely represents atelectasis\n or scarring.  Calcified bilateral pleural plaques are again seen.  No new\n focal consolidation, pleural effusion, pneumothorax, or pulmonary edema is\n detected. Cardiomegaly persists.  The aorta is tortuous with calcification.\n \n IMPRESSION:  Stable cardiomegaly without radiographic evidence for acute\n change.\n",
+    "subject_id": "17838301",
+    "target_study_id": "50037760",
+    "num_prior_studies": 10
+  }
+]

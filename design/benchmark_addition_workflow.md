@@ -127,13 +127,17 @@ Required updates:
 2. Add or update `debug/<benchmark>/README.md` if the benchmark has a benchmark-specific debug path.
 3. Update `tasks/README.md` once the benchmark is supported in this repo.
 4. Update `design/tasks.md` so the benchmark is listed under `Integrated`.
+5. Update `paper/benchmarks.md` with a new section describing the benchmark at the paper level. The section should answer: (a) what capability the task measures, (b) why it is medically meaningful, and (c) what the standardized MedCLI packaging contributes beyond the upstream resource. Match the style of existing sections.
 
 When the verifier depends on a reference run, keep only a compact verifier-side summary in `scripts/<benchmark>/assets/`. Do not expose the gold reference output to the agent unless the benchmark is specifically about reproducing a known artifact byte-for-byte.
+
+`paper/baselines.md` is an **auto-generated artifact** produced by `scripts/run_harbor_baselines*.py` — do not hand-edit its generated sections. Baselines become part of the paper only after a real Harbor run populates that file.
 
 Optional updates:
 
 - update `README.md` if the benchmark becomes a primary public entry point
 - update `AGENTS.md` and `CLAUDE.md` only if repo-level agent instructions need to change
+- update `paper/related_work.md` and `paper/draft.md` only when those paper sections need to reflect the new benchmark
 
 ## 7. Validate the Integration
 
@@ -203,6 +207,7 @@ A benchmark is integrated when all of the following are true:
 - Harbor job config exists under `jobs/`
 - benchmark-specific docs exist under `scripts/<benchmark>/README.md`
 - benchmark is listed in `tasks/README.md`
+- benchmark is described in `paper/benchmarks.md`
 - the documented task workflow can be replayed manually in a clean task environment
 - the verifier can run against that manual replay path using the shipped task environment
 - validation commands are documented and reproducible
