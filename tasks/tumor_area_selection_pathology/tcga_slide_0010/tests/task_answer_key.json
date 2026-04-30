@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "tcga_slide_0010",
+    "subset": "tcga",
+    "expected_contains_tumor": false,
+    "tile_size": 256,
+    "analysis_downsample": 16,
+    "source_file_id": "1d31d57b-0807-4c39-8d20-6dbae2596348",
+    "source_label_name": "Solid Tissue Normal",
+    "expected_tumor_tiles": []
+  }
+]

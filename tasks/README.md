@@ -26,6 +26,22 @@ For benchmark-specific task generation details, see `scripts/<benchmark>/README.
 | ehrsql | eicu_test | gpt-5.3-codex | 39.3 |
 
 
+## Tumor Area Selection Pathology Results
+
+| Task | Split | Model | Precision | Recall | F1 | Notes |
+|------|-------|-------|-----------|--------|----|-------|
+| tumor slide selection | tcga_25_slide | gpt-5.3-codex | - | - | 0.6667 | Azure-backed, no GigaPath, 25-slide rerun |
+| tumor area selection | area_10_slide | gpt-5.3-codex | 0.4880 | 0.7401 | 0.5882 | Tumor coverage 0.5651; Azure-backed, no GigaPath |
+
+
 ## Metric Definitions
 
 For EHRSQL, **Score** refers to Execution F1 — the harmonic mean of execution precision and execution recall. Execution precision is the fraction of agent-predicted answerable queries whose results match the gold SQL results exactly. Execution recall is the fraction of gold answerable queries that the agent answered correctly. Both metrics use set-based comparison of query results against the SQLite database, which is more robust than string-based SQL matching.
+
+## Tumor Area Selection Pathology Metric Definitions
+
+For `tumor slide selection`, **F1** is the slide-level harmonic mean of precision and recall on the dedicated 25-slide rerun.
+
+For `tumor area selection`, **precision**, **recall**, and **F1** are computed over the predicted tumor-tile set on the fixed benchmark grid.
+
+For `tumor area selection`, **tumor coverage** is the fraction of gold tumor pixels covered by the union of predicted tumor tiles.

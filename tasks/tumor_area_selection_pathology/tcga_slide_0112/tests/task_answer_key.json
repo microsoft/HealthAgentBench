@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "tcga_slide_0112",
+    "subset": "tcga",
+    "expected_contains_tumor": true,
+    "tile_size": 256,
+    "analysis_downsample": 16,
+    "source_file_id": "3620ef3e-05d6-492a-a032-5f3b2c127e94",
+    "source_label_name": "Primary Tumor",
+    "expected_tumor_tiles": []
+  }
+]
