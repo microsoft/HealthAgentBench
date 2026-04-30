@@ -1,0 +1,20 @@
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile
+    volumes:
+      - ${MEDCLI_TUMOR_PATH_TCGA_CACHE:-/home/jmj/harbor-cache/tumor_area_selection_pathology/tcga}:/data/cache/tcga:rw
+      - ${MEDCLI_TUMOR_PATH_CAMELYON_CACHE:-/home/jmj/harbor-cache/tumor_area_selection_pathology/camelyon16/slides}:/data/cache/camelyon16/slides:rw
+      - ${MEDCLI_TUMOR_PATH_GIGAPATH_CACHE:-/home/jmj/harbor-cache/tumor_area_selection_pathology/gigapath}:/data/cache/gigapath:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HF_TOKEN=${HF_TOKEN:-}
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G

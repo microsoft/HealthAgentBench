@@ -1,0 +1,111 @@
+[
+  {
+    "task_id": "camelyon_slide_0009",
+    "subset": "camelyon16",
+    "expected_contains_tumor": true,
+    "tile_size": 256,
+    "analysis_downsample": 16,
+    "mask_url": "https://camelyon-dataset.s3.amazonaws.com/CAMELYON16/masks/tumor_082_mask.tif",
+    "annotation_url": "https://camelyon-dataset.s3.amazonaws.com/CAMELYON16/annotations/tumor_082.xml",
+    "tumor_threshold": 0.2,
+    "source_slide_name": "tumor_082",
+    "expected_tumor_tiles": [
+      {
+        "x": 6,
+        "y": 5
+      },
+      {
+        "x": 33,
+        "y": 6
+      },
+      {
+        "x": 14,
+        "y": 8
+      },
+      {
+        "x": 15,
+        "y": 8
+      },
+      {
+        "x": 16,
+        "y": 8
+      },
+      {
+        "x": 17,
+        "y": 8
+      },
+      {
+        "x": 42,
+        "y": 8
+      },
+      {
+        "x": 43,
+        "y": 8
+      },
+      {
+        "x": 13,
+        "y": 9
+      },
+      {
+        "x": 14,
+        "y": 9
+      },
+      {
+        "x": 15,
+        "y": 9
+      },
+      {
+        "x": 16,
+        "y": 9
+      },
+      {
+        "x": 40,
+        "y": 9
+      },
+      {
+        "x": 41,
+        "y": 9
+      },
+      {
+        "x": 42,
+        "y": 9
+      },
+      {
+        "x": 43,
+        "y": 9
+      },
+      {
+        "x": 13,
+        "y": 10
+      },
+      {
+        "x": 14,
+        "y": 10
+      },
+      {
+        "x": 16,
+        "y": 10
+      },
+      {
+        "x": 40,
+        "y": 10
+      },
+      {
+        "x": 41,
+        "y": 10
+      },
+      {
+        "x": 42,
+        "y": 10
+      },
+      {
+        "x": 43,
+        "y": 10
+      },
+      {
+        "x": 40,
+        "y": 11
+      }
+    ]
+  }
+]

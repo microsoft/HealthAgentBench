@@ -20,5 +20,6 @@ results/
 # These are produced by setup.sh and generators, not source code
 scripts/ehrsql/assets/
 scripts/mimic_report_gen/assets/
+scripts/tumor_area_selection_pathology/assets/cache/
 # local convenience helpers
 resume-codex.sh
