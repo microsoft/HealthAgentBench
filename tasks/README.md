@@ -28,10 +28,10 @@ For benchmark-specific task generation details, see `scripts/<benchmark>/README.
 
 ## Tumor Area Selection Pathology Results
 
-| Task | Split | Model | Precision | Recall | F1 | Notes |
-|------|-------|-------|-----------|--------|----|-------|
-| tumor slide selection | tcga_25_slide | gpt-5.3-codex | - | - | 0.6667 | Azure-backed, no GigaPath, 25-slide rerun |
-| tumor area selection | area_10_slide | gpt-5.3-codex | 0.4880 | 0.7401 | 0.5882 | Tumor coverage 0.5651; Azure-backed, no GigaPath |
+| Task | Model | Precision | Recall | F1 | Tumor Coverage |
+|------|-------|-----------|--------|----|----------------|
+| tumor slide selection | gpt-5.3-codex | 0.7273 | 0.6154 | 0.6667 | - |
+| tumor area selection  | gpt-5.3-codex | 0.4880 | 0.7401 | 0.5882 | 0.5651 |
 
 
 ## Metric Definitions
