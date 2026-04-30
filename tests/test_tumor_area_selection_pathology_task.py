@@ -106,7 +106,6 @@ def test_generate_harbor_tasks_materializes_expected_layout(tmp_path: Path) -> N
     docker_compose = (tcga_task / "environment" / "docker-compose.yaml").read_text(encoding="utf-8")
     assert "MEDCLI_TUMOR_PATH_TCGA_CACHE" in docker_compose
     assert "MEDCLI_TUMOR_PATH_CAMELYON_CACHE" in docker_compose
-    assert "MEDCLI_TUMOR_PATH_GIGAPATH_CACHE" in docker_compose
 
     tcga_submission = json.loads(
         (tcga_task / "environment" / "workspace" / "submission.json").read_text(encoding="utf-8")
@@ -287,74 +286,6 @@ def test_aggregate_metric_reports_subset_scores(tmp_path: Path) -> None:
     assert payload["camelyon_tile_precision"] == 0.5
     assert payload["camelyon_tile_recall"] == 1.0
     assert payload["camelyon_tumor_coverage"] == 0.75
-
-
-def test_gigapath_topk_falls_back_without_hf_token(tmp_path: Path, monkeypatch) -> None:
-    workspace = tmp_path / "workspace"
-    slide_dir = tmp_path / "slide_current"
-    workspace.mkdir(parents=True)
-    slide_dir.mkdir(parents=True)
-
-    image = np.zeros((8, 8, 3), dtype=np.uint8)
-    image[:4, :4, 0] = 180
-    image[:4, :4, 2] = 180
-    image[:4, :4, 1] = 80
-    _write_rgb_tiff(slide_dir / "slide.tif", image)
-    _write_json(
-        workspace / "benchmark_tasks.json",
-        [
-            {
-                "task_id": "camelyon_slide_0001",
-                "subset": "camelyon16",
-                "instruction": "predict tumor tiles",
-                "analysis_tile_size": 4,
-                "analysis_downsample": 1,
-                "tumor_threshold": 0.2,
-            }
-        ],
-    )
-    _write_json(
-        slide_dir / "manifest.json",
-        {
-            "task_id": "camelyon_slide_0001",
-            "subset": "camelyon16",
-            "tile_size": 4,
-            "analysis_downsample": 1,
-            "slide_path": "/data/slide/current/slide.tif",
-        },
-    )
-
-    spec = importlib.util.spec_from_file_location(
-        "pathology_common_test",
-        SCRIPT_DIR / "runtime" / "lib" / "pathology_common.py",
-    )
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    monkeypatch.setattr(module, "WORKSPACE", workspace)
-    monkeypatch.setattr(module, "SLIDE_DIR", slide_dir)
-    monkeypatch.setattr(module, "TOOL_OUTPUT_DIR", workspace / "tool_outputs")
-    monkeypatch.delenv("HF_TOKEN", raising=False)
-
-    for fn_name in (
-        "_open_benchmark_payload",
-        "current_task",
-        "runtime_manifest",
-        "_materialized_slide_file",
-        "slide_dimensions",
-        "slide_extension",
-        "analysis_config",
-        "grid_shape",
-        "read_thumbnail",
-        "_cached_tissue_mask",
-    ):
-        getattr(module, fn_name).cache_clear()
-
-    payload = module.topk_attention_tiles(k=2, max_tiles=16)
-    assert payload["backend"] == "heuristic_fallback"
-    assert len(payload["tiles"]) <= 2
-
 
 def test_runtime_self_heals_missing_slide_dir_from_task_manifest(tmp_path: Path, monkeypatch) -> None:
     workspace = tmp_path / "workspace"

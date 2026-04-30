@@ -1,5 +1,5 @@
-# camelyon_slide_0002
+# Tumor Area Selection
 
-Subset: `camelyon16`
+Task id: `camelyon_slide_0002`
 
 This Harbor task contains one pathology slide episode from the `tumor_area_selection_pathology` benchmark.

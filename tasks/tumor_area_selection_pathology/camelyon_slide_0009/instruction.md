@@ -1,4 +1,4 @@
-# tumor_area_selection_pathology
+# Tumor Area Selection
 
 You are working inside a pathology task environment that contains:
 
@@ -13,13 +13,12 @@ Tool examples:
 - `python /workspace/scripts/primitives/sample_tiles.py --count 20`
 - `python /workspace/scripts/primitives/get_tile.py --x 12 --y 44`
 - `python /workspace/scripts/primitives/get_region.py --x 12 --y 44 --width 3 --height 3 --max-size 1536`
-- `python /workspace/scripts/primitives/get_topk_attention_tiles.py --k 10`
 
 The benchmark analysis grid uses 256x256 tiles at downsample 16.
 
 ## Your Task
 
-Decide whether tumor is present on this slide and predict the set of all tumor tiles on the benchmark grid.
+Complete the tumor area selection task by deciding whether tumor is present on this slide and predicting the set of all tumor tiles on the benchmark grid.
 
 Submission requirements:
 - set `contains_tumor` to `true` if you believe any tumor is present, else `false`

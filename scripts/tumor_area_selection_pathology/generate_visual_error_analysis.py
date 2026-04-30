@@ -744,7 +744,7 @@ def _write_index(
         ".links a { margin-right: 16px; }",
         "</style></head><body>",
         "<h1>Tumor Area Selection Pathology Visual Error Analysis</h1>",
-        "<p>The CAMELYON gallery shows prediction and ground-truth tumor-tile overlays side by side. Detailed case pages still include TP/FP/FN overlays and patch sheets.</p>",
+        "<p>The tumor area selection gallery shows prediction and ground-truth tumor-tile overlays side by side. Detailed case pages still include TP/FP/FN overlays and patch sheets.</p>",
         "<h2>Aggregate Metrics</h2>",
         "<table>",
         "<tr><th>Metric</th><th>Value</th></tr>",
@@ -764,9 +764,9 @@ def _write_index(
         [
             "</table>",
             "<h2>Gallery Overviews</h2>",
-            f"<p><a href='{html.escape(_safe_rel(tcga_gallery, output_dir))}'>TCGA gallery</a> | "
-            f"<a href='{html.escape(_safe_rel(camelyon_gallery, output_dir))}'>CAMELYON gallery</a></p>",
-            "<h2>TCGA Slide-Level Cases</h2>",
+            f"<p><a href='{html.escape(_safe_rel(tcga_gallery, output_dir))}'>Tumor slide selection gallery</a> | "
+            f"<a href='{html.escape(_safe_rel(camelyon_gallery, output_dir))}'>Tumor area selection gallery</a></p>",
+            "<h2>Tumor Slide Selection Cases</h2>",
             "<div class='grid'>",
         ]
     )
@@ -782,7 +782,7 @@ def _write_index(
                 "</div>",
             ]
         )
-    lines.extend(["</div>", "<h2>CAMELYON Tile-Level Cases</h2>", "<div class='grid'>"])
+    lines.extend(["</div>", "<h2>Tumor Area Selection Cases</h2>", "<div class='grid'>"])
     for row in cam_rows:
         patch_link = (
             f" <a href='{html.escape(str(row['patch_image']))}'>Patch sheet</a>"

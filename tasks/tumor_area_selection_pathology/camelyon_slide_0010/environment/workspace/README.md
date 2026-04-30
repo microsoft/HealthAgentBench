@@ -1,6 +1,6 @@
 # tumor_area_selection_pathology
 
-Subset: `camelyon16`
+Task type: `tumor area selection`
 
 Files:
 - `benchmark_tasks.json`: public task metadata
@@ -12,6 +12,5 @@ Useful helper examples:
 - `python /workspace/scripts/primitives/sample_tiles.py --count 20`
 - `python /workspace/scripts/primitives/get_tile.py --x 10 --y 12`
 - `python /workspace/scripts/primitives/classify_tile_tumor_probability.py --x 10 --y 12`
-- `python /workspace/scripts/primitives/get_gigapath_attention_map.py --max-tiles 256`
 
 Always update `submission.json` with a JSON-aware tool, not raw text editing.

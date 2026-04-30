@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render CAMELYON ground-truth mask and tile overlays for benchmark inspection."""
+"""Render tumor-area-selection ground-truth mask and tile overlays for benchmark inspection."""
 
 from __future__ import annotations
 
@@ -234,11 +234,11 @@ def _write_index(output_dir: Path, summaries: list[dict[str, Any]]) -> None:
         )
     html = (
         "<!doctype html><html><head><meta charset='utf-8'>"
-        "<title>CAMELYON Ground Truth</title>"
+        "<title>Tumor Area Selection Ground Truth</title>"
         "<style>body{font-family:Arial,sans-serif;margin:24px;background:#fafafa}"
         ".card{background:white;border:1px solid #ddd;padding:16px;margin:16px 0}"
         "img{max-width:100%;height:auto;border:1px solid #ccc}</style></head><body>"
-        "<h1>CAMELYON Ground Truth Gallery</h1>"
+        "<h1>Tumor Area Selection Ground Truth Gallery</h1>"
         "<p>Each panel shows the mask background, pixel-level tumor mask, the derived 20% tile-level ground truth, and a combined overlay.</p>"
         + "".join(cards)
         + "</body></html>"

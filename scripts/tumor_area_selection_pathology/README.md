@@ -3,11 +3,11 @@
 This directory contains the Harbor-first integration for the
 `tumor_area_selection_pathology` benchmark.
 
-The benchmark has two subsets under one task family:
+The benchmark has two task types under one task family:
 
-- `TCGA` slide-level tumor classification over public TCGA tissue-slide H&E
-  images.
-- `CAMELYON16` tumor-tile set prediction over public lymph-node whole-slide
+- `tumor slide selection`: slide-level tumor classification over public
+  whole-slide H&E images.
+- `tumor area selection`: tumor-tile set prediction over public whole-slide
   images with hidden mask-derived gold tiles.
 
 Each Harbor task is one slide. The agent must use the provided pathology tools
@@ -46,19 +46,19 @@ Every generated task uses the same submission schema:
 ]
 ```
 
-Subset-specific semantics:
+Task-specific semantics:
 
-- `TCGA`
+- `tumor slide selection`
   - The agent predicts whether the slide contains tumor.
   - `predicted_tumor_tiles` must stay empty.
   - Aggregate metric: slide-level precision / recall / F1.
 
-- `CAMELYON16`
+- `tumor area selection`
   - The agent predicts whether tumor is present and, if so, the set of all
     grid tiles it believes contain tumor.
   - Tiles are evaluated on a fixed 256x256 grid at the benchmark's fixed
     analysis downsample.
-  - A tile is gold-positive if the hidden CAMELYON mask covers at least 20%
+  - A tile is gold-positive if the hidden pixel-level tumor mask covers at least 20%
     of that tile.
   - Non-tissue tiles are treated as non-tumor.
   - Aggregate metric: tile-level precision / recall / F1.
@@ -75,21 +75,11 @@ The generated task workspace includes these pathology helpers under
 - `score_tissue_content.py`
 - `sample_tiles.py`
 - `get_neighbor_tiles.py`
-- `get_gigapath_attention_map.py`
-- `get_topk_attention_tiles.py`
 - `classify_tile_tumor_probability.py`
 
-The GigaPath tools use a cached / optional inference path:
-
-- if a precomputed cache exists, they read it
-- otherwise, if `HF_TOKEN` is available and the model terms have been accepted,
-  they can build the cache lazily
-- otherwise, they fall back to a deterministic heuristic ranking and label the
-  backend as `heuristic_fallback`
-
 The weak tile-classification helper is always available and uses deterministic
-handcrafted morphology features so the benchmark can still run without
-foundation-model auth.
+handcrafted morphology features so the benchmark runs the same way without any
+extra model-auth setup.
 
 ## External Cache Layout
 
@@ -99,23 +89,12 @@ By default, `setup.sh` uses:
 - `${HOME}/harbor-cache/tumor_area_selection_pathology/tcga`
 - `${HOME}/harbor-cache/tumor_area_selection_pathology/camelyon16/slides`
 - `${HOME}/harbor-cache/tumor_area_selection_pathology/camelyon16/masks`
-- `${HOME}/harbor-cache/tumor_area_selection_pathology/gigapath`
 
 You can override these with host environment variables before running Harbor:
 
 - `MEDCLI_TUMOR_PATH_TCGA_CACHE`
 - `MEDCLI_TUMOR_PATH_CAMELYON_CACHE`
-- `MEDCLI_TUMOR_PATH_GIGAPATH_CACHE`
 - `MEDCLI_TUMOR_PATH_CACHE_ROOT`
-
-For Harbor runs that need GigaPath model access, provide `HF_TOKEN` from an
-external env file rather than committing credentials to the repository.
-
-To precompute GigaPath cache JSON files ahead of Harbor runs:
-
-```bash
-HF_TOKEN=... uv run python scripts/tumor_area_selection_pathology/precompute_gigapath_cache.py
-```
 
 ## Canonical Workflow
 
@@ -151,7 +130,7 @@ The benchmark uses committed source manifests and lazy public-data download:
   fields.
 - The task entrypoint downloads a missing slide into a shared host cache on the
   first run of that task family.
-- CAMELYON mask files are verifier-only and are downloaded or cached only by
+- Tumor-area-selection mask files are verifier-only and are downloaded or cached only by
   the verifier path.
 
 This keeps the repository size reasonable while still letting the benchmark run

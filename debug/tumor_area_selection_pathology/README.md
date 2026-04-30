@@ -5,8 +5,6 @@ benchmark-specific settings:
 
 - `HB_TASK_DIR=tasks/tumor_area_selection_pathology/<task_name>`
 - `HB_PROJECT_NAME=tumor-area-selection-debug`
-- Optional: export `HF_TOKEN` before starting the task environment if you want
-  the GigaPath helper tools to populate a cache on demand.
 
 The task entrypoint materializes the current slide under
 `/data/slide/current/slide.*` and writes a public manifest to

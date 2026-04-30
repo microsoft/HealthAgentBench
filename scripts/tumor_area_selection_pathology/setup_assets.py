@@ -295,9 +295,7 @@ def main() -> None:
     tcga_cache = cache_root / "tcga"
     camelyon_cache = cache_root / "camelyon16" / "slides"
     camelyon_mask_cache = cache_root / "camelyon16" / "masks"
-    gigapath_cache = cache_root / "gigapath"
-
-    for path in (tcga_cache, camelyon_cache, camelyon_mask_cache, gigapath_cache):
+    for path in (tcga_cache, camelyon_cache, camelyon_mask_cache):
         path.mkdir(parents=True, exist_ok=True)
 
     if args.download_slides:
@@ -318,7 +316,6 @@ def main() -> None:
                 "tcga_cache": str(tcga_cache),
                 "camelyon_cache": str(camelyon_cache),
                 "camelyon_mask_cache": str(camelyon_mask_cache),
-                "gigapath_cache": str(gigapath_cache),
             },
             indent=2,
         )

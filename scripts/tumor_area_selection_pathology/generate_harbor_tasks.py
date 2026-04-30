@@ -23,6 +23,7 @@ from normalization import (
     build_runtime_manifest,
     build_submission_row,
     load_manifest,
+    subset_display_name,
     task_subset,
 )
 
@@ -32,7 +33,6 @@ RUNTIME_DIR = SCRIPT_DIR / "runtime"
 DEFAULT_EXTERNAL_CACHE_ROOT = Path.home() / "harbor-cache" / BENCHMARK_NAME
 DEFAULT_TCGA_CACHE = DEFAULT_EXTERNAL_CACHE_ROOT / "tcga"
 DEFAULT_CAMELYON_CACHE = DEFAULT_EXTERNAL_CACHE_ROOT / "camelyon16" / "slides"
-DEFAULT_GIGAPATH_CACHE = DEFAULT_EXTERNAL_CACHE_ROOT / "gigapath"
 DEFAULT_GENERATOR_HIDDEN_CACHE = DEFAULT_EXTERNAL_CACHE_ROOT / "generator_hidden"
 
 
@@ -202,10 +202,11 @@ mcp_servers = []
 
 def _workspace_readme(row: dict[str, Any]) -> str:
     subset = task_subset(row)
+    display_name = subset_display_name(subset)
     lines = [
         f"# {BENCHMARK_NAME}",
         "",
-        f"Subset: `{subset}`",
+        f"Task type: `{display_name}`",
         "",
         "Files:",
         "- `benchmark_tasks.json`: public task metadata",
@@ -217,7 +218,6 @@ def _workspace_readme(row: dict[str, Any]) -> str:
         "- `python /workspace/scripts/primitives/sample_tiles.py --count 20`",
         "- `python /workspace/scripts/primitives/get_tile.py --x 10 --y 12`",
         "- `python /workspace/scripts/primitives/classify_tile_tumor_probability.py --x 10 --y 12`",
-        "- `python /workspace/scripts/primitives/get_gigapath_attention_map.py --max-tiles 256`",
         "",
         "Always update `submission.json` with a JSON-aware tool, not raw text editing.",
     ]
@@ -226,10 +226,11 @@ def _workspace_readme(row: dict[str, Any]) -> str:
 
 def _instruction_md(row: dict[str, Any]) -> str:
     subset = task_subset(row)
+    display_name = subset_display_name(subset)
     tile_size = int(row["tile_size"])
     downsample = int(row["analysis_downsample"])
     common = [
-        f"# {BENCHMARK_NAME}",
+        f"# {display_name.title()}",
         "",
         "You are working inside a pathology task environment that contains:",
         "",
@@ -244,7 +245,6 @@ def _instruction_md(row: dict[str, Any]) -> str:
         "- `python /workspace/scripts/primitives/sample_tiles.py --count 20`",
         "- `python /workspace/scripts/primitives/get_tile.py --x 12 --y 44`",
         "- `python /workspace/scripts/primitives/get_region.py --x 12 --y 44 --width 3 --height 3 --max-size 1536`",
-        "- `python /workspace/scripts/primitives/get_topk_attention_tiles.py --k 10`",
         "",
         f"The benchmark analysis grid uses {tile_size}x{tile_size} tiles at downsample {downsample}.",
         "",
@@ -254,7 +254,7 @@ def _instruction_md(row: dict[str, Any]) -> str:
             [
                 "## Your Task",
                 "",
-                "Decide whether this slide contains tumor.",
+                "Complete the tumor slide selection task by deciding whether this slide contains tumor.",
                 "",
                 "Submission requirements:",
                 "- set `contains_tumor` to `true` or `false`",
@@ -268,7 +268,7 @@ def _instruction_md(row: dict[str, Any]) -> str:
             [
                 "## Your Task",
                 "",
-                "Decide whether tumor is present on this slide and predict the set of all tumor tiles on the benchmark grid.",
+                "Complete the tumor area selection task by deciding whether tumor is present on this slide and predicting the set of all tumor tiles on the benchmark grid.",
                 "",
                 "Submission requirements:",
                 "- set `contains_tumor` to `true` if you believe any tumor is present, else `false`",
@@ -294,9 +294,10 @@ def _instruction_md(row: dict[str, Any]) -> str:
 
 def _task_readme(row: dict[str, Any]) -> str:
     subset = task_subset(row)
+    display_name = subset_display_name(subset)
     return (
-        f"# {row['task_name']}\n\n"
-        f"Subset: `{subset}`\n\n"
+        f"# {display_name.title()}\n\n"
+        f"Task id: `{row['task_name']}`\n\n"
         "This Harbor task contains one pathology slide episode from the "
         f"`{BENCHMARK_NAME}` benchmark.\n"
     )
@@ -323,10 +324,7 @@ RUN pip install --no-cache-dir \\
     pillow \\
     requests \\
     tifffile \\
-    openslide-python \\
-    torch \\
-    torchvision \\
-    timm>=1.0.3
+    openslide-python
 
 WORKDIR /workspace
 
@@ -350,10 +348,8 @@ def _docker_compose() -> str:
     volumes:
       - ${{MEDCLI_TUMOR_PATH_TCGA_CACHE:-{DEFAULT_TCGA_CACHE.as_posix()}}}:/data/cache/tcga:rw
       - ${{MEDCLI_TUMOR_PATH_CAMELYON_CACHE:-{DEFAULT_CAMELYON_CACHE.as_posix()}}}:/data/cache/camelyon16/slides:rw
-      - ${{MEDCLI_TUMOR_PATH_GIGAPATH_CACHE:-{DEFAULT_GIGAPATH_CACHE.as_posix()}}}:/data/cache/gigapath:rw
     environment:
       - PYTHONUNBUFFERED=1
-      - HF_TOKEN=${{HF_TOKEN:-}}
     deploy:
       resources:
         limits:

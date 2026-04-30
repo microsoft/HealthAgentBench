@@ -1,5 +1,5 @@
-# tcga_slide_0103
+# Tumor Slide Selection
 
-Subset: `tcga`
+Task id: `tcga_slide_0103`
 
 This Harbor task contains one pathology slide episode from the `tumor_area_selection_pathology` benchmark.

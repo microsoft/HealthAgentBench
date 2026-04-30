@@ -12,6 +12,8 @@ TCGA_SUBSET = "tcga"
 CAMELYON_SUBSET = "camelyon16"
 TCGA_TASK_PREFIX = "tcga_slide"
 CAMELYON_TASK_PREFIX = "camelyon_slide"
+TUMOR_SLIDE_SELECTION_NAME = "tumor slide selection"
+TUMOR_AREA_SELECTION_NAME = "tumor area selection"
 
 DEFAULT_TILE_SIZE = 256
 DEFAULT_ANALYSIS_DOWNSAMPLE = 16
@@ -36,17 +38,27 @@ def build_task_name(row: dict[str, Any]) -> str:
     return str(row["task_name"])
 
 
+def subset_display_name(subset: str) -> str:
+    if subset == TCGA_SUBSET:
+        return TUMOR_SLIDE_SELECTION_NAME
+    if subset == CAMELYON_SUBSET:
+        return TUMOR_AREA_SELECTION_NAME
+    raise ValueError(f"Unknown subset: {subset}")
+
+
 def build_public_instruction(row: dict[str, Any]) -> str:
     subset = task_subset(row)
     if subset == TCGA_SUBSET:
         return (
-            "Determine whether the current whole-slide image contains tumor. "
+            "Complete the tumor slide selection task for the current whole-slide image. "
+            "Determine whether the slide contains tumor. "
             "Use the pathology helper scripts to inspect the slide. "
             "Set `contains_tumor` to true or false and leave "
             "`predicted_tumor_tiles` empty."
         )
     return (
-        "Determine whether tumor is present in the current whole-slide image. "
+        "Complete the tumor area selection task for the current whole-slide image. "
+        "Determine whether tumor is present. "
         "If tumor is present, identify every tile on the benchmark analysis grid "
         "that you believe contains tumor and write those tile coordinates into "
         "`predicted_tumor_tiles`. Use the pathology helper scripts to navigate "
@@ -60,6 +72,7 @@ def build_public_task_row(row: dict[str, Any]) -> dict[str, Any]:
     payload = {
         "task_id": task_id,
         "subset": subset,
+        "task_type": subset_display_name(subset),
         "instruction": build_public_instruction(row),
         "analysis_tile_size": int(row.get("tile_size", DEFAULT_TILE_SIZE)),
         "analysis_downsample": int(

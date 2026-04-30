@@ -1,4 +1,4 @@
-# tumor_area_selection_pathology
+# Tumor Slide Selection
 
 You are working inside a pathology task environment that contains:
 
@@ -13,13 +13,12 @@ Tool examples:
 - `python /workspace/scripts/primitives/sample_tiles.py --count 20`
 - `python /workspace/scripts/primitives/get_tile.py --x 12 --y 44`
 - `python /workspace/scripts/primitives/get_region.py --x 12 --y 44 --width 3 --height 3 --max-size 1536`
-- `python /workspace/scripts/primitives/get_topk_attention_tiles.py --k 10`
 
 The benchmark analysis grid uses 256x256 tiles at downsample 16.
 
 ## Your Task
 
-Decide whether this slide contains tumor.
+Complete the tumor slide selection task by deciding whether this slide contains tumor.
 
 Submission requirements:
 - set `contains_tumor` to `true` or `false`

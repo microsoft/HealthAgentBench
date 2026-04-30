@@ -18,10 +18,7 @@ RUN pip install --no-cache-dir \
     pillow \
     requests \
     tifffile \
-    openslide-python \
-    torch \
-    torchvision \
-    timm>=1.0.3
+    openslide-python
 
 WORKDIR /workspace
 
