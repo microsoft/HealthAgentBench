@@ -335,6 +335,16 @@ def default_output_root(repo_root: Path, task_name: str) -> Path:
     return repo_root / "results" / "baselines" / task_name
 
 
+def infer_render_output_root(run_dirs: tuple[Path, ...]) -> Path | None:
+    if not run_dirs:
+        return None
+    parents = [str(path.parent.resolve()) for path in run_dirs]
+    try:
+        return Path(os.path.commonpath(parents))
+    except ValueError:
+        return run_dirs[0].parent.resolve()
+
+
 def _is_parent_task_dir(task_dir: Path) -> bool:
     """A directory is a meta-task parent iff it has no task.toml of its own but
     contains subdirectories that do. We treat such a dir as a *label* for a
@@ -804,15 +814,31 @@ def extract_task_section_headers(markdown: str) -> list[str]:
 
 
 def build_repro_command(experiment: ExperimentConfig, output_root: Path) -> list[str]:
-    command = [
-        f"uv run python {_invoked_script_rel()} \\",
-        f"  --task-name {experiment.task_name} \\",
-        f"  --task-path {experiment.task_path} \\",
-        f"  --harness {experiment.harness} \\",
-        f"  --output-root {output_root} \\",
-        f"  --attempts {experiment.attempts} \\",
-        f"  --reasoning-effort {experiment.reasoning_effort}",
-    ]
+    command = [f"uv run python {_invoked_script_rel()} \\"]
+    if experiment.mode == "render":
+        command.extend(
+            [
+                "  --mode render \\",
+                f"  --task-name {experiment.task_name} \\",
+                f"  --task-path {experiment.task_path} \\",
+                f"  --harness {experiment.harness} \\",
+                f"  --baselines-md {experiment.baselines_md}",
+            ]
+        )
+        for run_dir in experiment.run_dirs:
+            command[-1] += " \\"
+            command.append(f"  --run-dir {run_dir}")
+    else:
+        command.extend(
+            [
+                f"  --task-name {experiment.task_name} \\",
+                f"  --task-path {experiment.task_path} \\",
+                f"  --harness {experiment.harness} \\",
+                f"  --output-root {output_root} \\",
+                f"  --attempts {experiment.attempts} \\",
+                f"  --reasoning-effort {experiment.reasoning_effort}",
+            ]
+        )
     if experiment.concurrency and experiment.concurrency != 1:
         command[-1] += " \\"
         command.append(f"  --concurrency {experiment.concurrency}")
@@ -1134,7 +1160,12 @@ def write_baselines_markdown(
 def build_experiment_config(args: argparse.Namespace, repo_root: Path) -> ExperimentConfig:
     harness_spec = get_harness_spec(args.harness)
     models = tuple(args.models or harness_spec.default_models)
-    output_root = args.output_root or default_output_root(repo_root, args.task_name)
+    run_dirs = tuple(args.run_dirs or ())
+    output_root = args.output_root
+    if output_root is None and args.mode == "render":
+        output_root = infer_render_output_root(run_dirs)
+    if output_root is None:
+        output_root = default_output_root(repo_root, args.task_name)
     return ExperimentConfig(
         task_name=args.task_name,
         task_path=args.task_path,
@@ -1146,7 +1177,7 @@ def build_experiment_config(args: argparse.Namespace, repo_root: Path) -> Experi
         title=args.title,
         notes=tuple(args.notes or ()),
         mode=args.mode,
-        run_dirs=tuple(args.run_dirs or ()),
+        run_dirs=run_dirs,
         models=models,
         artifacts=tuple(args.artifacts or ()),
         force_build=args.force_build,

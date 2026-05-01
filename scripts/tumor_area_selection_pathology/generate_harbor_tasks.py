@@ -34,6 +34,10 @@ DEFAULT_EXTERNAL_CACHE_ROOT = Path.home() / "harbor-cache" / BENCHMARK_NAME
 DEFAULT_TCGA_CACHE = DEFAULT_EXTERNAL_CACHE_ROOT / "tcga"
 DEFAULT_CAMELYON_CACHE = DEFAULT_EXTERNAL_CACHE_ROOT / "camelyon16" / "slides"
 DEFAULT_GENERATOR_HIDDEN_CACHE = DEFAULT_EXTERNAL_CACHE_ROOT / "generator_hidden"
+DEFAULT_TCGA_CACHE_EXPR = "${HOME}/harbor-cache/tumor_area_selection_pathology/tcga"
+DEFAULT_CAMELYON_CACHE_EXPR = (
+    "${HOME}/harbor-cache/tumor_area_selection_pathology/camelyon16/slides"
+)
 
 
 def _parse_args() -> argparse.Namespace:
@@ -346,8 +350,8 @@ def _docker_compose() -> str:
       context: ..
       dockerfile: environment/Dockerfile
     volumes:
-      - ${{MEDCLI_TUMOR_PATH_TCGA_CACHE:-{DEFAULT_TCGA_CACHE.as_posix()}}}:/data/cache/tcga:rw
-      - ${{MEDCLI_TUMOR_PATH_CAMELYON_CACHE:-{DEFAULT_CAMELYON_CACHE.as_posix()}}}:/data/cache/camelyon16/slides:rw
+      - ${{MEDCLI_TUMOR_PATH_TCGA_CACHE:-{DEFAULT_TCGA_CACHE_EXPR}}}:/data/cache/tcga:rw
+      - ${{MEDCLI_TUMOR_PATH_CAMELYON_CACHE:-{DEFAULT_CAMELYON_CACHE_EXPR}}}:/data/cache/camelyon16/slides:rw
     environment:
       - PYTHONUNBUFFERED=1
     deploy:
