@@ -140,6 +140,13 @@ HARNESS_SPECS: dict[str, HarnessSpec] = {
         default_models=("gpt-5.4", "gpt-5.4-mini"),
         default_agent_kwargs={},
     ),
+    "claude-code": HarnessSpec(
+        name="claude-code",
+        agent_import_path="medcli.agents.harbor.installed.claude_code:ClaudeCode",
+        display_name="Claude Code",
+        default_models=("claude-opus-4-7", "claude-sonnet-4-6"),
+        default_agent_kwargs={},
+    ),
 }
 
 
@@ -301,11 +308,63 @@ def require_codex_auth() -> None:
     )
 
 
+def require_claude_code_auth() -> None:
+    """Accept any of: CLAUDE_CODE_OAUTH_TOKEN, ANTHROPIC_API_KEY,
+    ANTHROPIC_AUTH_TOKEN, Bedrock mode, or a readable credentials JSON
+    (default ``~/.claude/.credentials.json``, override with
+    ``CLAUDE_CODE_AUTH_FILE``).
+    """
+    if any(
+        os.environ.get(k, "").strip()
+        for k in (
+            "CLAUDE_CODE_OAUTH_TOKEN",
+            "ANTHROPIC_API_KEY",
+            "ANTHROPIC_AUTH_TOKEN",
+        )
+    ):
+        return
+    if (
+        os.environ.get("CLAUDE_CODE_USE_BEDROCK", "").strip() == "1"
+        or os.environ.get("AWS_BEARER_TOKEN_BEDROCK", "").strip()
+    ):
+        return
+    auth_file = os.environ.get("CLAUDE_CODE_AUTH_FILE", "").strip()
+    path = (
+        Path(auth_file).expanduser()
+        if auth_file
+        else Path.home() / ".claude" / ".credentials.json"
+    )
+    if path.is_file():
+        # Pre-load the OAuth token into os.environ so the harbor child
+        # processes (spawned from this launcher) inherit it. Harbor's
+        # ClaudeCode reads CLAUDE_CODE_OAUTH_TOKEN at run time.
+        try:
+            payload = json.loads(path.read_text())
+            token = (payload.get("claudeAiOauth") or {}).get("accessToken")
+        except (OSError, json.JSONDecodeError, AttributeError) as exc:
+            raise SystemExit(
+                f"Failed to parse Claude Code credentials at {path}: {exc}"
+            ) from exc
+        if not token:
+            raise SystemExit(
+                f"No claudeAiOauth.accessToken in {path}. Re-run `claude login`."
+            )
+        os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = token
+        return
+    raise SystemExit(
+        "Claude Code auth is required. Set CLAUDE_CODE_OAUTH_TOKEN or "
+        "ANTHROPIC_API_KEY, or ensure ~/.claude/.credentials.json exists "
+        "(override path with CLAUDE_CODE_AUTH_FILE)."
+    )
+
+
 def require_harness_auth(harness: str) -> None:
     if harness == "copilot-cli":
         require_copilot_auth()
     elif harness == "codex":
         require_codex_auth()
+    elif harness == "claude-code":
+        require_claude_code_auth()
 
 
 def make_timestamp() -> str:
@@ -688,18 +747,35 @@ def load_attempt_results_for_run_dir(
 
     parsed_attempts: list[AttemptResult] = []
     for index, (_, payload, path) in enumerate(sorted_payloads, start=1):
-        rewards = payload.get("verifier_result", {}).get("rewards", {}) or {}
+        # ``verifier_result`` is None when the trial failed before the verifier
+        # ran (e.g. docker compose error). Treat as empty rewards.
+        verifier_result = payload.get("verifier_result") or {}
+        rewards = verifier_result.get("rewards", {}) or {}
         reward = rewards.get("reward")
         reward_value = float(reward) if reward is not None else 0.0
         fill_rate_raw = rewards.get("fill_rate")
         fill_rate_value = float(fill_rate_raw) if fill_rate_raw is not None else None
-        # Freeze the full rewards dict (scalars only — Harbor validates as
-        # `dict[str, float|int]`) into a sorted tuple so AttemptResult stays
-        # hashable/frozen while still exposing per-trial values for any key.
+        # Augment Harbor's `verifier_result.rewards` (typically only `reward`)
+        # with the richer scalars the verifier wrote into
+        # `<trial_dir>/verifier/reward.json` (e.g. f1, recall, precision,
+        # n_clusters). Harbor's `reward` always wins on key collision so the
+        # canonical primary metric stays consistent.
+        extra_rewards: dict[str, float | int] = {}
+        reward_json_path = path.parent / "verifier" / "reward.json"
+        if reward_json_path.exists():
+            try:
+                rj = json.loads(reward_json_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                rj = {}
+            if isinstance(rj, dict):
+                for k, v in rj.items():
+                    if isinstance(v, (int, float)):
+                        extra_rewards[k] = v
+        merged_rewards = {**extra_rewards, **rewards}
         rewards_raw_frozen: tuple[tuple[str, float | int], ...] = tuple(
             sorted(
                 (k, v)
-                for k, v in rewards.items()
+                for k, v in merged_rewards.items()
                 if isinstance(v, (int, float))
             )
         )
@@ -1015,16 +1091,27 @@ def build_task_section(
     detailed_rows = []
     for _, attempts, _, _, _, _ in grouped_stats:
         for item in attempts:
-            detailed_rows.append(
+            row: dict[str, str] = {
+                "Task": item.task_name,
+                "Subtask": item.subtask_name,
+                "Harness": item.harness,
+                "Model": item.model_name,
+                "Reasoning": item.reasoning_effort,
+                "Attempt": str(item.attempt),
+                "Reward": format_float(item.reward, 3),
+                "Passed": "Yes" if item.passed else "No",
+                "Exception type": item.exception_type,
+            }
+            # Surface per-trial scalars for any --metric-to-report key that
+            # comes from the verifier's reward.json (e.g. f1, recall,
+            # precision). Falls back to "" when the key isn't a per-trial
+            # scalar (e.g. aggregator-only keys like `mean_f1`).
+            rd = dict(item.rewards_raw)
+            for m_key in metric_keys:
+                v = rd.get(m_key)
+                row[m_key] = format_float(v, 3) if isinstance(v, (int, float)) else ""
+            row.update(
                 {
-                    "Task": item.task_name,
-                    "Harness": item.harness,
-                    "Model": item.model_name,
-                    "Reasoning": item.reasoning_effort,
-                    "Attempt": str(item.attempt),
-                    "Reward": format_float(item.reward, 3),
-                    "Passed": "Yes" if item.passed else "No",
-                    "Exception type": item.exception_type,
                     "Total wall time (s)": format_float(item.total_wall_time_sec, 2),
                     "Input tokens": format_int(item.input_tokens),
                     "Cached tokens": format_int(item.cached_tokens),
@@ -1033,6 +1120,7 @@ def build_task_section(
                     "Trial dir": f"`{item.trial_dir}`" if item.trial_dir else "",
                 }
             )
+            detailed_rows.append(row)
 
     # Collect the actual run-dir basenames used for this render so readers
     # can trace any number back to raw Harbor output, even when --no-detailed
