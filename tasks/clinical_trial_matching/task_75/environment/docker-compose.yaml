@@ -1,0 +1,9 @@
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile
+    volumes:
+      - /home/qianchuliu/projects/MedCLI/scripts/clinical_trial_matching/assets/raw_cache:/data/_cache:rw
+    environment:
+      - PYTHONUNBUFFERED=1
