@@ -95,10 +95,10 @@ uv run python scripts/run_harbor_baselines_multitask.py \
 ## tumor_area_selection_pathology
 
 - Task path: `tasks`
-- Generated at: `20260501T231151Z`
+- Generated at: `20260503T000750Z`
 - Raw results root: `/mnt/hanoverdev/data/jose/medcli_outputs/tumor_area_selection_pathology/runs`
 - Source run dirs:
-  - `tumor_area_selection_pathology__codex__gpt-5.3-codex__20260501T223500Z`
+  - `tumor_area_selection_pathology__codex__gpt-5.3-codex__20260503T001500Z`
 
 ### Aggregate Summary
 
@@ -112,12 +112,12 @@ Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json â
 
 ```bash
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --mode render \
   --task-name tumor_area_selection_pathology \
   --task-path tasks \
   --harness codex \
-  --baselines-md paper/baselines.md \
-  --run-dir /mnt/hanoverdev/data/jose/medcli_outputs/tumor_area_selection_pathology/runs/tumor_area_selection_pathology__codex__gpt-5.3-codex__20260501T223500Z \
+  --output-root /mnt/hanoverdev/data/jose/medcli_outputs/tumor_area_selection_pathology/runs \
+  --attempts 1 \
+  --reasoning-effort medium \
   --metrics-script scripts/tumor_area_selection_pathology/aggregate_metric.py \
   --no-detailed \
   --metric-to-report tcga_slide_precision \
