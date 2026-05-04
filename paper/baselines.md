@@ -91,3 +91,48 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --model gpt-5.3-codex \
   --model gpt-5.4
 ```
+
+## mimic_iv_dq
+
+- Task path: `tasks`
+- Generated at: `20260501T195026Z`
+- Raw results root: `/home/qianchuliu/projects/MedCLI/results/baselines/mimic_iv_dq`
+- Source run dirs:
+  - `mimic_iv_dq__claude-code__claude-opus-4-6__20260501T014356Z`
+  - `mimic_iv_dq__claude-code__claude-opus-4-7__20260501T014356Z`
+  - `mimic_iv_dq__claude-code__claude-sonnet-4-6__20260501T014356Z`
+  - `mimic_iv_dq__codex__gpt-5.3-codex__20260430T223339Z`
+  - `mimic_iv_dq__codex__gpt-5.4__20260430T223339Z`
+  - `mimic_iv_dq__codex__gpt-5.5__20260430T223339Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | f1 | f1_stdev | recall | recall_stdev | precision | precision_stdev |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| mimic_iv_dq | codex | gpt-5.5 | medium | 3 | 4 | 484.83 | 0.443 | 0.213 | 0.355 | 0.201 | 0.711 | 0.305 |
+| mimic_iv_dq | claude-code | claude-sonnet-4-6 | medium | 3 | 4 | 616.24 | 0.382 | 0.227 | 0.339 | 0.186 | 0.602 | 0.383 |
+| mimic_iv_dq | claude-code | claude-opus-4-7 | medium | 3 | 4 | 282.09 | 0.282 | 0.210 | 0.218 | 0.164 | 0.592 | 0.378 |
+| mimic_iv_dq | claude-code | claude-opus-4-6 | medium | 3 | 4 | 690.25 | 0.280 | 0.255 | 0.376 | 0.254 | 0.372 | 0.414 |
+| mimic_iv_dq | codex | gpt-5.4 | medium | 3 | 4 | 572.47 | 0.196 | 0.040 | 0.128 | 0.040 | 0.632 | 0.345 |
+| mimic_iv_dq | codex | gpt-5.3-codex | medium | 3 | 4 | 316.03 | 0.164 | 0.064 | 0.102 | 0.049 | 0.737 | 0.319 |
+
+Per-trial metrics (mean ± sample stdev across subtasks): `f1`, `recall`, `precision`.
+
+### Reproducibility
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_dq \
+  --task-path tasks \
+  --harness codex \
+  --output-root /home/qianchuliu/projects/MedCLI/results/baselines/mimic_iv_dq \
+  --attempts 3 \
+  --reasoning-effort medium \
+  --metrics-script scripts/mimic_iv_dq/aggregate_metric.py \
+  --no-detailed \
+  --metric-to-report f1 \
+  --metric-to-report recall \
+  --metric-to-report precision \
+  --model gpt-5.4 \
+  --model gpt-5.4-mini
+```

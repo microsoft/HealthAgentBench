@@ -140,6 +140,13 @@ HARNESS_SPECS: dict[str, HarnessSpec] = {
         default_models=("gpt-5.4", "gpt-5.4-mini"),
         default_agent_kwargs={},
     ),
+    "claude-code": HarnessSpec(
+        name="claude-code",
+        agent_import_path="medcli.agents.harbor.installed.claude_code:ClaudeCode",
+        display_name="Claude Code",
+        default_models=("claude-opus-4-7", "claude-sonnet-4-6"),
+        default_agent_kwargs={},
+    ),
 }
 
 
@@ -301,11 +308,63 @@ def require_codex_auth() -> None:
     )
 
 
+def require_claude_code_auth() -> None:
+    """Accept any of: CLAUDE_CODE_OAUTH_TOKEN, ANTHROPIC_API_KEY,
+    ANTHROPIC_AUTH_TOKEN, Bedrock mode, or a readable credentials JSON
+    (default ``~/.claude/.credentials.json``, override with
+    ``CLAUDE_CODE_AUTH_FILE``).
+    """
+    if any(
+        os.environ.get(k, "").strip()
+        for k in (
+            "CLAUDE_CODE_OAUTH_TOKEN",
+            "ANTHROPIC_API_KEY",
+            "ANTHROPIC_AUTH_TOKEN",
+        )
+    ):
+        return
+    if (
+        os.environ.get("CLAUDE_CODE_USE_BEDROCK", "").strip() == "1"
+        or os.environ.get("AWS_BEARER_TOKEN_BEDROCK", "").strip()
+    ):
+        return
+    auth_file = os.environ.get("CLAUDE_CODE_AUTH_FILE", "").strip()
+    path = (
+        Path(auth_file).expanduser()
+        if auth_file
+        else Path.home() / ".claude" / ".credentials.json"
+    )
+    if path.is_file():
+        # Pre-load the OAuth token into os.environ so the harbor child
+        # processes (spawned from this launcher) inherit it. Harbor's
+        # ClaudeCode reads CLAUDE_CODE_OAUTH_TOKEN at run time.
+        try:
+            payload = json.loads(path.read_text())
+            token = (payload.get("claudeAiOauth") or {}).get("accessToken")
+        except (OSError, json.JSONDecodeError, AttributeError) as exc:
+            raise SystemExit(
+                f"Failed to parse Claude Code credentials at {path}: {exc}"
+            ) from exc
+        if not token:
+            raise SystemExit(
+                f"No claudeAiOauth.accessToken in {path}. Re-run `claude login`."
+            )
+        os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = token
+        return
+    raise SystemExit(
+        "Claude Code auth is required. Set CLAUDE_CODE_OAUTH_TOKEN or "
+        "ANTHROPIC_API_KEY, or ensure ~/.claude/.credentials.json exists "
+        "(override path with CLAUDE_CODE_AUTH_FILE)."
+    )
+
+
 def require_harness_auth(harness: str) -> None:
     if harness == "copilot-cli":
         require_copilot_auth()
     elif harness == "codex":
         require_codex_auth()
+    elif harness == "claude-code":
+        require_claude_code_auth()
 
 
 def make_timestamp() -> str:
