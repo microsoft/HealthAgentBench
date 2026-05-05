@@ -4,7 +4,7 @@ version = "1.0"
 benchmark = "clinical_trial_matching"
 mode = "etl-task"
 task_id = "task_45"
-submission_path = "/workspace/submission/run.txt"
+submission_path = "/workspace/submission/ranked_trials.txt"
 
 [verifier]
 timeout_sec = 300.0

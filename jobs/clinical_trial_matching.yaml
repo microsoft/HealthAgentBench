@@ -1,5 +1,5 @@
 jobs_dir: results/harbor/clinical_trial_matching
-n_attempts: 1
+n_attempts: 3
 timeout_multiplier: 1.0
 n_concurrent_trials: 2
 quiet: false
@@ -14,6 +14,18 @@ environment:
   delete: true
 
 agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.1-codex-mini
+    kwargs:
+      reasoning_effort: medium
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.3-codex
+    kwargs:
+      reasoning_effort: medium
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.4-mini
+    kwargs:
+      reasoning_effort: medium
   - import_path: medcli.agents.harbor.installed.codex:Codex
     model_name: gpt-5.4
     kwargs:
@@ -30,6 +42,6 @@ datasets:
       - "task_*"
 
 artifacts:
-  - /workspace/submission/run.txt
+  - /workspace/submission/ranked_trials.txt
   - /logs/verifier/metrics.json
   - /logs/verifier/reward.json

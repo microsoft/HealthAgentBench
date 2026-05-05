@@ -11,11 +11,11 @@ from harbor_evaluator import evaluate  # noqa: E402
 
 
 def main() -> None:
-    submission = Path("/workspace/submission/run.txt")
+    submission = Path("/workspace/submission/ranked_trials.txt")
     qrels = Path(__file__).resolve().parent / "qrels.txt"
     log_dir = Path("/logs/verifier")
     score = evaluate(submission, qrels, log_dir)
-    print(f"ndcg_cut_10={score:.6f}")
+    print(f"ndcg_at_10={score:.6f}")
 
 
 if __name__ == "__main__":

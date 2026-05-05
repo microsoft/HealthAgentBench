@@ -1,38 +1,38 @@
-"""NDCG-based verifier for the clinical_trial_matching benchmark.
+"""Ranking verifier for the clinical_trial_matching benchmark.
 
 Each task scores one patient topic. The agent's submission at
-``/workspace/submission/run.txt`` follows the standard TREC ad-hoc
-retrieval format::
-
-    TOPIC_NO Q0 NCT_ID RANK SCORE RUN_NAME
+``/workspace/submission/ranked_trials.txt`` is a plain text file with
+one trial NCT identifier per line, ordered most-confident-first
+(rank 1 = highest confidence the patient is eligible).
 
 The verifier loads the per-topic ``qrels.txt`` (graded judgments
-``{topic_id: {nct_id: int}}`` with grades 0=non-relevant, 1=excluded,
-2=eligible) and computes NDCG@10 (the reward), NDCG@1000, and
-recall@1000 via pytrec_eval. NDCG@10 is the headline metric.
+``topic 0 nct grade`` with grades 0=non-relevant, 1=excluded, 2=eligible)
+and computes:
 
-Output files written to ``log_dir`` (Harbor's verifier log dir):
+- **NDCG@10** (TREC-CDS standard, linear gain):
+  DCG@10 = sum_{i=1..10} grade_i / log2(i + 1)
+  IDCG@10 = DCG@10 of the optimal ordering of the judged set.
+  NDCG@10 = DCG@10 / IDCG@10. **NDCG@10 is the reward.**
+- **DCG@10** (raw, unnormalized).
+- **Set-based diagnostics** computed over the full submitted list
+  treating it as the eligibility prediction:
+  precision/recall/F1 against grade=2 (eligible) gold.
 
-- ``metrics.json`` — full diagnostic payload (nested dicts allowed).
-- ``reward.json`` — flat ``dict[str, float|int]`` Harbor reads (Harbor's
-  reward.json schema is ``dict[str, float | int]``; nested dicts must be
-  flattened).
-- ``reward.txt`` is **not** written. Harbor reads ``reward.txt`` first
-  when present, which masks the rich payload and prevents the
-  uv-script aggregator from receiving per-trial diagnostics.
+Output files written to ``log_dir``:
+
+- ``metrics.json`` — full diagnostic payload.
+- ``reward.json`` — flat ``dict[str, float|int]`` Harbor reads.
 """
 
 from __future__ import annotations
 
 import json
-import os
+import math
 from pathlib import Path
 from typing import Any
 
-import pytrec_eval
 
-
-REQUIRED_RUN_FIELDS = 6
+K_TOP = 10
 
 
 def _read_turn_count() -> int | None:
@@ -49,56 +49,58 @@ def _read_turn_count() -> int | None:
     return None
 
 
-def _load_qrels(path: Path) -> dict[str, dict[str, int]]:
-    """Parse a TREC qrels file: ``topic_no 0 doc_id grade`` per line."""
-    qrels: dict[str, dict[str, int]] = {}
+def _load_qrels(path: Path) -> tuple[int | None, dict[str, int]]:
+    """Parse a TREC qrels file; return (topic_id, {nct_id: grade})."""
+    topic_id: int | None = None
+    grades: dict[str, int] = {}
     for line in path.read_text(encoding="utf-8").splitlines():
         parts = line.split()
         if len(parts) != 4:
             continue
-        topic, _, doc, grade = parts
         try:
-            qrels.setdefault(topic, {})[doc] = int(grade)
+            t = int(parts[0])
+            g = int(parts[3])
         except ValueError:
             continue
-    return qrels
+        if topic_id is None:
+            topic_id = t
+        grades[parts[2]] = g
+    return topic_id, grades
 
 
-def _load_run(path: Path) -> tuple[dict[str, dict[str, float]], int]:
-    """Parse a TREC run file. Returns (run_dict, n_rows). Tolerates blank
-    lines, comments, and duplicate (topic, doc) — keeps the highest score.
-    Returns an empty run on parse failure.
+def _load_ranking(path: Path) -> list[str]:
+    """Parse the agent's ranked submission. One NCT_ID per line, ranked
+    most-confident-first. Strip blanks and ``#`` comments. Take the first
+    whitespace/comma token of each row. De-duplicate while preserving the
+    first occurrence (highest rank wins).
     """
-    run: dict[str, dict[str, float]] = {}
-    n_rows = 0
     if not path.exists():
-        return run, 0
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
+        return []
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
         if not line or line.startswith("#"):
             continue
-        parts = line.split()
-        if len(parts) != REQUIRED_RUN_FIELDS:
-            # Be lenient — some agents drop the Q0 column. Reject only on
-            # gross-format errors (< 4 fields).
-            if len(parts) < 4:
-                continue
-        # Fields: TOPIC_NO Q0 NCT_ID RANK SCORE RUN_NAME
-        topic = parts[0]
-        doc = parts[2] if len(parts) >= 3 else None
-        try:
-            score = float(parts[4]) if len(parts) >= 5 else float(len(run.get(topic, {})) * -1)
-        except ValueError:
+        token = line.split()[0].split(",")[0].strip()
+        if not token or token in seen:
             continue
-        if doc is None:
-            continue
-        n_rows += 1
-        topic_run = run.setdefault(topic, {})
-        # Keep highest score on duplicate (topic, doc).
-        prev = topic_run.get(doc)
-        if prev is None or score > prev:
-            topic_run[doc] = score
-    return run, n_rows
+        seen.add(token)
+        out.append(token)
+    return out
+
+
+def _dcg_at_k(grades: list[int], k: int) -> float:
+    return sum(g / math.log2(i + 2) for i, g in enumerate(grades[:k]))
+
+
+def _ideal_dcg_at_k(qrels_grades: list[int], k: int) -> float:
+    ideal = sorted(qrels_grades, reverse=True)
+    return _dcg_at_k(ideal, k)
+
+
+def _f1(p: float, r: float) -> float:
+    return 2 * p * r / (p + r) if (p + r) > 0 else 0.0
 
 
 def evaluate(
@@ -107,65 +109,53 @@ def evaluate(
     log_dir: Path,
     turn_count_override: int | None = None,
 ) -> float:
-    """Score a TREC run against the per-topic qrels using NDCG@10.
-
-    Returns the NDCG@10 of the (single) topic in qrels. Writes
-    ``metrics.json`` and ``reward.json`` to ``log_dir``. Never raises on
-    bad agent input — writes ``verifier_error.txt`` and returns 0.0.
-    """
+    """Score the agent's ranked submission. Returns NDCG@10."""
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    qrels = _load_qrels(qrels_path)
+    topic_id, qrels = _load_qrels(qrels_path)
     if not qrels:
         (log_dir / "verifier_error.txt").write_text(
             f"qrels file is empty or unparseable: {qrels_path}\n"
         )
         return 0.0
 
-    if len(qrels) != 1:
-        # Each task is single-topic by construction. Still continue (the
-        # metric is well-defined for multi-topic), but log a warning.
-        (log_dir / "verifier_warning.txt").write_text(
-            f"qrels has {len(qrels)} topics (expected 1)\n"
-        )
+    eligible: set[str] = {nct for nct, g in qrels.items() if g == 2}
+    excluded: set[str] = {nct for nct, g in qrels.items() if g == 1}
+    nonrel: set[str] = {nct for nct, g in qrels.items() if g == 0}
 
-    run, n_submission_rows = _load_run(submission_path)
-
-    if not run:
+    ranking = _load_ranking(submission_path)
+    if not ranking:
         (log_dir / "verifier_error.txt").write_text(
-            f"submission file at {submission_path} missing or unparseable\n"
+            f"submission file at {submission_path} missing or empty\n"
         )
-        # Still emit a zero-reward payload so the aggregator sees this trial.
-        _emit(log_dir, qrels, {}, n_submission_rows, turn_count_override)
-        return 0.0
 
-    return _emit(log_dir, qrels, run, n_submission_rows, turn_count_override)
+    # Graded relevance for the agent's ranked list. Anything not in qrels
+    # is treated as grade 0 (non-judged ⇒ no gain).
+    ranked_grades = [qrels.get(nct, 0) for nct in ranking]
+    dcg10 = _dcg_at_k(ranked_grades, K_TOP)
+    idcg10 = _ideal_dcg_at_k(list(qrels.values()), K_TOP)
+    ndcg10 = dcg10 / idcg10 if idcg10 > 0 else 0.0
 
+    # Set-based diagnostics over the full submitted ranking.
+    pred_set = set(ranking)
+    tp = pred_set & eligible
+    fp_excluded = pred_set & excluded
+    fp_nonrel = pred_set & nonrel
+    fp_unjudged = pred_set - eligible - excluded - nonrel
+    fn = eligible - pred_set
+    n_pred = len(pred_set)
+    n_tp = len(tp)
+    n_fp = len(fp_excluded) + len(fp_nonrel) + len(fp_unjudged)
+    precision = n_tp / n_pred if n_pred > 0 else 0.0
+    recall = n_tp / len(eligible) if eligible else 0.0
+    f1 = _f1(precision, recall)
 
-def _emit(
-    log_dir: Path,
-    qrels: dict[str, dict[str, int]],
-    run: dict[str, dict[str, float]],
-    n_submission_rows: int,
-    turn_count_override: int | None,
-) -> float:
-    """Run pytrec_eval and write metrics.json + reward.json. Returns NDCG@10."""
-    measures = {"ndcg_cut.10", "ndcg_cut.1000", "recall.1000"}
-    evaluator = pytrec_eval.RelevanceEvaluator(qrels, measures)
-    per_topic_scores = evaluator.evaluate(run) if run else {}
-
-    # Single-topic per task; pull the topic's score (or 0 if missing).
-    topic_id = next(iter(qrels))
-    scores = per_topic_scores.get(topic_id, {})
-    ndcg10 = float(scores.get("ndcg_cut_10", 0.0))
-    ndcg1000 = float(scores.get("ndcg_cut_1000", 0.0))
-    recall1000 = float(scores.get("recall_1000", 0.0))
-
-    # Diagnostic counts.
-    judged = qrels.get(topic_id, {})
-    n_eligible = sum(1 for g in judged.values() if g == 2)
-    n_excluded = sum(1 for g in judged.values() if g == 1)
-    n_nonrel = sum(1 for g in judged.values() if g == 0)
+    # Top-K precision/recall (rank-aware diagnostic alongside NDCG@10).
+    top_k_set = set(ranking[:K_TOP])
+    n_top_k = len(top_k_set)
+    n_top_k_tp = len(top_k_set & eligible)
+    p_at_k = n_top_k_tp / n_top_k if n_top_k > 0 else 0.0
+    r_at_k = n_top_k_tp / len(eligible) if eligible else 0.0
 
     if turn_count_override is not None:
         turn_count: int | None = turn_count_override
@@ -174,43 +164,63 @@ def _emit(
 
     metrics: dict[str, Any] = {
         "topic_id": topic_id,
-        "ndcg_cut_10": ndcg10,
-        "ndcg_cut_1000": ndcg1000,
-        "recall_1000": recall1000,
-        "n_judged_eligible": n_eligible,
-        "n_judged_excluded": n_excluded,
-        "n_judged_nonrelevant": n_nonrel,
-        "n_submission_rows": int(n_submission_rows),
-        "n_run_unique_docs": int(len(run.get(topic_id, {}))),
+        "ndcg_at_10": ndcg10,
+        "dcg_at_10": dcg10,
+        "idcg_at_10": idcg10,
+        "precision_at_10": p_at_k,
+        "recall_at_10": r_at_k,
+        "f1": f1,
+        "precision": precision,
+        "recall": recall,
+        "n_ranked": len(ranking),
+        "n_predicted": n_pred,
+        "n_eligible": len(eligible),
+        "n_excluded": len(excluded),
+        "n_nonrelevant": len(nonrel),
+        "n_true_positives": n_tp,
+        "n_false_positives": n_fp,
+        "n_false_negatives": len(fn),
+        "n_fp_excluded": len(fp_excluded),
+        "n_fp_nonrelevant": len(fp_nonrel),
+        "n_fp_unjudged": len(fp_unjudged),
         "turn_count": turn_count,
     }
     (log_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
 
-    # Flat reward.json (Harbor's pydantic schema is ``dict[str, float|int]``).
     reward_payload: dict[str, float | int] = {
         "reward": ndcg10,
-        "ndcg_cut_10": ndcg10,
-        "ndcg_cut_1000": ndcg1000,
-        "recall_1000": recall1000,
-        "n_judged_eligible": n_eligible,
-        "n_judged_excluded": n_excluded,
-        "n_judged_nonrelevant": n_nonrel,
-        "n_submission_rows": int(n_submission_rows),
-        "n_run_unique_docs": int(len(run.get(topic_id, {}))),
-        # -1 sentinel means "not recorded". Harbor's pydantic schema rejects None.
+        "ndcg_at_10": ndcg10,
+        "dcg_at_10": dcg10,
+        "idcg_at_10": idcg10,
+        "precision_at_10": p_at_k,
+        "recall_at_10": r_at_k,
+        "f1": f1,
+        "precision": precision,
+        "recall": recall,
+        "n_ranked": len(ranking),
+        "n_predicted": n_pred,
+        "n_eligible": len(eligible),
+        "n_excluded": len(excluded),
+        "n_nonrelevant": len(nonrel),
+        "n_true_positives": n_tp,
+        "n_false_positives": n_fp,
+        "n_false_negatives": len(fn),
+        "n_fp_excluded": len(fp_excluded),
+        "n_fp_nonrelevant": len(fp_nonrel),
+        "n_fp_unjudged": len(fp_unjudged),
         "turn_count": int(turn_count) if turn_count is not None else -1,
-        "topic_id": int(topic_id) if topic_id.isdigit() else -1,
+        "topic_id": int(topic_id) if topic_id is not None else -1,
     }
     (log_dir / "reward.json").write_text(json.dumps(reward_payload, indent=2))
     return ndcg10
 
 
 def main() -> None:
-    submission = Path("/workspace/submission/run.txt")
-    qrels = Path(os.environ.get("TREC_CT_QRELS", "/tests/qrels.txt"))
+    submission = Path("/workspace/submission/ranked_trials.txt")
+    qrels = Path("/tests/qrels.txt")
     log_dir = Path("/logs/verifier")
     score = evaluate(submission, qrels, log_dir)
-    print(f"ndcg_cut_10={score:.6f}")
+    print(f"ndcg_at_10={score:.6f}")
 
 
 if __name__ == "__main__":

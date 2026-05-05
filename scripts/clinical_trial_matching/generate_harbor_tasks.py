@@ -65,7 +65,7 @@ TASK_CONFIGS_PATH = ASSETS / "task_configs.yaml"
 RAW_CACHE = ASSETS / "raw_cache"
 
 PYTHON_BASE = "3.12-slim"
-PIP_PINS = "pytrec_eval==0.5 remotezip==0.12.3 pyyaml==6.0.3 filelock==3.18.0 numpy==2.4.2"
+PIP_PINS = "remotezip==0.12.3 pyyaml==6.0.3 filelock==3.18.0"
 
 
 # ---------------------------------------------------------------------------
@@ -204,7 +204,7 @@ def build_task_toml(task_id: str) -> str:
 benchmark = "clinical_trial_matching"
 mode = "etl-task"
 task_id = "{task_id}"
-submission_path = "/workspace/submission/run.txt"
+submission_path = "/workspace/submission/ranked_trials.txt"
 
 [verifier]
 timeout_sec = 300.0
@@ -227,18 +227,20 @@ mcp_servers = []
 """
 
 
-INSTRUCTION_TEMPLATE = """# Patient-to-Trial Matching
+INSTRUCTION_TEMPLATE = """# Patient-to-Trial Eligibility (Ranked)
 
 You are working inside an environment that contains a single patient's
 free-text admission note and a directory of clinical-trial documents.
-Rank the trials by how well the patient matches them, favoring trials the
-patient would be eligible to enroll in.
+**Identify every trial in the directory that the patient is eligible
+for** -- meaning the patient meets all of the trial's inclusion
+criteria *and* none of its exclusion criteria -- and **list them
+ordered most-confident-first** (rank 1 = the trial you are most sure
+the patient is eligible for).
 
 ## Inputs
 
 - `/workspace/data/topic.txt` -- the patient case description.
-- `/workspace/data/topic_id.txt` -- the integer topic ID you must use in
-  the `TOPIC_NO` column of your submission.
+- `/workspace/data/topic_id.txt` -- the integer topic ID for this task.
 - `/workspace/data/trials/<NCT_ID>.xml` -- one file per candidate trial
   (typically 300-600 files). Each XML follows the standard
   ClinicalTrials.gov v1 schema with at least the following elements
@@ -249,39 +251,22 @@ patient would be eligible to enroll in.
 
 ## Output
 
-Write a run file at `/workspace/submission/run.txt` in standard
-ad-hoc-retrieval format. Each line must have six whitespace-separated
-fields:
+Write a plain text file at
+`/workspace/submission/ranked_trials.txt` containing **one NCT
+identifier per line**: every trial you believe the patient is
+eligible for, and **no** entries for trials where the patient is
+excluded or unrelated. **The order matters** -- put the trial you
+are most confident about on the first line, the next most confident
+on the second, and so on. Make sure you flag all the eligible trials.
 
-    TOPIC_NO Q0 NCT_ID RANK SCORE RUN_NAME
+Format example (most-confident first):
 
-Where:
+    NCT00012345
+    NCT00067890
+    NCT00111222
 
-- `TOPIC_NO` matches `topic_id.txt`.
-- `Q0` is a literal placeholder.
-- `NCT_ID` is one of the candidate trials (a filename under
-  `/workspace/data/trials/` without the `.xml` suffix).
-- `RANK` is a 1-based integer; same-score ties get distinct ranks.
-- `SCORE` is a floating-point value, larger = more confident match.
-- `RUN_NAME` is any short alphanumeric label without spaces.
-
-Submit **your top 10 trials** (the 10 you are most confident match the
-patient), sorted by rank ascending. Only the top-10 ranks contribute to
-the score; submitting more than 10 rows is permitted but they will not
-affect your reward, so prioritize getting the top 10 right.
-
-## Scoring
-
-The verifier scores your ranking using NDCG@10 (Normalized Discounted
-Cumulative Gain at cutoff 10) with graded relevance:
-
-- `eligible` (highest credit)
-- `excluded` (partial credit -- patient meets inclusion criteria but is
-  excluded by an exclusion criterion)
-- `not relevant` (no credit)
-
-NDCG rewards placing relevant trials at the top of the list; placing
-trials far down the list contributes little. NDCG@10 is in [0, 1].
+Blank lines and lines starting with `#` are ignored. Duplicates are
+de-duplicated keeping the first (highest-rank) occurrence.
 
 ## Rules
 
@@ -300,10 +285,9 @@ def build_dockerfile() -> str:
     """
     return f"""FROM python:{PYTHON_BASE}
 
-# build-essential + python3-dev are needed for pytrec_eval (C extension).
 RUN apt-get update \\
     && apt-get install -y --no-install-recommends \\
-        bash ca-certificates curl util-linux build-essential python3-dev \\
+        bash ca-certificates curl util-linux \\
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir {PIP_PINS}
@@ -351,44 +335,77 @@ set -euo pipefail
 #
 # Mounts:
 #   /data/_cache  -- host-side cache (rw). Shared across concurrent task
-#                    containers; we hold a per-topic flock during writes.
+#                    containers.
 #
 # Behaviour:
 #   1. Re-make the cache writable (a previous run may have chmod'd it ro).
-#   2. Acquire a per-topic flock under /data/_cache/.locks/topic_<id>.lock.
-#   3. Run fetch_trials.py with --cache-dir=/data/_cache. It pulls cache
-#      hits (no network) and downloads the rest from the upstream zip
-#      snapshot, writing back into /data/_cache (chmod a-w per file).
-#   4. Chmod -R a-w /data/_cache so the agent cannot mutate cached files.
-#   5. Release flock, exec the agent.
+#   2. Check if all NCTs for this topic are already in the cache.
+#      - Warm path (all cached): run fetch_trials.py directly; pure cache
+#        hits, no network, no global lock needed.
+#      - Cold path (any missing): acquire a global download lock so that
+#        concurrent containers serialize network downloads and do not
+#        overwhelm the upstream zip server with simultaneous range requests.
+#        Release the lock as soon as fetch_trials.py returns, before the
+#        agent starts, so other containers can proceed in parallel.
+#   3. Chmod -R a-w /data/_cache so the agent cannot mutate cached files.
+#   4. Exec the agent.
 # ---------------------------------------------------------------------------
 
 CACHE=/data/_cache
 TRIALS=/workspace/data/trials
-TOPIC_ID="$(cat /workspace/data/topic_id.txt)"
 LOCK_DIR="$CACHE/.locks"
-LOCK_FILE="$LOCK_DIR/topic_${TOPIC_ID}.lock"
+GLOBAL_LOCK="$LOCK_DIR/global_download.lock"
 
 mkdir -p "$CACHE" "$LOCK_DIR" "$TRIALS"
+
+# Signal to Harbor agent setup that bootstrap is in progress.
+# The Codex wrapper polls for .bootstrap_done before starting the agent.
+touch /workspace/.bootstrap_required
 
 # Re-grant write permissions for the lock window. (chmod is idempotent.)
 chmod -R u+w "$CACHE" 2>/dev/null || true
 
-exec 9>"$LOCK_FILE"
-flock 9
+# Returns 0 if every NCT ID listed in trial_ncts.txt has a non-empty XML
+# file in the cache; non-zero otherwise.
+_all_cached() {
+    while IFS= read -r nct; do
+        nct="${nct%%#*}"
+        nct="${nct//[[:space:]]/}"
+        [ -z "$nct" ] && continue
+        [ -f "$CACHE/${nct}.xml" ] || return 1
+    done < /workspace/trial_ncts.txt
+    return 0
+}
 
-python3 /workspace/fetch_trials.py \
-    --ids /workspace/trial_ncts.txt \
-    --out "$TRIALS" \
-    --cache-dir "$CACHE" \
-    --user-agent "clinical_trial_matching/1.0 (medcli benchmark)" \
-    --retries 3
+_fetch() {
+    python3 /workspace/fetch_trials.py \
+        --ids /workspace/trial_ncts.txt \
+        --out "$TRIALS" \
+        --cache-dir "$CACHE" \
+        --user-agent "clinical_trial_matching/1.0 (medcli benchmark)" \
+        --retries 3
+}
+
+if _all_cached; then
+    # Warm path: every NCT is already cached — skip global lock so all
+    # containers run fully concurrently.
+    _fetch
+else
+    # Cold path: serialize downloads behind a global lock to avoid
+    # hammering the upstream server with simultaneous range requests.
+    exec 9>"$GLOBAL_LOCK"
+    flock 9
+    _fetch
+    flock -u 9  # Release before exec so other containers can proceed.
+fi
 
 # Lock the cache to read-only so neither the agent nor any later step can
 # mutate cached files. Tolerant to filesystem oddities.
 chmod -R a-w "$CACHE" 2>/dev/null || true
 
-# Lock released when fd 9 closes at shell exit. Now exec what Harbor wants.
+# Signal that bootstrap is complete; the Codex setup_command will unblock.
+touch /workspace/.bootstrap_done
+
 exec "$@"
 """
 
@@ -414,11 +431,11 @@ from harbor_evaluator import evaluate  # noqa: E402
 
 
 def main() -> None:
-    submission = Path("/workspace/submission/run.txt")
+    submission = Path("/workspace/submission/ranked_trials.txt")
     qrels = Path(__file__).resolve().parent / "qrels.txt"
     log_dir = Path("/logs/verifier")
     score = evaluate(submission, qrels, log_dir)
-    print(f"ndcg_cut_10={score:.6f}")
+    print(f"ndcg_at_10={score:.6f}")
 
 
 if __name__ == "__main__":

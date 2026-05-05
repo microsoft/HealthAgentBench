@@ -80,6 +80,14 @@ class ClaudeCode(HarborClaudeCode):
             )
         os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = token
 
+    _BOOTSTRAP_WAIT_COMMAND = (
+        "if [ -f /workspace/.bootstrap_required ]; then "
+        'echo "[claude-code-setup] waiting for entrypoint bootstrap..."; '
+        "until [ -f /workspace/.bootstrap_done ]; do sleep 2; done; "
+        'echo "[claude-code-setup] bootstrap done."; '
+        "fi"
+    )
+
     @with_prompt_template
     async def run(
         self,
@@ -90,4 +98,11 @@ class ClaudeCode(HarborClaudeCode):
         # Resolve auth lazily so unit tests that import this module don't
         # require a credentials file on disk.
         self.ensure_auth_env()
+        # Block agent startup until the entrypoint signals that any task-
+        # specific bootstrap (e.g. cold-cache trial downloads) is complete.
+        # See codex.py for the matching wait logic.
+        await self.exec_as_agent(
+            environment,
+            command=self._BOOTSTRAP_WAIT_COMMAND,
+        )
         await super().run(instruction, environment, context)

@@ -1,12 +1,11 @@
 FROM python:3.12-slim
 
-# build-essential + python3-dev are needed for pytrec_eval (C extension).
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        bash ca-certificates curl util-linux build-essential python3-dev \
+        bash ca-certificates curl util-linux \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir pytrec_eval==0.5 remotezip==0.12.3 pyyaml==6.0.3 filelock==3.18.0 numpy==2.4.2
+RUN pip install --no-cache-dir remotezip==0.12.3 pyyaml==6.0.3 filelock==3.18.0
 
 # Don't write .pyc files anywhere — keeps the bind-mounted /tests dir
 # free of root-owned __pycache__ residue that the host can't delete.
