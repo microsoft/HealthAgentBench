@@ -747,35 +747,18 @@ def load_attempt_results_for_run_dir(
 
     parsed_attempts: list[AttemptResult] = []
     for index, (_, payload, path) in enumerate(sorted_payloads, start=1):
-        # ``verifier_result`` is None when the trial failed before the verifier
-        # ran (e.g. docker compose error). Treat as empty rewards.
-        verifier_result = payload.get("verifier_result") or {}
-        rewards = verifier_result.get("rewards", {}) or {}
+        rewards = payload.get("verifier_result", {}).get("rewards", {}) or {}
         reward = rewards.get("reward")
         reward_value = float(reward) if reward is not None else 0.0
         fill_rate_raw = rewards.get("fill_rate")
         fill_rate_value = float(fill_rate_raw) if fill_rate_raw is not None else None
-        # Augment Harbor's `verifier_result.rewards` (typically only `reward`)
-        # with the richer scalars the verifier wrote into
-        # `<trial_dir>/verifier/reward.json` (e.g. f1, recall, precision,
-        # n_clusters). Harbor's `reward` always wins on key collision so the
-        # canonical primary metric stays consistent.
-        extra_rewards: dict[str, float | int] = {}
-        reward_json_path = path.parent / "verifier" / "reward.json"
-        if reward_json_path.exists():
-            try:
-                rj = json.loads(reward_json_path.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, OSError):
-                rj = {}
-            if isinstance(rj, dict):
-                for k, v in rj.items():
-                    if isinstance(v, (int, float)):
-                        extra_rewards[k] = v
-        merged_rewards = {**extra_rewards, **rewards}
+        # Freeze the full rewards dict (scalars only — Harbor validates as
+        # `dict[str, float|int]`) into a sorted tuple so AttemptResult stays
+        # hashable/frozen while still exposing per-trial values for any key.
         rewards_raw_frozen: tuple[tuple[str, float | int], ...] = tuple(
             sorted(
                 (k, v)
-                for k, v in merged_rewards.items()
+                for k, v in rewards.items()
                 if isinstance(v, (int, float))
             )
         )
@@ -1091,27 +1074,16 @@ def build_task_section(
     detailed_rows = []
     for _, attempts, _, _, _, _ in grouped_stats:
         for item in attempts:
-            row: dict[str, str] = {
-                "Task": item.task_name,
-                "Subtask": item.subtask_name,
-                "Harness": item.harness,
-                "Model": item.model_name,
-                "Reasoning": item.reasoning_effort,
-                "Attempt": str(item.attempt),
-                "Reward": format_float(item.reward, 3),
-                "Passed": "Yes" if item.passed else "No",
-                "Exception type": item.exception_type,
-            }
-            # Surface per-trial scalars for any --metric-to-report key that
-            # comes from the verifier's reward.json (e.g. f1, recall,
-            # precision). Falls back to "" when the key isn't a per-trial
-            # scalar (e.g. aggregator-only keys like `mean_f1`).
-            rd = dict(item.rewards_raw)
-            for m_key in metric_keys:
-                v = rd.get(m_key)
-                row[m_key] = format_float(v, 3) if isinstance(v, (int, float)) else ""
-            row.update(
+            detailed_rows.append(
                 {
+                    "Task": item.task_name,
+                    "Harness": item.harness,
+                    "Model": item.model_name,
+                    "Reasoning": item.reasoning_effort,
+                    "Attempt": str(item.attempt),
+                    "Reward": format_float(item.reward, 3),
+                    "Passed": "Yes" if item.passed else "No",
+                    "Exception type": item.exception_type,
                     "Total wall time (s)": format_float(item.total_wall_time_sec, 2),
                     "Input tokens": format_int(item.input_tokens),
                     "Cached tokens": format_int(item.cached_tokens),
@@ -1120,7 +1092,6 @@ def build_task_section(
                     "Trial dir": f"`{item.trial_dir}`" if item.trial_dir else "",
                 }
             )
-            detailed_rows.append(row)
 
     # Collect the actual run-dir basenames used for this render so readers
     # can trace any number back to raw Harbor output, even when --no-detailed
