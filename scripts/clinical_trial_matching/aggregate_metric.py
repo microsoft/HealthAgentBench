@@ -80,6 +80,7 @@ def main(input_path: Path, output_path: Path) -> None:
 
     n_trials = len(trials)
     ndcgs = [float(t.get("ndcg_at_10", t.get("reward", 0.0))) for t in trials]
+    successes = [int(t.get("success", 1 if float(t.get("ndcg_at_10", 0.0)) >= 1.0 else 0)) for t in trials]
     dcgs = [float(t.get("dcg_at_10", 0.0)) for t in trials]
     p_at_10 = [float(t.get("precision_at_10", 0.0)) for t in trials]
     r_at_10 = [float(t.get("recall_at_10", 0.0)) for t in trials]
@@ -101,6 +102,9 @@ def main(input_path: Path, output_path: Path) -> None:
     micro_f1 = _f1(micro_precision, micro_recall)
 
     result: dict[str, float | int] = {
+        "success": sum(successes),
+        "pass_rate": round(_safe_mean(successes), 4),
+        "n_passed": sum(successes),
         "mean_ndcg_at_10": round(_safe_mean(ndcgs), 4),
         "median_ndcg_at_10": round(_safe_median(ndcgs), 4),
         "mean_dcg_at_10": round(_safe_mean(dcgs), 4),
@@ -141,6 +145,7 @@ def main(input_path: Path, output_path: Path) -> None:
 
     print(f"\n{'=' * 50}", file=sys.stderr)
     print(f" clinical_trial_matching aggregate ({n_trials} trials)", file=sys.stderr)
+    print(f"  pass rate:       {result['pass_rate']:.4f}  ({result['n_passed']}/{n_trials})", file=sys.stderr)
     print(f"  mean NDCG@10:    {result['mean_ndcg_at_10']:.4f}", file=sys.stderr)
     print(f"  mean P@10:       {result['mean_precision_at_10']:.4f}", file=sys.stderr)
     print(f"  mean R@10:       {result['mean_recall_at_10']:.4f}", file=sys.stderr)

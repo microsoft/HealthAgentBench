@@ -71,7 +71,7 @@ def test_build_task_writes_expected_files(tmp_path: Path) -> None:
     # Top-level files
     assert (task_root / "task.toml").exists()
     instr = (task_root / "instruction.md").read_text()
-    assert "Patient-to-Trial Matching" in instr
+    assert "Patient-to-Trial Eligibility" in instr
     # Source obfuscation: must not name TREC or ClinicalTrials.gov in
     # agent-visible artifacts.
     assert "TREC" not in instr

@@ -136,3 +136,54 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --model gpt-5.4 \
   --model gpt-5.4-mini
 ```
+
+## clinical_trial_matching
+
+- Task path: `tasks`
+- Generated at: `20260505T215435Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/clinical_trial_matching`
+- Source run dirs:
+  - `clinical_trial_matching__claude-code__claude-opus-4-7__20260505T014830Z`
+  - `clinical_trial_matching__claude-code__claude-sonnet-4-6__20260505T014830Z`
+  - `clinical_trial_matching__codex__gpt-5.3-codex__20260505T203426Z`
+  - `clinical_trial_matching__codex__gpt-5.4__20260505T203426Z`
+  - `clinical_trial_matching__codex__gpt-5.5__20260505T203426Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | ndcg_at_10 | ndcg_at_10_stdev | success | reward | reward_stdev | f1 | f1_stdev | precision | precision_stdev | recall | recall_stdev |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| clinical_trial_matching | codex | gpt-5.5 | medium | 1 | 10 | 385.26 | 0.928 | 0.082 | 4.000 | 0.400 | 0.516 | 0.402 | 0.146 | 0.776 | 0.151 | 0.290 | 0.137 |
+| clinical_trial_matching | codex | gpt-5.4 | medium | 1 | 10 | 346.35 | 0.849 | 0.173 | 3.000 | 0.300 | 0.483 | 0.197 | 0.056 | 0.884 | 0.142 | 0.112 | 0.035 |
+| clinical_trial_matching | claude-code | claude-opus-4-7 | medium | 1 | 10 | 438.23 | 0.883 | 0.105 | 2.000 | 0.200 | 0.422 | 0.542 | 0.161 | 0.747 | 0.158 | 0.452 | 0.168 |
+| clinical_trial_matching | claude-code | claude-sonnet-4-6 | medium | 1 | 10 | 1066.02 | 0.817 | 0.153 | 1.000 | 0.100 | 0.316 | 0.423 | 0.183 | 0.738 | 0.142 | 0.329 | 0.204 |
+| clinical_trial_matching | codex | gpt-5.3-codex | medium | 1 | 10 | 223.01 | 0.586 | 0.270 | 0.000 | 0.000 | 0.000 | 0.109 | 0.086 | 0.870 | 0.185 | 0.062 | 0.053 |
+
+Per-trial metrics (mean ± sample stdev across subtasks): `ndcg_at_10`, `reward`, `f1`, `precision`, `recall`.
+
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`.
+
+### Reproducibility
+
+```bash
+# Codex sweep — requires CODEX_AUTH_JSON to be exported before launching.
+export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name clinical_trial_matching \
+  --task-path tasks \
+  --harness codex \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/clinical_trial_matching \
+  --attempts 1 \
+  --reasoning-effort medium \
+  --concurrency 2 \
+  --no-detailed \
+  --metric-to-report ndcg_at_10 \
+  --metric-to-report success \
+  --metric-to-report reward \
+  --metric-to-report f1 \
+  --metric-to-report precision \
+  --metric-to-report recall \
+  --model gpt-5.5 \
+  --model gpt-5.4 \
+  --model gpt-5.3-codex
+```

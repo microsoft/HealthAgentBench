@@ -162,8 +162,11 @@ def evaluate(
     else:
         turn_count = _read_turn_count()
 
+    success = 1 if ndcg10 >= 1.0 else 0
+
     metrics: dict[str, Any] = {
         "topic_id": topic_id,
+        "success": success,
         "ndcg_at_10": ndcg10,
         "dcg_at_10": dcg10,
         "idcg_at_10": idcg10,
@@ -189,6 +192,7 @@ def evaluate(
 
     reward_payload: dict[str, float | int] = {
         "reward": ndcg10,
+        "success": success,
         "ndcg_at_10": ndcg10,
         "dcg_at_10": dcg10,
         "idcg_at_10": idcg10,
