@@ -72,15 +72,88 @@ uv sync --all-extras
 
 Python version requirement: `>=3.12`.
 
+
+## Harness Authentication
+
+The Harbor multitask launcher and `harbor run` need credentials forwarded to the
+agent container for each harness. The `require_<harness>_auth()` checks in
+`scripts/run_harbor_baselines_multitask.py` enforce these contracts.
+
+### codex (`--harness codex`)
+
+Two routes supported by `medcli.agents.harbor.installed.codex.Codex`:
+
+**(a) ChatGPT login** — keep the local Codex CLI logged in so
+`~/.codex/auth.json` exists, then export its contents:
+
+```bash
+codex login status                                   # verify local login
+export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"   # forwarded into container
+# Override the default path with CODEX_AUTH_FILE if your auth.json lives elsewhere.
+```
+
+**(b) Azure OpenAI API token** — bypasses ChatGPT login. Both env vars are
+required:
+
+```bash
+export AZURE_OPENAI_API_KEY=<your-key>
+export CODEX_TASK_TOML='model = "gpt-5.4"
+model_provider = "azure"
+
+[model_providers.azure]
+name = "Azure OpenAI"
+base_url = ""
+env_key = "AZURE_OPENAI_API_KEY"
+wire_api = "responses"'
+```
+
+The wrapper writes `$CODEX_TASK_TOML` to `$CODEX_HOME/config.toml` inside the
+container so the codex CLI picks up the Azure provider config.
+
+### copilot-cli (`--harness copilot-cli`)
+
+Set a GitHub token (any of these is accepted, in priority order):
+
+```bash
+export GH_TOKEN=$(cat ~/.github_credentials/github_pat)
+# or: gh auth login   (and let the harness pick up `gh auth token`)
+# or: export COPILOT_GITHUB_TOKEN=...
+# or: export GITHUB_TOKEN=...
+```
+
+### claude-code (`--harness claude-code`)
+
+Either rely on an existing Claude Code session — the launcher auto-loads
+`~/.claude/.credentials.json` (`claudeAiOauth.accessToken`) — or export
+explicitly:
+
+```bash
+export CLAUDE_CODE_OAUTH_TOKEN=$(python3 -c "import json; print(json.load(open('$HOME/.claude/.credentials.json'))['claudeAiOauth']['accessToken'])")
+# or: export ANTHROPIC_API_KEY=<your-key>     # standard Anthropic API
+# or: export CLAUDE_CODE_USE_BEDROCK=1        # plus AWS creds
+# Override the credentials file path with CLAUDE_CODE_AUTH_FILE.
+```
+
 ## Usage
 
 See `tasks/README.md` for the full list of currently supported tasks and benchmarks.
 
 ```bash
-# Ensure Codex auth exists locally
-codex login status
-
+# Ensure your harness's auth is set (see "Harness Authentication" below)
 uv run harbor run -c jobs/<benchmark>.yaml
+```
+
+For multi-model baseline sweeps:
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+    --task-name <benchmark> --task-path tasks \
+    --harness <codex|copilot-cli|claude-code> \
+    --model <model-1> --model <model-2> \
+    --attempts 3 --concurrency 2 \
+    --metrics-script scripts/<benchmark>/aggregate_metric.py \
+    --metric-to-report f1 --metric-to-report recall --metric-to-report precision \
+    --baselines-md paper/baselines.md
 ```
 
 ## Task Creation

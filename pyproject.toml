@@ -14,6 +14,7 @@ dependencies = [
     "backoff>=2.2.1",
     "beautifulsoup4>=4.14.3",
     "biopython>=1.86",
+    "duckdb>=1.5.2",
     "fhir-resources>=8.2.0",
     "func-timeout>=4.3.5",
     "gdown>=5.2.1",

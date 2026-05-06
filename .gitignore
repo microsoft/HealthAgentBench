@@ -21,5 +21,10 @@ results/
 scripts/ehrsql/assets/
 scripts/mimic_report_gen/assets/
 scripts/tumor_area_selection_pathology/assets/cache/
+# mimic_iv_dq build artifacts. Only ``task_configs.yaml`` (the deterministic
+# benchmark seed) is committed; everything else under ``assets/`` is a
+# regenerable cache (PhysioNet downloads, sliced configs, regenerated labels).
+scripts/mimic_iv_dq/assets/*
+!scripts/mimic_iv_dq/assets/task_configs.yaml
 # local convenience helpers
 resume-codex.sh
