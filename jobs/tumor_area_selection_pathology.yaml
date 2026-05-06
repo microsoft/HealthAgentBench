@@ -1,0 +1,29 @@
+jobs_dir: results
+n_attempts: 1
+timeout_multiplier: 1.0
+n_concurrent_trials: 2
+quiet: false
+
+environment:
+  type: docker
+  force_build: false
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.3-codex
+    kwargs:
+      reasoning_effort: medium
+
+metrics:
+  - type: uv-script
+    kwargs:
+      script_path: scripts/tumor_area_selection_pathology/aggregate_metric.py
+
+datasets:
+  - path: tasks/tumor_area_selection_pathology
+    task_names:
+      - "*"
+
+artifacts:
+  - /workspace/submission.json

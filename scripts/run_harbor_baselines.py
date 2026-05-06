@@ -305,7 +305,6 @@ def compute_duration_seconds(started_at: str | None, finished_at: str | None) ->
 def default_output_root(repo_root: Path, task_name: str) -> Path:
     return repo_root / "results" / "baselines" / task_name
 
-
 def build_job_config(
     repo_root: Path,
     experiment: ExperimentConfig,

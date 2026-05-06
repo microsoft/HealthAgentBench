@@ -1,0 +1,131 @@
+[
+  {
+    "task_id": "camelyon_slide_0008",
+    "subset": "camelyon16",
+    "expected_contains_tumor": true,
+    "tile_size": 256,
+    "analysis_downsample": 16,
+    "mask_url": "https://camelyon-dataset.s3.amazonaws.com/CAMELYON16/masks/tumor_058_mask.tif",
+    "annotation_url": "https://camelyon-dataset.s3.amazonaws.com/CAMELYON16/annotations/tumor_058.xml",
+    "tumor_threshold": 0.2,
+    "source_slide_name": "tumor_058",
+    "expected_tumor_tiles": [
+      {
+        "x": 10,
+        "y": 34
+      },
+      {
+        "x": 11,
+        "y": 34
+      },
+      {
+        "x": 9,
+        "y": 35
+      },
+      {
+        "x": 10,
+        "y": 35
+      },
+      {
+        "x": 11,
+        "y": 35
+      },
+      {
+        "x": 12,
+        "y": 35
+      },
+      {
+        "x": 9,
+        "y": 36
+      },
+      {
+        "x": 10,
+        "y": 36
+      },
+      {
+        "x": 11,
+        "y": 36
+      },
+      {
+        "x": 12,
+        "y": 36
+      },
+      {
+        "x": 9,
+        "y": 37
+      },
+      {
+        "x": 10,
+        "y": 37
+      },
+      {
+        "x": 11,
+        "y": 37
+      },
+      {
+        "x": 6,
+        "y": 41
+      },
+      {
+        "x": 7,
+        "y": 41
+      },
+      {
+        "x": 8,
+        "y": 41
+      },
+      {
+        "x": 5,
+        "y": 42
+      },
+      {
+        "x": 6,
+        "y": 42
+      },
+      {
+        "x": 7,
+        "y": 42
+      },
+      {
+        "x": 8,
+        "y": 42
+      },
+      {
+        "x": 6,
+        "y": 43
+      },
+      {
+        "x": 7,
+        "y": 43
+      },
+      {
+        "x": 8,
+        "y": 43
+      },
+      {
+        "x": 9,
+        "y": 43
+      },
+      {
+        "x": 6,
+        "y": 44
+      },
+      {
+        "x": 7,
+        "y": 44
+      },
+      {
+        "x": 8,
+        "y": 44
+      },
+      {
+        "x": 7,
+        "y": 45
+      },
+      {
+        "x": 8,
+        "y": 45
+      }
+    ]
+  }
+]

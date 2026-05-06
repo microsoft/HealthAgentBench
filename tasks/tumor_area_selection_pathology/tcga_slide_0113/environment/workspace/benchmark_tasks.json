@@ -1,0 +1,10 @@
+[
+  {
+    "task_id": "tcga_slide_0113",
+    "subset": "tcga",
+    "task_type": "tumor slide selection",
+    "instruction": "Complete the tumor slide selection task for the current whole-slide image. Determine whether the slide contains tumor. Use the pathology helper scripts to inspect the slide. Set `contains_tumor` to true or false and leave `predicted_tumor_tiles` empty.",
+    "analysis_tile_size": 256,
+    "analysis_downsample": 16
+  }
+]
