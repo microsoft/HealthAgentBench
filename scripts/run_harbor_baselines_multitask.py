@@ -393,7 +393,6 @@ def compute_duration_seconds(started_at: str | None, finished_at: str | None) ->
 def default_output_root(repo_root: Path, task_name: str) -> Path:
     return repo_root / "results" / "baselines" / task_name
 
-
 def _is_parent_task_dir(task_dir: Path) -> bool:
     """A directory is a meta-task parent iff it has no task.toml of its own but
     contains subdirectories that do. We treat such a dir as a *label* for a

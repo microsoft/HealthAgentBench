@@ -92,6 +92,49 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --model gpt-5.4
 ```
 
+## tumor_area_selection_pathology
+
+- Task path: `tasks`
+- Generated at: `20260503T000750Z`
+- Raw results root: `/mnt/hanoverdev/data/jose/medcli_outputs/tumor_area_selection_pathology/runs`
+- Source run dirs:
+  - `tumor_area_selection_pathology__codex__gpt-5.3-codex__20260501T223500Z`
+  - `tumor_area_selection_pathology__claude-code__claude-sonnet-4-6__20260505T232005Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | tcga_slide_precision | tcga_slide_recall | tcga_slide_f1 | camelyon_tile_precision | camelyon_tile_recall | camelyon_tile_f1 | camelyon_tumor_coverage |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| tumor_area_selection_pathology | codex | gpt-5.3-codex | medium | 1 | 35 | 197.19 | 0.727 | 0.615 | 0.667 | 0.488 | 0.740 | 0.588 | 0.565 |
+| tumor_area_selection_pathology | claude-code | claude-sonnet-4-6 | medium | 1 | 35 | 276.15 | 0.565 | 1.000 | 0.722 | 0.693 | 0.492 | 0.576 | 0.338 |
+
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `tcga_slide_precision`, `tcga_slide_recall`, `tcga_slide_f1`, `camelyon_tile_precision`, `camelyon_tile_recall`, `camelyon_tile_f1`, `camelyon_tumor_coverage`.
+
+### Reproducibility
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --mode render \
+  --task-name tumor_area_selection_pathology \
+  --task-path tasks \
+  --harness codex \
+  --output-root /mnt/hanoverdev/data/jose/medcli_outputs/tumor_area_selection_pathology/runs \
+  --attempts 1 \
+  --reasoning-effort medium \
+  --baselines-md paper/baselines.md \
+  --metrics-script scripts/tumor_area_selection_pathology/aggregate_metric.py \
+  --no-detailed \
+  --run-dir /mnt/hanoverdev/data/jose/medcli_outputs/tumor_area_selection_pathology/runs/tumor_area_selection_pathology__codex__gpt-5.3-codex__20260501T223500Z \
+  --run-dir /mnt/hanoverdev/data/jose/medcli_outputs/tumor_area_selection_pathology/runs/tumor_area_selection_pathology__claude-code__claude-sonnet-4-6__20260505T232005Z \
+  --metric-to-report tcga_slide_precision \
+  --metric-to-report tcga_slide_recall \
+  --metric-to-report tcga_slide_f1 \
+  --metric-to-report camelyon_tile_precision \
+  --metric-to-report camelyon_tile_recall \
+  --metric-to-report camelyon_tile_f1 \
+  --metric-to-report camelyon_tumor_coverage
+```
+
 ## mimic_iv_dq
 
 - Task path: `tasks`

@@ -1,0 +1,10 @@
+{
+  "task_id": "tcga_slide_0107",
+  "subset": "tcga",
+  "tile_size": 256,
+  "analysis_downsample": 16,
+  "cache_key": "tcga_slide_0107",
+  "download_url": "https://api.gdc.cancer.gov/data/6a9bd5b9-efdd-4b32-9299-85544cdbb8b7",
+  "source_file_id": "6a9bd5b9-efdd-4b32-9299-85544cdbb8b7",
+  "slide_extension": ".svs"
+}

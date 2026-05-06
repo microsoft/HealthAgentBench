@@ -1,0 +1,23 @@
+version = "1.0"
+
+[metadata]
+benchmark = "tumor_area_selection_pathology"
+mode = "single-task"
+subset = "tcga"
+task_id = "tcga_slide_0011"
+submission_path = "/workspace/submission.json"
+
+[verifier]
+timeout_sec = 3600.0
+
+[agent]
+timeout_sec = 7200.0
+
+[environment]
+build_timeout_sec = 3600.0
+allow_internet = true
+cpus = 2
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+mcp_servers = []

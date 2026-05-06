@@ -1,0 +1,12 @@
+[
+  {
+    "task_id": "tcga_slide_0106",
+    "subset": "tcga",
+    "expected_contains_tumor": true,
+    "tile_size": 256,
+    "analysis_downsample": 16,
+    "source_file_id": "038cd9de-f320-42d2-ae41-0644d78b6bd7",
+    "source_label_name": "Metastatic",
+    "expected_tumor_tiles": []
+  }
+]

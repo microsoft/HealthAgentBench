@@ -1,0 +1,10 @@
+{
+  "task_id": "camelyon_slide_0002",
+  "subset": "camelyon16",
+  "tile_size": 256,
+  "analysis_downsample": 16,
+  "cache_key": "camelyon_slide_0002",
+  "download_url": "https://camelyon-dataset.s3.amazonaws.com/CAMELYON16/images/tumor_089.tif",
+  "slide_extension": ".tif",
+  "source_slide_name": "tumor_089"
+}
