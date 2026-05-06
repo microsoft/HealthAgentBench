@@ -53,12 +53,6 @@ class Codex(HarborCodex):
             )
             env["CODEX_AUTH_JSON"] = codex_auth_json
             setup_command = """
-# Wait for entrypoint bootstrap to signal readiness.
-if [ -f /workspace/.bootstrap_required ]; then
-    echo "[codex-setup] waiting for entrypoint bootstrap..."
-    until [ -f /workspace/.bootstrap_done ]; do sleep 2; done
-    echo "[codex-setup] bootstrap done."
-fi
 mkdir -p "$CODEX_HOME"
 ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
 """
@@ -67,12 +61,6 @@ ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
             env["AZURE_OPENAI_API_KEY"] = azure_openai_api_key
             env["CODEX_TASK_TOML"] = codex_task_toml
             setup_command = """
-# Wait for entrypoint bootstrap to signal readiness.
-if [ -f /workspace/.bootstrap_required ]; then
-    echo "[codex-setup] waiting for entrypoint bootstrap..."
-    until [ -f /workspace/.bootstrap_done ]; do sleep 2; done
-    echo "[codex-setup] bootstrap done."
-fi
 mkdir -p /tmp/codex-secrets "$CODEX_HOME"
 printf '%s' "$CODEX_TASK_TOML" > /tmp/codex-secrets/config.toml
 ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"

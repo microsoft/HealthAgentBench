@@ -31,5 +31,10 @@ scripts/mimic_iv_dq/assets/*
 # qrels2021.txt, derived per-topic NCT lists).
 scripts/clinical_trial_matching/assets/*
 !scripts/clinical_trial_matching/assets/task_configs.yaml
+# ct_abnormality build artifacts. Only ``manifest.yaml`` is committed; everything
+# else under ``assets/`` is regenerable cache (downloaded NIfTI volumes from
+# Hugging Face, ~1 GB total).
+scripts/ct_abnormality/assets/*
+!scripts/ct_abnormality/assets/manifest.yaml
 # local convenience helpers
 resume-codex.sh
