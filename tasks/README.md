@@ -29,12 +29,12 @@ For benchmark-specific task generation details, see `scripts/<benchmark>/README.
 
 ## Tumor Area Selection Pathology Results
 
-| Task | Model | Precision | Recall | F1 | Tumor Coverage |
-|------|-------|-----------|--------|----|----------------|
-| tumor slide selection | gpt-5.3-codex | 0.7273 | 0.6154 | 0.6667 | - |
-| tumor slide selection | claude-sonnet-4-6 | 0.5652 | 1.0000 | 0.7222 | - |
-| tumor area selection  | gpt-5.3-codex | 0.4880 | 0.7401 | 0.5882 | 0.5651 |
-| tumor area selection  | claude-sonnet-4-6 | 0.6934 | 0.4920 | 0.5756 | 0.3384 |
+| Task | Harness | Model | Precision | Recall | F1 | Tumor Coverage |
+|------|---------|-------|-----------|--------|----|----------------|
+| tumor slide selection | codex | gpt-5.3-codex | 0.7273 | 0.6154 | 0.6667 | - |
+| tumor slide selection | claude-code | claude-sonnet-4-6 | 0.5652 | 1.0000 | 0.7222 | - |
+| tumor area selection  | codex | gpt-5.3-codex | 0.4880 | 0.7401 | 0.5882 | 0.5651 |
+| tumor area selection  | claude-code | claude-sonnet-4-6 | 0.6934 | 0.4920 | 0.5756 | 0.3384 |
 
 
 ## Metric Definitions
