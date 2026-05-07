@@ -1,0 +1,45 @@
+{
+  "volume_name": "valid_265_a_2.nii.gz",
+  "labels": [
+    {
+      "name": "Cardiomegaly",
+      "gold": 0,
+      "evidence": "Heart contour and size are normal."
+    },
+    {
+      "name": "Pericardial effusion",
+      "gold": 0,
+      "evidence": "No pleural or pericardial effusion is observed"
+    },
+    {
+      "name": "Hiatal hernia",
+      "gold": 1,
+      "evidence": "Sliding type minimal hiatal hernia is observed at the lower end of the esophagus."
+    },
+    {
+      "name": "Lymphadenopathy",
+      "gold": 0,
+      "evidence": "There are no pathologically enlarged lymph nodes in the mediastinum and hilar regions."
+    },
+    {
+      "name": "Atelectasis",
+      "gold": 1,
+      "evidence": "Linear atelectasis and minimal pleuroparenchymal sequelae changes were also observed in both lungs"
+    },
+    {
+      "name": "Lung nodule",
+      "gold": 1,
+      "evidence": "There are millimetric nonspecific nodules in both lungs"
+    },
+    {
+      "name": "Pleural effusion",
+      "gold": 0,
+      "evidence": "No pleural or pericardial effusion is observed"
+    },
+    {
+      "name": "Mosaic attenuation pattern",
+      "gold": 1,
+      "evidence": "A mosaic attenuation pattern was observed in both lungs"
+    }
+  ]
+}

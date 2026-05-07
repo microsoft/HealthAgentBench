@@ -1,0 +1,30 @@
+{
+  "volume_name": "valid_481_a_2.nii.gz",
+  "labels": [
+    {
+      "name": "Cardiomegaly",
+      "gold": 0,
+      "evidence": "The heart and mediastinal vascular structures have a natural appearance."
+    },
+    {
+      "name": "Lung opacity",
+      "gold": 1,
+      "evidence": "Patchy ground glass densities are observed peripherally in the upper lobe of the right lung"
+    },
+    {
+      "name": "Pleural effusion",
+      "gold": 0,
+      "evidence": "Pleural effusion-thickening was not detected in both hemithorax."
+    },
+    {
+      "name": "Consolidation",
+      "gold": 1,
+      "evidence": "consolidations in the converging ground-glass appearance observed especially in the superior and basal segments of the right lung lower lobe, creating a cobblestone appearance"
+    },
+    {
+      "name": "Interlobular septal thickening",
+      "gold": 1,
+      "evidence": "Interlobular septal thickenings are observed within the consolidations"
+    }
+  ]
+}

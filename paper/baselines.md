@@ -230,3 +230,52 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --model gpt-5.4 \
   --model gpt-5.3-codex
 ```
+
+## ct_abnormality
+
+- Task path: `tasks`
+- Generated at: `20260507T184703Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/ct_abnormality`
+- Source run dirs:
+  - `ct_abnormality__claude-code__claude-opus-4-7__20260507T002218Z`
+  - `ct_abnormality__claude-code__claude-sonnet-4-6__20260506T235956Z`
+  - `ct_abnormality__codex__gpt-5.3-codex__20260506T235029Z`
+  - `ct_abnormality__codex__gpt-5.4__20260506T230833Z`
+  - `ct_abnormality__codex__gpt-5.5__20260507T001936Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | success | reward | reward_stdev | macro_f1 | micro_f1 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ct_abnormality | claude-code | claude-sonnet-4-6 | medium | 1 | 10 | 1551.30 | 1.000 | 0.100 | 0.316 | 0.517 | 0.590 |
+| ct_abnormality | codex | gpt-5.3-codex | medium | 1 | 10 | 273.95 | 1.000 | 0.100 | 0.316 | 0.493 | 0.677 |
+| ct_abnormality | codex | gpt-5.4 | medium | 1 | 10 | 466.92 | 1.000 | 0.100 | 0.316 | 0.466 | 0.656 |
+| ct_abnormality | codex | gpt-5.5 | medium | 1 | 10 | 461.48 | 1.000 | 0.100 | 0.316 | 0.604 | 0.761 |
+| ct_abnormality | claude-code | claude-opus-4-7 | medium | 1 | 10 | 763.70 | 0.000 | 0.000 | 0.000 | 0.511 | 0.588 |
+
+Per-trial metrics (mean ± sample stdev across subtasks): `reward`.
+
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`, `macro_f1`, `micro_f1`.
+
+### Reproducibility
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name ct_abnormality \
+  --task-path tasks \
+  --harness codex \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/ct_abnormality \
+  --attempts 1 \
+  --reasoning-effort medium \
+  --concurrency 2 \
+  --no-detailed \
+  --metric-to-report success \
+  --metric-to-report reward \
+  --metric-to-report macro_f1 \
+  --metric-to-report micro_f1 \
+  --model gpt-5.4 \
+  --model gpt-5.3-codex \
+  --model gpt-5.5 \
+  --model claude-opus-4-7 \
+  --model claude-sonnet-4-6
+```
