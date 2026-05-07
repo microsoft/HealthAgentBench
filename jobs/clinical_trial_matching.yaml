@@ -1,0 +1,47 @@
+jobs_dir: results/harbor/clinical_trial_matching
+n_attempts: 3
+timeout_multiplier: 1.0
+n_concurrent_trials: 2
+quiet: false
+
+environment:
+  type: docker
+  # The per-task Dockerfile + entrypoint.sh handle their own bootstrap
+  # (range-download from the upstream zip snapshot into a host-mounted
+  # cache). force_build is true so we always rebuild against the current
+  # task tree; the cache mount makes per-trial downloads fast.
+  force_build: true
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.1-codex-mini
+    kwargs:
+      reasoning_effort: medium
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.3-codex
+    kwargs:
+      reasoning_effort: medium
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.4-mini
+    kwargs:
+      reasoning_effort: medium
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.4
+    kwargs:
+      reasoning_effort: medium
+
+metrics:
+  - type: uv-script
+    kwargs:
+      script_path: scripts/clinical_trial_matching/aggregate_metric.py
+
+datasets:
+  - path: tasks/clinical_trial_matching
+    task_names:
+      - "task_*"
+
+artifacts:
+  - /workspace/submission/ranked_trials.txt
+  - /logs/verifier/metrics.json
+  - /logs/verifier/reward.json

@@ -26,5 +26,10 @@ scripts/tumor_area_selection_pathology/assets/cache/
 # regenerable cache (PhysioNet downloads, sliced configs, regenerated labels).
 scripts/mimic_iv_dq/assets/*
 !scripts/mimic_iv_dq/assets/task_configs.yaml
+# clinical_trial_matching build artifacts. Only ``task_configs.yaml`` is committed;
+# everything else under ``assets/`` is regenerable cache (topics2021.xml,
+# qrels2021.txt, derived per-topic NCT lists).
+scripts/clinical_trial_matching/assets/*
+!scripts/clinical_trial_matching/assets/task_configs.yaml
 # local convenience helpers
 resume-codex.sh
