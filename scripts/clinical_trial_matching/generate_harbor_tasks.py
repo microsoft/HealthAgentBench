@@ -7,8 +7,8 @@ For each topic listed in ``assets/task_configs.yaml`` this writes::
         instruction.md
         environment/
             Dockerfile
-            docker-compose.yaml          # mounts assets/raw_cache rw
-            entrypoint.sh                # per-topic flock + bootstrap
+            docker-compose.yaml          # two-service: bootstrap + main
+            bootstrap.sh                 # runs in the bootstrap service
             workspace/
                 topic.txt
                 topic_id.txt
@@ -20,19 +20,33 @@ For each topic listed in ``assets/task_configs.yaml`` this writes::
             harbor_evaluator.py
             qrels.txt
 
-Pattern (mirrors ``mimic_report_gen``):
+Pattern (mirrors ``tasks/medagentbench/`` — compose-level synchronization):
 
 - The host directory ``scripts/clinical_trial_matching/assets/raw_cache/`` is
-  bind-mounted into each container at ``/data/_cache`` (read-write so the
-  entrypoint can fill in missing NCTs from the upstream zip snapshot, and
-  subsequent task containers reuse what was downloaded).
-- ``entrypoint.sh`` acquires a per-topic ``flock`` to serialize concurrent
-  same-task containers from racing the same files. After the bootstrap
-  finishes, the cache directory is ``chmod -R a-w``-ed so neither the
-  agent nor any later step can mutate cached files.
+  bind-mounted into the per-task ``bootstrap`` compose service at
+  ``/data/_cache`` (read-write so the bootstrap can fill in missing NCTs
+  from the upstream zip snapshot, and subsequent task containers reuse
+  what was downloaded).
+- ``bootstrap.sh`` runs in a one-shot ``bootstrap`` service. It stages
+  ``topic.txt`` / ``topic_id.txt`` into a shared ``workspace-data`` named
+  volume, runs ``fetch_trials.py`` to populate ``/workspace/data/trials/``,
+  and freezes cached XMLs read-only (per-file ``chmod a-w`` inside a global
+  ``flock``). It exits 0 when done.
+- The agent's ``main`` service has ``depends_on: bootstrap: condition:
+  service_completed_successfully``. Harbor invokes ``docker compose up
+  --detach --wait`` which respects this condition, so by the time Harbor
+  execs the agent into ``main`` the data is already at
+  ``/workspace/data/{topic.txt, topic_id.txt, trials/}``. There are no
+  ``/workspace/.bootstrap_required`` / ``/workspace/.bootstrap_done``
+  sentinel files; the installed-agent wrappers (``codex.py``,
+  ``claude_code.py``) stay clean.
+- Only ``main`` carries a ``build:`` directive; ``bootstrap`` references
+  the same image by tag (``image: ${COMPOSE_PROJECT_NAME}-img``). This
+  avoids a BuildKit race where parallel builds against the same context
+  cause one service to receive an empty build context.
 - The host generator pre-stages NCTs into the cache when invoked
   (idempotent; uses ``filelock`` per NCT). If the user skips the host
-  pre-stage, the entrypoint's container-side fetch fills the gap.
+  pre-stage, the bootstrap's container-side fetch fills the gap.
 
 Usage::
 
@@ -298,71 +312,108 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /workspace
 COPY environment/workspace/ /workspace/
-COPY environment/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh \\
-    && mkdir -p /workspace/submission /workspace/data \\
-    && mv /workspace/topic.txt /workspace/data/topic.txt \\
-    && mv /workspace/topic_id.txt /workspace/data/topic_id.txt
+COPY environment/bootstrap.sh /bootstrap.sh
+RUN chmod +x /bootstrap.sh \\
+    && mkdir -p /workspace/submission /workspace/data
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/bash"]
+# No ENTRYPOINT/CMD: Harbor's docker-compose-build.yaml overrides main's
+# command to ``sleep infinity`` so the container stays alive. The bootstrap
+# service uses an explicit ``command:`` in docker-compose.yaml to run
+# /bootstrap.sh and exit cleanly. The bootstrap copies topic.txt and
+# topic_id.txt from /workspace/ (built into the image at /workspace/) into
+# the shared /workspace/data named volume so main sees them at the
+# documented paths /workspace/data/topic.txt and /workspace/data/topic_id.txt.
 """
 
 
 def build_docker_compose(host_cache_path: Path) -> str:
-    """Per-task docker-compose override that mounts the host cache rw.
+    """Per-task docker-compose with a one-shot bootstrap service that the main
+    service depends on via ``condition: service_completed_successfully``.
 
-    Harbor merges this with its base + build compose files, so the
-    standard verifier/agent log mounts continue to work.
+    Pattern follows ``tasks/medagentbench/environment/docker-compose.yaml``:
+    a sibling service does the prep work (per-topic NCT XML download +
+    cache freeze + topic file staging) and Compose waits for it to exit
+    cleanly before bringing main up. Harbor invokes
+    ``docker compose up --detach --wait`` which respects this condition,
+    so by the time Harbor execs the agent into ``main`` the data is
+    already at ``/workspace/data/{topic.txt, topic_id.txt, trials/}``.
+
+    Only ``main`` carries a ``build:`` directive; ``bootstrap`` references
+    the same image by tag. This avoids a BuildKit race where parallel
+    builds against the same context cause one service to receive an empty
+    build context, surfacing as ``failed to compute cache key`` for COPY
+    steps.
+
+    The bootstrap and main containers share ``/workspace/data`` through a
+    named compose volume (per-task, scoped to the compose project) so the
+    bootstrap's downloads + topic files become visible to main without any
+    runtime sentinel files in /workspace/.
     """
     return f"""services:
   main:
     build:
       context: ..
       dockerfile: environment/Dockerfile
+    image: ${{COMPOSE_PROJECT_NAME}}-img
     volumes:
-      - {host_cache_path}:/data/_cache:rw
+      - workspace-data:/workspace/data
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
     environment:
       - PYTHONUNBUFFERED=1
+
+  bootstrap:
+    image: ${{COMPOSE_PROJECT_NAME}}-img
+    volumes:
+      - {host_cache_path}:/data/_cache:rw
+      - workspace-data:/workspace/data
+    command: ["/bin/bash", "/bootstrap.sh"]
+
+volumes:
+  workspace-data:
 """
 
 
-ENTRYPOINT_SH = r"""#!/bin/bash
+BOOTSTRAP_SH = r"""#!/bin/bash
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# Bootstrap the per-topic clinical-trial corpus.
+# One-shot bootstrap container for the clinical_trial_matching benchmark.
 #
-# Mounts:
-#   /data/_cache  -- host-side cache (rw). Shared across concurrent task
-#                    containers.
+# Compose starts this service, waits for it to exit cleanly, and only then
+# brings the main service up (via depends_on:
+# condition: service_completed_successfully). Harbor invokes
+# ``docker compose up --detach --wait`` which respects this condition.
 #
-# Behaviour:
-#   1. Re-make the cache writable (a previous run may have chmod'd it ro).
-#   2. Check if all NCTs for this topic are already in the cache.
-#      - Warm path (all cached): run fetch_trials.py directly; pure cache
-#        hits, no network, no global lock needed.
-#      - Cold path (any missing): acquire a global download lock so that
-#        concurrent containers serialize network downloads and do not
-#        overwhelm the upstream zip server with simultaneous range requests.
-#        Release the lock as soon as fetch_trials.py returns, before the
-#        agent starts, so other containers can proceed in parallel.
-#   3. Chmod -R a-w /data/_cache so the agent cannot mutate cached files.
-#   4. Exec the agent.
+# Responsibilities:
+#   1. Stage topic.txt and topic_id.txt from the image-baked /workspace/
+#      into the shared /workspace/data/ named volume so main sees them
+#      at the documented paths.
+#   2. Run fetch_trials.py to populate /workspace/data/trials/ with the
+#      per-topic NCT XML pool. Warm path: cache hit, no network. Cold
+#      path: serialize behind a global flock over the host-mounted cache
+#      so concurrent task containers don't hammer the upstream zip server.
+#   3. Per-file chmod a-w on each cached XML (inside the lock) so no later
+#      step — agent or otherwise — can mutate cached files.
+#   4. Exit 0. Compose lets main start.
 # ---------------------------------------------------------------------------
 
 CACHE=/data/_cache
-TRIALS=/workspace/data/trials
+DATA=/workspace/data
+TRIALS="$DATA/trials"
 LOCK_DIR="$CACHE/.locks"
 GLOBAL_LOCK="$LOCK_DIR/global_download.lock"
 
-mkdir -p "$CACHE" "$LOCK_DIR" "$TRIALS"
+mkdir -p "$CACHE" "$LOCK_DIR" "$DATA" "$TRIALS"
 
-# Signal to Harbor agent setup that bootstrap is in progress.
-# The Codex wrapper polls for .bootstrap_done before starting the agent.
-touch /workspace/.bootstrap_required
+# Stage the per-task text files into the shared volume (overlay would
+# otherwise hide anything the Dockerfile placed at /workspace/data/).
+cp /workspace/topic.txt "$DATA/topic.txt"
+cp /workspace/topic_id.txt "$DATA/topic_id.txt"
 
-# Re-grant write permissions for the lock window. (chmod is idempotent.)
+# Re-grant write permissions for the lock window (a previous run may have
+# chmod'd cache files read-only). Idempotent.
 chmod -R u+w "$CACHE" 2>/dev/null || true
 
 # Returns 0 if every NCT ID listed in trial_ncts.txt has a non-empty XML
@@ -396,17 +447,14 @@ else
     exec 9>"$GLOBAL_LOCK"
     flock 9
     _fetch
-    flock -u 9  # Release before exec so other containers can proceed.
+    flock -u 9  # Release before exit so other containers can proceed.
 fi
 
-# Lock the cache to read-only so neither the agent nor any later step can
-# mutate cached files. Tolerant to filesystem oddities.
-chmod -R a-w "$CACHE" 2>/dev/null || true
+# Lock cached files to read-only. Per-FILE chmod (not directory-wide) so
+# concurrent task containers fetching different NCTs aren't blocked.
+find "$CACHE" -maxdepth 1 -name '*.xml' -exec chmod a-w {} + 2>/dev/null || true
 
-# Signal that bootstrap is complete; the Codex setup_command will unblock.
-touch /workspace/.bootstrap_done
-
-exec "$@"
+echo "[bootstrap] done -- main can start"
 """
 
 
@@ -494,12 +542,13 @@ def _build_task(
     _write(test_sh_path, TEST_SH)
     test_sh_path.chmod(0o755)
 
-    # Environment: Dockerfile + compose override + entrypoint.
+    # Environment: Dockerfile + compose (two-service: bootstrap + main) +
+    # bootstrap.sh (runs in the bootstrap service).
     _write(env_dir / "Dockerfile", build_dockerfile())
     _write(env_dir / "docker-compose.yaml", build_docker_compose(host_cache_path))
-    entry_path = env_dir / "entrypoint.sh"
-    _write(entry_path, ENTRYPOINT_SH)
-    entry_path.chmod(0o755)
+    bootstrap_path = env_dir / "bootstrap.sh"
+    _write(bootstrap_path, BOOTSTRAP_SH)
+    bootstrap_path.chmod(0o755)
 
 
 def main(argv: list[str] | None = None) -> None:

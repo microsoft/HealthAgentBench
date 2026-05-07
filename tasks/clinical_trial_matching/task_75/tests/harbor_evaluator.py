@@ -190,9 +190,11 @@ def evaluate(
     }
     (log_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
 
+    # Note: per-trial `success` is intentionally NOT written to reward.json.
+    # Keeping it out lets the baseline renderer fall back to the aggregate
+    # metric (where `success` is the integer pass count, not a per-trial mean).
     reward_payload: dict[str, float | int] = {
-        "reward": ndcg10,
-        "success": success,
+        "reward": float(success),
         "ndcg_at_10": ndcg10,
         "dcg_at_10": dcg10,
         "idcg_at_10": idcg10,

@@ -3,7 +3,21 @@ services:
     build:
       context: ..
       dockerfile: environment/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-img
     volumes:
-      - /home/qianchuliu/projects/MedCLI/scripts/clinical_trial_matching/assets/raw_cache:/data/_cache:rw
+      - workspace-data:/workspace/data
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
     environment:
       - PYTHONUNBUFFERED=1
+
+  bootstrap:
+    image: ${COMPOSE_PROJECT_NAME}-img
+    volumes:
+      - /home/qianchuliu/projects/MedCLI/scripts/clinical_trial_matching/assets/raw_cache:/data/_cache:rw
+      - workspace-data:/workspace/data
+    command: ["/bin/bash", "/bootstrap.sh"]
+
+volumes:
+  workspace-data:

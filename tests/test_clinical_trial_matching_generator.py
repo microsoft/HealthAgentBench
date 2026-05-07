@@ -94,14 +94,23 @@ def test_build_task_writes_expected_files(tmp_path: Path) -> None:
     # test.sh should be executable
     assert (td / "test.sh").stat().st_mode & 0o111
 
-    # Environment files
+    # Environment files (two-service compose: bootstrap + main)
     env_dir = task_root / "environment"
     dockerfile = (env_dir / "Dockerfile").read_text()
-    assert "ENTRYPOINT [\"/entrypoint.sh\"]" in dockerfile
+    # No ENTRYPOINT directive — Harbor's base compose layer overrides main's
+    # command to ``sleep infinity``. (The substring is allowed in comments.)
+    assert "ENTRYPOINT [" not in dockerfile
+    assert 'CMD ["/bin/bash"]' not in dockerfile
+    assert "COPY environment/bootstrap.sh /bootstrap.sh" in dockerfile
     compose = (env_dir / "docker-compose.yaml").read_text()
     assert "/data/_cache:rw" in compose
     assert str(tmp_path / "fake_cache") in compose
-    entry = (env_dir / "entrypoint.sh").read_text()
-    assert "flock 9" in entry
-    assert "chmod -R a-w" in entry
-    assert (env_dir / "entrypoint.sh").stat().st_mode & 0o111
+    assert "service_completed_successfully" in compose
+    assert "workspace-data:/workspace/data" in compose
+    bootstrap = (env_dir / "bootstrap.sh").read_text()
+    assert "flock 9" in bootstrap
+    assert "chmod a-w" in bootstrap  # per-file freeze, not directory-wide
+    # No bootstrap-sentinel files in /workspace/ under the new pattern.
+    assert ".bootstrap_required" not in bootstrap
+    assert ".bootstrap_done" not in bootstrap
+    assert (env_dir / "bootstrap.sh").stat().st_mode & 0o111
