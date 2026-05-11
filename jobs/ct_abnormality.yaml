@@ -1,0 +1,43 @@
+jobs_dir: results/harbor/ct_abnormality
+n_attempts: 1
+timeout_multiplier: 1.0
+n_concurrent_trials: 2
+quiet: false
+
+environment:
+  type: docker
+  # Per-task entrypoint.sh handles its own bootstrap: it pulls the volume
+  # from Hugging Face (CT-RATE is OpenRAIL-gated; the host must have
+  # accepted the access agreement and have a token at
+  # ~/.cache/huggingface/token) into the host-mounted cache under
+  # scripts/ct_abnormality/assets/raw_cache/, then writes
+  # /workspace/.bootstrap_done so the agent harness wrappers (codex /
+  # claude-code) unblock and start the agent.
+  force_build: true
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.5
+    kwargs:
+      reasoning_effort: medium
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-opus-4-7
+    kwargs:
+      reasoning_effort: medium
+
+metrics:
+  - type: uv-script
+    kwargs:
+      script_path: scripts/ct_abnormality/aggregate_metric.py
+
+datasets:
+  - path: tasks/ct_abnormality
+    task_names:
+      - "valid_*"
+
+artifacts:
+  - /workspace/submission/predictions.txt
+  - /workspace/data/labels.txt
+  - /logs/verifier/metrics.json
+  - /logs/verifier/reward.json

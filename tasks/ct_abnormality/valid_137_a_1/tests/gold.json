@@ -1,0 +1,35 @@
+{
+  "volume_name": "valid_137_a_1.nii.gz",
+  "labels": [
+    {
+      "name": "Pericardial effusion",
+      "gold": 0,
+      "evidence": "Pericardial effusion-thickening was not observed."
+    },
+    {
+      "name": "Hiatal hernia",
+      "gold": 1,
+      "evidence": "There is a hiatal hernia."
+    },
+    {
+      "name": "Lymphadenopathy",
+      "gold": 0,
+      "evidence": "No lymph node with pathological size and configuration was detected at the mediastinal and hilar level."
+    },
+    {
+      "name": "Lung opacity",
+      "gold": 1,
+      "evidence": "ground glass densities around both lungs"
+    },
+    {
+      "name": "Pleural effusion",
+      "gold": 0,
+      "evidence": "No bilateral pleural effusion or pneumothorax was detected."
+    },
+    {
+      "name": "Consolidation",
+      "gold": 1,
+      "evidence": "common consolidative parenchyma areas ... around both lungs"
+    }
+  ]
+}

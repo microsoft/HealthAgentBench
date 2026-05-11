@@ -213,3 +213,9 @@ A benchmark is integrated when all of the following are true:
 - validation commands are documented and reproducible
 
 If any of those are missing, the benchmark is not fully integrated yet.
+
+
+# Special Notice
+1. Make sure the agent cannot see task name or original task ID so that it will not use this information to search for answers from internet. Also write in the instruction to not allow agents to search for answers from online. 
+2. Make sure we can have the on-line data downloading capabilities when running each container so that the user can do a one-click run without having to set up things before the harbor run. Follow the example from ct_abnormality. Make sure to include any authentification instructions in ReadME in the scripts/task folder. 
+3. Make sure we define success criterial so that we can aggregate pass rate as reward

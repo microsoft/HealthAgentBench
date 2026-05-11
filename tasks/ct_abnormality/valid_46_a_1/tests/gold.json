@@ -1,0 +1,60 @@
+{
+  "volume_name": "valid_46_a_1.nii.gz",
+  "labels": [
+    {
+      "name": "Medical material",
+      "gold": 1,
+      "evidence": "There is an appearance of a stent in the aortic root."
+    },
+    {
+      "name": "Cardiomegaly",
+      "gold": 1,
+      "evidence": "The heart is larger than normal."
+    },
+    {
+      "name": "Pericardial effusion",
+      "gold": 0,
+      "evidence": "No pleural or pericardial effusion was detected."
+    },
+    {
+      "name": "Hiatal hernia",
+      "gold": 1,
+      "evidence": "There is a sliding type hiatal hernia at the lower end of the esophagus."
+    },
+    {
+      "name": "Lymphadenopathy",
+      "gold": 0,
+      "evidence": "There are no pathologically enlarged lymph nodes in the mediastinum and hilar regions."
+    },
+    {
+      "name": "Emphysema",
+      "gold": 1,
+      "evidence": "Minimal emphysematous changes ... were observed in both lungs"
+    },
+    {
+      "name": "Atelectasis",
+      "gold": 1,
+      "evidence": "locally linear atelectasis were observed in both lungs"
+    },
+    {
+      "name": "Lung nodule",
+      "gold": 1,
+      "evidence": "There are millimetric nonspecific nodules in both lungs"
+    },
+    {
+      "name": "Pleural effusion",
+      "gold": 0,
+      "evidence": "No pleural or pericardial effusion was detected."
+    },
+    {
+      "name": "Peribronchial thickening",
+      "gold": 1,
+      "evidence": "Minimal peribronchial thickening in both lungs"
+    },
+    {
+      "name": "Bronchiectasis",
+      "gold": 1,
+      "evidence": "Minimal bronchiectasis is observed in the central parts of both lungs, more prominent on the left."
+    }
+  ]
+}
