@@ -1,0 +1,12 @@
+{
+  "task_id": "new_pancan",
+  "kind": "binary",
+  "test_subset": "last",
+  "n_test": 1246,
+  "baseline_model": "count + LightGBM",
+  "baseline_auroc": 0.8707504145936982,
+  "baseline_source": "scripts/ehrshot/assets/baselines.csv :: auroc_last (count+gbm refit on EHRSHOT train+val, scored on last-row-per-patient test subset)",
+  "clmbr_baseline_model": "clmbr + lr_lbfgs",
+  "clmbr_baseline_auroc": 0.8064469320066335,
+  "clmbr_baseline_source": "scripts/ehrshot/assets/baselines_clmbr.csv :: auroc_last (clmbr+lr_lbfgs refit on EHRSHOT train+val, scored on last subset)"
+}

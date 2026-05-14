@@ -1,0 +1,33 @@
+# Single-task smoke run for the ehrshot benchmark. Boots the guo_icu
+# container with the Codex gpt-5.4 agent and a single trial so we can
+# validate the full pipeline end-to-end: Redivis download in bootstrap,
+# events slicing, agent loop, verifier scoring against count+gbm baseline.
+jobs_dir: results/harbor/ehrshot_smoke
+n_attempts: 1
+timeout_multiplier: 1.0
+n_concurrent_trials: 1
+quiet: false
+
+environment:
+  type: docker
+  # Per-task bootstrap downloads EHRSHOT_ASSETS.zip from Redivis on cache
+  # miss and slices a leak-proof events.csv into the workspace volume.
+  # Host must have ~/.redivis/api_token with read scope on the dataset.
+  force_build: true
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.4
+    kwargs:
+      reasoning_effort: medium
+
+datasets:
+  - path: tasks/ehrshot
+    task_names:
+      - "guo_icu"
+
+artifacts:
+  - /workspace/submission/predictions.csv
+  - /logs/verifier/metrics.json
+  - /logs/verifier/reward.json
