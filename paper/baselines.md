@@ -283,8 +283,8 @@ uv run python scripts/run_harbor_baselines_multitask.py \
 ## ehrshot
 
 - Task path: `tasks`
-- Generated at: `20260515T032414Z`
-- Raw results root: `/home/qianchuliu/projects/MedCLI/results/baselines/ehrshot`
+- Generated at: `20260515T040157Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehrshot`
 - Source run dirs:
   - `ehrshot__claude-code__claude-opus-4-7__20260514T023856Z`
   - `ehrshot__claude-code__claude-sonnet-4-6__20260514T180028Z`
@@ -313,7 +313,7 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --task-name ehrshot \
   --task-path tasks \
   --harness claude-code \
-  --output-root /home/qianchuliu/projects/MedCLI/results/baselines/ehrshot \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehrshot \
   --attempts 3 \
   --reasoning-effort medium \
   --no-detailed \
