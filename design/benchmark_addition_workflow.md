@@ -233,7 +233,7 @@ a. remove task name and task ID in agent container so that the agent has no clue
 b. make sure the instruction.md contain information on not allowing agent to look up answers from internet
 c. make sure tests are not copied to the agent container
 
-4. Set up 1 hour constraint for agent and check we don't 
+4. Set up 1 hour constraint for agent
 5. Check that harbor run will download all required data and there is no data redistribution checked in into the repo
 6. Run `uv harbor run` to test one model is working with a job/yaml file
 7. Then run multitask baseline bash script to run all models each with 3 attempts and write results. Remember to export predictions and submissions
