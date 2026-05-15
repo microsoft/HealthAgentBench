@@ -239,6 +239,8 @@ c. make sure tests are not copied to the agent container
 7. Then run multitask baseline bash script to run all models each with 3 attempts and write results. Remember to export predictions and submissions
 8. check model trajectory is present and that the model is not cheating. 
 9. Review the evaluation is working as it is. 
+10. Review the result directory, make sure failed attempts are counted and are not because of environment setup errors. 
+11. All results are in /mnt mounted blob storage
 
 For all tasks:
 1. Create a job yaml file that we can run with `uv harbor run` for all tasks and try for one run and collect pass rate

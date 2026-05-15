@@ -49,9 +49,12 @@ def evaluate(
     # Harbor's VerifierResult pydantic schema requires every value in
     # reward.json to be float | int (no strings, no nested dicts).
     success_int = int(bool(result.passed)) if result.passed is not None else 0
+    # NOTE: do not emit per-trial ``success`` — the launcher's ``_resolve_metric``
+    # prefers per-trial values when present, which would render ``success`` as the
+    # rate (mean of 0/1) instead of the count. ct_abnormality follows the same
+    # pattern; the aggregator below derives count from ``reward``.
     reward_payload: dict[str, float | int] = {
         "reward": float(success_int),
-        "success": success_int,
         "auroc": float(result.auroc),
         "auprc": float(result.auprc),
         "brier": float(result.brier),

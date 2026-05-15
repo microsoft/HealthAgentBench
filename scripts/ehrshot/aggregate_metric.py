@@ -39,23 +39,67 @@ from pathlib import Path
 
 
 def _scan_trial_payloads(run_dir: Path) -> list[dict]:
-    """Load per-trial reward payloads. Prefer ``metrics.json`` (which carries
-    the rich payload including ``task_id``) over ``reward.json`` (flat-scalar
-    only because Harbor's VerifierResult schema rejects nested structures).
+    """Load per-trial reward payloads, one row per trial subdirectory.
+
+    Iterates every trial subdir under ``run_dir`` (anything matching the
+    Harbor ``<task>__<random>`` shape with an ``exception.txt``, ``result.json``,
+    or ``verifier/`` directory). For each trial:
+
+    * If ``verifier/metrics.json`` or ``verifier/reward.json`` exists, load
+      that payload as-is.
+    * Otherwise the trial failed before scoring (agent timeout,
+      ``NonZeroAgentExitCodeError``, verifier crash, etc.). Emit a synthetic
+      zero-reward payload so the trial is counted in the denominator and
+      contributes 0 to the pass count. Without this, "no submission" trials
+      are silently excluded — which artificially inflates the pass rate and
+      hides agent failures.
     """
     trials: list[dict] = []
-    for verifier_dir in sorted(run_dir.glob("*/verifier")):
+    for trial_dir in sorted(run_dir.iterdir()):
+        if not trial_dir.is_dir():
+            continue
+        name = trial_dir.name
+        if "__" not in name:
+            continue
+        # Skip launcher/aggregator/orchestration top-level files.
+        if name.startswith("."):
+            continue
+        verifier_dir = trial_dir / "verifier"
         metrics_path = verifier_dir / "metrics.json"
         reward_path = verifier_dir / "reward.json"
-        path = metrics_path if metrics_path.exists() else reward_path
-        if not path.exists():
+        path = metrics_path if metrics_path.exists() else (
+            reward_path if reward_path.exists() else None
+        )
+        if path is not None:
+            try:
+                obj = json.loads(path.read_text())
+            except (json.JSONDecodeError, OSError):
+                continue
+            if isinstance(obj, dict):
+                trials.append(obj)
             continue
-        try:
-            obj = json.loads(path.read_text())
-        except (json.JSONDecodeError, OSError):
+        # No verifier output. Count this attempt as a 0 only if there is
+        # evidence the trial actually ran (result.json or exception.txt). We
+        # deliberately exclude in-flight / placeholder dirs that have neither
+        # so a partially-completed run-dir doesn't mark its still-running
+        # trials as failures.
+        result_path = trial_dir / "result.json"
+        exception_path = trial_dir / "exception.txt"
+        if not result_path.exists() and not exception_path.exists():
             continue
-        if isinstance(obj, dict):
-            trials.append(obj)
+        task_id = name.split("__", 1)[0]
+        trials.append(
+            {
+                "task_id": task_id,
+                "reward": 0.0,
+                "auroc": None,
+                "auprc": None,
+                "brier": None,
+                "n_test": None,
+                "baseline_auroc": None,
+                "_failed": True,
+            }
+        )
     return trials
 
 
@@ -100,19 +144,32 @@ def main(input_path: Path, output_path: Path) -> None:
     # ``success`` (see HARBOR_EVALUATOR_STUB in generate_harbor_tasks.py) so
     # the launcher's ``_resolve_metric`` falls through to this aggregate
     # value and renders ``success`` as the integer pass count, not the mean.
-    # Matches the ct_abnormality aggregator pattern.
+    # Matches the ct_abnormality aggregator pattern. Failed trials contribute
+    # ``reward=0.0`` via the synthetic payload in ``_scan_trial_payloads``.
     successes = [1 if r >= 1.0 else 0 for r in rewards]
-    aurocs = [float(t["auroc"]) for t in trials if "auroc" in t]
-    auprcs = [float(t["auprc"]) for t in trials if "auprc" in t]
-    briers = [float(t["brier"]) for t in trials if "brier" in t]
-    baselines = [float(t["baseline_auroc"]) for t in trials if "baseline_auroc" in t]
-    n_tests = [int(t["n_test"]) for t in trials if "n_test" in t]
+    # Non-reward fields are only meaningful on trials that actually scored;
+    # synthetic failure payloads carry None and must be filtered out.
+    def _floats(key: str) -> list[float]:
+        return [
+            float(t[key]) for t in trials
+            if key in t and t[key] is not None
+        ]
+    aurocs = _floats("auroc")
+    auprcs = _floats("auprc")
+    briers = _floats("brier")
+    baselines = _floats("baseline_auroc")
+    n_tests = [
+        int(t["n_test"]) for t in trials
+        if t.get("n_test") is not None
+    ]
+    n_failed = sum(1 for t in trials if t.get("_failed"))
 
     payload: dict[str, float | int | str] = {
         # Headline columns Harbor and the launcher use.
         "reward": _safe_mean(rewards),                 # = pass rate
         "success": int(sum(successes)),                # = pass count
         "n_trials": len(trials),
+        "n_failed": int(n_failed),                     # trials with no submission
         # Per-trial score distribution.
         "mean_auroc": _safe_mean(aurocs),
         "stdev_auroc": _safe_stdev(aurocs),
