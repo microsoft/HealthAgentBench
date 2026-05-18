@@ -219,3 +219,28 @@ If any of those are missing, the benchmark is not fully integrated yet.
 1. Make sure the agent cannot see task name or original task ID so that it will not use this information to search for answers from internet. Also write in the instruction to not allow agents to search for answers from online. 
 2. Make sure we can have the on-line data downloading capabilities when running each container so that the user can do a one-click run without having to set up things before the harbor run. Follow the example from ct_abnormality. Make sure to include any authentification instructions in ReadME in the scripts/task folder. 
 3. Make sure we define success criterial so that we can aggregate pass rate as reward
+4. Make sure we do not have hardcoded absolute paths as we want to make sure we can run the codebase in other machines. 
+
+
+# What humans should check
+Starting from a freshly pulled repo in a fresh directory in a fresh machine.
+
+For each task: 
+1. Check data setup and authentification from readme file from scripts/{task}/readme.md
+2. Review the instruction.md for agent
+3. Check that we don't have test leakage
+a. remove task name and task ID in agent container so that the agent has no clue what the task is
+b. make sure the instruction.md contain information on not allowing agent to look up answers from internet
+c. make sure tests are not copied to the agent container
+
+4. Set up 1 hour constraint for agent
+5. Check that harbor run will download all required data and there is no data redistribution checked in into the repo
+6. Run `uv harbor run` to test one model is working with a job/yaml file
+7. Then run multitask baseline bash script to run all models each with 3 attempts and write results. Remember to export predictions and submissions
+8. check model trajectory is present and that the model is not cheating. 
+9. Review the evaluation is working as it is. 
+10. Review the result directory, make sure failed attempts are counted and are not because of environment setup errors. 
+11. All results are in /mnt mounted blob storage
+
+For all tasks:
+1. Create a job yaml file that we can run with `uv harbor run` for all tasks and try for one run and collect pass rate

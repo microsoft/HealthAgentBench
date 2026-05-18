@@ -279,3 +279,50 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --model claude-opus-4-7 \
   --model claude-sonnet-4-6
 ```
+
+## ehrshot
+
+- Task path: `tasks`
+- Generated at: `20260515T040157Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehrshot`
+- Source run dirs:
+  - `ehrshot__claude-code__claude-opus-4-7__20260514T023856Z`
+  - `ehrshot__claude-code__claude-sonnet-4-6__20260514T180028Z`
+  - `ehrshot__codex__gpt-5.3-codex__20260514T175817Z`
+  - `ehrshot__codex__gpt-5.4__20260514T175758Z`
+  - `ehrshot__codex__gpt-5.5__20260514T005036Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | success | reward | mean_auroc |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ehrshot | claude-code | claude-sonnet-4-6 | medium | 1 | 15 | 3438.63 | 13.000 | 0.867 | 0.802 |
+| ehrshot | claude-code | claude-opus-4-7 | medium | 1 | 15 | 1962.05 | 11.000 | 0.733 | 0.794 |
+| ehrshot | codex | gpt-5.5 | medium | 1 | 15 | 1733.12 | 10.000 | 0.667 | 0.798 |
+| ehrshot | codex | gpt-5.4 | medium | 1 | 15 | 1076.79 | 9.000 | 0.600 | 0.747 |
+| ehrshot | codex | gpt-5.3-codex | medium | 1 | 15 | 664.57 | 6.000 | 0.400 | 0.731 |
+
+Per-trial metrics (mean ± sample stdev across subtasks): `reward`.
+
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`, `mean_auroc`.
+
+### Reproducibility
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name ehrshot \
+  --task-path tasks \
+  --harness claude-code \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehrshot \
+  --attempts 3 \
+  --reasoning-effort medium \
+  --no-detailed \
+  --metric-to-report success \
+  --metric-to-report reward \
+  --metric-to-report mean_auroc \
+  --model gpt-5.5 \
+  --model gpt-5.4 \
+  --model gpt-5.3-codex \
+  --model claude-opus-4-7 \
+  --model claude-sonnet-4-6
+```

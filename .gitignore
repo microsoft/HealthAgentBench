@@ -36,5 +36,15 @@ scripts/clinical_trial_matching/assets/*
 # Hugging Face, ~1 GB total).
 scripts/ct_abnormality/assets/*
 !scripts/ct_abnormality/assets/manifest.yaml
+# ehrshot build artifacts. Only ``task_configs.yaml`` is committed; the bulk
+# EHRSHOT bundle is staged on the host (NOT under scripts/ehrshot/assets/) at
+# ``$EHRSHOT_ASSETS_DIR``. If the user does choose to put it under
+# ``assets/raw_cache/``, it stays gitignored.
+scripts/ehrshot/assets/*
+!scripts/ehrshot/assets/task_configs.yaml
+# test_labels.csv is derived from the bundle by the bootstrap container at
+# run time and written into tasks/ehrshot/<task>/tests/ via a host
+# bind-mount. It contains the held-out labels; never commit it.
+tasks/ehrshot/*/tests/test_labels.csv
 # local convenience helpers
 resume-codex.sh

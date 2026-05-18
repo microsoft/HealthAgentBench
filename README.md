@@ -72,6 +72,18 @@ uv sync --all-extras
 
 Python version requirement: `>=3.12`.
 
+### Benchmark-specific data access
+
+Some benchmarks require gated datasets and per-user credentials before the
+container can run. Each is documented in its own `scripts/<benchmark>/README.md`:
+
+- **EHRSHOT** — Redivis dataset (Stanford SHAH lab). Needs an accepted DUA + an
+  API token at `~/.redivis/api_token`. See [`scripts/ehrshot/README.md`](scripts/ehrshot/README.md).
+- **ct_abnormality** — CT-RATE (Hugging Face, OpenRAIL gated). Needs a HF token
+  at `~/.cache/huggingface/token`.
+
+Set these up once per host before invoking the corresponding Harbor task.
+
 
 ## Harness Authentication
 

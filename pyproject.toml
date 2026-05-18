@@ -51,6 +51,8 @@ dependencies = [
     "huggingface-hub>=1.6.0",
     "nibabel>=5.4.2",
     "pillow>=12.1.1",
+    "redivis>=0.20.7",
+    "lightgbm>=4.6.0",
 ]
 
 [project.scripts]

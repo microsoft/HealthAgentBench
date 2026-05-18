@@ -746,7 +746,7 @@ def load_attempt_results_for_run_dir(
 
     parsed_attempts: list[AttemptResult] = []
     for index, (_, payload, path) in enumerate(sorted_payloads, start=1):
-        rewards = payload.get("verifier_result", {}).get("rewards", {}) or {}
+        rewards = (payload.get("verifier_result") or {}).get("rewards") or {}
         reward = rewards.get("reward")
         reward_value = float(reward) if reward is not None else 0.0
         fill_rate_raw = rewards.get("fill_rate")
