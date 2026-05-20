@@ -170,4 +170,4 @@ task / environment / verifier failures, see
 - **MIMIC-CXR v2.1.0**: https://physionet.org/content/mimic-cxr/2.1.0/
 - **MIMIC-CXR-JPG v2.1.0**: https://physionet.org/content/mimic-cxr-jpg/2.1.0/
 - **CheXprompt** (verifier model): https://github.com/microsoft/chexprompt
-- **Related-work note**: `design/related_work/mimic_cxr_report_generation.md`
+- **Related-work note**: `design/related_work/xray_report_gen.md`
