@@ -29,13 +29,15 @@ This benchmark evaluates whether an agent can:
    sections (EXAMINATION, INDICATION, HISTORY, TECHNIQUE, COMPARISON)
 4. emit a valid `/workspace/submission.json` the verifier can score
 
-The benchmark ships **5 curated cases** (`case_01..case_05`); the
-ground-truth reports were manually reviewed for clinical accuracy. Each
-case has ≥1 prior study; every MIMIC prior for each patient is included
-via metadata. Per-trial reward is binary: **1 iff CheXprompt** (Microsoft's
-GPT-4 / gpt-5.x judge) **reports zero clinically-significant errors** in
-the agent's FINDINGS vs. the gold, else 0. Aggregator emits mean reward
-(= pass rate) + integer pass count via a `uv-script` metric hook.
+The benchmark ships **10 curated cases** (`case_01..case_10`); the
+ground-truth reports were manually reviewed for clinical accuracy. Most
+cases have ≥1 prior study (a few have none, by design); every MIMIC
+prior for each patient is included via metadata. Per-trial reward is
+binary: **1 iff a majority (≥3 of 5) CheXprompt votes** (Microsoft's
+GPT-class judge) **report zero clinically-significant errors** in the
+agent's FINDINGS vs. the gold, else 0. The aggregator emits mean reward
+(= pass rate), integer pass count, and `mean_sig_errors` (diagnostic;
+lower is better) via a `uv-script` metric hook.
 
 ## Canonical Workflow
 
@@ -125,10 +127,11 @@ uv run harbor run -c jobs/xray_report_gen.yaml
 ## Evaluation
 
 Reward signal: **CheXprompt** (https://github.com/microsoft/chexprompt)
-prompts an Azure OpenAI GPT-4 deployment to count clinical errors in 6
-categories × 2 severity tiers for each generated FINDINGS section vs.
-the gold FINDINGS. A trial **passes** (reward 1.0) iff a majority of
-5 CheXprompt votes report zero *clinically-significant* errors;
+prompts a GPT-class deployment (Azure OpenAI or vanilla OpenAI;
+default `gpt-5.4`) to count clinical errors in 6 categories × 2
+severity tiers for each generated FINDINGS section vs. the gold
+FINDINGS. A trial **passes** (reward 1.0) iff a majority (≥3 of 5)
+CheXprompt votes report zero *clinically-significant* errors;
 otherwise the trial fails (reward 0.0). The gold FINDINGS is parsed
 at verifier time from the target study's full report (staged at
 `/tests/target_report.txt` by the `bootstrap` compose service via
@@ -136,20 +139,6 @@ the credentialed PhysioNet download of `mimic-cxr-reports.zip`).
 The curated 10 cases have been manually reviewed for clinical
 accuracy of the gold. The gold text is never checked into this repo
 and never exposed to the agent.
-
-## Concurrency
-
-Docker's default network-address pool caps at ~31 simultaneous bridge
-networks, and each Harbor trial creates one. The job config pins
-`n_concurrent_trials: 10` (= the curated case count, so a single-attempt
-sweep can fan out fully) with headroom for parallel sweeps via
-`scripts/run_harbor_baselines_multitask.py`. See inline comments in
-`jobs/xray_report_gen.yaml` for details.
-
-Setup/generator/entrypoint all flock on the same lock
-(`assets/.locks/mimic-cxr-setup.lock` host-side, visible inside the
-container as `/data/_src/jpg_root/.bootstrap.lock`) so concurrent trials
-safely share the partial download. Downloads are idempotent (`wget -c -N`).
 
 ## Harbor Artifacts
 

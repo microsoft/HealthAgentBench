@@ -9,11 +9,11 @@ Data sources (all downloaded from PhysioNet on first run by
 compose service into ``scripts/xray_report_gen/assets/`` — gitignored):
 
 - Metadata: ``mimic-cxr-2.0.0-metadata.csv.gz`` from
-  ``physionet.org/files/mimic-cxr/2.0.0/``
+  ``physionet.org/files/mimic-cxr/2.1.0/``
 - Images (JPG): per-patient subdirs from
   ``physionet.org/files/mimic-cxr-jpg/2.1.0/files/``
 - Reports (zip): ``mimic-cxr-reports.zip`` from
-  ``physionet.org/files/mimic-cxr/2.0.0/``
+  ``physionet.org/files/mimic-cxr/2.1.0/``
 """
 
 from __future__ import annotations

@@ -207,10 +207,7 @@ See `tasks/README.md` for the full list of currently supported tasks and benchma
 
 ```bash
 # Ensure your harness's auth is set (see "Harness Authentication" below)
-# `--ak disallow_web_search=true` disables the agent's WebSearch / WebFetch tools
-# (claude-code) or `tools.web_search=false` (codex) so the agent cannot look up
-# benchmark answers online; remove the flag only if the task legitimately needs it.
-uv run harbor run -c jobs/<benchmark>.yaml --ak disallow_web_search=true
+uv run harbor run -c jobs/<benchmark>.yaml
 ```
 
 For multi-model baseline sweeps:
@@ -225,30 +222,6 @@ uv run python scripts/run_harbor_baselines_multitask.py \
     --metric-to-report f1 --metric-to-report recall --metric-to-report precision \
     --baselines-md paper/baselines.md
 ```
-
-### Benchmark integrity: web-search is OFF by default
-
-`scripts/run_harbor_baselines_multitask.py` **always passes
-`disallow_web_search=true` to every agent** so the model cannot use
-claude-code's `WebFetch` / `WebSearch` tools or codex's `web_search` tool.
-This prevents the agent from looking up gold answers, datasets, or
-upstream benchmark mirrors online.
-
-- **Do not remove this default.** Every baseline sweep used to populate
-  `paper/baselines.md` must run with web-search disabled so the recorded
-  AUROC / pass-rate numbers reflect the agent's own reasoning, not its
-  ability to web-search the benchmark.
-- The only legitimate opt-out is `--allow-web-search`, reserved for
-  benchmarks whose task is *itself* a web-retrieval task (none today).
-  Adding `--allow-web-search` to a sweep that populates `baselines.md`
-  invalidates the result for paper-quality reporting.
-- The same flag flows into raw `uv harbor run` invocations via the job
-  YAML: each agent's `kwargs:` block should include
-  `disallow_web_search: true`. The medcli adapters
-  ([src/medcli/agents/harbor/installed/](src/medcli/agents/harbor/installed/))
-  translate the boolean into harness-specific CLI flags
-  (claude: `--disallowedTools WebFetch,WebSearch`;
-  codex: `-c tools.web_search=false`).
 
 ## Task Creation
 

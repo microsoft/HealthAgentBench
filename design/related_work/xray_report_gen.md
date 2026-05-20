@@ -1,6 +1,6 @@
 # Chest X-ray Report Generation (xray_report_gen)
 
-- Upstream data: [MIMIC-CXR v2.0.0](https://physionet.org/content/mimic-cxr/2.0.0/) (free-text reports, split file, metadata) and [MIMIC-CXR-JPG v2.1.0](https://physionet.org/content/mimic-cxr-jpg/2.1.0/) (512-px JPG frames).
+- Upstream data: [MIMIC-CXR v2.1.0](https://physionet.org/content/mimic-cxr/2.1.0/) (free-text reports, split file, metadata) and [MIMIC-CXR-JPG v2.1.0](https://physionet.org/content/mimic-cxr-jpg/2.1.0/) (512-px JPG frames).
 - Access: credentialed PhysioNet user with signed DUA. Downloads use HTTP basic auth (`PN_USER` / `PN_PASS`).
 - Source read date: April 16, 2026.
 - Upstream citations:
