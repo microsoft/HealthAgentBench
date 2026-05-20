@@ -37,7 +37,7 @@ This is an **adapted benchmark**, not a mechanical import. Key design choices:
 3. **Hidden target report.** The target study's full report never enters the container's filesystem. Prior studies' `report.txt` files are bind-mounted, but the target folder contains only JPGs. Ground truth is stored verifier-side in `tests/task_answer_key.json`.
 4. **Eligibility filter.** Patients are only eligible if (a) they have 2+ studies with images and reports present, (b) their target (latest) study is in the MIMIC-CXR-JPG `test` split, and (c) the target report parses to non-empty FINDINGS and IMPRESSION sections. These constraints yield ~141 eligible patients from the ~2500 test-split patients.
 5. **On-disk assets.** PhysioNet's per-study JPGs are large (~1 MB each, ~4.7 TB total dataset). We bootstrap only the per-task subset (both at generation time and opportunistically at container boot, under a shared flock).
-6. **Pooled CheXbert F1 metric.** Per-trial BLEU/ROUGE-L are noisy on paraphrased radiology prose. We additionally compute pooled CheXbert F1-14 (micro/macro) via a `uv-script` aggregator that stacks per-trial CheXbert label vectors and calls `sklearn.classification_report`. This matches what most recent report-generation papers report (`f1chexbert==0.0.x` on PyPI) and is bit-identical to running `f1chexbert` directly on pooled text (proved by `scripts/mimic_report_gen/test_aggregation.py`).
+6. **Pooled CheXbert F1 metric.** Per-trial BLEU/ROUGE-L are noisy on paraphrased radiology prose. We additionally compute pooled CheXbert F1-14 (micro/macro) via a `uv-script` aggregator that stacks per-trial CheXbert label vectors and calls `sklearn.classification_report`. This matches what most recent report-generation papers report (`f1chexbert==0.0.x` on PyPI) and is bit-identical to running `f1chexbert` directly on pooled text (proved by `scripts/xray_report_gen/test_aggregation.py`).
 7. **In-container labeling.** CheXbert labels are computed inside the verifier container (baked-in `f1chexbert` + pinned `transformers<5`, `scikit-learn<1.8`, `torch==2.4.1`, with the CheXbert BERT checkpoint pre-downloaded at build time). The aggregator then only pools flat scalar label fields from each trial's `reward.json`.
 
 ## Upstream Runtime Notes
@@ -48,11 +48,11 @@ At read-date April 16, 2026:
 - `mimic-cxr-jpg` v2.1.0 uses the same tree layout under `files/pXX/p<subject>/s<study>/<dicom>.jpg`. 377,110 DICOM rows in metadata.
 - Credentialed access is required. Downloads use HTTP basic auth with `PN_USER` / `PN_PASS`.
 - Dataset-level split file (`mimic-cxr-2.0.0-split.csv.gz`) is shared between CXR and CXR-JPG releases and assigns each `(dicom_id, subject_id, study_id)` to `train | validate | test`.
-- `f1chexbert` (PyPI) uses `huggingface_hub.hf_hub_download(force_filename=...)`; on recent `huggingface_hub` the `force_filename` argument is a no-op, so a small path-normalizer is required to land the `chexbert.pth` file where `f1chexbert` expects. Our `scripts/mimic_report_gen/chexbert_labeler.py` handles this.
+- `f1chexbert` (PyPI) uses `huggingface_hub.hf_hub_download(force_filename=...)`; on recent `huggingface_hub` the `force_filename` argument is a no-op, so a small path-normalizer is required to land the `chexbert.pth` file where `f1chexbert` expects. Our `scripts/xray_report_gen/chexbert_labeler.py` handles this.
 
 ## Implications for This Repository
 
 1. This benchmark becomes the first multimodal, generative task in the MedCLI suite.
-2. Task-level artifacts live under `tasks/mimic_report_gen/<patient>_<target_study>/`; assets under `scripts/mimic_report_gen/assets/` (gitignored); job config at `jobs/mimic_report_gen.yaml`.
+2. Task-level artifacts live under `tasks/xray_report_gen/<patient>_<target_study>/`; assets under `scripts/xray_report_gen/assets/` (gitignored); job config at `jobs/xray_report_gen.yaml`.
 3. The metric pipeline relies on a new Harbor feature (`metrics: uv-script`) and proves out a clean pattern for complex pooled metrics that cannot be computed from per-trial scalars alone: compute per-sample ingredients in the verifier, emit them as numeric fields in `reward.json`, and pool in a uv-script aggregator. This pattern is reusable for future benchmarks (e.g. clinical-NLI or cohort-overlap metrics).
 4. The benchmark integration adds a concrete example of a benchmark with a non-trivial build layer (torch + BERT inside the task container). Cached rebuilds are free; cold builds are ~5 min one-time.

@@ -1,0 +1,25 @@
+version = "1.0"
+
+[metadata]
+benchmark = "radiology_report"
+mode = "single-task"
+description = "Generate a radiology report for the latest study in /data/patient/"
+task_id = "case_06"
+submission_path = "/workspace/submission.json"
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+# Cold build installs the tiny chexprompt + openai==0.28 verifier venv
+# (~30 s) and apt deps (~2 min). Pinning generously.
+build_timeout_sec = 1800.0
+allow_internet = true
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+mcp_servers = []

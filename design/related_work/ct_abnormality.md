@@ -22,7 +22,7 @@ Validation split: 3,038 volumes from 2,517 patients; representative distribution
 
 ## Why a benchmark on this
 
-Chest CT is the highest-volume cross-sectional radiology study. A general-purpose agent that can read a chest CT for the eighteen common findings the CT-RATE labelers track would be a clinically useful tool. CT-RATE is the largest publicly accessible chest-CT dataset with paired reports — substantially larger than the prior ChestCT-NER / RadGraph-CT cohorts — and the validation split is small enough that a deterministic 10-volume MedCLI subset can be shipped on top of it. The task is also the only 3-D imaging benchmark in MedCLI's current suite, complementing the 2-D `mimic_report_gen` (chest X-ray) and the structured-data tasks.
+Chest CT is the highest-volume cross-sectional radiology study. A general-purpose agent that can read a chest CT for the eighteen common findings the CT-RATE labelers track would be a clinically useful tool. CT-RATE is the largest publicly accessible chest-CT dataset with paired reports — substantially larger than the prior ChestCT-NER / RadGraph-CT cohorts — and the validation split is small enough that a deterministic 10-volume MedCLI subset can be shipped on top of it. The task is also the only 3-D imaging benchmark in MedCLI's current suite, complementing the 2-D `xray_report_gen` (chest X-ray) and the structured-data tasks.
 
 ## Why MedCLI's integration is non-trivial
 

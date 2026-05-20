@@ -13,7 +13,7 @@ Two top-level launchers run Harbor baselines across models/harnesses and append 
 | Script | Use when |
 | --- | --- |
 | [`run_harbor_baselines.py`](run_harbor_baselines.py) | The benchmark is a single Harbor task directory (for example `tasks/mimic_iv_meds/`). |
-| [`run_harbor_baselines_multitask.py`](run_harbor_baselines_multitask.py) | The benchmark is a parent directory whose immediate children are sibling subtasks that Harbor should enumerate (for example per-patient subdirs under `tasks/mimic_report_gen/`). Supports `--subtask` to restrict to a subset and aggregates stats across subtasks. |
+| [`run_harbor_baselines_multitask.py`](run_harbor_baselines_multitask.py) | The benchmark is a parent directory whose immediate children are sibling subtasks that Harbor should enumerate (for example per-patient subdirs under `tasks/xray_report_gen/`). Supports `--subtask` to restrict to a subset and aggregates stats across subtasks. |
 
 Both scripts share the same core flags: `--task-name`, `--task-path`, `--harness`, `--reasoning-effort`, `--attempts`, `--baselines-md`. Full flag list:
 
@@ -32,12 +32,12 @@ uv run python scripts/run_harbor_baselines.py \
 
 # Multi-subtask benchmark (all subtasks)
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_report_gen \
+  --task-name xray_report_gen \
   --task-path tasks
 
 # Multi-subtask benchmark, limited to two subtasks for debugging
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_report_gen \
+  --task-name xray_report_gen \
   --task-path tasks \
   --subtask p10046166_s50051329 \
   --subtask p10056223_s54015596

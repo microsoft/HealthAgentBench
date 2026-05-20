@@ -1,0 +1,6 @@
+# Verifier-only assets — never bake into the agent image.
+tests/
+# Hidden caches / dotfiles
+.git/
+__pycache__/
+*.pyc
