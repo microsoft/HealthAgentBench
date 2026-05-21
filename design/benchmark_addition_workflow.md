@@ -79,6 +79,7 @@ Implementation expectations:
 2. Add setup/bootstrap scripts only when the raw assets need downloading, validation, or normalization.
 3. Add a Harbor task generator when the benchmark needs a generated task under `tasks/<benchmark>/`.
 4. Add benchmark-specific evaluator or normalization code only when the benchmark requires it.
+5. **No hardcoded absolute paths** anywhere in the integration (Python, Dockerfiles, docker-compose, scripts). All host paths must resolve relative to the repo root or `$HOME` so the codebase runs unchanged on a different machine. The one place absolute paths are acceptable is environment variables read from the user's shell (e.g. `$HOME/.codex/auth.json`).
 
 ## 4. Generate the Harbor Task
 
@@ -98,6 +99,17 @@ For adapted ETL-style benchmarks, it is often correct for the runnable output to
 
 Every integrated benchmark should also have a **canonical manual replay path**: a short, explicit sequence a human can run inside a clean task environment to reproduce the intended task workflow without depending on agent behavior. This manual replay path is how you answer the question "is this an agent failure or a task failure?" when a Harbor run goes wrong.
 
+### On-the-fly data download (one-click runs)
+
+The user must be able to clone the repo on a fresh machine, set credentials in `.env`, and run `uv run harbor run -c jobs/<benchmark>.yaml` without any other manual setup. Each task container is responsible for downloading whatever data it needs on first run.
+
+Use a **two-service docker-compose pattern** (see `tasks/ct_abnormality/<task>/environment/` and `tasks/ehrshot/<task>/environment/` for working examples):
+
+- a `bootstrap` one-shot service that has the credentials and bind-mounts a host cache directory under `scripts/<benchmark>/assets/` (gitignored). It downloads required assets on cache miss, freezes/copies them into shared compose volumes, and exits 0.
+- a `main` service with `depends_on: bootstrap: condition: service_completed_successfully` that mounts the shared volumes read-only. The agent runs here. The main service does NOT have the download credentials — credential isolation prevents accidental leakage to the agent.
+
+Authentication: document every required credential (PhysioNet, HuggingFace, Redivis, Azure OpenAI, etc.) in `scripts/<benchmark>/README.md` with the exact env-var names, where to obtain the credential, and how the bootstrap consumes it. Reference the credentials via `env_file: ../../../../.env` (or per-service split files) so the user does not need to `export` anything before invoking Harbor.
+
 ## 5. Add the Run Path
 
 Every integrated benchmark needs a Harbor job config under `jobs/`.
@@ -107,6 +119,13 @@ Typical job responsibilities:
 - point Harbor at the correct task root
 - choose the supported agent configuration
 - define trial count and run parameters appropriate for the benchmark
+
+### Success criteria and reward aggregation
+
+Every benchmark must define a **binary pass/fail success criterion per trial** so the aggregator can report a pass rate as the headline reward. Concretely:
+
+- The verifier writes `/logs/verifier/reward.json` containing flat scalars `{"reward": 0.0|1.0, "n_tasks": N, "n_pass": K, "pass_rate": K/N}`. Harbor reads this file as the trial's metric; the first key must be numeric (Harbor's UI formats it as a float).
+- A `uv-script` aggregator under `scripts/<benchmark>/aggregate_metric.py` pools the per-trial `reward.json` payloads into the job-level metric. It should emit at least `{reward (mean across trials = pass rate), success (count of passing trials), n_trials, n_failed}` and synthesize a 0-reward row for any trial dir that has `exception.txt` or `result.json` but no `reward.json` (so trials that crashed before the verifier ran still count against pass rate). `scripts/ehrshot/aggregate_metric.py` and `scripts/ct_abnormality/aggregate_metric.py` are working references.
 
 If the benchmark needs manual or iterative debugging support, add benchmark-specific helpers under `debug/<benchmark>/` and document them in `debug/<benchmark>/README.md`.
 
@@ -215,32 +234,36 @@ A benchmark is integrated when all of the following are true:
 If any of those are missing, the benchmark is not fully integrated yet.
 
 
-# Special Notice
-1. Make sure the agent cannot see task name or original task ID so that it will not use this information to search for answers from internet. Also write in the instruction to not allow agents to search for answers from online. 
-2. Make sure we can have the on-line data downloading capabilities when running each container so that the user can do a one-click run without having to set up things before the harbor run. Follow the example from ct_abnormality. Make sure to include any authentification instructions in ReadME in the scripts/task folder. 
-3. Make sure we define success criterial so that we can aggregate pass rate as reward
-4. Make sure we do not have hardcoded absolute paths as we want to make sure we can run the codebase in other machines. 
-
-
 # What humans should check
 Starting from a freshly pulled repo in a fresh directory in a fresh machine.
 
 For each task: 
-1. Check data setup and authentification from readme file from scripts/{task}/readme.md
+0. Make sure the task name is generic and not show source task name or dataset. 
+1. Check data setup and authentification from readme file from scripts/{task}/readme.md. Review this readme.md contain all information to re-run the job
 2. Review the instruction.md for agent
 3. Check that we don't have test leakage
-a. remove task name and task ID in agent container so that the agent has no clue what the task is
-b. make sure the instruction.md contain information on not allowing agent to look up answers from internet
-c. make sure tests are not copied to the agent container
-
+a. Make sure agent cannot see task name, original IDs, dataet names and any clues that will give agent clues of what the task is. 
+b. make sure tests are not copied to the agent container. 
+c. In the instruction, tell the agent "You should not cheat and you should not directly retrieve answers from internet". 
 4. Set up 1 hour constraint for agent
-5. Check that harbor run will download all required data and there is no data redistribution checked in into the repo
+5. At the end before we check in, remove test labels from tasks and assets to test harbor run can download necessary data on the fly. Make sure we don't check in any proprietary data into git repo. 
 6. Run `uv harbor run` to test one model is working with a job/yaml file
-7. Then run multitask baseline bash script to run all models each with 3 attempts and write results. Remember to export predictions and submissions
+7. Then run multitask baseline bash script to run all models each with 3 attempts and write results. Make sure the docker address pool and existing containers are cleaned up before the run. Remember to export predictions and submissions. 
 8. check model trajectory is present and that the model is not cheating. 
 9. Review the evaluation is working as it is. 
-10. Review the result directory, make sure failed attempts are counted and are not because of environment setup errors. 
-11. All results are in /mnt mounted blob storage
+10. Review the result directory, make sure failed attempts are counted as no pass in the final success and reward, and these failures are not because of environment setup errors. 
+11. All results are in /mnt mounted blob storage. You can rsync your local directories to /mnt/hanoverdev/scratch/qianchuliu/medcli/results/{task_name}. mount with rsync (you can skip certain files eg. --exclude="agent/.tmp/" \
+  --exclude="agent/cache/" \
+  --exclude="agent/setup/" \
+  --exclude="agent/shell_snapshots/" \
+  --exclude="agent/memories/" \
+  --exclude="agent/tmp/" \
+  --exclude="agent/installation_id" \
+  --exclude="agent/models_cache.json" \
+  --exclude="agent/state_*.sqlite*" \
+  --exclude="agent/logs_*.sqlite*" \)
+12. Review everything before PR
 
-For all tasks:
+Finally all tasks:
 1. Create a job yaml file that we can run with `uv harbor run` for all tasks and try for one run and collect pass rate
+2. Check MedCLI/Readme.md has all the information to re-run the all task run and per-task run. 

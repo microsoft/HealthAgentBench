@@ -84,6 +84,61 @@ container can run. Each is documented in its own `scripts/<benchmark>/README.md`
 
 Set these up once per host before invoking the corresponding Harbor task.
 
+### Other project-level secrets file (`.env`)
+
+`.env` is gitignored (see `.gitignore`). Create one at the repo root for any
+credentials the launchers / docker-compose need to read from the host
+environment. The schema (no real secrets) is:
+
+```bash
+# ----- Verifier model credentials (xray_report_gen / CheXprompt) -----
+# Pick ONE of the two paths below. The verifier's _configure_openai_for_chexprompt
+# detects which is present and routes accordingly.
+#
+# (a) Azure OpenAI — preferred. Activates when endpoint + version + key are all set.
+# The verifier accepts both AZURE_OPENAI_* (canonical) and OPENAI_API_* (legacy)
+# names — set whichever your environment provides. Endpoint also accepts
+# AZURE_OPENAI_BASE_URL.
+AZURE_OPENAI_API_KEY=
+AZURE_OPENAI_ENDPOINT=
+AZURE_OPENAI_API_VERSION=2024-02-15-preview
+# AZURE_OPENAI_DEPLOYMENT (alias: CHEXPROMPT_DEPLOYMENT) — optional; defaults to gpt-5.4
+# Your Azure deployment alias should serve gpt-5.4 (or another gpt-5.x model) so
+# the verifier's reasoning-model param adaptation triggers.
+AZURE_OPENAI_DEPLOYMENT=
+#
+# (b) Vanilla OpenAI — fallback. Activates when (a) is not fully present.
+# OPENAI_API_KEY=
+# OPENAI_BASE_URL=https://api.openai.com/v1
+# CHEXPROMPT_DEPLOYMENT=gpt-4o   # optional; if omitted, defaults to gpt-5.4
+
+# ----- Dataset access (gated downloads at task bootstrap) -----
+# PhysioNet credentials (xray_report_gen).
+PN_USER=
+PN_PASS=
+```
+
+**CheXprompt verifier default model.** If neither `CHEXPROMPT_DEPLOYMENT` nor
+`AZURE_OPENAI_DEPLOYMENT` is set, the verifier in
+`scripts/xray_report_gen/harbor_evaluator.py` hardcodes `gpt-5.4` as the
+deployment / model name. For Azure, ensure your deployment alias resolves
+to a gpt-5.4-capable resource (or override with one of those env vars).
+
+Populate it with your real values and load before any Harbor run:
+
+```bash
+chmod 600 .env
+set -a && . ./.env && set +a    # exports every variable in .env into the shell
+```
+
+For variables a task bootstrap needs (e.g. `PN_USER` / `PN_PASS` to download a
+gated PhysioNet snapshot), reference them via `${PN_USER}` in the task's
+`docker-compose.yaml` `environment:` section so docker substitutes them at
+compose-up time. For variables the agent harness itself reads
+(`OPENAI_API_KEY`, `OPENAI_BASE_URL`), pass through with
+`harbor run --ae OPENAI_API_KEY="$OPENAI_API_KEY"` or have them already in the
+launcher process's environment (`set -a && . ./.env && set +a` above is enough).
+
 
 ## Harness Authentication
 

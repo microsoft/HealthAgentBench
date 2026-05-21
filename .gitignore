@@ -19,7 +19,7 @@ results/
 # Downloaded benchmark data and generated artifacts
 # These are produced by setup.sh and generators, not source code
 scripts/ehrsql/assets/
-scripts/mimic_report_gen/assets/
+scripts/xray_report_gen/assets/
 scripts/tumor_area_selection_pathology/assets/cache/
 # mimic_iv_dq build artifacts. Only ``task_configs.yaml`` (the deterministic
 # benchmark seed) is committed; everything else under ``assets/`` is a
@@ -46,5 +46,14 @@ scripts/ehrshot/assets/*
 # run time and written into tasks/ehrshot/<task>/tests/ via a host
 # bind-mount. It contains the held-out labels; never commit it.
 tasks/ehrshot/*/tests/test_labels.csv
+# MIMIC-CXR verifier-only artifacts written by the per-task bootstrap
+# service from credentialed PhysioNet downloads. Never commit —
+# PhysioNet redistribution rules apply.
+tasks/xray_report_gen/*/tests/task_answer_key.json
+tasks/xray_report_gen/*/tests/target_report.txt
 # local convenience helpers
 resume-codex.sh
+# project-level env file (schema documented in README.md; never commit secrets)
+.env
+.env.local
+.env.*.local
