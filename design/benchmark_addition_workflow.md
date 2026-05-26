@@ -240,7 +240,7 @@ Starting from a freshly pulled repo in a fresh directory in a fresh machine.
 For each task: 
 0. Make sure the task name is generic and not show source task name or dataset. 
 1. Check data setup and authentification from readme file from scripts/{task}/readme.md. Review this readme.md contain all information to re-run the job
-2. Review the instruction.md for agent
+2. Review the instruction.md for agent. The instruction should be minimal. 
 3. Check that we don't have test leakage
 a. Make sure agent cannot see task name, original IDs, dataet names and any clues that will give agent clues of what the task is. 
 b. make sure tests are not copied to the agent container. 
