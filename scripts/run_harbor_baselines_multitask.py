@@ -82,6 +82,7 @@ class AttemptResult:
     input_tokens: int | None
     cached_tokens: int | None
     output_tokens: int | None
+    cost_usd: float | None
     job_name: str
     run_dir: str
     trial_dir: str
@@ -721,6 +722,7 @@ def make_missing_attempt(
         input_tokens=None,
         cached_tokens=None,
         output_tokens=None,
+        cost_usd=None,
         job_name=job_name,
         run_dir=str(run_dir),
         trial_dir="",
@@ -827,6 +829,7 @@ def load_attempt_results_for_run_dir(
                 output_tokens=(payload.get("agent_result") or {}).get(
                     "n_output_tokens"
                 ),
+                cost_usd=(payload.get("agent_result") or {}).get("cost_usd"),
                 job_name=run_dir.name,
                 run_dir=str(run_dir),
                 trial_dir=str(path.parent),
@@ -1090,6 +1093,8 @@ def build_task_section(
             row["Reward stdev"] = format_float(reward_stdev, 3)
             row["Successes"] = "n/a" if successes is None else str(successes)
         row["Mean total wall time (s)"] = format_float(mean_wall_time, 2)
+        costs = [a.cost_usd for a in attempts if a.cost_usd is not None]
+        row["Cost (USD)"] = format_float(statistics.mean(costs), 4) if costs else ""
 
         for m_key in metric_keys:
             display, stdev_display = _resolve_metric(m_key, attempts, agg_metrics)
