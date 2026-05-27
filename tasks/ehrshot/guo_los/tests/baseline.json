@@ -1,0 +1,12 @@
+{
+  "task_id": "guo_los",
+  "kind": "binary",
+  "test_subset": "last",
+  "n_test": 1238,
+  "baseline_model": "count + LightGBM",
+  "baseline_auroc": 0.8194550574517462,
+  "baseline_source": "scripts/ehrshot/assets/baselines.csv :: auroc_last (count+gbm refit on EHRSHOT train+val, scored on last-row-per-patient test subset)",
+  "clmbr_baseline_model": "clmbr + lr_lbfgs",
+  "clmbr_baseline_auroc": 0.8522598630214524,
+  "clmbr_baseline_source": "scripts/ehrshot/assets/baselines_clmbr.csv :: auroc_last (clmbr+lr_lbfgs refit on EHRSHOT train+val, scored on last subset)"
+}

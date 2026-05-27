@@ -1,0 +1,42 @@
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-img
+    # /data/_cache is intentionally NOT mounted into main. /tests/ is not
+    # mounted into main during agent runtime either (Harbor's convention --
+    # the agent has no path to read test_labels.csv mid-run). Harbor
+    # auto-mounts /tests/ when invoking the verifier (test.sh).
+    volumes:
+      - workspace-data:/workspace/data:rw
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  bootstrap:
+    image: ${COMPOSE_PROJECT_NAME}-img
+    # All host paths are relative to this compose file's location
+    # (tasks/ehrshot/<task>/environment/) so the repo is portable across
+    # users / machines. The Redivis token uses ${HOME} so it follows
+    # whichever user is running Harbor.
+    volumes:
+      # Shared EHRSHOT bundle cache (RW so bootstrap can populate on cache
+      # miss). Repo-relative: <repo_root>/scripts/ehrshot/assets/.
+      - ../../../../scripts/ehrshot/assets:/data/_cache:rw
+      # Redivis API token: needed if the cache is empty (downloads
+      # ~4 GB from Redivis on first run). The file must exist at
+      # $HOME/.redivis/api_token even on cache hit -- Docker resolves the
+      # bind mount source at container creation time.
+      - ${HOME}/.redivis/api_token:/root/.redivis/api_token:ro
+      - workspace-data:/workspace/data:rw
+      # Bootstrap writes test_labels.csv into tasks/<task>/tests/ at run
+      # time. The file is gitignored so it never enters version control.
+      # Harbor's verifier reads it from there when invoking test.sh.
+      - ../tests:/tests:rw
+    command: ["/bin/bash", "/bootstrap.sh"]
+
+volumes:
+  workspace-data:

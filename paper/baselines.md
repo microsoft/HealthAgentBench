@@ -55,41 +55,49 @@ uv run python scripts/run_harbor_baselines.py \
   --model gpt-5.4-mini
 ```
 
-## mimic_report_gen
+## xray_report_gen
 
 - Task path: `tasks`
-- Generated at: `20260417T175549Z`
-- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/mimic_report_gen`
+- Generated at: `20260519T210229Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/xray_report_gen`
 - Source run dirs:
-  - `mimic_report_gen__codex__gpt-5.3-codex__20260416T231648Z`
-  - `mimic_report_gen__codex__gpt-5.4__20260416T231648Z`
+  - `xray_report_gen__claude-code__claude-opus-4-6__20260519T181206Z`
+  - `xray_report_gen__claude-code__claude-opus-4-7__20260519T180232Z`
+  - `xray_report_gen__codex__gpt-5.3-codex__20260519T051937Z`
+  - `xray_report_gen__codex__gpt-5.4__20260519T175822Z`
+  - `xray_report_gen__codex__gpt-5.5__20260519T051937Z`
 
 ### Aggregate Summary
 
-| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | avg_rouge_l | avg_rouge_l_stdev | chexbert_f1_5_micro_f1 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mimic_report_gen | codex | gpt-5.4 | medium | 1 | 141 | 489.72 | 0.246 | 0.071 | 51.220 |
-| mimic_report_gen | codex | gpt-5.3-codex | medium | 1 | 141 | 431.13 | 0.222 | 0.059 | 55.000 |
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | success | reward | reward_stdev | mean_sig_errors | mean_sig_errors_stdev |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| xray_report_gen | claude-code | claude-opus-4-7 | medium | 3 | 10 | 123.94 | 5.000 | 0.167 | 0.379 | 1.827 | 1.609 |
+| xray_report_gen | codex | gpt-5.5 | medium | 3 | 10 | 159.66 | 4.000 | 0.133 | 0.346 | 2.453 | 1.398 |
+| xray_report_gen | codex | gpt-5.3-codex | medium | 3 | 10 | 146.56 | 3.000 | 0.100 | 0.305 | 2.580 | 1.280 |
+| xray_report_gen | claude-code | claude-opus-4-6 | medium | 3 | 10 | 122.56 | 2.000 | 0.067 | 0.254 | 2.648 | 1.570 |
+| xray_report_gen | codex | gpt-5.4 | medium | 3 | 10 | 130.09 | 1.000 | 0.033 | 0.183 | 2.676 | 1.589 |
 
-Per-trial metrics (mean ± sample stdev across subtasks): `avg_rouge_l`.
+Per-trial metrics (mean ± sample stdev across subtasks): `reward`, `mean_sig_errors`.
 
-Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `chexbert_f1_5_micro_f1`.
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`.
 
 ### Reproducibility
 
 ```bash
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_report_gen \
+  --task-name xray_report_gen \
   --task-path tasks \
   --harness codex \
-  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/mimic_report_gen \
-  --attempts 1 \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/xray_report_gen \
+  --attempts 3 \
   --reasoning-effort medium \
+  --metrics-script scripts/xray_report_gen/aggregate_metric.py \
   --no-detailed \
-  --metric-to-report avg_rouge_l \
-  --metric-to-report chexbert_f1_5_micro_f1 \
-  --model gpt-5.3-codex \
-  --model gpt-5.4
+  --metric-to-report success \
+  --metric-to-report reward \
+  --metric-to-report mean_sig_errors \
+  --model gpt-5.4 \
+  --model gpt-5.4-mini
 ```
 
 ## tumor_area_selection_pathology
@@ -276,6 +284,47 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --model gpt-5.4 \
   --model gpt-5.3-codex \
   --model gpt-5.5 \
+  --model claude-opus-4-7 \
+  --model claude-sonnet-4-6
+```
+
+## ehrshot
+
+- Task path: `tasks`
+- Generated at: `20260518T233717Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehrshot`
+- Source run dirs:
+  - `ehrshot__claude-code__claude-opus-4-6__20260515T165927Z`
+  - `ehrshot__claude-code__claude-opus-4-7__20260514T023856Z`
+  - `ehrshot__claude-code__claude-sonnet-4-6__20260518T210206Z`
+  - `ehrshot__codex__gpt-5.3-codex__20260514T175817Z`
+  - `ehrshot__codex__gpt-5.4__20260514T175758Z`
+  - `ehrshot__codex__gpt-5.5__20260514T005036Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean reward | Reward stdev | Successes | Mean total wall time (s) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ehrshot | claude-code | claude-opus-4-7 | medium | 1 | 15 | 0.733 | 0.458 | 11 | 1962.05 |
+| ehrshot | codex | gpt-5.5 | medium | 1 | 15 | 0.667 | 0.488 | 10 | 1733.12 |
+| ehrshot | claude-code | claude-sonnet-4-6 | medium | 1 | 15 | 0.600 | 0.507 | 9 | 3282.51 |
+| ehrshot | codex | gpt-5.4 | medium | 1 | 15 | 0.600 | 0.507 | 9 | 1076.79 |
+| ehrshot | claude-code | claude-opus-4-6 | medium | 1 | 15 | 0.467 | 0.516 | 7 | 3562.54 |
+| ehrshot | codex | gpt-5.3-codex | medium | 1 | 15 | 0.400 | 0.507 | 6 | 664.57 |
+
+**Mean reward** = mean of the per-trial `reward` value emitted by each task's verifier.
+
+### Reproducibility
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name ehrshot \
+  --task-path tasks \
+  --harness claude-code \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehrshot \
+  --attempts 3 \
+  --reasoning-effort medium \
+  --no-detailed \
   --model claude-opus-4-7 \
   --model claude-sonnet-4-6
 ```
