@@ -1,5 +1,6 @@
 import os
 import shlex
+import tomllib
 from pathlib import Path
 
 from harbor.agents.installed.base import with_prompt_template
@@ -9,13 +10,69 @@ from harbor.models.agent.context import AgentContext
 from harbor.models.trial.paths import EnvironmentPaths
 
 
+def resolve_codex_config() -> Path:
+    """Return the path to the host's Codex config TOML.
+
+    Honors ``CODEX_CONFIG_FILE`` if set; otherwise falls back to
+    ``~/.codex/config.toml``. Raises ``ValueError`` if the file is missing.
+    """
+    override = os.environ.get("CODEX_CONFIG_FILE", "").strip()
+    path = (
+        Path(override).expanduser()
+        if override
+        else Path.home() / ".codex" / "config.toml"
+    )
+    if not path.is_file():
+        raise ValueError(
+            f"Codex config file not found at {path}. "
+            "Expected ~/.codex/config.toml or set CODEX_CONFIG_FILE."
+        )
+    return path
+
+
+def collect_env_keys_from_config(config_path: Path) -> dict[str, str]:
+    """Walk ``[model_providers.*]`` tables and resolve each ``env_key`` from the host.
+
+    Returns a ``{env_name: value}`` dict containing only the keys that resolve to
+    a non-empty value on the host. Providers without an ``env_key`` are skipped,
+    as are providers whose key is unset on the host (so users can keep unused
+    providers configured without forcing every region's key to be present).
+    """
+    try:
+        with config_path.open("rb") as f:
+            data = tomllib.load(f)
+    except tomllib.TOMLDecodeError as exc:
+        raise ValueError(
+            f"Failed to parse Codex config at {config_path}: {exc}"
+        ) from exc
+
+    resolved: dict[str, str] = {}
+    providers = data.get("model_providers") or {}
+    if not isinstance(providers, dict):
+        return resolved
+    for provider in providers.values():
+        if not isinstance(provider, dict):
+            continue
+        env_key = provider.get("env_key")
+        if not env_key or not isinstance(env_key, str):
+            continue
+        value = os.environ.get(env_key, "").strip()
+        if value:
+            resolved[env_key] = value
+    return resolved
+
+
 class Codex(HarborCodex):
     """MedCLI wrapper around Harbor's Codex installed agent."""
 
     @staticmethod
     def _resolve_auth_file() -> Path:
         auth_file = os.environ.get("CODEX_AUTH_FILE", "").strip()
-        path = Path(auth_file).expanduser() if auth_file else Path.home() / ".codex" / "auth.json"
+        path = (
+            Path(auth_file).expanduser()
+            if auth_file
+            else Path.home() / ".codex" / "auth.json"
+        )
         if not path.is_file():
             raise ValueError(
                 "Codex auth file not found. Expected ~/.codex/auth.json or set CODEX_AUTH_FILE."
@@ -40,8 +97,6 @@ class Codex(HarborCodex):
         }
 
         codex_auth_json = os.environ.get("CODEX_AUTH_JSON", "").strip()
-        codex_task_toml = os.environ.get("CODEX_TASK_TOML", "").strip()
-        azure_openai_api_key = os.environ.get("AZURE_OPENAI_API_KEY", "").strip()
 
         # Determine authentication mode
         if codex_auth_json:
@@ -57,20 +112,25 @@ mkdir -p "$CODEX_HOME"
 ln -sf /tmp/codex-secrets/auth.json "$CODEX_HOME/auth.json"
 """
 
-        elif azure_openai_api_key and codex_task_toml:
-            env["AZURE_OPENAI_API_KEY"] = azure_openai_api_key
-            env["CODEX_TASK_TOML"] = codex_task_toml
+        else:
+            config_path = resolve_codex_config()
+            azure_env = collect_env_keys_from_config(config_path)
+            if not azure_env:
+                raise ValueError(
+                    "No Codex credentials found. Set CODEX_AUTH_JSON, or configure "
+                    "providers in ~/.codex/config.toml and export at least one env "
+                    "var referenced by `env_key` (override path via CODEX_CONFIG_FILE)."
+                )
+            await self.exec_as_agent(environment, command="mkdir -p /tmp/codex-secrets")
+            await environment.upload_file(
+                source_path=config_path,
+                target_path="/tmp/codex-secrets/config.toml",
+            )
+            env.update(azure_env)
             setup_command = """
-mkdir -p /tmp/codex-secrets "$CODEX_HOME"
-printf '%s' "$CODEX_TASK_TOML" > /tmp/codex-secrets/config.toml
+mkdir -p "$CODEX_HOME"
 ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
 """
-
-        else:
-            raise ValueError(
-                "Either CODEX_AUTH_JSON or AZURE_OPENAI_API_KEY and CODEX_TASK_TOML are required for Harbor Codex runs. "
-                "Export them before invoking Harbor."
-            )
 
         # Add optional OPENAI_BASE_URL if provided
         if openai_base_url := os.environ.get("OPENAI_BASE_URL"):
@@ -79,8 +139,6 @@ ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
         # Build command with optional reasoning_effort from descriptor
         cli_flags = self.build_cli_flags()
         reasoning_flag = (cli_flags + " ") if cli_flags else ""
-
-
 
         skills_command = self._build_register_skills_command()
         if skills_command:
@@ -99,7 +157,7 @@ ln -sf /tmp/codex-secrets/config.toml "$CODEX_HOME/config.toml"
             await self.exec_as_agent(
                 environment,
                 command=(
-                    "trap 'rm -rf /tmp/codex-secrets \"$CODEX_HOME/auth.json\" \"$CODEX_HOME/config.toml\"' EXIT TERM INT; "
+                    'trap \'rm -rf /tmp/codex-secrets "$CODEX_HOME/auth.json" "$CODEX_HOME/config.toml"\' EXIT TERM INT; '
                     "if [ -s ~/.nvm/nvm.sh ]; then . ~/.nvm/nvm.sh; fi; "
                     "codex exec "
                     "--dangerously-bypass-approvals-and-sandbox "

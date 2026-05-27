@@ -20,9 +20,6 @@ agents:
       reasoning_effort: medium
 
 datasets:
-  # - path: examples/tasks
-  #   task_names:
-  #     - hello-world
   - name: hello-world
     version: "1.0"
     task_names:
