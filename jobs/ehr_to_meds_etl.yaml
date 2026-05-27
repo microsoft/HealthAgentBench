@@ -1,4 +1,4 @@
-jobs_dir: results/harbor/mimic_iv_meds
+jobs_dir: results/harbor/ehr_to_meds_etl
 n_attempts: 1
 timeout_multiplier: 1.0
 n_concurrent_trials: 1
@@ -42,7 +42,7 @@ agents:
 datasets:
   - path: tasks
     task_names:
-      - mimic_iv_meds
+      - ehr_to_meds_etl
 
 artifacts:
   - /workspace/output/MEDS_cohort

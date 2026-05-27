@@ -12,10 +12,10 @@ UV_VERSION = "0.9.26"
 PYTHON_BASE = "3.11-slim"
 DEMO_BASE_URL = "https://physionet.org/files/mimic-iv-demo/2.2"
 COMMON_BASE_URL = "https://raw.githubusercontent.com/MIT-LCP/mimic-code/v2.4.0/mimic-iv/concepts/concept_map"
-OUTPUT_ROOT_DEFAULT = Path("tasks/mimic_iv_meds")
-GOLD_SUMMARY_ASSET = Path("scripts/mimic_iv_meds/assets/gold_demo_summary.json")
+OUTPUT_ROOT_DEFAULT = Path("tasks/ehr_to_meds_etl")
+GOLD_SUMMARY_ASSET = Path("scripts/ehr_to_meds_etl/assets/gold_demo_summary.json")
 REFERENCE_CUSTOM_CONFIG_ASSET = Path(
-    "scripts/mimic_iv_meds/assets/reference_custom_event_configs.yaml"
+    "scripts/ehr_to_meds_etl/assets/reference_custom_event_configs.yaml"
 )
 DEFAULT_EVENT_CONFIG_REL_PATH = "src/MIMIC_IV_MEDS/configs/event_configs.yaml"
 CUSTOM_EVENT_CONFIG_REL_PATH = "src/MIMIC_IV_MEDS/configs/custom_event_configs.yaml"
@@ -126,7 +126,7 @@ def build_task_toml() -> str:
     return """version = "1.0"
 
 [metadata]
-benchmark = "mimic_iv_meds"
+benchmark = "ehr_to_meds_etl"
 mode = "etl-task"
 output_dir = "/workspace/output/MEDS_cohort"
 repo_dir = "/workspace/MIMIC_IV_MEDS"

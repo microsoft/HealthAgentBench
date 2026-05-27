@@ -12,7 +12,7 @@ Two top-level launchers run Harbor baselines across models/harnesses and append 
 
 | Script | Use when |
 | --- | --- |
-| [`run_harbor_baselines.py`](run_harbor_baselines.py) | The benchmark is a single Harbor task directory (for example `tasks/mimic_iv_meds/`). |
+| [`run_harbor_baselines.py`](run_harbor_baselines.py) | The benchmark is a single Harbor task directory (for example `tasks/ehr_to_meds_etl/`). |
 | [`run_harbor_baselines_multitask.py`](run_harbor_baselines_multitask.py) | The benchmark is a parent directory whose immediate children are sibling subtasks that Harbor should enumerate (for example per-patient subdirs under `tasks/xray_report_gen/`). Supports `--subtask` to restrict to a subset and aggregates stats across subtasks. |
 
 Both scripts share the same core flags: `--task-name`, `--task-path`, `--harness`, `--reasoning-effort`, `--attempts`, `--baselines-md`. Full flag list:
@@ -27,7 +27,7 @@ Minimal invocations:
 ```bash
 # Single-task benchmark
 uv run python scripts/run_harbor_baselines.py \
-  --task-name mimic_iv_meds \
+  --task-name ehr_to_meds_etl \
   --task-path tasks
 
 # Multi-subtask benchmark (all subtasks)

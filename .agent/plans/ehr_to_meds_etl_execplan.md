@@ -6,14 +6,14 @@ This document is governed by `PLANS.md` in the repository root and must be maint
 
 ## Purpose / Big Picture
 
-After this change, MedCLI can run a Harbor benchmark that evaluates whether an agent can inspect a real healthcare ETL repository, create its environment with `uv`, and produce a valid MEDS cohort from the open MIMIC-IV demo dataset. A user can observe the result by generating `tasks/mimic_iv_meds/`, running `uv run harbor run -c jobs/mimic_iv_meds.yaml`, and seeing Harbor score the run from the generated MEDS output directory instead of a JSON answer file.
+After this change, MedCLI can run a Harbor benchmark that evaluates whether an agent can inspect a real healthcare ETL repository, create its environment with `uv`, and produce a valid MEDS cohort from the open MIMIC-IV demo dataset. A user can observe the result by generating `tasks/ehr_to_meds_etl/`, running `uv run harbor run -c jobs/ehr_to_meds_etl.yaml`, and seeing Harbor score the run from the generated MEDS output directory instead of a JSON answer file.
 
 ## Progress
 
 - [x] (2026-04-06 14:05Z) Added design intake artifacts for `MIMIC_IV_MEDS` and tracked the benchmark in `design/tasks.md`.
-- [x] (2026-04-06 14:24Z) Wrote benchmark scaffolding under `scripts/mimic_iv_meds/`, including the Harbor task generator and reference-summary builder.
+- [x] (2026-04-06 14:24Z) Wrote benchmark scaffolding under `scripts/ehr_to_meds_etl/`, including the Harbor task generator and reference-summary builder.
 - [x] (2026-04-06 14:51Z) Reproduced the upstream demo pipeline, identified the `MEDS_transforms` lock-file cleanup bug, and confirmed a task-local compatibility patch makes the pinned upstream workflow succeed.
-- [x] (2026-04-06 15:08Z) Built a verifier-side gold summary from a known-good reference run and generated `tasks/mimic_iv_meds/`.
+- [x] (2026-04-06 15:08Z) Built a verifier-side gold summary from a known-good reference run and generated `tasks/ehr_to_meds_etl/`.
 - [ ] (2026-04-06 15:18Z) Add benchmark-specific tests for task generation and verifier behavior.
 - [ ] (2026-04-06 15:18Z) Run benchmark-specific validation and update repo docs to reflect the integrated benchmark.
 
@@ -67,12 +67,12 @@ MedCLI stores benchmark-specific integration logic under `scripts/<benchmark>/`,
 
 The key files for this benchmark are:
 
-- `scripts/mimic_iv_meds/generate_harbor_task.py`: generates the Harbor task files for this benchmark.
-- `scripts/mimic_iv_meds/build_reference_summary.py`: derives a compact verifier-side gold summary from a known-good output tree.
-- `scripts/mimic_iv_meds/assets/gold_demo_summary.json`: the committed gold summary used by the verifier.
-- `tasks/mimic_iv_meds/`: the generated Harbor task artifact.
-- `jobs/mimic_iv_meds.yaml`: the Harbor job config.
-- `design/related_work/mimic_iv_meds_0.0.7.md`: the design intake note that explains why this benchmark exists.
+- `scripts/ehr_to_meds_etl/generate_harbor_task.py`: generates the Harbor task files for this benchmark.
+- `scripts/ehr_to_meds_etl/build_reference_summary.py`: derives a compact verifier-side gold summary from a known-good output tree.
+- `scripts/ehr_to_meds_etl/assets/gold_demo_summary.json`: the committed gold summary used by the verifier.
+- `tasks/ehr_to_meds_etl/`: the generated Harbor task artifact.
+- `jobs/ehr_to_meds_etl.yaml`: the Harbor job config.
+- `design/related_work/ehr_to_meds_etl_0.0.7.md`: the design intake note that explains why this benchmark exists.
 
 In this plan, “staged demo input” means the public MIMIC-IV demo files are copied into the container during the Docker build so the agent does not need to fetch them during the trial. “Gold summary” means a compact JSON description of the expected MEDS output structure, metadata schemas, and row counts, not a copy of the full reference output tree.
 
@@ -80,9 +80,9 @@ In this plan, “staged demo input” means the public MIMIC-IV demo files are c
 
 First, keep the benchmark intake accurate. The related-work note and `design/tasks.md` must describe the benchmark as an adapted ETL integration that requires staged inputs, `uv` setup, and directory-output verification.
 
-Second, build the benchmark-specific scripts. `scripts/mimic_iv_meds/generate_harbor_task.py` must generate the task instruction, Dockerfile, staged-input helper, compatibility patch helper, verifier entrypoint, and verifier logic. `scripts/mimic_iv_meds/build_reference_summary.py` must compute the stable summary from a known-good output tree. `scripts/mimic_iv_meds/README.md` and `debug/mimic_iv_meds/README.md` must explain how to regenerate the task and run it.
+Second, build the benchmark-specific scripts. `scripts/ehr_to_meds_etl/generate_harbor_task.py` must generate the task instruction, Dockerfile, staged-input helper, compatibility patch helper, verifier entrypoint, and verifier logic. `scripts/ehr_to_meds_etl/build_reference_summary.py` must compute the stable summary from a known-good output tree. `scripts/ehr_to_meds_etl/README.md` and `debug/ehr_to_meds_etl/README.md` must explain how to regenerate the task and run it.
 
-Third, generate and commit `tasks/mimic_iv_meds/`. The task must expose the pinned upstream repo under `/workspace/MIMIC_IV_MEDS`, instruct the agent to run `uv sync`, apply the compatibility patch, and write the final MEDS cohort to `/workspace/output/MEDS_cohort`. The verifier must check both the setup artifacts and the output tree.
+Third, generate and commit `tasks/ehr_to_meds_etl/`. The task must expose the pinned upstream repo under `/workspace/MIMIC_IV_MEDS`, instruct the agent to run `uv sync`, apply the compatibility patch, and write the final MEDS cohort to `/workspace/output/MEDS_cohort`. The verifier must check both the setup artifacts and the output tree.
 
 Fourth, add tests. One test should prove the generator creates the expected task layout. Another should exercise the generated verifier on synthetic output: a passing case with matching metadata and row counts, and a failing case where the `uv` setup artifacts are missing.
 
@@ -92,22 +92,22 @@ Finally, update repo-facing docs. Promote the benchmark from `Planned` to `Integ
 
 From the repository root:
 
-    uv run python scripts/mimic_iv_meds/build_reference_summary.py \
-      --output-root /tmp/mimic_iv_meds_demo_run_patch \
-      --summary-out scripts/mimic_iv_meds/assets/gold_demo_summary.json
+    uv run python scripts/ehr_to_meds_etl/build_reference_summary.py \
+      --output-root /tmp/ehr_to_meds_etl_demo_run_patch \
+      --summary-out scripts/ehr_to_meds_etl/assets/gold_demo_summary.json
 
-Expected result: `scripts/mimic_iv_meds/assets/gold_demo_summary.json` is written and contains the required metadata files plus the expected shard paths and row counts.
+Expected result: `scripts/ehr_to_meds_etl/assets/gold_demo_summary.json` is written and contains the required metadata files plus the expected shard paths and row counts.
 
-    uv run python scripts/mimic_iv_meds/generate_harbor_task.py \
-      --output-root tasks/mimic_iv_meds
+    uv run python scripts/ehr_to_meds_etl/generate_harbor_task.py \
+      --output-root tasks/ehr_to_meds_etl
 
-Expected result: `tasks/mimic_iv_meds/` contains `instruction.md`, `task.toml`, `environment/Dockerfile`, and `tests/verify_output.py`.
+Expected result: `tasks/ehr_to_meds_etl/` contains `instruction.md`, `task.toml`, `environment/Dockerfile`, and `tests/verify_output.py`.
 
-    uv run pytest tests/test_mimic_iv_meds_task.py -q
+    uv run pytest tests/test_ehr_to_meds_etl_task.py -q
 
 Expected result: the benchmark-specific tests pass.
 
-    uv run harbor run -c jobs/mimic_iv_meds.yaml
+    uv run harbor run -c jobs/ehr_to_meds_etl.yaml
 
 Expected result: Harbor builds the environment, the agent creates the repo-local `uv` environment, and the verifier writes a non-zero reward only when the MEDS output matches the gold summary.
 
@@ -115,15 +115,15 @@ Expected result: Harbor builds the environment, the agent creates the repo-local
 
 The change is accepted when all of these are true:
 
-- `tasks/mimic_iv_meds/` exists and is reproducibly generated from `scripts/mimic_iv_meds/generate_harbor_task.py`.
-- `tests/test_mimic_iv_meds_task.py` passes and proves both the success path and the missing-`uv`-setup failure path.
+- `tasks/ehr_to_meds_etl/` exists and is reproducibly generated from `scripts/ehr_to_meds_etl/generate_harbor_task.py`.
+- `tests/test_ehr_to_meds_etl_task.py` passes and proves both the success path and the missing-`uv`-setup failure path.
 - `design/tasks.md` lists the benchmark under `Integrated`.
 - `tasks/README.md` lists the benchmark.
-- A Harbor run using `jobs/mimic_iv_meds.yaml` can, at minimum, start from the generated task artifact and exercise the supported run path.
+- A Harbor run using `jobs/ehr_to_meds_etl.yaml` can, at minimum, start from the generated task artifact and exercise the supported run path.
 
 ## Idempotence and Recovery
 
-The generator is safe to rerun because it recreates `tasks/mimic_iv_meds/` from scratch. The reference-summary builder is safe to rerun as long as the input reference tree is known-good. If the benchmark task needs to be regenerated after edits, rerun the builder first if the gold reference changed, then rerun the generator, then rerun the tests.
+The generator is safe to rerun because it recreates `tasks/ehr_to_meds_etl/` from scratch. The reference-summary builder is safe to rerun as long as the input reference tree is known-good. If the benchmark task needs to be regenerated after edits, rerun the builder first if the gold reference changed, then rerun the generator, then rerun the tests.
 
 ## Artifacts and Notes
 
