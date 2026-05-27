@@ -92,23 +92,42 @@ export CODEX_AUTH_JSON="$(cat ~/.codex/auth.json)"   # forwarded into container
 # Override the default path with CODEX_AUTH_FILE if your auth.json lives elsewhere.
 ```
 
-**(b) Azure OpenAI API token** — bypasses ChatGPT login. Both env vars are
-required:
+**(b) Azure OpenAI** — bypasses ChatGPT login. The wrapper reads your local
+`~/.codex/config.toml` and forwards every host env var referenced by an
+`env_key` field on a `[model_providers.*]` table. Configure providers there
+once, export the keys, and any job YAML that uses this wrapper picks them up
+without further wiring.
 
-```bash
-export AZURE_OPENAI_API_KEY=<your-key>
-export CODEX_TASK_TOML='model = "gpt-5.4"
-model_provider = "azure"
+Example `~/.codex/config.toml` with two endpoints:
 
-[model_providers.azure]
-name = "Azure OpenAI"
-base_url = ""
-env_key = "AZURE_OPENAI_API_KEY"
-wire_api = "responses"'
+```toml
+model = "gpt-5.4"
+model_provider = "azure_eus"
+
+[model_providers.azure_wus3]
+name = "Azure OpenAI (West US 3)"
+base_url = "https://hanoveroai.openai.azure.com/openai/v1"
+env_key = "AZURE_OPENAI_WUS3_API_KEY"
+wire_api = "responses"
+
+[model_providers.azure_eus]
+name = "Azure OpenAI (East US)"
+base_url = "https://hanoveroaieus.openai.azure.com/openai/v1"
+env_key = "AZURE_OPENAI_EUS_API_KEY"
+wire_api = "responses"
 ```
 
-The wrapper writes `$CODEX_TASK_TOML` to `$CODEX_HOME/config.toml` inside the
-container so the codex CLI picks up the Azure provider config.
+Then on the host:
+
+```bash
+export AZURE_OPENAI_WUS3_API_KEY=<your-key>
+export AZURE_OPENAI_EUS_API_KEY=<your-key>
+```
+
+The wrapper uploads the config file into the container at
+`$CODEX_HOME/config.toml`. Providers whose `env_key` is unset on the host are
+skipped silently — at least one must resolve, or the wrapper aborts with a
+clear error. Override the config path with `CODEX_CONFIG_FILE` (useful in CI).
 
 ### copilot-cli (`--harness copilot-cli`)
 

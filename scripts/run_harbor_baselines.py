@@ -116,7 +116,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--task-name", default=DEFAULT_TASK_NAME)
     parser.add_argument("--task-path", type=Path, default=DEFAULT_TASK_PATH)
-    parser.add_argument("--harness", default=DEFAULT_HARNESS, choices=sorted(HARNESS_SPECS))
+    parser.add_argument(
+        "--harness", default=DEFAULT_HARNESS, choices=sorted(HARNESS_SPECS)
+    )
     parser.add_argument(
         "--model",
         dest="models",
@@ -212,11 +214,31 @@ def require_copilot_auth() -> None:
 
 def require_codex_auth() -> None:
     auth_file = os.environ.get("CODEX_AUTH_FILE", "").strip()
-    path = Path(auth_file).expanduser() if auth_file else Path.home() / ".codex" / "auth.json"
+    path = (
+        Path(auth_file).expanduser()
+        if auth_file
+        else Path.home() / ".codex" / "auth.json"
+    )
     if path.is_file():
         return
+
+    # Azure path: a config.toml whose providers reference at least one env var set on the host.
+    try:
+        from medcli.agents.harbor.installed.codex import (
+            collect_env_keys_from_config,
+            resolve_codex_config,
+        )
+
+        config_path = resolve_codex_config()
+        if collect_env_keys_from_config(config_path):
+            return
+    except ValueError:
+        pass
+
     raise SystemExit(
-        "Codex auth is required. Expected ~/.codex/auth.json or set CODEX_AUTH_FILE."
+        "Codex auth is required. Expected ~/.codex/auth.json (override via CODEX_AUTH_FILE) "
+        "or a ~/.codex/config.toml (override via CODEX_CONFIG_FILE) whose providers "
+        "reference at least one env var set on the host."
     )
 
 
@@ -283,7 +305,9 @@ def make_timestamp() -> str:
     return datetime.now(UTC).strftime(RUN_TIMESTAMP_FORMAT)
 
 
-def build_job_name(task_name: str, harness: str, model_name: str, timestamp: str) -> str:
+def build_job_name(
+    task_name: str, harness: str, model_name: str, timestamp: str
+) -> str:
     safe_model = model_name.replace("/", "-")
     return RUN_DIR_SEPARATOR.join((task_name, harness, safe_model, timestamp))
 
@@ -294,7 +318,9 @@ def parse_iso8601(value: str | None) -> datetime | None:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def compute_duration_seconds(started_at: str | None, finished_at: str | None) -> float | None:
+def compute_duration_seconds(
+    started_at: str | None, finished_at: str | None
+) -> float | None:
     start = parse_iso8601(started_at)
     finish = parse_iso8601(finished_at)
     if start is None or finish is None:
@@ -304,6 +330,7 @@ def compute_duration_seconds(started_at: str | None, finished_at: str | None) ->
 
 def default_output_root(repo_root: Path, task_name: str) -> Path:
     return repo_root / "results" / "baselines" / task_name
+
 
 def build_job_config(
     repo_root: Path,
@@ -426,7 +453,9 @@ def load_job_config_metadata(run_dir: Path) -> dict:
     return json.loads(config_path.read_text(encoding="utf-8"))
 
 
-def infer_run_metadata_from_name(run_dir: Path, fallback_task_name: str = "") -> dict[str, str]:
+def infer_run_metadata_from_name(
+    run_dir: Path, fallback_task_name: str = ""
+) -> dict[str, str]:
     parts = run_dir.name.split(RUN_DIR_SEPARATOR)
     if len(parts) < 4:
         legacy_name = run_dir.name
@@ -483,7 +512,9 @@ def infer_run_metadata(
                 break
 
     if not task_name or not harness or not model_name:
-        fallback = infer_run_metadata_from_name(run_dir, fallback_task_name=fallback_task_name)
+        fallback = infer_run_metadata_from_name(
+            run_dir, fallback_task_name=fallback_task_name
+        )
         task_name = task_name or fallback.get("task_name", "")
         harness = harness or fallback.get("harness", "")
         model_name = model_name or fallback.get("model_name", "")
@@ -567,7 +598,9 @@ def load_attempt_results_for_run_dir(
     sorted_payloads: list[tuple[datetime, dict, Path]] = []
     for path in trial_result_paths:
         payload = json.loads(path.read_text(encoding="utf-8"))
-        timestamp = parse_iso8601(payload.get("started_at")) or datetime.min.replace(tzinfo=UTC)
+        timestamp = parse_iso8601(payload.get("started_at")) or datetime.min.replace(
+            tzinfo=UTC
+        )
         sorted_payloads.append((timestamp, payload, path))
     sorted_payloads.sort(key=lambda item: item[0])
 
@@ -584,14 +617,18 @@ def load_attempt_results_for_run_dir(
                 attempt=index,
                 reward=reward_value,
                 passed=reward_value == 1.0,
-                exception_type=(payload.get("exception_info") or {}).get("exception_type", ""),
+                exception_type=(payload.get("exception_info") or {}).get(
+                    "exception_type", ""
+                ),
                 total_wall_time_sec=compute_duration_seconds(
                     payload.get("started_at"),
                     payload.get("finished_at"),
                 ),
                 input_tokens=(payload.get("agent_result") or {}).get("n_input_tokens"),
                 cached_tokens=(payload.get("agent_result") or {}).get("n_cache_tokens"),
-                output_tokens=(payload.get("agent_result") or {}).get("n_output_tokens"),
+                output_tokens=(payload.get("agent_result") or {}).get(
+                    "n_output_tokens"
+                ),
                 job_name=run_dir.name,
                 run_dir=str(run_dir),
                 trial_dir=str(path.parent),
@@ -635,8 +672,7 @@ def markdown_table(rows: list[dict[str, str]]) -> str:
     header_line = "| " + " | ".join(headers) + " |"
     separator_line = "| " + " | ".join("---" for _ in headers) + " |"
     body_lines = [
-        "| " + " | ".join(str(row[header]) for header in headers) + " |"
-        for row in rows
+        "| " + " | ".join(str(row[header]) for header in headers) + " |" for row in rows
     ]
     return "\n".join([header_line, separator_line, *body_lines])
 
@@ -695,11 +731,24 @@ def build_task_section(
             [],
         ).append(item)
 
-    grouped_stats: list[tuple[tuple[str, str, str, str], list[AttemptResult], float, float, int, float | None]] = []
+    grouped_stats: list[
+        tuple[
+            tuple[str, str, str, str],
+            list[AttemptResult],
+            float,
+            float,
+            int,
+            float | None,
+        ]
+    ] = []
     for key in sorted(grouped):
         attempts = sorted(grouped[key], key=lambda item: item.attempt)
         rewards = [item.reward for item in attempts]
-        wall_times = [item.total_wall_time_sec for item in attempts if item.total_wall_time_sec is not None]
+        wall_times = [
+            item.total_wall_time_sec
+            for item in attempts
+            if item.total_wall_time_sec is not None
+        ]
         mean_reward = statistics.mean(rewards)
         reward_variance = statistics.pvariance(rewards)
         successes = sum(1 for item in attempts if item.passed)
@@ -721,7 +770,14 @@ def build_task_section(
     )
 
     aggregate_rows = []
-    for key, attempts, mean_reward, reward_variance, successes, mean_wall_time in grouped_stats:
+    for (
+        key,
+        attempts,
+        mean_reward,
+        reward_variance,
+        successes,
+        mean_wall_time,
+    ) in grouped_stats:
         aggregate_rows.append(
             {
                 "Task": key[0],
@@ -790,7 +846,9 @@ def build_task_section(
     return "\n".join(lines)
 
 
-def upsert_task_section(existing_text: str, task_name: str, task_section: str, title: str) -> str:
+def upsert_task_section(
+    existing_text: str, task_name: str, task_section: str, title: str
+) -> str:
     document = existing_text.strip()
     if not document:
         return build_document_intro(title) + task_section.strip() + "\n"
@@ -830,7 +888,9 @@ def write_baselines_markdown(
     )
 
 
-def build_experiment_config(args: argparse.Namespace, repo_root: Path) -> ExperimentConfig:
+def build_experiment_config(
+    args: argparse.Namespace, repo_root: Path
+) -> ExperimentConfig:
     harness_spec = get_harness_spec(args.harness)
     models = tuple(args.models or harness_spec.default_models)
     output_root = args.output_root or default_output_root(repo_root, args.task_name)
@@ -936,12 +996,15 @@ def main() -> None:
             model_name=model_name,
             reasoning_effort=experiment.reasoning_effort,
             attempts=experiment.attempts,
-            run_dir=experiment.output_root / build_job_name(
+            run_dir=experiment.output_root
+            / build_job_name(
                 experiment.task_name, experiment.harness, model_name, timestamp
             ),
             launcher_log=experiment.output_root
             / (
-                build_job_name(experiment.task_name, experiment.harness, model_name, timestamp)
+                build_job_name(
+                    experiment.task_name, experiment.harness, model_name, timestamp
+                )
                 + ".launcher.log"
             ),
         )
@@ -969,7 +1032,9 @@ def main() -> None:
     for spec, _, holder in processes:
         return_code = holder.get("returncode", 1)
         if return_code != 0:
-            print(f"[{spec.harness}:{spec.model_name}] harbor exited with code {return_code}")
+            print(
+                f"[{spec.harness}:{spec.model_name}] harbor exited with code {return_code}"
+            )
         all_attempts.extend(
             load_attempt_results_for_run_dir(
                 task_name=spec.task_name,
