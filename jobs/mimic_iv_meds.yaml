@@ -1,4 +1,4 @@
-jobs_dir: results
+jobs_dir: results/harbor/mimic_iv_meds
 n_attempts: 1
 timeout_multiplier: 1.0
 n_concurrent_trials: 1
@@ -6,14 +6,38 @@ quiet: false
 
 environment:
   type: docker
-  force_build: true
+  force_build: false
   delete: true
 
 agents:
   - import_path: medcli.agents.harbor.installed.copilot_cli:CopilotCli
     model_name: gpt-5.4-mini
     kwargs:
-      reasoning_effort: medium
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.4-mini
+    kwargs:
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.4
+    kwargs:
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.3-codex
+    kwargs:
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-opus-4-7
+    kwargs:
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-opus-4-6
+    kwargs:
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-sonnet-4-6
+    kwargs:
+      reasoning_effort: xhigh
 
 datasets:
   - path: tasks
