@@ -1,0 +1,292 @@
+# EHRSHOT benchmark — per-task configuration manifest.
+#
+# Single source of truth for which EHRSHOT prediction tasks MedCLI exposes as
+# Harbor subtasks, plus the per-task constants that don't change across runs
+# (label binarization rules, submission format).
+#
+# All 15 EHRSHOT tasks are enabled. The generator iterates this list; each
+# entry produces one subtask folder under `tasks/ehrshot/<id>/`.
+#
+# The published count+GBM AUROC threshold (the bar an agent must beat) is
+# NOT hardcoded here — the generator reads it at task-generation time from
+# `EHRSHOT_ASSETS/results/<id>/all_results.csv` (filtered to model=count,
+# head=gbm, score=auroc, k=-1). This keeps the manifest decoupled from
+# upstream baseline numbers if EHRSHOT bumps the dataset version.
+#
+# Source: EHRSHOT released bundle (`EHRSHOT_ASSETS/`), pulled by
+# `scripts/ehrshot/download.py` from Redivis.
+
+# Where the EHRSHOT bundle lives on the host. By default everything is
+# downloaded inside the repo at ``scripts/ehrshot/assets/EHRSHOT_ASSETS/``
+# (gitignored). To stage elsewhere — e.g. on shared scratch — export
+# ``EHRSHOT_ASSETS_DIR`` to that path before running ``download.py`` and
+# ``generate_harbor_tasks.py``.
+ehrshot_assets_env_var: EHRSHOT_ASSETS_DIR
+ehrshot_assets_default_subpath: scripts/ehrshot/assets/EHRSHOT_ASSETS
+
+# CheXpert 14-subtask names — used by the multilabel chexpert task.
+chexpert_subtasks:
+  - "No Finding"
+  - "Enlarged Cardiomediastinum"
+  - "Cardiomegaly"
+  - "Lung Opacity"
+  - "Lung Lesion"
+  - "Edema"
+  - "Consolidation"
+  - "Pneumonia"
+  - "Atelectasis"
+  - "Pneumothorax"
+  - "Pleural Effusion"
+  - "Pleural Other"
+  - "Fracture"
+  - "Support Devices"
+
+# All 15 EHRSHOT tasks. Three kinds of label rules:
+#
+#   labeled_patients_value_bool
+#     The `value` column in labeled_patients.csv is already 0/1.
+#     Used by all guo_* and new_* tasks (operational outcomes + new diagnoses).
+#
+#   labeled_patients_value_int_threshold_ge_1
+#     The `value` column is a 0-3 severity code (0=normal, 1=mild,
+#     2=moderate, 3=severe). EHRSHOT's published baseline binarizes to
+#     `(value >= 1)` — i.e. abnormal vs normal — using
+#     `convert_multiclass_to_binary_labels(threshold=1)` from the upstream
+#     `7_eval_finetune.py`. We mirror that.
+#
+#   labeled_patients_chexpert_bitmask
+#     The `value` column is a 14-bit bitmask packed as an integer; bit i
+#     corresponds to chexpert_subtasks[i]. The agent submits 14 separate
+#     probabilities per row; the verifier reports mean AUROC across the 14.
+tasks:
+  # Operational outcomes (predicted at hospital admission)
+  - id: guo_icu
+    kind: binary
+    description: |
+      For each inpatient hospital admission, predict whether the patient
+      will be transferred to an Intensive Care Unit (ICU) at any point
+      during that admission. Prediction is made at 11:59 PM on the day of
+      admission. Same-day-discharged admissions and admissions where ICU
+      transfer occurs on the day of admission are excluded.
+    label_semantics: |
+      1 = the patient is transferred to an ICU at some point during this
+          inpatient admission (after 11:59 PM on the day of admission).
+      0 = no ICU transfer during this admission.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: guo_los
+    kind: binary
+    description: |
+      For each inpatient hospital admission, predict whether the patient's
+      length-of-stay will be 7 days or longer. Prediction is made at 11:59
+      PM on the day of admission. Same-day-discharged admissions are excluded.
+    label_semantics: |
+      1 = length-of-stay (discharge time minus admission time) is >= 7 days.
+      0 = length-of-stay is less than 7 days.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: guo_readmission
+    kind: binary
+    description: |
+      For each inpatient hospital discharge, predict whether the patient
+      will be readmitted to an inpatient stay within 30 days. Prediction
+      is made at 11:59 PM on the day of discharge. Same-day readmissions
+      are excluded from the prediction set.
+    label_semantics: |
+      1 = the patient has a subsequent inpatient admission with start time
+          between 1 minute and 30 days after the prediction time.
+      0 = no inpatient admission in that 30-day window.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  # Lab abnormality prediction (predicted at lab order time, before result)
+  - id: lab_anemia
+    kind: binary
+    description: |
+      For each hemoglobin lab measurement, predict whether the result will
+      indicate anemia. Prediction is made immediately before the result is
+      recorded (i.e. on the basis of the patient's history up to that
+      moment, before the numeric value is available). Time horizon: the
+      next lab result.
+    label_semantics: |
+      1 = the resulting hemoglobin value is < 12 g/dL (any of: mild [<12 g/dL],
+          moderate [<11 g/dL], or severe [<7 g/dL] anemia).
+      0 = the resulting hemoglobin value is >= 12 g/dL (normal range).
+    label_source: labeled_patients_value_int_threshold_ge_1
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: lab_hyperkalemia
+    kind: binary
+    description: |
+      For each serum potassium lab measurement, predict whether the result
+      will indicate hyperkalemia. Prediction is made immediately before
+      the result is recorded. Time horizon: the next lab result.
+    label_semantics: |
+      1 = the resulting potassium value is > 5.5 mmol/L (mild [>5.5],
+          moderate [>6], or severe [>7]).
+      0 = the resulting potassium value is <= 5.5 mmol/L (normal range).
+    label_source: labeled_patients_value_int_threshold_ge_1
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: lab_hypoglycemia
+    kind: binary
+    description: |
+      For each blood-glucose lab measurement, predict whether the result
+      will indicate hypoglycemia. Prediction is made immediately before the
+      result is recorded. Time horizon: the next lab result.
+    label_semantics: |
+      1 = the resulting glucose value is <= 3.9 mmol/L (mild [<=3.9],
+          moderate [<3.5], or severe [<3]).
+      0 = the resulting glucose value is > 3.9 mmol/L (normal range).
+    label_source: labeled_patients_value_int_threshold_ge_1
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: lab_hyponatremia
+    kind: binary
+    description: |
+      For each serum sodium lab measurement, predict whether the result
+      will indicate hyponatremia. Prediction is made immediately before
+      the result is recorded. Time horizon: the next lab result.
+    label_semantics: |
+      1 = the resulting sodium value is <= 135 mmol/L (mild [<=135],
+          moderate [<130], or severe [<125]).
+      0 = the resulting sodium value is > 135 mmol/L (normal range).
+    label_source: labeled_patients_value_int_threshold_ge_1
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: lab_thrombocytopenia
+    kind: binary
+    description: |
+      For each platelet-count lab measurement, predict whether the result
+      will indicate thrombocytopenia. Prediction is made immediately before
+      the result is recorded. Time horizon: the next lab result.
+    label_semantics: |
+      1 = the resulting platelet count is < 150 x 10^9/L (mild [<150],
+          moderate [<100], or severe [<50]).
+      0 = the resulting platelet count is >= 150 x 10^9/L (normal range).
+    label_source: labeled_patients_value_int_threshold_ge_1
+    submission_columns: [patient_id, prediction_time, probability]
+
+  # New diagnosis prediction (predicted at last visit before first qualifying dx)
+  - id: new_acutemi
+    kind: binary
+    description: |
+      For each inpatient discharge that occurs before the patient's first
+      diagnosis of acute myocardial infarction, predict whether such a
+      first-time diagnosis will occur within the next 365 days. Prediction
+      is made at 11:59 PM on the day of discharge. Patients who have
+      already had this diagnosis are excluded.
+    label_semantics: |
+      1 = the patient receives a first-time diagnosis of acute myocardial
+          infarction with onset 1 to 365 days after the prediction time.
+      0 = no such diagnosis in the (1, 365]-day window.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: new_celiac
+    kind: binary
+    description: |
+      For each inpatient discharge that occurs before the patient's first
+      celiac disease diagnosis, predict whether such a first-time diagnosis
+      will occur within the next 365 days. Prediction is made at 11:59 PM
+      on the day of discharge. Patients with prior celiac diagnosis excluded.
+    label_semantics: |
+      1 = first-time celiac disease diagnosis with onset 1 to 365 days
+          after the prediction time.
+      0 = no such diagnosis in the (1, 365]-day window.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: new_hyperlipidemia
+    kind: binary
+    description: |
+      For each inpatient discharge that occurs before the patient's first
+      hyperlipidemia diagnosis, predict whether such a first-time diagnosis
+      will occur within the next 365 days. Prediction is made at 11:59 PM
+      on the day of discharge. Patients with prior diagnosis excluded.
+    label_semantics: |
+      1 = first-time hyperlipidemia diagnosis with onset 1 to 365 days
+          after the prediction time.
+      0 = no such diagnosis in the (1, 365]-day window.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: new_hypertension
+    kind: binary
+    description: |
+      For each inpatient discharge that occurs before the patient's first
+      essential hypertension diagnosis, predict whether such a first-time
+      diagnosis will occur within the next 365 days. Prediction is made at
+      11:59 PM on the day of discharge. Patients with prior diagnosis excluded.
+    label_semantics: |
+      1 = first-time essential hypertension diagnosis with onset 1 to 365
+          days after the prediction time.
+      0 = no such diagnosis in the (1, 365]-day window.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: new_lupus
+    kind: binary
+    description: |
+      For each inpatient discharge that occurs before the patient's first
+      systemic lupus erythematosus (SLE) diagnosis, predict whether such a
+      first-time diagnosis will occur within the next 365 days. Prediction
+      is made at 11:59 PM on the day of discharge. Patients with prior
+      diagnosis excluded.
+    label_semantics: |
+      1 = first-time SLE diagnosis with onset 1 to 365 days after the
+          prediction time.
+      0 = no such diagnosis in the (1, 365]-day window.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  - id: new_pancan
+    kind: binary
+    description: |
+      For each inpatient discharge that occurs before the patient's first
+      pancreatic cancer diagnosis, predict whether such a first-time
+      diagnosis will occur within the next 365 days. Prediction is made at
+      11:59 PM on the day of discharge. Patients with prior diagnosis excluded.
+    label_semantics: |
+      1 = first-time pancreatic cancer diagnosis with onset 1 to 365 days
+          after the prediction time.
+      0 = no such diagnosis in the (1, 365]-day window.
+    label_source: labeled_patients_value_bool
+    submission_columns: [patient_id, prediction_time, probability]
+
+  # Multilabel chest X-ray finding prediction (14 independent binary findings)
+  - id: chexpert
+    kind: multilabel
+    description: |
+      For each chest X-ray radiology report, predict whether each of 14
+      findings (e.g., Cardiomegaly, Edema, Pleural Effusion) is present.
+      Prediction is made 24 hours before the report is recorded. Time
+      horizon: the next radiology report.
+    label_semantics: |
+      The 14 columns are independent binary labels (one per finding).
+      For each column: 1 = the finding is reported as present in the chest X-ray
+                          radiology report.
+                       0 = the finding is reported as absent.
+      Multiple findings can be present in the same row; the columns are NOT
+      mutually exclusive (do not softmax across columns).
+    label_source: labeled_patients_chexpert_bitmask
+    # 16 columns total: patient_id + prediction_time + 14 subtask probabilities.
+    submission_columns:
+      - patient_id
+      - prediction_time
+      - "No Finding"
+      - "Enlarged Cardiomediastinum"
+      - "Cardiomegaly"
+      - "Lung Opacity"
+      - "Lung Lesion"
+      - "Edema"
+      - "Consolidation"
+      - "Pneumonia"
+      - "Atelectasis"
+      - "Pneumothorax"
+      - "Pleural Effusion"
+      - "Pleural Other"
+      - "Fracture"
+      - "Support Devices"
