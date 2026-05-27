@@ -247,7 +247,7 @@ def build_dockerfile() -> str:
     layer that uses it. The HOST-side ``tasks/<task>/tests/labels.csv`` is
     what the verifier reads at run time, mounted by Harbor only when the
     verifier executes (the agent phase never sees ``/tests/``). This
-    follows the same pattern used by ``mimic_report_gen``.
+    follows the same pattern used by ``xray_report_gen``.
     """
     return f"""FROM python:{PYTHON_BASE}
 

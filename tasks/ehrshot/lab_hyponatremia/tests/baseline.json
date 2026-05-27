@@ -1,0 +1,12 @@
+{
+  "task_id": "lab_hyponatremia",
+  "kind": "binary",
+  "test_subset": "last",
+  "n_test": 1956,
+  "baseline_model": "count + LightGBM",
+  "baseline_auroc": 0.7086140217696671,
+  "baseline_source": "scripts/ehrshot/assets/baselines.csv :: auroc_last (count+gbm refit on EHRSHOT train+val, scored on last-row-per-patient test subset)",
+  "clmbr_baseline_model": "clmbr + lr_lbfgs",
+  "clmbr_baseline_auroc": 0.7630875030634142,
+  "clmbr_baseline_source": "scripts/ehrshot/assets/baselines_clmbr.csv :: auroc_last (clmbr+lr_lbfgs refit on EHRSHOT train+val, scored on last subset)"
+}

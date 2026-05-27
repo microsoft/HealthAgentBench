@@ -229,7 +229,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help=(
             "PEP 723 uv-script that Harbor invokes after all trials complete to "
-            "aggregate pooled metrics (e.g. scripts/mimic_report_gen/"
+            "aggregate pooled metrics (e.g. scripts/xray_report_gen/"
             "aggregate_metric.py for CheXbert F1). If omitted, the launcher looks "
             "for scripts/<task_name>/aggregate_metric.py and a few slug variants."
         ),
@@ -439,7 +439,7 @@ def _autodetect_metrics_script(repo_root: Path, task_name: str) -> Path | None:
     """Return scripts/<slug>/aggregate_metric.py for the first slug that exists.
 
     Accepts the task name as-is plus common slug variants (_ <-> -) so that a
-    task dir named `mimic_report_gen` can still find `scripts/mimic_report_gen/`.
+    task dir named `xray_report_gen` can still find `scripts/xray_report_gen/`.
     """
     candidates = {
         task_name,
@@ -783,7 +783,7 @@ def load_attempt_results_for_run_dir(
 
     parsed_attempts: list[AttemptResult] = []
     for index, (_, payload, path) in enumerate(sorted_payloads, start=1):
-        rewards = payload.get("verifier_result", {}).get("rewards", {}) or {}
+        rewards = (payload.get("verifier_result") or {}).get("rewards") or {}
         reward = rewards.get("reward")
         reward_value = float(reward) if reward is not None else 0.0
         fill_rate_raw = rewards.get("fill_rate")
@@ -791,8 +791,21 @@ def load_attempt_results_for_run_dir(
         # Freeze the full rewards dict (scalars only — Harbor validates as
         # `dict[str, float|int]`) into a sorted tuple so AttemptResult stays
         # hashable/frozen while still exposing per-trial values for any key.
+        # For failed trials (no verifier_result → empty rewards), inject
+        # ``reward=0.0`` so per-trial mean/stdev paths in `_resolve_metric`
+        # see a value of the same length as `attempts_list`. Without this,
+        # mixed runs (some trials scored, some failed) fall through to the
+        # aggregate-only path and rows end up with inconsistent column sets,
+        # which crashes the markdown table renderer with KeyError on stdev.
+        rewards_for_freeze = dict(rewards)
+        if not rewards_for_freeze:
+            rewards_for_freeze = {"reward": 0.0}
         rewards_raw_frozen: tuple[tuple[str, float | int], ...] = tuple(
-            sorted((k, v) for k, v in rewards.items() if isinstance(v, (int, float)))
+            sorted(
+                (k, v)
+                for k, v in rewards_for_freeze.items()
+                if isinstance(v, (int, float))
+            )
         )
         parsed_attempts.append(
             AttemptResult(

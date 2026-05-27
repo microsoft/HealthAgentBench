@@ -1,0 +1,14 @@
+{
+  "subject_id": "11906222",
+  "target_study_id": "53854854",
+  "studies": [
+    {
+      "folder": "study_01_2148-06-03_16-08-59",
+      "study_id": "53854854",
+      "is_target": true,
+      "dicom_ids": [
+        "567bcd19-6ab220b4-8f8eb57b-5f94b009-a4007fc7"
+      ]
+    }
+  ]
+}
