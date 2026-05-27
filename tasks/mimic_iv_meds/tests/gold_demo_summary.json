@@ -70,17 +70,20 @@
     {
       "relative_path": "data/held_out/0.parquet",
       "rows": 42634,
-      "sha256": "1a3afd82fa2c5e866ea66b45f7dc9b63d0edc7f1486d50e2711a6b59f5ed9899"
+      "sort_by": ["subject_id", "time", "code"],
+      "content_sha256": "675d036500c77b5e0bf047ac86b5e3b7add6865d7b37ae47d3eff1add7884eb6"
     },
     {
       "relative_path": "data/train/0.parquet",
       "rows": 804944,
-      "sha256": "d27e9f5925f55d8e7ae6c5c5db6a6aedfaf409f86520aff8ed34d1c4c9f0d280"
+      "sort_by": ["subject_id", "time", "code"],
+      "content_sha256": "d811c9eaaf6238b5bbdbad45f5489668781ec27cddca06629d1f1bbbdd1ee66f"
     },
     {
       "relative_path": "data/tuning/0.parquet",
       "rows": 69688,
-      "sha256": "87cbcf7a4522af4a72b055de484c7106996da9c0064b854db10c308c4c8d7059"
+      "sort_by": ["subject_id", "time", "code"],
+      "content_sha256": "9d17891ecc58e4e2fc629dab9e4c2c3f173c688cf643db7fa2b835b10194abb8"
     }
   ],
   "semantic_expectations": {

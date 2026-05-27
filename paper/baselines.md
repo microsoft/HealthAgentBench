@@ -5,54 +5,92 @@ Harbor baseline runs across tasks and installed-agent harnesses, generated with 
 ## mimic_iv_meds
 
 - Task path: `tasks`
-- Generated at: `20260409T205239Z`
+- Generated at: `20260527T183216Z`
 - Raw results root: `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds`
+- Source run dirs:
+  - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T172546Z`
+  - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T181803Z`
+  - `mimic_iv_meds__claude-code__claude-opus-4-7__20260527T172546Z`
+  - `mimic_iv_meds__claude-code__claude-opus-4-7__20260527T181803Z`
+  - `mimic_iv_meds__claude-code__claude-sonnet-4-6__20260527T172546Z`
+  - `mimic_iv_meds__claude-code__claude-sonnet-4-6__20260527T181803Z`
+  - `mimic_iv_meds__codex__gpt-5.3-codex__20260527T173252Z`
+  - `mimic_iv_meds__codex__gpt-5.3-codex__20260527T182452Z`
+  - `mimic_iv_meds__codex__gpt-5.4-mini__20260527T173252Z`
+  - `mimic_iv_meds__codex__gpt-5.4-mini__20260527T182452Z`
+  - `mimic_iv_meds__codex__gpt-5.4__20260527T173252Z`
+  - `mimic_iv_meds__codex__gpt-5.4__20260527T182452Z`
 
 ### Aggregate Summary
 
-| Task | Harness | Model | Reasoning | Runs | Mean reward | Reward variance | Successes | Mean total wall time (s) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mimic_iv_meds | copilot-cli | gpt-5.4 | medium | 3 | 1.000 | 0.000 | 3 | 415.02 |
-| mimic_iv_meds | copilot-cli | gpt-5.4-mini | medium | 3 | 0.667 | 0.222 | 2 | 347.91 |
-| mimic_iv_meds | copilot-cli | claude-haiku-4.5 | medium | 3 | 0.000 | 0.000 | 0 | 45.24 |
-| mimic_iv_meds | copilot-cli | claude-opus-4.6 | medium | 3 | 0.000 | 0.000 | 0 | 185.14 |
-| mimic_iv_meds | copilot-cli | claude-sonnet-4.6 | medium | 3 | 0.000 | 0.000 | 0 | 253.04 |
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean reward | Reward stdev | Successes | Mean total wall time (s) | Cost (USD) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| mimic_iv_meds | claude-code | claude-opus-4-7 | medium | 3 | 1 | 1.000 | 0.000 | 3 | 257.29 | 0.9682 |
+| mimic_iv_meds | claude-code | claude-opus-4-7 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 342.70 | 2.0179 |
+| mimic_iv_meds | claude-code | claude-sonnet-4-6 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 380.29 | 0.6488 |
+| mimic_iv_meds | codex | gpt-5.3-codex | medium | 3 | 1 | 1.000 | 0.000 | 3 | 355.22 | 0.3487 |
+| mimic_iv_meds | codex | gpt-5.3-codex | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 443.98 | 0.3871 |
+| mimic_iv_meds | claude-code | claude-sonnet-4-6 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 358.78 | 0.5696 |
+| mimic_iv_meds | codex | gpt-5.4 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 353.68 | 0.4266 |
+| mimic_iv_meds | codex | gpt-5.4 | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 466.88 | 0.6579 |
+| mimic_iv_meds | codex | gpt-5.4-mini | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 760.81 | 0.4666 |
+| mimic_iv_meds | codex | gpt-5.4-mini | medium | 3 | 1 | 0.333 | 0.577 | 1 | 366.78 | 0.1654 |
+| mimic_iv_meds | claude-code | claude-opus-4-6 | medium | 3 | 1 | 0.000 | 0.000 | 0 | 328.45 | 0.8552 |
+| mimic_iv_meds | claude-code | claude-opus-4-6 | xhigh | 3 | 1 | 0.000 | 0.000 | 0 | 334.17 | 0.8219 |
 
-### Detailed Attempts
-
-| Task | Harness | Model | Reasoning | Attempt | Reward | Passed | Exception type | Total wall time (s) | Input tokens | Cached tokens | Output tokens | Run dir | Trial dir |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mimic_iv_meds | copilot-cli | gpt-5.4 | medium | 1 | 1.000 | Yes |  | 457.03 | 1255804 | 1190528 | 11330 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4__20260409T201716Z/mimic_iv_meds__4tnyNfq` |
-| mimic_iv_meds | copilot-cli | gpt-5.4 | medium | 2 | 1.000 | Yes |  | 382.16 | 918527 | 886656 | 10889 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4__20260409T201716Z/mimic_iv_meds__TbPex6f` |
-| mimic_iv_meds | copilot-cli | gpt-5.4 | medium | 3 | 1.000 | Yes |  | 405.85 | 821145 | 790784 | 9314 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4__20260409T201716Z/mimic_iv_meds__akrceoD` |
-| mimic_iv_meds | copilot-cli | gpt-5.4-mini | medium | 1 | 1.000 | Yes |  | 280.96 | 1457950 | 1391616 | 13538 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4-mini__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4-mini__20260409T201716Z/mimic_iv_meds__4qv35Bm` |
-| mimic_iv_meds | copilot-cli | gpt-5.4-mini | medium | 2 | 0.000 | No |  | 203.14 | 704299 | 676352 | 12580 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4-mini__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4-mini__20260409T201716Z/mimic_iv_meds__SnvgPYu` |
-| mimic_iv_meds | copilot-cli | gpt-5.4-mini | medium | 3 | 1.000 | Yes |  | 559.61 | 1333144 | 1241088 | 12173 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4-mini__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__gpt-5.4-mini__20260409T201716Z/mimic_iv_meds__DG7hK4T` |
-| mimic_iv_meds | copilot-cli | claude-haiku-4.5 | medium | 1 | 0.000 | No | NonZeroAgentExitCodeError | 53.11 |  |  |  | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-haiku-4.5__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-haiku-4.5__20260409T201716Z/mimic_iv_meds__4gEzFuk` |
-| mimic_iv_meds | copilot-cli | claude-haiku-4.5 | medium | 2 | 0.000 | No | NonZeroAgentExitCodeError | 39.50 |  |  |  | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-haiku-4.5__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-haiku-4.5__20260409T201716Z/mimic_iv_meds__9ZkKsMj` |
-| mimic_iv_meds | copilot-cli | claude-haiku-4.5 | medium | 3 | 0.000 | No | NonZeroAgentExitCodeError | 43.10 |  |  |  | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-haiku-4.5__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-haiku-4.5__20260409T201716Z/mimic_iv_meds__oQc6Vcr` |
-| mimic_iv_meds | copilot-cli | claude-opus-4.6 | medium | 1 | 0.000 | No |  | 203.82 | 801435 | 685972 | 5378 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-opus-4.6__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-opus-4.6__20260409T201716Z/mimic_iv_meds__wRoU9wK` |
-| mimic_iv_meds | copilot-cli | claude-opus-4.6 | medium | 2 | 0.000 | No |  | 172.47 | 688939 | 627417 | 4899 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-opus-4.6__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-opus-4.6__20260409T201716Z/mimic_iv_meds__pepmm8i` |
-| mimic_iv_meds | copilot-cli | claude-opus-4.6 | medium | 3 | 0.000 | No |  | 179.13 | 610461 | 531975 | 5712 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-opus-4.6__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-opus-4.6__20260409T201716Z/mimic_iv_meds__cTUQ2H2` |
-| mimic_iv_meds | copilot-cli | claude-sonnet-4.6 | medium | 1 | 0.000 | No |  | 277.29 | 783678 | 686140 | 6855 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-sonnet-4.6__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-sonnet-4.6__20260409T201716Z/mimic_iv_meds__adqRBB2` |
-| mimic_iv_meds | copilot-cli | claude-sonnet-4.6 | medium | 2 | 0.000 | No |  | 239.32 | 666214 | 601647 | 9064 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-sonnet-4.6__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-sonnet-4.6__20260409T201716Z/mimic_iv_meds__hDh8zCL` |
-| mimic_iv_meds | copilot-cli | claude-sonnet-4.6 | medium | 3 | 0.000 | No |  | 242.52 | 640811 | 586205 | 9325 | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-sonnet-4.6__20260409T201716Z` | `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds/mimic_iv_meds__copilot-cli__claude-sonnet-4.6__20260409T201716Z/mimic_iv_meds__ibh7X2E` |
+**Mean reward** = mean of the per-trial `reward` value emitted by each task's verifier.
 
 ### Reproducibility
 
+Four phases: claude-code and codex sweeps at each of two effort levels (medium, xhigh), then a single render-mode merge.
+
 ```bash
-uv run python scripts/run_harbor_baselines.py \
-  --task-name mimic_iv_meds \
-  --task-path tasks \
-  --harness copilot-cli \
+# Phase A — claude-code @ xhigh
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_meds --task-path tasks --harness claude-code \
   --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
-  --attempts 3 \
-  --reasoning-effort medium \
-  --model claude-haiku-4.5 \
-  --model claude-opus-4.6 \
-  --model claude-sonnet-4.6 \
-  --model gpt-5.4 \
-  --model gpt-5.4-mini
+  --attempts 3 --concurrency 3 --reasoning-effort xhigh --no-detailed \
+  --model claude-opus-4-7 --model claude-opus-4-6 --model claude-sonnet-4-6
+
+# Phase B — codex @ xhigh
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_meds --task-path tasks --harness codex \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --attempts 3 --concurrency 3 --reasoning-effort xhigh --no-detailed \
+  --model gpt-5.4 --model gpt-5.3-codex --model gpt-5.4-mini
+
+# Phase A' — claude-code @ medium
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_meds --task-path tasks --harness claude-code \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --attempts 3 --concurrency 3 --reasoning-effort medium --no-detailed \
+  --model claude-opus-4-7 --model claude-opus-4-6 --model claude-sonnet-4-6
+
+# Phase B' — codex @ medium
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_meds --task-path tasks --harness codex \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --attempts 3 --concurrency 3 --reasoning-effort medium --no-detailed \
+  --model gpt-5.4 --model gpt-5.3-codex --model gpt-5.4-mini
+
+# Phase C — merge all 12 run dirs into the final 12-row table
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_meds --task-path tasks --harness codex --mode render \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --attempts 3 --reasoning-effort xhigh --no-detailed \
+  --baselines-md paper/baselines.md \
+  --run-dir <Phase A:  claude-code  claude-opus-4-7   xhigh  run dir> \
+  --run-dir <Phase A:  claude-code  claude-opus-4-6   xhigh  run dir> \
+  --run-dir <Phase A:  claude-code  claude-sonnet-4-6 xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.4           xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.3-codex     xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.4-mini      xhigh  run dir> \
+  --run-dir <Phase A': claude-code  claude-opus-4-7   medium run dir> \
+  --run-dir <Phase A': claude-code  claude-opus-4-6   medium run dir> \
+  --run-dir <Phase A': claude-code  claude-sonnet-4-6 medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.4           medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.3-codex     medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.4-mini      medium run dir>
 ```
 
 ## xray_report_gen

@@ -54,7 +54,7 @@ def parquet_summary(path: Path) -> dict:
 def parquet_content_sha256(path: Path, sort_by: list[str]) -> str:
     table = pq.read_table(path)
     rows = table.to_pylist()
-    rows.sort(key=lambda row: tuple(row[key] for key in sort_by))
+    rows.sort(key=lambda row: tuple((row[key] is None, row[key]) for key in sort_by))
     payload = {
         "rows": table.num_rows,
         "columns": normalize_columns(
@@ -494,8 +494,11 @@ def main() -> None:
                     )
                     continue
 
-                actual_hash = file_sha256(meds_root / rel_path)
-                expected_hash = expected_by_path[rel_path]["sha256"]
+                actual_hash = parquet_content_sha256(
+                    meds_root / rel_path,
+                    expected_by_path[rel_path]["sort_by"],
+                )
+                expected_hash = expected_by_path[rel_path]["content_sha256"]
                 if actual_hash != expected_hash:
                     fail(
                         error_taxonomy,

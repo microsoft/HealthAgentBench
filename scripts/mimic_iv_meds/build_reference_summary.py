@@ -63,7 +63,7 @@ def parquet_summary(path: Path) -> dict:
 def parquet_content_sha256(path: Path, sort_by: list[str]) -> str:
     table = pq.read_table(path)
     rows = table.to_pylist()
-    rows.sort(key=lambda row: tuple(row[key] for key in sort_by))
+    rows.sort(key=lambda row: tuple((row[key] is None, row[key]) for key in sort_by))
     payload = {
         "rows": table.num_rows,
         "columns": normalize_columns(
@@ -122,13 +122,15 @@ def build_summary(output_root: Path) -> dict:
         REQUIRED_CODE_PREFIXES,
     )
 
+    data_sort_by = ["subject_id", "time", "code"]
     for path in sorted(data_dir.rglob("*.parquet")):
         table = pq.read_table(path)
         summary["data_files"].append(
             {
                 "relative_path": path.relative_to(meds_root).as_posix(),
                 "rows": table.num_rows,
-                "sha256": file_sha256(path),
+                "sort_by": data_sort_by,
+                "content_sha256": parquet_content_sha256(path, data_sort_by),
             }
         )
 
