@@ -1,0 +1,34 @@
+jobs_dir: results/harbor/mimic_iv_meds_claude_code
+n_attempts: 1
+timeout_multiplier: 1.0
+n_concurrent_trials: 1
+quiet: false
+
+environment:
+  type: docker
+  force_build: false
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-opus-4-7
+    kwargs:
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-opus-4-6
+    kwargs:
+      reasoning_effort: xhigh
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-sonnet-4-6
+    kwargs:
+      reasoning_effort: xhigh
+
+datasets:
+  - path: tasks
+    task_names:
+      - mimic_iv_meds
+
+artifacts:
+  - /workspace/output/MEDS_cohort
+  - /workspace/output/.logs
+  - /workspace/MIMIC_IV_MEDS/src/MIMIC_IV_MEDS/configs/custom_event_configs.yaml
