@@ -5,77 +5,92 @@ Harbor baseline runs across tasks and installed-agent harnesses, generated with 
 ## mimic_iv_meds
 
 - Task path: `tasks`
-- Generated at: `20260527T175458Z`
+- Generated at: `20260527T183216Z`
 - Raw results root: `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds`
 - Source run dirs:
   - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T172546Z`
+  - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T181803Z`
   - `mimic_iv_meds__claude-code__claude-opus-4-7__20260527T172546Z`
+  - `mimic_iv_meds__claude-code__claude-opus-4-7__20260527T181803Z`
   - `mimic_iv_meds__claude-code__claude-sonnet-4-6__20260527T172546Z`
+  - `mimic_iv_meds__claude-code__claude-sonnet-4-6__20260527T181803Z`
   - `mimic_iv_meds__codex__gpt-5.3-codex__20260527T173252Z`
+  - `mimic_iv_meds__codex__gpt-5.3-codex__20260527T182452Z`
   - `mimic_iv_meds__codex__gpt-5.4-mini__20260527T173252Z`
+  - `mimic_iv_meds__codex__gpt-5.4-mini__20260527T182452Z`
   - `mimic_iv_meds__codex__gpt-5.4__20260527T173252Z`
+  - `mimic_iv_meds__codex__gpt-5.4__20260527T182452Z`
 
 ### Aggregate Summary
 
 | Task | Harness | Model | Reasoning | Runs | Sample size | Mean reward | Reward stdev | Successes | Mean total wall time (s) | Cost (USD) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| mimic_iv_meds | claude-code | claude-opus-4-7 | medium | 3 | 1 | 1.000 | 0.000 | 3 | 257.29 | 0.9682 |
 | mimic_iv_meds | claude-code | claude-opus-4-7 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 342.70 | 2.0179 |
 | mimic_iv_meds | claude-code | claude-sonnet-4-6 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 380.29 | 0.6488 |
+| mimic_iv_meds | codex | gpt-5.3-codex | medium | 3 | 1 | 1.000 | 0.000 | 3 | 355.22 | 0.3487 |
 | mimic_iv_meds | codex | gpt-5.3-codex | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 443.98 | 0.3871 |
+| mimic_iv_meds | claude-code | claude-sonnet-4-6 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 358.78 | 0.5696 |
+| mimic_iv_meds | codex | gpt-5.4 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 353.68 | 0.4266 |
 | mimic_iv_meds | codex | gpt-5.4 | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 466.88 | 0.6579 |
 | mimic_iv_meds | codex | gpt-5.4-mini | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 760.81 | 0.4666 |
+| mimic_iv_meds | codex | gpt-5.4-mini | medium | 3 | 1 | 0.333 | 0.577 | 1 | 366.78 | 0.1654 |
+| mimic_iv_meds | claude-code | claude-opus-4-6 | medium | 3 | 1 | 0.000 | 0.000 | 0 | 328.45 | 0.8552 |
 | mimic_iv_meds | claude-code | claude-opus-4-6 | xhigh | 3 | 1 | 0.000 | 0.000 | 0 | 334.17 | 0.8219 |
 
 **Mean reward** = mean of the per-trial `reward` value emitted by each task's verifier.
 
 ### Reproducibility
 
+Four phases: claude-code and codex sweeps at each of two effort levels (medium, xhigh), then a single render-mode merge.
+
 ```bash
-# Phase A — claude-code harness
+# Phase A — claude-code @ xhigh
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds \
-  --task-path tasks \
-  --harness claude-code \
+  --task-name mimic_iv_meds --task-path tasks --harness claude-code \
   --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
-  --attempts 3 \
-  --concurrency 3 \
-  --reasoning-effort xhigh \
-  --no-detailed \
-  --model claude-opus-4-7 \
-  --model claude-opus-4-6 \
-  --model claude-sonnet-4-6
+  --attempts 3 --concurrency 3 --reasoning-effort xhigh --no-detailed \
+  --model claude-opus-4-7 --model claude-opus-4-6 --model claude-sonnet-4-6
 
-# Phase B — codex harness
+# Phase B — codex @ xhigh
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds \
-  --task-path tasks \
-  --harness codex \
+  --task-name mimic_iv_meds --task-path tasks --harness codex \
   --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
-  --attempts 3 \
-  --concurrency 3 \
-  --reasoning-effort xhigh \
-  --no-detailed \
-  --model gpt-5.4 \
-  --model gpt-5.3-codex \
-  --model gpt-5.4-mini
+  --attempts 3 --concurrency 3 --reasoning-effort xhigh --no-detailed \
+  --model gpt-5.4 --model gpt-5.3-codex --model gpt-5.4-mini
 
-# Phase C — merge both harnesses into a single table
+# Phase A' — claude-code @ medium
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds \
-  --task-path tasks \
-  --harness codex \
-  --mode render \
+  --task-name mimic_iv_meds --task-path tasks --harness claude-code \
   --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
-  --attempts 3 \
-  --reasoning-effort xhigh \
-  --no-detailed \
+  --attempts 3 --concurrency 3 --reasoning-effort medium --no-detailed \
+  --model claude-opus-4-7 --model claude-opus-4-6 --model claude-sonnet-4-6
+
+# Phase B' — codex @ medium
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_meds --task-path tasks --harness codex \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --attempts 3 --concurrency 3 --reasoning-effort medium --no-detailed \
+  --model gpt-5.4 --model gpt-5.3-codex --model gpt-5.4-mini
+
+# Phase C — merge all 12 run dirs into the final 12-row table
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name mimic_iv_meds --task-path tasks --harness codex --mode render \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --attempts 3 --reasoning-effort xhigh --no-detailed \
   --baselines-md paper/baselines.md \
-  --run-dir <Phase A: claude-code--claude-opus-4-7 run dir> \
-  --run-dir <Phase A: claude-code--claude-opus-4-6 run dir> \
-  --run-dir <Phase A: claude-code--claude-sonnet-4-6 run dir> \
-  --run-dir <Phase B: codex--gpt-5.4 run dir> \
-  --run-dir <Phase B: codex--gpt-5.3-codex run dir> \
-  --run-dir <Phase B: codex--gpt-5.4-mini run dir>
+  --run-dir <Phase A:  claude-code  claude-opus-4-7   xhigh  run dir> \
+  --run-dir <Phase A:  claude-code  claude-opus-4-6   xhigh  run dir> \
+  --run-dir <Phase A:  claude-code  claude-sonnet-4-6 xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.4           xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.3-codex     xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.4-mini      xhigh  run dir> \
+  --run-dir <Phase A': claude-code  claude-opus-4-7   medium run dir> \
+  --run-dir <Phase A': claude-code  claude-opus-4-6   medium run dir> \
+  --run-dir <Phase A': claude-code  claude-sonnet-4-6 medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.4           medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.3-codex     medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.4-mini      medium run dir>
 ```
 
 ## mimic_report_gen
