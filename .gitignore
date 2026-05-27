@@ -21,11 +21,11 @@ results/
 scripts/ehrsql/assets/
 scripts/xray_report_gen/assets/
 scripts/tumor_area_selection_pathology/assets/cache/
-# mimic_iv_dq build artifacts. Only ``task_configs.yaml`` (the deterministic
+# ehr_data_quality build artifacts. Only ``task_configs.yaml`` (the deterministic
 # benchmark seed) is committed; everything else under ``assets/`` is a
 # regenerable cache (PhysioNet downloads, sliced configs, regenerated labels).
-scripts/mimic_iv_dq/assets/*
-!scripts/mimic_iv_dq/assets/task_configs.yaml
+scripts/ehr_data_quality/assets/*
+!scripts/ehr_data_quality/assets/task_configs.yaml
 # clinical_trial_matching build artifacts. Only ``task_configs.yaml`` is committed;
 # everything else under ``assets/`` is regenerable cache (topics2021.xml,
 # qrels2021.txt, derived per-topic NCT lists).

@@ -238,19 +238,26 @@ If any of those are missing, the benchmark is not fully integrated yet.
 Starting from a freshly pulled repo in a fresh directory in a fresh machine.
 
 For each task: 
+
+#### task generation
 0. Make sure the task name is generic and not show source task name or dataset. 
-1. Check data setup and authentification from readme file from scripts/{task}/readme.md. Review this readme.md contain all information to re-run the job
+1. Check data setup and authentification from readme file from scripts/{task}/readme.md. Review this readme.md contain all information to re-run the job. If we need authentification, add the details in repo readme.MD as well.
 2. Review the instruction.md for agent. The instruction should be minimal. 
 3. Check that we don't have test leakage
 a. Make sure agent cannot see task name, original IDs, dataet names and any clues that will give agent clues of what the task is. 
 b. make sure tests are not copied to the agent container. 
-c. In the instruction, tell the agent "You should not cheat and you should not directly retrieve answers from internet". 
-4. Set up 1 hour constraint for agent
-5. At the end before we check in, remove test labels from tasks and assets to test harbor run can download necessary data on the fly. Make sure we don't check in any proprietary data into git repo. 
-6. Run `uv harbor run` to test one model is working with a job/yaml file
-7. Then run multitask baseline bash script to run all models each with 3 attempts and write results. Make sure the docker address pool and existing containers are cleaned up before the run. Remember to export predictions and submissions. 
-8. check model trajectory is present and that the model is not cheating. 
-9. Review the evaluation is working as it is. 
+c. In the instruction, tell the agent "You should not cheat and you should not directly look up for the end solutions from the internet". 
+4. Mention about 1 hour constraint for agent to complete each task in instruction
+5. remove hard coded absolute paths in task folder. 
+6. review we don't have any proprietary data checked into scripts/{task} or tasks/{task}. 
+7. Remove or rename scripts/{task}/assets before running harbor run to test on-the-line data downloading. We should adopt a two step docker compose approach where it first bootstraps data and then start the agent run. Reference xray_report_gen. 
+8. Evaluation script should report success (the number of attempts that pass the task) and reward (mean pass rate). Reference existing tasks such as xray_report_gen. 
+
+#### Run harbor run
+7. Run `uv harbor run` to test one model is working with a task-specific job/yaml file in jobs/{task}.yaml
+8. Then run multitask baseline bash script to run all models each with 3 attempts and write results. Make sure the docker address pool and existing containers are cleaned up before the run. Remember to export predictions and submissions. 
+9. check model trajectory is present and that the model is not cheating. 
+10. Review the evaluation is working as it is and we should determine pass rate. 
 10. Review the result directory, make sure failed attempts are counted as no pass in the final success and reward, and these failures are not because of environment setup errors. 
 11. All results are in /mnt mounted blob storage. You can rsync your local directories to /mnt/hanoverdev/scratch/qianchuliu/medcli/results/{task_name}. mount with rsync (you can skip certain files eg. --exclude="agent/.tmp/" \
   --exclude="agent/cache/" \

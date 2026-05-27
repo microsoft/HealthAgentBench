@@ -1,0 +1,55 @@
+# Per-task configuration for the ehr_data_quality benchmark.
+# Four families, one task per family. Each task applies all sub-variants of
+# its family. Counts are per-(family, table) call. Recall is cluster-based
+# (see harbor_evaluator.py). Task IDs are informative labels.
+
+tasks:
+  - id: task_impossible_value
+    seed: 0
+    in_scope_patient_count: 20
+    tables: [labevents, chartevents, prescriptions]
+    injectors:
+      # Sub-types: range_extreme, decimal_shift (in-range only),
+      # decimal_shift_rx, unit_confusion, valueuom_mismatch.
+      - {family: impossible_value, count: 12}
+
+  - id: task_inconsistency
+    seed: 2
+    in_scope_patient_count: 20
+    tables: [labevents, chartevents]
+    injectors:
+      # Two sub-types: in_table_conflict (cluster = 2 rows in the same
+      # table, same key fields, disagreeing valuenum) and cross_table_conflict
+      # (cluster spans labevents and chartevents for the same measurement at
+      # the same charttime, with valuenum disagreeing by 50%). Either row in
+      # a cluster catches it.
+      - {family: inconsistency, count: 16}
+
+  - id: task_demographic_conflict
+    seed: 3
+    # Marker drugs (Tamoxifen/Estrogen for F, Tamsulosin/Finasteride for M,
+    # Donepezil for geriatric) are sparse in the 100-patient demo. Setting
+    # in_scope to 100 makes every marker-drug carrier eligible so we can
+    # surface both gender_drug_mismatch directions plus age_drug_mismatch.
+    in_scope_patient_count: 100
+    tables: [patients]
+    injectors:
+      # Sub-types: gender_drug_mismatch (flip gender for a patient on a
+      # gender-specific drug — both F→M and M→F directions) and
+      # age_drug_mismatch (rewrite anchor_age to 5 for a geriatric-drug
+      # carrier). Cluster spans patients + the evidence prescription row.
+      - {family: demographic_conflict, count: 18}
+
+  - id: task_combined
+    seed: 4
+    # All three remaining families together. ``temporal_violation`` was
+    # removed because the pristine demo contains real-world temporal
+    # anomalies (e.g., charttime/storetime ordering, home-med starttime
+    # before admission) that can't be cleanly distinguished from injected
+    # contradictions, hurting precision unfairly.
+    in_scope_patient_count: 100
+    tables: [labevents, chartevents, prescriptions, patients]
+    injectors:
+      - {family: impossible_value, count: 10}
+      - {family: inconsistency, count: 12}
+      - {family: demographic_conflict, count: 14}

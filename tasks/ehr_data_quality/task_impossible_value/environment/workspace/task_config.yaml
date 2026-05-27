@@ -1,0 +1,10 @@
+id: task_impossible_value
+seed: 0
+in_scope_patient_count: 20
+tables:
+- labevents
+- chartevents
+- prescriptions
+injectors:
+- family: impossible_value
+  count: 12
