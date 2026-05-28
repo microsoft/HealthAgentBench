@@ -11,7 +11,9 @@ Submit the rows you identify at
 ## Categories of errors to look for
 You should flag all errors belonging to the following category:
 
-1. **Demographic contradictions** — a row in `patients` whose recorded gender or age contradicts other evidence about that patient.
+1. **Demographic contradictions** — the patient's recorded demographic information contradicts other evidence about that patient.
+
+Be thorough and make sure to flag all such errors.
 
 ## Submission format
 

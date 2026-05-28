@@ -11,9 +11,11 @@ Submit the rows you identify at
 ## Categories of errors to look for
 You should flag all errors belonging to the following categories:
 
-1. **Impossible values** — a single field value that is implausible for the measurement type.
-2. **Conflicting / duplicate records** — two rows that should agree on a measurement but do not, either within one table or across tables that record the same conceptual measurement.
-3. **Demographic contradictions** — a row in `patients` whose recorded gender or age contradicts other evidence about that patient.
+1. **Impossible values** — a recorded entry whose numeric content or unit label is implausible for what it represents.
+2. **Conflicting records** — two records that should describe the same observation for the same patient at the same time but disagree.
+3. **Demographic contradictions** — the patient's recorded demographic information contradicts other evidence about that patient.
+
+Be thorough and make sure to flag all such errors.
 
 ## Submission format
 

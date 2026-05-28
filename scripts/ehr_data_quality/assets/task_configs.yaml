@@ -41,15 +41,28 @@ tasks:
       - {family: demographic_conflict, count: 18}
 
   - id: task_combined
-    seed: 4
-    # All three remaining families together. ``temporal_violation`` was
-    # removed because the pristine demo contains real-world temporal
-    # anomalies (e.g., charttime/storetime ordering, home-med starttime
-    # before admission) that can't be cleanly distinguished from injected
-    # contradictions, hurting precision unfairly.
+    # Layered task: each injector below re-uses its standalone parent's
+    # seed / in_scope_patient_count / tables triple verbatim, so this task's
+    # labels.csv is the literal union of task_impossible_value +
+    # task_inconsistency + task_demographic_conflict (modulo zero or a small
+    # number of collision drops, reported to stderr at generation time).
+    # Task-level seed / in_scope_patient_count are unused when every injector
+    # supplies its own — kept for schema-validation safety. Injector order
+    # is collision priority: earlier-in-list wins on (table, row_id, field).
+    # See .agent/plans/task_combined_exact_layering.md for the design.
+    seed: 0
     in_scope_patient_count: 100
     tables: [labevents, chartevents, prescriptions, patients]
     injectors:
-      - {family: impossible_value, count: 10}
-      - {family: inconsistency, count: 12}
-      - {family: demographic_conflict, count: 14}
+      - {family: impossible_value,     count: 12, seed: 0, in_scope_patient_count: 20,  tables: [labevents, chartevents, prescriptions]}
+      - {family: inconsistency,        count: 16, seed: 2, in_scope_patient_count: 20,  tables: [labevents, chartevents]}
+      - {family: demographic_conflict, count: 18, seed: 3, in_scope_patient_count: 100, tables: [patients]}
+
+# subtype_views removed: the suite is now four parent-level tasks only —
+# task_impossible_value, task_inconsistency, task_demographic_conflict, and
+# task_combined (the layered union of the three). The per-subtype "view"
+# tasks were dropped because the four parents already cover every subtype,
+# and view-task pass rates were saturating at the easier subtypes without
+# giving signal on the harder ones. ``generate_harbor_tasks.py`` reads
+# ``subtype_views`` via ``raw_yaml.get("subtype_views", []) or []`` so the
+# missing key is handled gracefully.

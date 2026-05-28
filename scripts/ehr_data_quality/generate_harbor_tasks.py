@@ -97,21 +97,65 @@ mcp_servers = []
 
 CATEGORY_DESCRIPTIONS = {
     "impossible_value": (
-        "**Impossible values** — a single field value that is implausible for "
-        "the measurement type."
+        "**Impossible values** — a recorded entry whose numeric content or "
+        "unit label is implausible for what it represents."
     ),
     "temporal_violation": (
         "**Temporal inconsistencies** — timestamps that are logically out of "
         "order across columns or across tables."
     ),
     "inconsistency": (
-        "**Conflicting / duplicate records** — two rows that should agree on "
-        "a measurement but do not, either within one table or across tables "
-        "that record the same conceptual measurement."
+        "**Conflicting records** — two records that should describe the same "
+        "observation for the same patient at the same time but disagree."
     ),
     "demographic_conflict": (
-        "**Demographic contradictions** — a row in `patients` whose recorded "
-        "gender or age contradicts other evidence about that patient."
+        "**Demographic contradictions** — the patient's recorded demographic "
+        "information contradicts other evidence about that patient."
+    ),
+}
+
+
+# Per-subtype descriptions used by the subtype_view tasks. The agent's
+# instruction lists only the specific subtype the view is scoring on.
+SUBTYPE_DESCRIPTIONS = {
+    # impossible_value subtypes
+    "range_extreme": (
+        "**Physiologically impossible values** — a numeric measurement whose "
+        "value lies outside the plausible physiological range for the "
+        "measurement type."
+    ),
+    "decimal_shift": (
+        "**Decimal-shift errors in lab / chart measurements**"
+    ),
+    "decimal_shift_rx": (
+        "**Decimal-shift errors in prescription doses**"
+    ),
+    "unit_confusion": (
+        "**Unit-conversion mistakes**"
+    ),
+    "valueuom_mismatch": (
+        "**Unit-label mismatches**"
+    ),
+    # inconsistency subtypes
+    "in_table_conflict": (
+        "**Within-table conflicts** — two rows in the same table that "
+        "should agree on a measurement but record disagreeing values."
+    ),
+    "cross_table_conflict": (
+        "**Cross-table conflicts** — two rows in different tables that record the same conceptual "
+        "measurement for the same patient at the same time, but with "
+        "disagreeing values."
+    ),
+    # demographic_conflict subtypes
+    "gender_via_patients_flip": (
+        "**Patient-gender mismatches** — the patient's recorded gender contradicts other in-record evidence"
+    ),
+    # gender_via_prescription_swap removed as a standalone view task.
+    # gender_via_ref_range_swap removed from the suite — see comment in
+    # inject.py's apply_task_corruption post-hoc filter for rationale.
+    "age_via_patients_change": (
+        "**Age contradictions** — a row in `patients` whose recorded age "
+        "contradicts other evidence about that patient"
     ),
 }
 
@@ -139,6 +183,8 @@ Submit the rows you identify at
 You should flag all errors belonging to the following {category_noun}:
 
 {bullets}
+
+Be thorough and make sure to flag all such errors.
 
 ## Submission format
 
@@ -475,6 +521,124 @@ def _build_task(
     bootstrap_sh_path.chmod(0o755)
 
 
+def build_view_instruction(subtype: str) -> str:
+    """Instruction.md for a subtype-view task. Names exactly one category."""
+    if subtype not in SUBTYPE_DESCRIPTIONS:
+        raise KeyError(
+            f"no SUBTYPE_DESCRIPTIONS entry for subtype {subtype!r}; "
+            "add one in generate_harbor_tasks.py"
+        )
+    bullet = f"1. {SUBTYPE_DESCRIPTIONS[subtype]}"
+
+    return f"""# EHR Data-Quality Detection
+
+You are working inside a task environment that contains a copy of an EHR
+dataset under `/workspace/data/`. Do a data quality check of the EHR
+dataset and flag data entry errors belonging to certain error categories.
+Submit the rows you identify at
+`/workspace/submission/flagged_rows.csv`.
+
+**You have up to 1 hour to complete this task.**
+
+## Categories of errors to look for
+You should flag all errors belonging to the following category:
+
+{bullet}
+
+Be thorough and make sure to flag all such errors.
+
+## Submission format
+
+A CSV with these columns:
+
+- `table`: one of patients, admissions, labevents, prescriptions,
+  d_labitems, icustays, chartevents, d_items
+- `_row_id`: the value of the `_row_id` column for the row you are flagging
+
+## Data
+
+EHR tables are at `/workspace/data/csv/<table>.csv.gz` (gzipped CSVs).
+
+## Rules
+
+You should not cheat and you should not directly look up for the end
+solutions from the internet.
+"""
+
+
+def _filter_labels_by_subtype(parent_labels: Path, subtype: str) -> str:
+    """Read parent task's labels.csv and return CSV text containing only
+    rows belonging to clusters anchored by the named ``subtype``.
+
+    A cluster is "anchored" by a subtype if at least one of its rows has
+    ``error_subtype == subtype``. All rows sharing that cluster_id are
+    kept (including evidence/anchor rows like
+    ``gender_via_patients_flip_lab_evidence``) so the agent retains the
+    same cluster-credit semantics it would have in the parent task.
+    """
+    import csv as _csv
+    import io as _io
+
+    with parent_labels.open("r", newline="") as f:
+        reader = _csv.DictReader(f)
+        header = list(reader.fieldnames or [])
+        rows = list(reader)
+
+    anchor_clusters = {
+        r["cluster_id"] for r in rows if r.get("error_subtype") == subtype
+    }
+    kept = [r for r in rows if r.get("cluster_id") in anchor_clusters]
+
+    buf = _io.StringIO()
+    writer = _csv.DictWriter(buf, fieldnames=header)
+    writer.writeheader()
+    writer.writerows(kept)
+    return buf.getvalue()
+
+
+def _build_view_task(task_root: Path, view_cfg: dict, parent_cfg: dict) -> None:
+    """Build a subtype-view task by reusing the parent's bootstrap pipeline
+    and writing a filtered labels.csv + subtype-specific instruction.md.
+
+    The agent sees the *same* corrupted CSVs as the parent task (the
+    bootstrap regenerates them from the parent's task_config), but the
+    verifier scores only on catching clusters anchored by
+    ``view_cfg['subtype']``. Rows from other subtypes act as benign noise.
+    """
+    parent_id = parent_cfg["id"]
+    subtype = view_cfg["subtype"]
+
+    # Reuse _build_task's plumbing — pass the PARENT's config so all of
+    # bootstrap_inputs/{inject.py, stage_data.py, task_config.yaml},
+    # Dockerfile, docker-compose.yaml, and bootstrap.sh are identical to
+    # the parent's. ``use_cached_labels`` is True so we don't re-run the
+    # corruption pipeline; we just need the parent's labels.csv to land
+    # in the view's tests/labels.csv. We then overwrite that file with
+    # the filtered subset and overwrite instruction.md with the
+    # subtype-specific text.
+    _build_task(task_root, parent_cfg, use_cached_labels=True)
+
+    # Overwrite instruction.md with the subtype-specific version.
+    _write(task_root / "instruction.md", build_view_instruction(subtype))
+
+    # Filter labels.csv down to clusters anchored by ``subtype``.
+    parent_labels_cache = ASSETS / "labels" / f"{parent_id}.csv"
+    if not parent_labels_cache.exists():
+        raise FileNotFoundError(
+            f"parent labels {parent_labels_cache} missing — make sure "
+            f"task {parent_id} was generated before this view"
+        )
+    filtered_csv = _filter_labels_by_subtype(parent_labels_cache, subtype)
+    n_lines = filtered_csv.count("\n") - 1  # minus header
+    if n_lines <= 0:
+        raise ValueError(
+            f"subtype view {view_cfg['id']!r} produced 0 labeled clusters "
+            f"after filtering {parent_id} by subtype {subtype!r}; check "
+            f"that the parent task actually injects this subtype"
+        )
+    (task_root / "tests" / "labels.csv").write_text(filtered_csv)
+
+
 def _generate_labels(task_config: dict, output_path: Path) -> None:
     """Run the corruption pipeline locally to compute labels for this task."""
     sys.path.insert(0, str(SCRIPTS_DIR))
@@ -536,11 +700,21 @@ def main(argv: list[str] | None = None) -> None:
     )
     args = parser.parse_args(argv)
 
-    all_configs = yaml.safe_load(TASK_CONFIGS_PATH.read_text())["tasks"]
+    raw_yaml = yaml.safe_load(TASK_CONFIGS_PATH.read_text())
+    all_configs = raw_yaml["tasks"]
+    all_views = raw_yaml.get("subtype_views", []) or []
+    parent_by_id = {c["id"]: c for c in all_configs}
 
     if args.task_ids:
         wanted = {tid.strip() for tid in args.task_ids.split(",") if tid.strip()}
         all_configs = [c for c in all_configs if c["id"] in wanted]
+        all_views = [v for v in all_views if v["id"] in wanted]
+        # Ensure parents of any selected view get built too (views read the
+        # parent's cached labels.csv).
+        view_parents = {v["parent"] for v in all_views}
+        for pid in view_parents:
+            if pid not in {c["id"] for c in all_configs} and pid in parent_by_id:
+                all_configs.append(parent_by_id[pid])
 
     args.output_root.mkdir(parents=True, exist_ok=True)
     _write(
@@ -550,10 +724,26 @@ def main(argv: list[str] | None = None) -> None:
         "See `scripts/ehr_data_quality/README.md` for benchmark details.\n",
     )
 
+    # Phase 1: build parent tasks first so their labels are cached before
+    # subtype_view tasks try to filter them.
     for cfg in all_configs:
         task_root = args.output_root / cfg["id"]
         print(f"Generating {task_root}", flush=True)
         _build_task(task_root, cfg, use_cached_labels=args.use_cached_labels)
+
+    # Phase 2: build subtype-view tasks. Each view inherits everything from
+    # its parent and only overrides labels.csv (filtered) + instruction.md
+    # (subtype-specific).
+    for view in all_views:
+        parent_cfg = parent_by_id.get(view["parent"])
+        if parent_cfg is None:
+            raise KeyError(
+                f"subtype_view {view['id']} references unknown parent "
+                f"{view['parent']!r}; check task_configs.yaml"
+            )
+        task_root = args.output_root / view["id"]
+        print(f"Generating {task_root} (view of {view['parent']}/{view['subtype']})", flush=True)
+        _build_view_task(task_root, view, parent_cfg)
 
 
 if __name__ == "__main__":

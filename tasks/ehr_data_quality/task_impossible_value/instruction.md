@@ -11,7 +11,9 @@ Submit the rows you identify at
 ## Categories of errors to look for
 You should flag all errors belonging to the following category:
 
-1. **Impossible values** — a single field value that is implausible for the measurement type.
+1. **Impossible values** — a recorded entry whose numeric content or unit label is implausible for what it represents.
+
+Be thorough and make sure to flag all such errors.
 
 ## Submission format
 

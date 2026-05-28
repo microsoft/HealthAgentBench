@@ -11,7 +11,9 @@ Submit the rows you identify at
 ## Categories of errors to look for
 You should flag all errors belonging to the following category:
 
-1. **Conflicting / duplicate records** — two rows that should agree on a measurement but do not, either within one table or across tables that record the same conceptual measurement.
+1. **Conflicting records** — two records that should describe the same observation for the same patient at the same time but disagree.
+
+Be thorough and make sure to flag all such errors.
 
 ## Submission format
 
