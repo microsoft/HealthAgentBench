@@ -181,51 +181,6 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --metric-to-report camelyon_tumor_coverage
 ```
 
-## mimic_iv_dq
-
-- Task path: `tasks`
-- Generated at: `20260501T195026Z`
-- Raw results root: `/home/qianchuliu/projects/MedCLI/results/baselines/mimic_iv_dq`
-- Source run dirs:
-  - `mimic_iv_dq__claude-code__claude-opus-4-6__20260501T014356Z`
-  - `mimic_iv_dq__claude-code__claude-opus-4-7__20260501T014356Z`
-  - `mimic_iv_dq__claude-code__claude-sonnet-4-6__20260501T014356Z`
-  - `mimic_iv_dq__codex__gpt-5.3-codex__20260430T223339Z`
-  - `mimic_iv_dq__codex__gpt-5.4__20260430T223339Z`
-  - `mimic_iv_dq__codex__gpt-5.5__20260430T223339Z`
-
-### Aggregate Summary
-
-| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | f1 | f1_stdev | recall | recall_stdev | precision | precision_stdev |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mimic_iv_dq | codex | gpt-5.5 | medium | 3 | 4 | 484.83 | 0.443 | 0.213 | 0.355 | 0.201 | 0.711 | 0.305 |
-| mimic_iv_dq | claude-code | claude-sonnet-4-6 | medium | 3 | 4 | 616.24 | 0.382 | 0.227 | 0.339 | 0.186 | 0.602 | 0.383 |
-| mimic_iv_dq | claude-code | claude-opus-4-7 | medium | 3 | 4 | 282.09 | 0.282 | 0.210 | 0.218 | 0.164 | 0.592 | 0.378 |
-| mimic_iv_dq | claude-code | claude-opus-4-6 | medium | 3 | 4 | 690.25 | 0.280 | 0.255 | 0.376 | 0.254 | 0.372 | 0.414 |
-| mimic_iv_dq | codex | gpt-5.4 | medium | 3 | 4 | 572.47 | 0.196 | 0.040 | 0.128 | 0.040 | 0.632 | 0.345 |
-| mimic_iv_dq | codex | gpt-5.3-codex | medium | 3 | 4 | 316.03 | 0.164 | 0.064 | 0.102 | 0.049 | 0.737 | 0.319 |
-
-Per-trial metrics (mean ± sample stdev across subtasks): `f1`, `recall`, `precision`.
-
-### Reproducibility
-
-```bash
-uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_dq \
-  --task-path tasks \
-  --harness codex \
-  --output-root /home/qianchuliu/projects/MedCLI/results/baselines/mimic_iv_dq \
-  --attempts 3 \
-  --reasoning-effort medium \
-  --metrics-script scripts/mimic_iv_dq/aggregate_metric.py \
-  --no-detailed \
-  --metric-to-report f1 \
-  --metric-to-report recall \
-  --metric-to-report precision \
-  --model gpt-5.4 \
-  --model gpt-5.4-mini
-```
-
 ## clinical_trial_matching
 
 - Task path: `tasks`
@@ -365,4 +320,55 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --no-detailed \
   --model claude-opus-4-7 \
   --model claude-sonnet-4-6
+```
+
+## ehr_data_quality
+
+- Task path: `tasks`
+- Generated at: `20260529T002015Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehr_data_quality`
+- Source run dirs:
+  - `ehr_data_quality__claude-code__claude-opus-4-6__20260528T212617Z`
+  - `ehr_data_quality__claude-code__claude-opus-4-7__20260528T212617Z`
+  - `ehr_data_quality__claude-code__claude-opus-4-8__20260528T212617Z`
+  - `ehr_data_quality__claude-code__claude-sonnet-4-6__20260528T212617Z`
+  - `ehr_data_quality__codex__gpt-5.3-codex__20260528T212320Z`
+  - `ehr_data_quality__codex__gpt-5.4-mini__20260528T212320Z`
+  - `ehr_data_quality__codex__gpt-5.4__20260528T212320Z`
+  - `ehr_data_quality__codex__gpt-5.5__20260528T212320Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | Cost (USD) | success | mean_pass_rate | mean_recall |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ehr_data_quality | claude-code | claude-opus-4-6 | xhigh | 3 | 4 | 1044.63 | 3.6036 | 2.000 | 0.167 | 0.618 |
+| ehr_data_quality | claude-code | claude-opus-4-7 | xhigh | 3 | 4 | 857.19 | 4.3568 | 2.000 | 0.167 | 0.676 |
+| ehr_data_quality | claude-code | claude-opus-4-8 | xhigh | 3 | 4 | 1134.65 | 3.7269 | 1.000 | 0.083 | 0.747 |
+| ehr_data_quality | claude-code | claude-sonnet-4-6 | xhigh | 3 | 4 | 1169.00 | 2.2608 | 0.000 | 0.000 | 0.368 |
+| ehr_data_quality | codex | gpt-5.3-codex | xhigh | 3 | 4 | 629.43 | 0.9795 | 0.000 | 0.000 | 0.363 |
+| ehr_data_quality | codex | gpt-5.4 | xhigh | 3 | 4 | 877.42 | 2.2584 | 0.000 | 0.000 | 0.499 |
+| ehr_data_quality | codex | gpt-5.4-mini | xhigh | 3 | 4 | 789.80 | 0.7689 | 0.000 | 0.000 | 0.242 |
+| ehr_data_quality | codex | gpt-5.5 | xhigh | 3 | 4 | 910.01 | 5.0152 | 0.000 | 0.000 | 0.503 |
+
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`, `mean_pass_rate`, `mean_recall`.
+
+### Reproducibility
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name ehr_data_quality \
+  --task-path tasks \
+  --harness copilot-cli \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehr_data_quality \
+  --attempts 3 \
+  --reasoning-effort medium \
+  --no-detailed \
+  --metric-to-report success \
+  --metric-to-report mean_pass_rate \
+  --metric-to-report mean_recall \
+  --model gpt-5.4 \
+  --model gpt-5.4-mini \
+  --model claude-opus-4.6 \
+  --model claude-sonnet-4.6 \
+  --model claude-haiku-4.5
 ```

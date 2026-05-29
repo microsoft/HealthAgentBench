@@ -155,6 +155,8 @@ rsync -av \
   /mnt/hanoverdev/scratch/qianchuliu/medcli/results/<task>/
 ```
 
+Also make sure these mnt mounted result directories are rendered in paper/baselines.md
+
 ### C2. Final review before PR
 
 - [ ] All checks above are green.
