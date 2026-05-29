@@ -630,7 +630,7 @@ def test_demographic_conflict_v2_subtypes_and_cluster_expansion():
     """v2 should fire all three gender sub-types when the data supports them
     and emit expanded clusters with multiple evidence rows.
     """
-    from inject import inject_demographic_conflict, apply_task_corruption
+    from inject import inject_demographic_conflict
 
     pat = pd.DataFrame([
         # Female on Tamoxifen + has female-specific lab → patients_flip pool.

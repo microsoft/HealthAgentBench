@@ -222,14 +222,14 @@ def test_missing_submission_yields_zero(tmp_path: Path) -> None:
 
 def test_flooding_low_precision_fails_pass_criterion(tmp_path: Path) -> None:
     """Flooding noise rows tanks precision even at recall=1.
-    Pass criterion (precision > 0.5) fails -> reward = 0."""
+    Pass criterion (precision >= PRECISION_THRESHOLD = 0.01) fails -> reward = 0."""
     labels = [
         _label_row("labevents", f"r{i}", "impossible_value", f"labevents|r{i}")
         for i in range(5)
     ]
     _write_labels(tmp_path / "labels.csv", labels)
     sub = [{"table": L["table"], "_row_id": L["row_id"]} for L in labels]
-    sub.extend({"table": "labevents", "_row_id": f"NOISE{i}"} for i in range(95))
+    sub.extend({"table": "labevents", "_row_id": f"NOISE{i}"} for i in range(9995))
     _write_submission(tmp_path / "submission" / "flagged_rows.csv", sub)
     reward = evaluate(
         tmp_path / "submission" / "flagged_rows.csv",
@@ -238,10 +238,12 @@ def test_flooding_low_precision_fails_pass_criterion(tmp_path: Path) -> None:
     )
     metrics = json.loads((tmp_path / "logs" / "metrics.json").read_text())
     assert metrics["recall"] == pytest.approx(1.0)
-    assert metrics["precision"] == pytest.approx(5 / 100)
-    # F1 stays as a diagnostic.
-    assert metrics["f1"] == pytest.approx(2 * 0.05 * 1.0 / (0.05 + 1.0))
-    # Binary pass: precision < 0.5, so fail.
+    # 5 TP + 9995 noise -> precision = 5/10000 = 0.0005 < PRECISION_THRESHOLD (0.01)
+    assert metrics["precision"] == pytest.approx(5 / 10000)
+    assert metrics["f1"] == pytest.approx(
+        2 * (5 / 10000) * 1.0 / ((5 / 10000) + 1.0)
+    )
+    # Binary pass: precision below the 0.01 floor, so fail.
     assert reward == 0.0
     assert metrics["n_pass"] == 0
 
@@ -269,16 +271,16 @@ def test_pass_criterion_recall1_precision_above_half(tmp_path: Path) -> None:
     assert metrics["n_pass"] == 1
 
 
-def test_pass_criterion_precision_exactly_half_fails(tmp_path: Path) -> None:
-    """precision == 0.5 (boundary) is NOT a pass — threshold is strict >."""
+def test_pass_criterion_precision_below_floor_fails(tmp_path: Path) -> None:
+    """precision below PRECISION_THRESHOLD (0.01) is NOT a pass."""
     labels = [
         _label_row("labevents", f"r{i}", "impossible_value", f"labevents|r{i}")
         for i in range(3)
     ]
     _write_labels(tmp_path / "labels.csv", labels)
-    # All 3 TP + 3 noise -> precision = 3/6 = 0.5 exactly
+    # All 3 TP + 1000 noise -> precision = 3/1003 ≈ 0.00299 < 0.01
     sub = [{"table": L["table"], "_row_id": L["row_id"]} for L in labels]
-    sub.extend({"table": "labevents", "_row_id": f"NOISE{i}"} for i in range(3))
+    sub.extend({"table": "labevents", "_row_id": f"NOISE{i}"} for i in range(1000))
     _write_submission(tmp_path / "submission" / "flagged_rows.csv", sub)
     reward = evaluate(
         tmp_path / "submission" / "flagged_rows.csv",
@@ -287,8 +289,8 @@ def test_pass_criterion_precision_exactly_half_fails(tmp_path: Path) -> None:
     )
     metrics = json.loads((tmp_path / "logs" / "metrics.json").read_text())
     assert metrics["recall"] == pytest.approx(1.0)
-    assert metrics["precision"] == pytest.approx(0.5)
-    assert reward == 0.0  # strict > 0.5
+    assert metrics["precision"] == pytest.approx(3 / 1003)
+    assert reward == 0.0  # precision < 0.01 floor
 
 
 def test_selective_high_f1(tmp_path: Path) -> None:
