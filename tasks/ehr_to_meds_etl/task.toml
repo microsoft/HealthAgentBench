@@ -1,7 +1,7 @@
 version = "1.0"
 
 [metadata]
-benchmark = "mimic_iv_meds"
+benchmark = "ehr_to_meds_etl"
 mode = "etl-task"
 output_dir = "/workspace/output/MEDS_cohort"
 repo_dir = "/workspace/MIMIC_IV_MEDS"

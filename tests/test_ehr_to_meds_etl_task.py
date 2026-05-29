@@ -382,7 +382,7 @@ def _build_gold_summary(output_root: Path, summary_out: Path) -> None:
     subprocess.run(
         [
             ".venv/bin/python",
-            "scripts/mimic_iv_meds/build_reference_summary.py",
+            "scripts/ehr_to_meds_etl/build_reference_summary.py",
             "--output-root",
             str(output_root),
             "--summary-out",
@@ -403,7 +403,7 @@ def _run_verifier(
     subprocess.run(
         [
             ".venv/bin/python",
-            "tasks/mimic_iv_meds/tests/verify_output.py",
+            "tasks/ehr_to_meds_etl/tests/verify_output.py",
             "--repo-dir",
             str(repo_dir),
             "--output-root",
@@ -422,13 +422,13 @@ def _run_verifier(
     return json.loads(error_file.read_text(encoding="utf-8"))
 
 
-def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path):
-    output_root = tmp_path / "tasks" / "mimic_iv_meds"
+def test_generate_ehr_to_meds_etl_task_materializes_expected_layout(tmp_path: Path):
+    output_root = tmp_path / "tasks" / "ehr_to_meds_etl"
 
     subprocess.run(
         [
             ".venv/bin/python",
-            "scripts/mimic_iv_meds/generate_harbor_task.py",
+            "scripts/ehr_to_meds_etl/generate_harbor_task.py",
             "--output-root",
             str(output_root),
         ],
@@ -486,14 +486,14 @@ def test_generate_mimic_iv_meds_task_materializes_expected_layout(tmp_path: Path
     assert "custom_config_behavior_missing" in verifier
     assert "metadata_content_mismatch" in verifier
     assert "data_hash_mismatch" in verifier
-    assert 'benchmark = "mimic_iv_meds"' in task_toml
+    assert 'benchmark = "ehr_to_meds_etl"' in task_toml
     assert "allow_internet = true" in task_toml
     assert "Expected agent workflow" not in workspace_readme
     assert "uv sync" not in workspace_readme
     assert "patch_meds_transforms_lock.py" not in workspace_readme
 
 
-def test_mimic_iv_meds_verifier_accepts_created_at_and_column_order_variation(tmp_path: Path):
+def test_ehr_to_meds_etl_verifier_accepts_created_at_and_column_order_variation(tmp_path: Path):
     repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
     output_root = tmp_path / "workspace" / "output"
     reference_config = tmp_path / "workspace" / "tests" / REFERENCE_CUSTOM_CONFIG_FILENAME
@@ -528,7 +528,7 @@ def test_mimic_iv_meds_verifier_accepts_created_at_and_column_order_variation(tm
     assert payload["failures"] == []
 
 
-def test_mimic_iv_meds_verifier_detects_metadata_and_data_content_drift(tmp_path: Path):
+def test_ehr_to_meds_etl_verifier_detects_metadata_and_data_content_drift(tmp_path: Path):
     repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
     output_root = tmp_path / "workspace" / "output"
     reference_config = tmp_path / "workspace" / "tests" / REFERENCE_CUSTOM_CONFIG_FILENAME
@@ -632,7 +632,7 @@ def test_mimic_iv_meds_verifier_detects_metadata_and_data_content_drift(tmp_path
     assert payload["error_taxonomy"]["data_hash_mismatch"] >= 1
 
 
-def test_mimic_iv_meds_verifier_requires_uv_setup(tmp_path: Path):
+def test_ehr_to_meds_etl_verifier_requires_uv_setup(tmp_path: Path):
     repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
     output_root = tmp_path / "workspace" / "output"
     reference_config = tmp_path / "workspace" / "tests" / REFERENCE_CUSTOM_CONFIG_FILENAME
@@ -652,7 +652,7 @@ def test_mimic_iv_meds_verifier_requires_uv_setup(tmp_path: Path):
     assert payload["error_taxonomy"]["missing_uv_setup"] >= 1
 
 
-def test_mimic_iv_meds_verifier_requires_custom_config_file(tmp_path: Path):
+def test_ehr_to_meds_etl_verifier_requires_custom_config_file(tmp_path: Path):
     repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
     output_root = tmp_path / "workspace" / "output"
     reference_config = tmp_path / "workspace" / "tests" / REFERENCE_CUSTOM_CONFIG_FILENAME
@@ -672,7 +672,7 @@ def test_mimic_iv_meds_verifier_requires_custom_config_file(tmp_path: Path):
     assert payload["error_taxonomy"]["missing_custom_config"] >= 1
 
 
-def test_mimic_iv_meds_verifier_detects_default_or_custom_config_problems(tmp_path: Path):
+def test_ehr_to_meds_etl_verifier_detects_default_or_custom_config_problems(tmp_path: Path):
     repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
     output_root = tmp_path / "workspace" / "output"
     reference_config = tmp_path / "workspace" / "tests" / REFERENCE_CUSTOM_CONFIG_FILENAME
@@ -706,7 +706,7 @@ def test_mimic_iv_meds_verifier_detects_default_or_custom_config_problems(tmp_pa
     assert payload["error_taxonomy"]["custom_config_mismatch"] >= 1
 
 
-def test_mimic_iv_meds_verifier_rejects_default_config_style_output(tmp_path: Path):
+def test_ehr_to_meds_etl_verifier_rejects_default_config_style_output(tmp_path: Path):
     repo_dir = tmp_path / "workspace" / "MIMIC_IV_MEDS"
     output_root = tmp_path / "workspace" / "output"
     reference_config = tmp_path / "workspace" / "tests" / REFERENCE_CUSTOM_CONFIG_FILENAME

@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 
-DEFAULT_TASK_NAME = "mimic_iv_meds"
+DEFAULT_TASK_NAME = "ehr_to_meds_etl"
 DEFAULT_TASK_PATH = Path("tasks")
 DEFAULT_BASELINES_MD = Path("paper/baselines.md")
 DEFAULT_HARNESS = "copilot-cli"

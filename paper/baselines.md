@@ -2,12 +2,12 @@
 
 Harbor baseline runs across tasks and installed-agent harnesses, generated with [`scripts/run_harbor_baselines.py`](../scripts/run_harbor_baselines.py).
 
-## mimic_iv_meds
+## ehr_to_meds_etl
 
 - Task path: `tasks`
-- Generated at: `20260527T183216Z`
+- Generated at: `20260527T203514Z`
 - Raw results root: `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds`
-- Source run dirs:
+- Source run dirs (retain the prior `mimic_iv_meds__*` prefix; the task was renamed after these runs were captured):
   - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T172546Z`
   - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T181803Z`
   - `mimic_iv_meds__claude-code__claude-opus-4-7__20260527T172546Z`
@@ -25,18 +25,18 @@ Harbor baseline runs across tasks and installed-agent harnesses, generated with 
 
 | Task | Harness | Model | Reasoning | Runs | Sample size | Mean reward | Reward stdev | Successes | Mean total wall time (s) | Cost (USD) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mimic_iv_meds | claude-code | claude-opus-4-7 | medium | 3 | 1 | 1.000 | 0.000 | 3 | 257.29 | 0.9682 |
-| mimic_iv_meds | claude-code | claude-opus-4-7 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 342.70 | 2.0179 |
-| mimic_iv_meds | claude-code | claude-sonnet-4-6 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 380.29 | 0.6488 |
-| mimic_iv_meds | codex | gpt-5.3-codex | medium | 3 | 1 | 1.000 | 0.000 | 3 | 355.22 | 0.3487 |
-| mimic_iv_meds | codex | gpt-5.3-codex | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 443.98 | 0.3871 |
-| mimic_iv_meds | claude-code | claude-sonnet-4-6 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 358.78 | 0.5696 |
-| mimic_iv_meds | codex | gpt-5.4 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 353.68 | 0.4266 |
-| mimic_iv_meds | codex | gpt-5.4 | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 466.88 | 0.6579 |
-| mimic_iv_meds | codex | gpt-5.4-mini | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 760.81 | 0.4666 |
-| mimic_iv_meds | codex | gpt-5.4-mini | medium | 3 | 1 | 0.333 | 0.577 | 1 | 366.78 | 0.1654 |
-| mimic_iv_meds | claude-code | claude-opus-4-6 | medium | 3 | 1 | 0.000 | 0.000 | 0 | 328.45 | 0.8552 |
-| mimic_iv_meds | claude-code | claude-opus-4-6 | xhigh | 3 | 1 | 0.000 | 0.000 | 0 | 334.17 | 0.8219 |
+| ehr_to_meds_etl | claude-code | claude-opus-4-7 | medium | 3 | 1 | 1.000 | 0.000 | 3 | 257.29 | 0.9682 |
+| ehr_to_meds_etl | claude-code | claude-opus-4-7 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 342.70 | 2.0179 |
+| ehr_to_meds_etl | claude-code | claude-sonnet-4-6 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 380.29 | 0.6488 |
+| ehr_to_meds_etl | codex | gpt-5.3-codex | medium | 3 | 1 | 1.000 | 0.000 | 3 | 355.22 | 0.3487 |
+| ehr_to_meds_etl | codex | gpt-5.3-codex | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 443.98 | 0.3871 |
+| ehr_to_meds_etl | claude-code | claude-sonnet-4-6 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 358.78 | 0.5696 |
+| ehr_to_meds_etl | codex | gpt-5.4 | medium | 3 | 1 | 0.667 | 0.577 | 2 | 353.68 | 0.4266 |
+| ehr_to_meds_etl | codex | gpt-5.4 | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 466.88 | 0.6579 |
+| ehr_to_meds_etl | codex | gpt-5.4-mini | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 760.81 | 0.4666 |
+| ehr_to_meds_etl | codex | gpt-5.4-mini | medium | 3 | 1 | 0.333 | 0.577 | 1 | 366.78 | 0.1654 |
+| ehr_to_meds_etl | claude-code | claude-opus-4-6 | medium | 3 | 1 | 0.000 | 0.000 | 0 | 328.45 | 0.8552 |
+| ehr_to_meds_etl | claude-code | claude-opus-4-6 | xhigh | 3 | 1 | 0.000 | 0.000 | 0 | 334.17 | 0.8219 |
 
 **Mean reward** = mean of the per-trial `reward` value emitted by each task's verifier.
 
@@ -47,36 +47,36 @@ Four phases: claude-code and codex sweeps at each of two effort levels (medium, 
 ```bash
 # Phase A — claude-code @ xhigh
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds --task-path tasks --harness claude-code \
-  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --task-name ehr_to_meds_etl --task-path tasks --harness claude-code \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl \
   --attempts 3 --concurrency 3 --reasoning-effort xhigh --no-detailed \
   --model claude-opus-4-7 --model claude-opus-4-6 --model claude-sonnet-4-6
 
 # Phase B — codex @ xhigh
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds --task-path tasks --harness codex \
-  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --task-name ehr_to_meds_etl --task-path tasks --harness codex \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl \
   --attempts 3 --concurrency 3 --reasoning-effort xhigh --no-detailed \
   --model gpt-5.4 --model gpt-5.3-codex --model gpt-5.4-mini
 
 # Phase A' — claude-code @ medium
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds --task-path tasks --harness claude-code \
-  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --task-name ehr_to_meds_etl --task-path tasks --harness claude-code \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl \
   --attempts 3 --concurrency 3 --reasoning-effort medium --no-detailed \
   --model claude-opus-4-7 --model claude-opus-4-6 --model claude-sonnet-4-6
 
 # Phase B' — codex @ medium
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds --task-path tasks --harness codex \
-  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --task-name ehr_to_meds_etl --task-path tasks --harness codex \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl \
   --attempts 3 --concurrency 3 --reasoning-effort medium --no-detailed \
   --model gpt-5.4 --model gpt-5.3-codex --model gpt-5.4-mini
 
 # Phase C — merge all 12 run dirs into the final 12-row table
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name mimic_iv_meds --task-path tasks --harness codex --mode render \
-  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds \
+  --task-name ehr_to_meds_etl --task-path tasks --harness codex --mode render \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl \
   --attempts 3 --reasoning-effort xhigh --no-detailed \
   --baselines-md paper/baselines.md \
   --run-dir <Phase A:  claude-code  claude-opus-4-7   xhigh  run dir> \

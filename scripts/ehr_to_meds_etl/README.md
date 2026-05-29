@@ -5,10 +5,10 @@ This directory contains the Harbor-first integration for the `MIMIC_IV_MEDS` ben
 ## Canonical Source and Canonical Runner
 
 - Canonical upstream source: `MIMIC_IV_MEDS` tag `0.0.7`
-- Canonical Harbor task generator: `scripts/mimic_iv_meds/generate_harbor_task.py`
-- Canonical runnable task artifact: `tasks/mimic_iv_meds/`
-- Verifier-side gold artifact: `scripts/mimic_iv_meds/assets/gold_demo_summary.json`
-- Canonical custom-config reference: `scripts/mimic_iv_meds/assets/reference_custom_event_configs.yaml`
+- Canonical Harbor task generator: `scripts/ehr_to_meds_etl/generate_harbor_task.py`
+- Canonical runnable task artifact: `tasks/ehr_to_meds_etl/`
+- Verifier-side gold artifact: `scripts/ehr_to_meds_etl/assets/gold_demo_summary.json`
+- Canonical custom-config reference: `scripts/ehr_to_meds_etl/assets/reference_custom_event_configs.yaml`
 
 ## Benchmark Shape
 
@@ -30,11 +30,11 @@ The custom config is intentionally stricter than the default config. It must:
 
 ```bash
 # 1) Generate the Harbor task
-uv run python scripts/mimic_iv_meds/generate_harbor_task.py \
-  --output-root tasks/mimic_iv_meds
+uv run python scripts/ehr_to_meds_etl/generate_harbor_task.py \
+  --output-root tasks/ehr_to_meds_etl
 
 # 2) Run the Harbor task
-uv run harbor run -c jobs/mimic_iv_meds.yaml
+uv run harbor run -c jobs/ehr_to_meds_etl.yaml
 ```
 
 ## Reference Summary Maintenance
@@ -48,14 +48,14 @@ The verifier uses a hybrid gold artifact:
 If the pinned upstream repo or the staged demo-input strategy changes, regenerate the summary from a known-good reference run:
 
 ```bash
-uv run python scripts/mimic_iv_meds/build_reference_summary.py \
+uv run python scripts/ehr_to_meds_etl/build_reference_summary.py \
   --output-root /path/to/reference-run-root \
-  --summary-out scripts/mimic_iv_meds/assets/gold_demo_summary.json
+  --summary-out scripts/ehr_to_meds_etl/assets/gold_demo_summary.json
 ```
 
 ## Harbor Artifacts
 
-The Harbor job at `jobs/mimic_iv_meds.yaml` retains these artifacts after each run:
+The Harbor job at `jobs/ehr_to_meds_etl.yaml` retains these artifacts after each run:
 
 - `/workspace/output/MEDS_cohort`
 - `/workspace/output/.logs`
