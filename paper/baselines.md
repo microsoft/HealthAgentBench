@@ -375,5 +375,6 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --metric-to-report mean_pass_rate \
   --metric-to-report mean_sig_errors \
   --model gpt-5.4 \
-  --model gpt-5.4-mini
+  --model gpt-5.4-mini \
+  --disable-web-browser
 ```

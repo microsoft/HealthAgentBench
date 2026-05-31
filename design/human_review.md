@@ -93,8 +93,7 @@ bottom confirms the cross-task wiring works.
 
 ### B2. Multi-model multitask sweep
 
-Run `scripts/run_harbor_baselines_multitask.py` with all models with xhigh reasoning effort and
-`--attempts 3`. Before launching:
+Run `scripts/run_harbor_baselines_multitask.py` with all models with xhigh reasoning effort and `--attempts 3`. Before launching:
 
 - [ ] Docker address pool is healthy (`docker network ls` not near the
       ~31-bridge ceiling).
@@ -114,6 +113,11 @@ Sweep command should include:
 - [ ] At minimum: success, mean reward, and **USD cost** columns
       surface in `paper/baselines.md`. The launcher pulls cost from
       `agent_result.cost_usd` automatically.
+- [ ] `--disable-web-browser` is passed when the benchmark's gold
+      answer (or a recognisable phrase from it) is reachable via a
+      public mirror or general web search. The flag defaults to OFF
+      so internet stays available; pass it explicitly for tasks like
+      `xray_report_correction`.
 
 ### B3. Result-directory sanity
 

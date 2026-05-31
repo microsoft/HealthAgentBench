@@ -270,15 +270,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--disable-web-browser",
         action=argparse.BooleanOptionalAction,
-        default=True,
+        default=False,
         help=(
             "Disable the agent's built-in web-search / web-fetch tools so it "
             "can't look up gold answers on the public internet. Default: "
-            "True. Pass --no-disable-web-browser to re-enable web tools "
-            "(use only when you explicitly need the agent to browse). "
-            "Translates to harness-specific kwargs: for codex it adds "
-            '``-c web_search="disabled"``; for claude-code it adds '
-            "``--disallowedTools WebSearch WebFetch``."
+            "False — internet access is left ON; pass --disable-web-browser "
+            "for benchmarks where a public-mirror lookup of the gold answer "
+            "is a realistic cheat path (e.g. xray_report_correction over "
+            "MIMIC-CXR). Translates to harness-specific kwargs: for codex "
+            'it adds ``-c web_search=\"disabled\"``; for claude-code it '
+            "adds ``--disallowedTools WebSearch WebFetch``."
         ),
     )
     return parser.parse_args()

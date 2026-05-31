@@ -169,7 +169,46 @@ uv run python scripts/xray_report_correction/generate_harbor_tasks.py \
 #    first use, AND appends the case's counterfactual draft FINDINGS
 #    to the target study's report.txt so the agent sees a populated
 #    `FINDINGS:` section to review.
+#
+#    IMPORTANT: ``jobs/xray_report_correction.yaml`` sets
+#    ``disable_web_search: true`` (codex) and
+#    ``disallowed_tools: "WebSearch WebFetch"`` (claude-code) on the
+#    agent kwargs. These MUST stay on — without them the agent can
+#    look up the gold report on public MIMIC-CXR mirrors by searching
+#    distinctive phrases from the draft (we observed gpt-5.3-codex
+#    doing exactly this, inflating its pass rate). When invoking the
+#    multitask baseline launcher, also pass ``--disable-web-browser``
+#    explicitly — that flag defaults to OFF on the launcher so it
+#    does NOT silently apply to other tasks.
 uv run harbor run -c jobs/xray_report_correction.yaml
+
+# 4) (Optional) Multi-model baseline sweep. Same web-disable rule
+#    applies: pass ``--disable-web-browser`` explicitly — the
+#    multitask launcher defaults to internet ON.
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name xray_report_correction --task-path tasks \
+  --harness codex \
+  --model gpt-5.3-codex --model gpt-5.4 --model gpt-5.4-mini --model gpt-5.5 \
+  --attempts 3 --concurrency 2 --reasoning-effort xhigh \
+  --disable-web-browser \
+  --metric-to-report success \
+  --metric-to-report mean_pass_rate \
+  --metric-to-report mean_sig_errors \
+  --baselines-md paper/baselines.md
+
+# Repeat for the claude-code harness (same flags, swap --harness +
+# --model values to the claude family).
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name xray_report_correction --task-path tasks \
+  --harness claude-code \
+  --model claude-opus-4-6 --model claude-opus-4-7 \
+  --model claude-opus-4-8 --model claude-sonnet-4-6 \
+  --attempts 3 --concurrency 2 --reasoning-effort xhigh \
+  --disable-web-browser \
+  --metric-to-report success \
+  --metric-to-report mean_pass_rate \
+  --metric-to-report mean_sig_errors \
+  --baselines-md paper/baselines.md
 ```
 
 ## Evaluation

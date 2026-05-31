@@ -250,20 +250,22 @@ uv run python scripts/run_harbor_baselines_multitask.py \
     --baselines-md paper/baselines.md
 ```
 
-**Web search / web fetch are disabled by default.** Both baseline launchers
-accept `--disable-web-browser` (default `True`) and translate it per harness so
-the agent's built-in browsing tools can't be used to look up gold answers:
+**Web search / web fetch are allowed by default.** Both baseline launchers
+accept `--disable-web-browser` (default `False`) and, when passed, translate it
+per harness so the agent's built-in browsing tools can't be used to look up gold
+answers:
 
 - `codex` → appends `-c web_search="disabled"` to the `codex exec` command
 - `claude-code` → appends `--disallowedTools "WebSearch WebFetch"` to the `claude`
   command
 - `copilot-cli` → no upstream toggle; the flag is silently skipped
 
-Pass `--no-disable-web-browser` to re-enable web tools only when the task
-genuinely requires open-internet access (for example a benchmark that asks the
-agent to fetch a public web page on purpose). Leaving the default in place
-prevents the agent from gold-leaking by searching MIMIC reports or other gated
-datasets that may be mirrored online.
+Pass `--disable-web-browser` explicitly for benchmarks where the gold answer
+(or a recognisable phrase from it) is reachable via a public mirror or general
+web search — for example `xray_report_correction` over MIMIC-CXR, where we
+observed `gpt-5.3-codex` retrieving the gold report by searching distinctive
+draft phrases. Leave the default in place for benchmarks like `ehr_to_meds_etl`
+where the agent legitimately needs to fetch a public web page.
 
 When invoking Harbor directly with `uv run harbor run -c jobs/<benchmark>.yaml`
 (no launcher), set the same toggles on each agent's `kwargs` inside the job
