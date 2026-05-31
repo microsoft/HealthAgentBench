@@ -93,51 +93,6 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --run-dir <Phase B': codex        gpt-5.4-mini      medium run dir>
 ```
 
-## xray_report_gen
-
-- Task path: `tasks`
-- Generated at: `20260519T210229Z`
-- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/xray_report_gen`
-- Source run dirs:
-  - `xray_report_gen__claude-code__claude-opus-4-6__20260519T181206Z`
-  - `xray_report_gen__claude-code__claude-opus-4-7__20260519T180232Z`
-  - `xray_report_gen__codex__gpt-5.3-codex__20260519T051937Z`
-  - `xray_report_gen__codex__gpt-5.4__20260519T175822Z`
-  - `xray_report_gen__codex__gpt-5.5__20260519T051937Z`
-
-### Aggregate Summary
-
-| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | success | reward | reward_stdev | mean_sig_errors | mean_sig_errors_stdev |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| xray_report_gen | claude-code | claude-opus-4-7 | medium | 3 | 10 | 123.94 | 5.000 | 0.167 | 0.379 | 1.827 | 1.609 |
-| xray_report_gen | codex | gpt-5.5 | medium | 3 | 10 | 159.66 | 4.000 | 0.133 | 0.346 | 2.453 | 1.398 |
-| xray_report_gen | codex | gpt-5.3-codex | medium | 3 | 10 | 146.56 | 3.000 | 0.100 | 0.305 | 2.580 | 1.280 |
-| xray_report_gen | claude-code | claude-opus-4-6 | medium | 3 | 10 | 122.56 | 2.000 | 0.067 | 0.254 | 2.648 | 1.570 |
-| xray_report_gen | codex | gpt-5.4 | medium | 3 | 10 | 130.09 | 1.000 | 0.033 | 0.183 | 2.676 | 1.589 |
-
-Per-trial metrics (mean ± sample stdev across subtasks): `reward`, `mean_sig_errors`.
-
-Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`.
-
-### Reproducibility
-
-```bash
-uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name xray_report_gen \
-  --task-path tasks \
-  --harness codex \
-  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/xray_report_gen \
-  --attempts 3 \
-  --reasoning-effort medium \
-  --metrics-script scripts/xray_report_gen/aggregate_metric.py \
-  --no-detailed \
-  --metric-to-report success \
-  --metric-to-report reward \
-  --metric-to-report mean_sig_errors \
-  --model gpt-5.4 \
-  --model gpt-5.4-mini
-```
-
 ## tumor_area_selection_pathology
 
 - Task path: `tasks`
@@ -371,4 +326,54 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --model claude-opus-4.6 \
   --model claude-sonnet-4.6 \
   --model claude-haiku-4.5
+```
+
+## xray_report_correction
+
+- Task path: `tasks`
+- Generated at: `20260531T031542Z`
+- Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/xray_report_correction`
+- Source run dirs:
+  - `xray_report_correction__claude-code__claude-opus-4-6__20260530T013859Z`
+  - `xray_report_correction__claude-code__claude-opus-4-7__20260529T235854Z`
+  - `xray_report_correction__claude-code__claude-opus-4-8__20260530T013859Z`
+  - `xray_report_correction__claude-code__claude-sonnet-4-6__20260529T235854Z`
+  - `xray_report_correction__codex__gpt-5.3-codex__20260529T235336Z`
+  - `xray_report_correction__codex__gpt-5.4-mini__20260529T235336Z`
+  - `xray_report_correction__codex__gpt-5.4__20260529T235336Z`
+  - `xray_report_correction__codex__gpt-5.5__20260529T235336Z`
+
+### Aggregate Summary
+
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | Cost (USD) | success | mean_pass_rate | mean_sig_errors |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| xray_report_correction | codex | gpt-5.4 | xhigh | 3 | 10 | 202.67 | 0.4257 | 12.000 | 0.400 | 1.462 |
+| xray_report_correction | codex | gpt-5.5 | xhigh | 3 | 10 | 218.78 | 0.9030 | 10.000 | 0.333 | 1.500 |
+| xray_report_correction | codex | gpt-5.3-codex | xhigh | 3 | 10 | 150.44 | 0.2222 | 6.000 | 0.200 | 1.714 |
+| xray_report_correction | claude-code | claude-opus-4-8 | xhigh | 3 | 10 | 397.00 | 1.1448 | 5.000 | 0.167 | 2.613 |
+| xray_report_correction | claude-code | claude-opus-4-7 | xhigh | 3 | 10 | 178.69 | 0.4841 | 4.000 | 0.133 | 2.627 |
+| xray_report_correction | claude-code | claude-opus-4-6 | xhigh | 3 | 10 | 206.45 | 0.3451 | 3.000 | 0.100 | 4.060 |
+| xray_report_correction | claude-code | claude-sonnet-4-6 | xhigh | 3 | 10 | 225.07 | 0.2295 | 3.000 | 0.100 | 4.800 |
+| xray_report_correction | codex | gpt-5.4-mini | xhigh | 3 | 10 | 301.97 | 0.2261 | 3.000 | 0.100 | 3.213 |
+
+Per-trial metrics (mean ± sample stdev across subtasks): `mean_sig_errors`.
+
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`, `mean_pass_rate`.
+
+### Reproducibility
+
+```bash
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name xray_report_correction \
+  --task-path tasks \
+  --harness codex \
+  --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/xray_report_correction \
+  --attempts 3 \
+  --reasoning-effort medium \
+  --no-detailed \
+  --metric-to-report success \
+  --metric-to-report mean_pass_rate \
+  --metric-to-report mean_sig_errors \
+  --model gpt-5.4 \
+  --model gpt-5.4-mini
 ```

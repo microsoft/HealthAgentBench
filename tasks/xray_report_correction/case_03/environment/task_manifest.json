@@ -1,0 +1,139 @@
+{
+  "subject_id": "90e37e2d44690a9c",
+  "target_study_id": "9b5627d4081112ea",
+  "studies": [
+    {
+      "folder": "study_01_2154-12-05_22-07-37",
+      "study_id": "b7465ff1948a0430",
+      "is_target": false,
+      "dicom_ids": [
+        "4ccbc7735f54d1df",
+        "28de8734e8b69ed5",
+        "57f36544d16b42b5"
+      ]
+    },
+    {
+      "folder": "study_02_2154-12-07_11-15-43",
+      "study_id": "338a004701cc879a",
+      "is_target": false,
+      "dicom_ids": [
+        "d34fecf204d001bf"
+      ]
+    },
+    {
+      "folder": "study_03_2154-12-08_09-31-01",
+      "study_id": "404cd9add050fd1d",
+      "is_target": false,
+      "dicom_ids": [
+        "9bcf142ef8b2d4f7",
+        "3a595848a8257dda"
+      ]
+    },
+    {
+      "folder": "study_04_2154-12-09_11-53-25",
+      "study_id": "47ef08b31c34d01a",
+      "is_target": false,
+      "dicom_ids": [
+        "8d759621b51957b7",
+        "d3ee0c37c2aa5438"
+      ]
+    },
+    {
+      "folder": "study_05_2154-12-10_11-07-22",
+      "study_id": "b239420d63243796",
+      "is_target": false,
+      "dicom_ids": [
+        "d6cc0b7f2bd0d95e",
+        "f526bb803105b9f3"
+      ]
+    },
+    {
+      "folder": "study_06_2154-12-19_10-16-11",
+      "study_id": "420d1b4a255170d5",
+      "is_target": false,
+      "dicom_ids": [
+        "52cae96533e64f9a",
+        "ebb608ac2b0f6eff"
+      ]
+    },
+    {
+      "folder": "study_07_2155-01-02_09-55-19",
+      "study_id": "eef3058763c4c1e8",
+      "is_target": false,
+      "dicom_ids": [
+        "e398f6cc45153bfa",
+        "d4f500d952fbfbb6"
+      ]
+    },
+    {
+      "folder": "study_08_2155-01-23_14-46-32",
+      "study_id": "6910d21dc1f2d62b",
+      "is_target": false,
+      "dicom_ids": [
+        "d783c176d3d41a90"
+      ]
+    },
+    {
+      "folder": "study_09_2155-01-25_04-10-06",
+      "study_id": "71d6cffcae01c5b5",
+      "is_target": false,
+      "dicom_ids": [
+        "59e9acfec7b4767c"
+      ]
+    },
+    {
+      "folder": "study_10_2155-01-25_21-42-05",
+      "study_id": "9f10f11bdec318fb",
+      "is_target": false,
+      "dicom_ids": [
+        "bedae564624c1d0e"
+      ]
+    },
+    {
+      "folder": "study_11_2155-01-26_04-47-00",
+      "study_id": "dc92f86e5ec132b1",
+      "is_target": false,
+      "dicom_ids": [
+        "498e20b2a9cbb5d8"
+      ]
+    },
+    {
+      "folder": "study_12_2155-01-26_10-06-25",
+      "study_id": "9b5627d4081112ea",
+      "is_target": true,
+      "dicom_ids": [
+        "390063eb13cba365"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "three chest tubes",
+      "two chest tubes"
+    ],
+    [
+      "the right hemithorax",
+      "the left hemithorax"
+    ],
+    [
+      "is unchanged as compared",
+      "is worsened as compared"
+    ],
+    [
+      "increased gas filling",
+      "decreased gas filling"
+    ],
+    [
+      "No current evidence of pneumothorax",
+      "Small pneumothorax is present"
+    ],
+    [
+      "Unchanged normal appearance",
+      "Worsened appearance"
+    ],
+    [
+      "of the left lung",
+      "of the right lung"
+    ]
+  ]
+}

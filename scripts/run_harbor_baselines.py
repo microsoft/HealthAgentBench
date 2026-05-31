@@ -49,6 +49,7 @@ class ExperimentConfig:
     artifacts: tuple[str, ...]
     force_build: bool
     keep_environment: bool
+    disable_web_browser: bool = True
 
 
 @dataclass(frozen=True)
@@ -176,6 +177,20 @@ def parse_args() -> argparse.Namespace:
         "--keep-environment",
         action="store_true",
         help="Keep Harbor environments after completion.",
+    )
+    parser.add_argument(
+        "--disable-web-browser",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "Disable the agent's built-in web-search / web-fetch tools so it "
+            "can't look up gold answers on the public internet. Default: "
+            "True. Pass --no-disable-web-browser to re-enable web tools "
+            "(use only when you explicitly need the agent to browse). "
+            "Translates to harness-specific kwargs: for codex it adds "
+            '``-c web_search=\"disabled\"``; for claude-code it adds '
+            "``--disallowedTools WebSearch WebFetch``."
+        ),
     )
     return parser.parse_args()
 
@@ -341,6 +356,21 @@ def build_job_config(
     agent_kwargs = dict(harness_spec.default_agent_kwargs)
     if experiment.reasoning_effort:
         agent_kwargs["reasoning_effort"] = experiment.reasoning_effort
+
+    # Optionally disable the agent's built-in web-search / web-fetch tools so
+    # it can't look up gold answers on the public internet. Each harness has
+    # a different CLI surface — translate here:
+    #   * codex:        ``disable_web_search=True`` → ``-c web_search="disabled"``
+    #     (extension defined in src/medcli/agents/harbor/installed/codex.py)
+    #   * claude-code:  ``disallowed_tools="WebSearch WebFetch"`` →
+    #     ``--disallowedTools WebSearch WebFetch`` (upstream Harbor flag)
+    #   * copilot-cli:  no public web-browsing toggle in the upstream agent;
+    #     skip silently rather than fail loud.
+    if experiment.disable_web_browser:
+        if harness_spec.name == "codex":
+            agent_kwargs.setdefault("disable_web_search", True)
+        elif harness_spec.name == "claude-code":
+            agent_kwargs.setdefault("disallowed_tools", "WebSearch WebFetch")
 
     task_path = experiment.task_path
     if not task_path.is_absolute():
@@ -910,6 +940,7 @@ def build_experiment_config(
         artifacts=tuple(args.artifacts or ()),
         force_build=args.force_build,
         keep_environment=args.keep_environment,
+        disable_web_browser=args.disable_web_browser,
     )
 
 

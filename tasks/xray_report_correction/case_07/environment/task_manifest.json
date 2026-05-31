@@ -1,0 +1,45 @@
+{
+  "subject_id": "74f1fddc1d623be3",
+  "target_study_id": "4ce579a2b784f9a2",
+  "studies": [
+    {
+      "folder": "study_01_2183-01-20_19-07-29",
+      "study_id": "f8a13c6505ba8050",
+      "is_target": false,
+      "dicom_ids": [
+        "feaa06c324d6e325",
+        "3afbda179e16ba64"
+      ]
+    },
+    {
+      "folder": "study_02_2183-01-23_05-02-56",
+      "study_id": "6a809cdd957f575d",
+      "is_target": false,
+      "dicom_ids": [
+        "13f663870101bab4"
+      ]
+    },
+    {
+      "folder": "study_03_2183-01-24_08-40-51",
+      "study_id": "4ce579a2b784f9a2",
+      "is_target": true,
+      "dicom_ids": [
+        "9c5ad2c9368e4431"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "remains enlarged",
+      "remains normal in size"
+    ],
+    [
+      "persistent pulmonary vascular",
+      "resolving pulmonary vascular"
+    ],
+    [
+      "appears similar compared",
+      "appears worsened compared"
+    ]
+  ]
+}

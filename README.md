@@ -81,6 +81,14 @@ container can run. Each is documented in its own `scripts/<benchmark>/README.md`
   API token at `~/.redivis/api_token`. See [`scripts/ehrshot/README.md`](scripts/ehrshot/README.md).
 - **ct_abnormality** — CT-RATE (Hugging Face, OpenRAIL gated). Needs a HF token
   at `~/.cache/huggingface/token`.
+- **xray_report_correction** — Two PhysioNet credentialed-access projects,
+  both gated by a single `PN_USER` / `PN_PASS` pair in `.env`:
+  [MIMIC-CXR v2.1.0](https://physionet.org/content/mimic-cxr/2.1.0/) for the
+  radiology reports and [MIMIC-CXR-JPG v2.1.0](https://physionet.org/content/mimic-cxr-jpg/2.1.0/)
+  for the JPG frames + the metadata / split / chexpert CSVs. Register a
+  PhysioNet account, complete CITI "Data or Specimens Only Research"
+  training, then sign the DUA on each project page. See
+  [`scripts/xray_report_correction/README.md`](scripts/xray_report_correction/README.md).
 
 Set these up once per host before invoking the corresponding Harbor task.
 
@@ -91,7 +99,7 @@ credentials the launchers / docker-compose need to read from the host
 environment. The schema (no real secrets) is:
 
 ```bash
-# ----- Verifier model credentials (xray_report_gen / CheXprompt) -----
+# ----- Verifier model credentials (xray_report_correction / CheXprompt) -----
 # Pick ONE of the two paths below. The verifier's _configure_openai_for_chexprompt
 # detects which is present and routes accordingly.
 #
@@ -113,14 +121,14 @@ AZURE_OPENAI_DEPLOYMENT=
 # CHEXPROMPT_DEPLOYMENT=gpt-4o   # optional; if omitted, defaults to gpt-5.4
 
 # ----- Dataset access (gated downloads at task bootstrap) -----
-# PhysioNet credentials (xray_report_gen).
+# PhysioNet credentials (xray_report_correction).
 PN_USER=
 PN_PASS=
 ```
 
 **CheXprompt verifier default model.** If neither `CHEXPROMPT_DEPLOYMENT` nor
 `AZURE_OPENAI_DEPLOYMENT` is set, the verifier in
-`scripts/xray_report_gen/harbor_evaluator.py` hardcodes `gpt-5.4` as the
+`scripts/xray_report_correction/harbor_evaluator.py` hardcodes `gpt-5.4` as the
 deployment / model name. For Azure, ensure your deployment alias resolves
 to a gpt-5.4-capable resource (or override with one of those env vars).
 
@@ -241,6 +249,49 @@ uv run python scripts/run_harbor_baselines_multitask.py \
     --metric-to-report f1 --metric-to-report recall --metric-to-report precision \
     --baselines-md paper/baselines.md
 ```
+
+**Web search / web fetch are disabled by default.** Both baseline launchers
+accept `--disable-web-browser` (default `True`) and translate it per harness so
+the agent's built-in browsing tools can't be used to look up gold answers:
+
+- `codex` → appends `-c web_search="disabled"` to the `codex exec` command
+- `claude-code` → appends `--disallowedTools "WebSearch WebFetch"` to the `claude`
+  command
+- `copilot-cli` → no upstream toggle; the flag is silently skipped
+
+Pass `--no-disable-web-browser` to re-enable web tools only when the task
+genuinely requires open-internet access (for example a benchmark that asks the
+agent to fetch a public web page on purpose). Leaving the default in place
+prevents the agent from gold-leaking by searching MIMIC reports or other gated
+datasets that may be mirrored online.
+
+When invoking Harbor directly with `uv run harbor run -c jobs/<benchmark>.yaml`
+(no launcher), set the same toggles on each agent's `kwargs` inside the job
+YAML. Example:
+
+```yaml
+agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.5
+    kwargs:
+      reasoning_effort: xhigh
+      # Forwards to ``-c web_search="disabled"`` on the codex CLI.
+      disable_web_search: true
+
+  - import_path: medcli.agents.harbor.installed.claude_code:ClaudeCode
+    model_name: claude-opus-4-7
+    kwargs:
+      reasoning_effort: xhigh
+      # Forwards to ``--disallowedTools "WebSearch WebFetch"`` on the
+      # claude CLI; the bare tool names remove WebSearch/WebFetch from
+      # the model's context entirely (deny rules take precedence over
+      # ``bypassPermissions`` mode).
+      disallowed_tools: "WebSearch WebFetch"
+```
+
+These are the same kwargs the launchers inject when
+`--disable-web-browser` is on; setting them in the YAML keeps the
+guarantee when calling Harbor directly.
 
 ## Task Creation
 

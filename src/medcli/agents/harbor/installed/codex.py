@@ -3,7 +3,7 @@ import shlex
 import tomllib
 from pathlib import Path
 
-from harbor.agents.installed.base import with_prompt_template
+from harbor.agents.installed.base import CliFlag, with_prompt_template
 from harbor.agents.installed.codex import Codex as HarborCodex
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
@@ -64,6 +64,34 @@ def collect_env_keys_from_config(config_path: Path) -> dict[str, str]:
 
 class Codex(HarborCodex):
     """MedCLI wrapper around Harbor's Codex installed agent."""
+
+    # Extend the upstream CLI flag list with a ``disable_web_search`` toggle.
+    # When True (the default for MedCLI sweeps), we pass
+    # ``-c web_search="disabled"`` so the Codex CLI's built-in web-search
+    # tool is unavailable to the agent for the duration of the trial. This
+    # prevents the agent from looking up gold reports on the public internet
+    # — see the gpt-5.3-codex web_search leak observed on xray_report_correction
+    # for context.
+    #
+    # The Codex config key is the top-level ``web_search`` (string-valued:
+    # ``"disabled" | "cached" | "live"``). An earlier version of this flag
+    # used ``-c tools.web_search=false``, which the Codex CLI silently
+    # ignored — the agent kept emitting real ``action.type=search`` calls
+    # and cheating on xray_report_correction. See
+    # https://developers.openai.com/codex/config-reference for the
+    # canonical key + allowed values.
+    CLI_FLAGS = [
+        *HarborCodex.CLI_FLAGS,
+        CliFlag(
+            "disable_web_search",
+            # When ``disable_web_search=True``, Harbor's bool handling
+            # (see harbor.agents.installed.base.build_cli_flags) appends
+            # this entire string to the command as a single token. When
+            # False/unset, nothing is appended.
+            cli='-c web_search="disabled"',
+            type="bool",
+        ),
+    ]
 
     @staticmethod
     def _resolve_auth_file() -> Path:

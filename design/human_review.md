@@ -62,7 +62,7 @@ bottom confirms the cross-task wiring works.
 - [ ] Raw upstream data lives under `scripts/<task>/assets/` and is
       gitignored.
 - [ ] No PHI, no credentialed files, no test labels under
-      `tasks/<task>/`. (Cached labels at `assets/labels/<task>.csv`
+      `tasks/<task>/` or are gitignored. (Cached labels at `assets/labels/<task>.csv`
       are OK if they're derived from public/synthetic data.)
 
 ### A7. On-the-fly data download
@@ -71,7 +71,7 @@ bottom confirms the cross-task wiring works.
       `harbor run` still works — the per-task bootstrap container
       should fetch the data from upstream on first run.
 - [ ] Two-service docker-compose pattern (bootstrap + main with
-      credential isolation) — reference `tasks/xray_report_gen/` or
+      credential isolation) — reference `tasks/xray_report_correction/` or
       `tasks/ehr_data_quality/`.
 
 ### A8. Evaluation script emits the standard metrics
@@ -80,7 +80,7 @@ bottom confirms the cross-task wiring works.
       `{reward, n_tasks, n_pass, pass_rate}`.
 - [ ] `scripts/<task>/aggregate_metric.py` pools per-trial rewards
       into job-level **success** (count of passing trials) and
-      **mean reward** (pass rate). Reference `xray_report_gen`.
+      **mean reward** (pass rate). Reference `xray_report_correction`.
 
 ---
 
@@ -160,11 +160,12 @@ Also make sure these mnt mounted result directories are rendered in paper/baseli
 ### C2. Final review before PR
 
 - [ ] All checks above are green.
-- [ ] `paper/baselines.md` row exists for the task.
+- [ ] `paper/baselines.md` row exists for the task with mnt mounted directories.
 - [ ] `tasks/README.md`, `design/tasks.md`, and
-      `paper/benchmarks.md` reference the task.
+      `paper/benchmarks.md` reference the task and all documents are updated. 
 - [ ] No untracked artifacts that should be ignored
       (`git status` is clean except for intended additions).
+- [ ] Review the PR change files and add a PR description markdown
 
 ---
 
