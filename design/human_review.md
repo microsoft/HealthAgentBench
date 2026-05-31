@@ -93,7 +93,7 @@ bottom confirms the cross-task wiring works.
 
 ### B2. Multi-model multitask sweep
 
-Run `scripts/run_harbor_baselines_multitask.py` with all models and
+Run `scripts/run_harbor_baselines_multitask.py` with all models with xhigh reasoning effort and
 `--attempts 3`. Before launching:
 
 - [ ] Docker address pool is healthy (`docker network ls` not near the
@@ -128,6 +128,7 @@ Sweep command should include:
       `agent/trajectory.json`) to confirm the model is not cheating
       (no internet lookups for gold answers, no path traversal to
       `/tests/`).
+- [ ] No task is passed by all agents for all three attempts. If the task is too easy we should discard it. 
 
 ---
 

@@ -295,7 +295,7 @@ guarantee when calling Harbor directly.
 
 ## Task Creation
 
-For the canonical repo-level workflow for adding a new benchmark, see `design/benchmark_addition_workflow.md`.
+For the canonical repo-level workflow for adding a new benchmark, see [`design/benchmark_addition_workflow.md`](design/benchmark_addition_workflow.md). Once the task is built, run through [`design/human_review.md`](design/human_review.md) before merging — it's the canonical pre-merge checklist humans should review. 
 
 For benchmark-specific task creation details, see `scripts/<benchmark>/README.md`.
 
