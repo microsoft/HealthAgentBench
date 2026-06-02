@@ -1,0 +1,32 @@
+{
+  "subject_id": "6469a99a0f96ef55",
+  "target_study_id": "b43b403b27b2c307",
+  "studies": [
+    {
+      "folder": "study_01_2148-06-03_16-08-59",
+      "study_id": "b43b403b27b2c307",
+      "is_target": true,
+      "dicom_ids": [
+        "ffcf73452228760a"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "No previous images.",
+      "Multiple priors available; lung volumes have worsened from prior."
+    ],
+    [
+      "mild hyperexpansion",
+      "severe hyperexpansion"
+    ],
+    [
+      "However, no evidence of acute pneumonia, vascular congestion, or pleural effusion.",
+      "However, evidence of acute pneumonia, vascular congestion, and a small pleural effusion is present."
+    ],
+    [
+      "on the right",
+      "on the left"
+    ]
+  ]
+}

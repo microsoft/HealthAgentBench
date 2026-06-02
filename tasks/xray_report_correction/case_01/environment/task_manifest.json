@@ -1,0 +1,129 @@
+{
+  "subject_id": "30ac0a8d620cf048",
+  "target_study_id": "929deb7da7ff7c44",
+  "studies": [
+    {
+      "folder": "study_01_2187-10-28_14-51-03",
+      "study_id": "1114408286fb02fb",
+      "is_target": false,
+      "dicom_ids": [
+        "94980c97d754ac51",
+        "7ee072a189ff64c9",
+        "e19a8e2a56042d1c"
+      ]
+    },
+    {
+      "folder": "study_02_2187-11-11_17-18-35",
+      "study_id": "05fb973bdfdfd24e",
+      "is_target": false,
+      "dicom_ids": [
+        "7e9d5a106e3ab723",
+        "84e1480c70da293c"
+      ]
+    },
+    {
+      "folder": "study_03_2188-02-27_15-18-54",
+      "study_id": "e7073ec2555a2273",
+      "is_target": false,
+      "dicom_ids": [
+        "34253dce68edc9b1"
+      ]
+    },
+    {
+      "folder": "study_04_2188-02-28_09-17-29",
+      "study_id": "b87c45f4bf79ee2c",
+      "is_target": false,
+      "dicom_ids": [
+        "279cdeeba8d2afda",
+        "30d6db6d39ee917a"
+      ]
+    },
+    {
+      "folder": "study_05_2188-04-10_23-08-46",
+      "study_id": "6b6a8cc536b281cd",
+      "is_target": false,
+      "dicom_ids": [
+        "1cbfbc60738ffbf2",
+        "2c63f4c3b5ea28e2"
+      ]
+    },
+    {
+      "folder": "study_06_2188-06-07_14-37-05",
+      "study_id": "68bcd5b032d37890",
+      "is_target": false,
+      "dicom_ids": [
+        "11f3e63eaf9851a8",
+        "9a5a1b190c83a8d6"
+      ]
+    },
+    {
+      "folder": "study_07_2188-06-20_17-02-04",
+      "study_id": "74163ee9f6b428c0",
+      "is_target": false,
+      "dicom_ids": [
+        "a67a8cf925aa1a54"
+      ]
+    },
+    {
+      "folder": "study_08_2188-07-05_21-57-23",
+      "study_id": "ededbe44ff6a474e",
+      "is_target": false,
+      "dicom_ids": [
+        "df0ef86aa2f86c91",
+        "8c3a3004c4254bf5"
+      ]
+    },
+    {
+      "folder": "study_09_2188-11-20_18-49-43",
+      "study_id": "fb65c29af754aecd",
+      "is_target": false,
+      "dicom_ids": [
+        "d1a6272bc3d9f3d4",
+        "2fccd4abbc14df7b"
+      ]
+    },
+    {
+      "folder": "study_10_2188-12-26_16-12-03",
+      "study_id": "725122cf2129d5bd",
+      "is_target": false,
+      "dicom_ids": [
+        "ea808da09bb685c7",
+        "7f118360ae632cee"
+      ]
+    },
+    {
+      "folder": "study_11_2188-12-28_17-43-53",
+      "study_id": "4a84dc0dff7f326a",
+      "is_target": false,
+      "dicom_ids": [
+        "1ea65689de40cb81"
+      ]
+    },
+    {
+      "folder": "study_12_2189-04-15_14-10-15",
+      "study_id": "929deb7da7ff7c44",
+      "is_target": true,
+      "dicom_ids": [
+        "4f950488fda196fc"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "hyperinflated",
+      "hypoinflated"
+    ],
+    [
+      "upper lobe",
+      "lower lobe"
+    ],
+    [
+      "No focal consolidation, effusion, or pneumothorax seen",
+      "Focal consolidation, pleural effusion, and pneumothorax seen"
+    ],
+    [
+      "silhouette is normal",
+      "silhouette is enlarged"
+    ]
+  ]
+}

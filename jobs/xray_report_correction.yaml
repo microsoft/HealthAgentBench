@@ -1,0 +1,52 @@
+jobs_dir: results
+n_attempts: 1
+timeout_multiplier: 1.0
+# Docker's default network-address pool gives ~31 bridge networks before
+# exhaustion. Each Harbor trial creates one compose network, so keep the
+# concurrency below that ceiling (with headroom if multiple Harbor jobs
+# run against the same daemon). See scripts/xray_report_correction/README.md
+# "Validation Commands" note for details.
+n_concurrent_trials: 10
+quiet: false
+
+environment:
+  type: docker
+  # Reuse cached buildx layers. The verifier-only chexprompt + openai==0.28
+  # venv is tiny (~10 MB); first cold build still spends a couple of
+  # minutes on apt + pip. Flip to true only when iterating on the
+  # Dockerfile.
+  force_build: false
+  delete: true
+
+agents:
+  - import_path: medcli.agents.harbor.installed.codex:Codex
+    model_name: gpt-5.5
+    kwargs:
+      reasoning_effort: xhigh
+      # Disable the Codex CLI's built-in web-search tool so the agent can't
+      # look up the gold MIMIC-CXR report on the public internet. Without
+      # this, gpt-5.3-codex (and potentially other models) will query
+      # distinctive phrases from the counterfactual draft to find the
+      # source report leaked on HuggingFace / GitHub mirrors. Translates
+      # to ``-c web_search="disabled"`` on the Codex command line (per
+      # https://developers.openai.com/codex/config-reference — the
+      # earlier ``tools.web_search=false`` was silently ignored).
+      disable_web_search: true
+
+metrics:
+  # Aggregator reads per-trial CheXprompt rewards (binary pass/fail) and
+  # emits mean reward (= pass rate) plus a pass count.
+  - type: uv-script
+    kwargs:
+      script_path: scripts/xray_report_correction/aggregate_metric.py
+
+datasets:
+  # "*" runs every case subtask under tasks/xray_report_correction/. To target
+  # a specific case for debugging, replace with the exact subtask name,
+  # e.g.  task_names: [case_01]
+  - path: tasks/xray_report_correction
+    task_names:
+      - "*"
+
+artifacts:
+  - /workspace/submission.json

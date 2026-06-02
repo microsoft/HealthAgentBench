@@ -1,0 +1,214 @@
+{
+  "subject_id": "2b6fd83fced8bdf9",
+  "target_study_id": "aa2d09289517664b",
+  "studies": [
+    {
+      "folder": "study_01_2130-02-21_13-36-47",
+      "study_id": "4be23b0e80a07832",
+      "is_target": false,
+      "dicom_ids": [
+        "5f3b423b69960dba"
+      ]
+    },
+    {
+      "folder": "study_02_2130-02-21_16-20-45",
+      "study_id": "06aa8e3ea6713f58",
+      "is_target": false,
+      "dicom_ids": [
+        "6f2ca29c48ba4894"
+      ]
+    },
+    {
+      "folder": "study_03_2130-02-22_06-49-09",
+      "study_id": "d26e44331f42e575",
+      "is_target": false,
+      "dicom_ids": [
+        "13f9b71523e9af2c"
+      ]
+    },
+    {
+      "folder": "study_04_2130-02-22_18-50-26",
+      "study_id": "7c0b41dc7d4773b3",
+      "is_target": false,
+      "dicom_ids": [
+        "95cafa79c6f5b556"
+      ]
+    },
+    {
+      "folder": "study_05_2130-02-24_05-06-40",
+      "study_id": "46f2c97ee16779c6",
+      "is_target": false,
+      "dicom_ids": [
+        "ed8aa90f8b656586"
+      ]
+    },
+    {
+      "folder": "study_06_2130-02-26_05-24-32",
+      "study_id": "ff98275c12661a7d",
+      "is_target": false,
+      "dicom_ids": [
+        "364b3ecda53917a5"
+      ]
+    },
+    {
+      "folder": "study_07_2130-07-12_13-14-37",
+      "study_id": "dcdee4c967f6d05a",
+      "is_target": false,
+      "dicom_ids": [
+        "0209730e9a66f5b4",
+        "566e78a8471944a2",
+        "cb69a4d73c855da0"
+      ]
+    },
+    {
+      "folder": "study_08_2130-07-24_15-15-59",
+      "study_id": "85cf1f7cf3206917",
+      "is_target": false,
+      "dicom_ids": [
+        "748126a2c3fb4e6c",
+        "0ddb317d87e2c5c8"
+      ]
+    },
+    {
+      "folder": "study_09_2130-08-23_14-10-10",
+      "study_id": "4feb8f108d1c8314",
+      "is_target": false,
+      "dicom_ids": [
+        "cc76788caf33db4c"
+      ]
+    },
+    {
+      "folder": "study_10_2130-08-23_21-37-44",
+      "study_id": "0f94d271bc91a67d",
+      "is_target": false,
+      "dicom_ids": [
+        "b356af5238667a82",
+        "ad588f7a3f717d98"
+      ]
+    },
+    {
+      "folder": "study_11_2130-08-28_08-53-19",
+      "study_id": "5eb7f5a216ec7cc2",
+      "is_target": false,
+      "dicom_ids": [
+        "d8b4f0f9326c6222"
+      ]
+    },
+    {
+      "folder": "study_12_2130-09-27_14-02-58",
+      "study_id": "1cbf1fc0ef9821b2",
+      "is_target": false,
+      "dicom_ids": [
+        "75796a9716a39187",
+        "d4a222b34e9d9c1c"
+      ]
+    },
+    {
+      "folder": "study_13_2131-08-23_23-22-24",
+      "study_id": "3b0915a241aca959",
+      "is_target": false,
+      "dicom_ids": [
+        "2aba5fbba1b4ed58",
+        "f742bbc979dc0882",
+        "8c3d350e47e9f68e"
+      ]
+    },
+    {
+      "folder": "study_14_2131-08-24_15-54-00",
+      "study_id": "6d7148ffe1016edf",
+      "is_target": false,
+      "dicom_ids": [
+        "a87b34656eb1bebe"
+      ]
+    },
+    {
+      "folder": "study_15_2131-08-25_15-35-42",
+      "study_id": "2850fe80ab711a5d",
+      "is_target": false,
+      "dicom_ids": [
+        "29541a1cd8e6b6b9"
+      ]
+    },
+    {
+      "folder": "study_16_2131-08-26_03-56-03",
+      "study_id": "87295f5efd6783ea",
+      "is_target": false,
+      "dicom_ids": [
+        "e3ec3fee6c22ffaf"
+      ]
+    },
+    {
+      "folder": "study_17_2131-08-27_02-56-45",
+      "study_id": "db8ee4abd2e97d57",
+      "is_target": false,
+      "dicom_ids": [
+        "55424c73a3e687d8"
+      ]
+    },
+    {
+      "folder": "study_18_2131-08-28_03-32-16",
+      "study_id": "d08d87d8c7336b63",
+      "is_target": false,
+      "dicom_ids": [
+        "598c911519cf807a"
+      ]
+    },
+    {
+      "folder": "study_19_2131-11-06_21-09-12",
+      "study_id": "284a839fcf7cd79e",
+      "is_target": false,
+      "dicom_ids": [
+        "8dd910326d9e55dd",
+        "8bdec7f4e66c2d70"
+      ]
+    },
+    {
+      "folder": "study_20_2131-11-07_03-27-39",
+      "study_id": "d5ba6d725e3584de",
+      "is_target": false,
+      "dicom_ids": [
+        "f41bc68802a861ce"
+      ]
+    },
+    {
+      "folder": "study_21_2131-11-08_08-56-58",
+      "study_id": "da3ac1b3f3a49543",
+      "is_target": false,
+      "dicom_ids": [
+        "e6e20b98fd6081b6"
+      ]
+    },
+    {
+      "folder": "study_22_2132-06-11_12-45-39",
+      "study_id": "f7f64c66543241f7",
+      "is_target": false,
+      "dicom_ids": [
+        "aaff6f428a095829",
+        "b5c72d0a13e4e630",
+        "1f3599bfa47b1945"
+      ]
+    },
+    {
+      "folder": "study_23_2132-07-03_14-22-12",
+      "study_id": "aa2d09289517664b",
+      "is_target": true,
+      "dicom_ids": [
+        "efeda7913f4dd863"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "cardiomegaly is similar",
+      "cardiomegaly has worsened"
+    ],
+    [
+      "aortic arch",
+      "mitral valve"
+    ],
+    [
+      "without evidence of overt pulmonary edema",
+      "with evidence of overt pulmonary edema"
+    ]
+  ]
+}

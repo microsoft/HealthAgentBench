@@ -1,0 +1,77 @@
+{
+  "subject_id": "32ba56d7a694620f",
+  "target_study_id": "f3557de94145a347",
+  "studies": [
+    {
+      "folder": "study_01_2168-10-17_20-11-50",
+      "study_id": "730884921b75c71f",
+      "is_target": false,
+      "dicom_ids": [
+        "53c6844c26ccb700",
+        "ecbba892490d3fb2"
+      ]
+    },
+    {
+      "folder": "study_02_2169-01-10_10-13-53",
+      "study_id": "ff7999272f687318",
+      "is_target": false,
+      "dicom_ids": [
+        "06da4d80d499d4e5",
+        "2d3f0099c1b23b8a"
+      ]
+    },
+    {
+      "folder": "study_03_2171-01-14_13-26-51",
+      "study_id": "bf46138df3373db4",
+      "is_target": false,
+      "dicom_ids": [
+        "0fb3badbd44627ec",
+        "2551b79dcdd7a500"
+      ]
+    },
+    {
+      "folder": "study_04_2171-02-16_11-55-21",
+      "study_id": "4af74d0c8349ede9",
+      "is_target": false,
+      "dicom_ids": [
+        "48ca664960564f4c",
+        "e09e4d4dcd3c9f6f"
+      ]
+    },
+    {
+      "folder": "study_05_2171-02-26_12-52-08",
+      "study_id": "f3557de94145a347",
+      "is_target": true,
+      "dicom_ids": [
+        "2e7fc0a7b3e6c71b",
+        "5f6da9c2f032af2a"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "NO FOCAL CONSOLIDATION IS SEEN",
+      "FOCAL CONSOLIDATION IS SEEN IN THE RIGHT LOWER LOBE"
+    ],
+    [
+      "MINOR BASILAR ATELECTASIS",
+      "EXTENSIVE BASILAR ATELECTASIS"
+    ],
+    [
+      "NO PLEURAL EFFUSION OR PNEUMOTHORAX",
+      "MODERATE PLEURAL EFFUSION BUT NO PNEUMOTHORAX"
+    ],
+    [
+      "ARE STABLE",
+      "HAVE WORSENED FROM PRIOR"
+    ],
+    [
+      "LEFT HEMIDIAPHRAGM",
+      "RIGHT HEMIDIAPHRAGM"
+    ],
+    [
+      "LEFT MID HEMITHORAX",
+      "RIGHT MID HEMITHORAX"
+    ]
+  ]
+}

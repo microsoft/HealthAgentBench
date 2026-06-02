@@ -1,0 +1,64 @@
+{
+  "subject_id": "8fcb914377296a4f",
+  "target_study_id": "4dd0bc3e066d66b4",
+  "studies": [
+    {
+      "folder": "study_01_2197-08-29_02-52-36",
+      "study_id": "d7cb694df105546f",
+      "is_target": false,
+      "dicom_ids": [
+        "922a7d838472ddf1"
+      ]
+    },
+    {
+      "folder": "study_02_2197-08-29_13-51-47",
+      "study_id": "658cd80d79061e27",
+      "is_target": false,
+      "dicom_ids": [
+        "a55f828b625e9283"
+      ]
+    },
+    {
+      "folder": "study_03_2197-08-30_07-43-34",
+      "study_id": "4dd0bc3e066d66b4",
+      "is_target": true,
+      "dicom_ids": [
+        "d8f76bc8d6b7999e"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "and is appropriate in position",
+      "and is inappropriate in position"
+    ],
+    [
+      "with intact sternal sutures",
+      "with disrupted sternal sutures"
+    ],
+    [
+      "below the diaphragm",
+      "above the diaphragm"
+    ],
+    [
+      "into the stomach",
+      "into the esophagus"
+    ],
+    [
+      "Asymmetric, mild, right pulmonary edema has improved",
+      "Asymmetric, severe, left pulmonary edema has worsened"
+    ],
+    [
+      "Normal heart size",
+      "Enlarged heart size"
+    ],
+    [
+      "hilar contours are unchanged",
+      "hilar contours have worsened"
+    ],
+    [
+      "There is no pleural effusion",
+      "There is small bilateral pleural effusion"
+    ]
+  ]
+}

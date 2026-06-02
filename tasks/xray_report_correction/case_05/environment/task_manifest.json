@@ -1,0 +1,60 @@
+{
+  "subject_id": "f7cfc087675917a5",
+  "target_study_id": "0331e0f1e3c47fb8",
+  "studies": [
+    {
+      "folder": "study_01_2181-02-28_21-50-32",
+      "study_id": "6b0b01c42d65999a",
+      "is_target": false,
+      "dicom_ids": [
+        "3a0e6e4dfcd44aa7"
+      ]
+    },
+    {
+      "folder": "study_02_2181-02-28_23-12-28",
+      "study_id": "f631ff19592a2a28",
+      "is_target": false,
+      "dicom_ids": [
+        "02da4037531511cc"
+      ]
+    },
+    {
+      "folder": "study_03_2181-03-01_00-00-09",
+      "study_id": "3982f41de45ecb95",
+      "is_target": false,
+      "dicom_ids": [
+        "9b779b8925e79c1b"
+      ]
+    },
+    {
+      "folder": "study_04_2181-03-03_07-57-37",
+      "study_id": "0331e0f1e3c47fb8",
+      "is_target": true,
+      "dicom_ids": [
+        "35c81eeb30ab6330"
+      ]
+    }
+  ],
+  "counterfactual_swap_rules": [
+    [
+      "marked improvement",
+      "marked worsening"
+    ],
+    [
+      "Unchanged borderline size",
+      "Worsened, markedly enlarged size"
+    ],
+    [
+      "No pleural effusions",
+      "Bilateral pleural effusions"
+    ],
+    [
+      "right internal jugular",
+      "left internal jugular"
+    ],
+    [
+      "in constant position",
+      "in changing position"
+    ]
+  ]
+}
