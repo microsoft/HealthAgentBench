@@ -117,6 +117,36 @@ def test_missing_submission_yields_zero(tmp_path: Path) -> None:
     assert (log / "verifier_error.txt").exists()
 
 
+def test_present_but_empty_submission_yields_zero(tmp_path: Path) -> None:
+    """A submission file that exists but carries no parseable predictions
+    (only comments / blank lines) must score 0.0, not pass. The workspace
+    shape looks plausible — the file is there — but the required artifact
+    (real predictions) is effectively missing.
+    """
+    gold = tmp_path / "gold.json"
+    _gold(gold, [("Cardiomegaly", 0), ("Lung nodule", 1)])
+    sub = tmp_path / "submission" / "predictions.txt"
+    _submit(sub, ["# I will fill this in later", "", "   "])
+    log = tmp_path / "logs"
+    score = evaluate(sub, gold, log)
+    assert score == 0.0
+    assert (log / "verifier_error.txt").exists()
+
+
+def test_missing_gold_yields_zero_not_crash(tmp_path: Path) -> None:
+    """If the verifier's own gold.json was not staged, the verifier must fail
+    closed (return 0.0 + verifier_error.txt) rather than raising — a missing
+    setup artifact is a 0, never a launcher crash.
+    """
+    gold = tmp_path / "gold.json"  # never created
+    sub = tmp_path / "submission" / "predictions.txt"
+    _submit(sub, ["Cardiomegaly: no"])
+    log = tmp_path / "logs"
+    score = evaluate(sub, gold, log)
+    assert score == 0.0
+    assert (log / "verifier_error.txt").exists()
+
+
 def test_missing_label_in_submission_counts_wrong(tmp_path: Path) -> None:
     """Labels present in gold but missing from the submission are scored wrong."""
     gold = tmp_path / "gold.json"
@@ -157,6 +187,27 @@ def test_reward_json_is_flat_scalar_only(tmp_path: Path) -> None:
     metrics = json.loads((log / "metrics.json").read_text())
     assert "per_label" in metrics
     assert "volume_name" in metrics
+
+
+def test_reward_json_carries_flat_per_disease_keys(tmp_path: Path) -> None:
+    """reward.json must carry flat gold_<suffix>/pred_<suffix> int keys so the
+    aggregator can rebuild per-disease F1 from the flat reward stream Harbor
+    feeds its uv-script metric (which never includes per_label).
+    """
+    gold = tmp_path / "gold.json"
+    _gold(gold, [("Lung opacity", 1), ("Cardiomegaly", 0)])
+    sub = tmp_path / "submission" / "predictions.txt"
+    _submit(sub, ["Lung opacity: yes"])  # Cardiomegaly omitted -> missing
+    log = tmp_path / "logs"
+    evaluate(sub, gold, log)
+    reward = json.loads((log / "reward.json").read_text())
+    assert reward["gold_lung_opacity"] == 1
+    assert reward["pred_lung_opacity"] == 1
+    assert reward["gold_cardiomegaly"] == 0
+    assert reward["pred_cardiomegaly"] == -1  # missing prediction encoded as -1
+    # Still flat-scalar only (Harbor VerifierResult schema).
+    for k, v in reward.items():
+        assert isinstance(v, (int, float)), f"{k} is {type(v).__name__}"
 
 
 def test_unknown_labels_in_submission_are_ignored(tmp_path: Path) -> None:

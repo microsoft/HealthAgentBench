@@ -41,3 +41,4 @@ Format example:
   correct to score `1.0`. A single mistake yields `0.0`. Diagnostic
   per-label and per-disease F1 are reported alongside but do not affect
   the per-task reward.
+- **You have up to 1 hour to complete this task.**

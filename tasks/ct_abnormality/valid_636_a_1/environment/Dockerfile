@@ -17,6 +17,9 @@ WORKDIR /workspace
 # via a named compose volume at runtime), and Docker BuildKit refuses to
 # COPY an empty directory ("failed to compute cache key").
 COPY environment/bootstrap.sh /bootstrap.sh
+# Phrase-rule gold derivation, run by the bootstrap at runtime to build
+# /tests/gold.json from the downloaded report.
+COPY environment/gold_derivation.py /opt/gold_derivation.py
 RUN chmod +x /bootstrap.sh \
     && mkdir -p /workspace/submission /workspace/data
 

@@ -1,161 +1,36 @@
 # CT-RATE 10-volume manifest for the MedCLI ct_abnormality benchmark.
 #
-# This file is the canonical contract that scripts/ct_abnormality/generate_harbor_tasks.py
-# turns into 10 Harbor task directories under tasks/ct_abnormality/. Each entry pins
-# one CT volume from the CT-RATE validation split, the bucket (label-density
-# stratum), and the labels we evaluate on that volume. Each label has a `gold`
-# value (1 = positive finding present, 0 = explicitly negated) and an `evidence`
-# quote — the verbatim excerpt from the paired radiology report that justifies
-# the value.
+# This file pins the 10 CT volumes (from the CT-RATE validation split) that make
+# up the benchmark. It deliberately contains NO gold labels and NO report text:
+# the gold for each volume is re-derived at task-bootstrap time from the volume's
+# paired radiology report using the phrase rules in
+# `scripts/ct_abnormality/gold_derivation.py`. Keeping only volume IDs here (and
+# the phrase rules in code) avoids redistributing the gated CT-RATE reports or
+# the answer key while keeping the benchmark fully reproducible.
 #
-# Labels NOT listed for a volume are dropped from that volume's gold; the
-# verifier will not score them. This is the strict report-derived gold set
-# documented in `.agent/plans/ct_abnormality.md`.
-#
-# Of the 18 CT-RATE abnormality categories, 17 are evaluated (Pulmonary fibrotic
-# sequela was dropped because no volume retained it under the strict-wording
-# rule).
+# `bucket` is informational stratification metadata (label-density stratum the
+# volume was chosen for) and carries no answer-key information.
 #
 # Source split: dataset/valid_fixed/<patient>/<study>/<volume>.nii.gz
 # License: OpenRAIL (gated). See scripts/ct_abnormality/README.md for access setup.
 
-# Hugging Face dataset repo and split prefix we resolve volumes from.
+# Hugging Face dataset repo, volume split prefix, and the report CSV the
+# bootstrap downloads to derive gold at runtime.
 hf_repo: ibrahimhamamci/CT-RATE
 hf_split_root: dataset/valid_fixed
+hf_reports_path: dataset/radiology_text_reports/validation_reports.csv
 
-# Categories evaluated by the verifier (17). The 18th CT-RATE category,
-# "Pulmonary fibrotic sequela", is intentionally absent.
-evaluated_labels:
-  - Medical material
-  - Arterial wall calcification
-  - Cardiomegaly
-  - Pericardial effusion
-  - Coronary artery wall calcification
-  - Hiatal hernia
-  - Lymphadenopathy
-  - Emphysema
-  - Atelectasis
-  - Lung nodule
-  - Lung opacity
-  - Pleural effusion
-  - Mosaic attenuation pattern
-  - Peribronchial thickening
-  - Consolidation
-  - Bronchiectasis
-  - Interlobular septal thickening
+# The 17 evaluated abnormality categories live in gold_derivation.FINDINGS
+# (the phrase-rule schema); they are intentionally not duplicated here.
 
 volumes:
-  - task_id: valid_670_a_1
-    volume_name: valid_670_a_1.nii.gz
-    bucket: normal
-    labels:
-      - {name: Cardiomegaly, gold: 0, evidence: "Heart dimensions and compartments appear natural."}
-      - {name: Pericardial effusion, gold: 0, evidence: "Pericardial effusion was not detected."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "No lymph node was observed in the supraclavicular fossa and axilla in pathological size and appearance."}
-      - {name: Lung nodule, gold: 0, evidence: "no nodular or infiltrative lesion is detected in the lung parenchyma"}
-
-  - task_id: valid_304_a_1
-    volume_name: valid_304_a_1.nii.gz
-    bucket: light
-    labels:
-      - {name: Cardiomegaly, gold: 0, evidence: "heart contour, size are normal"}
-      - {name: Pericardial effusion, gold: 0, evidence: "Pericardial effusion-thickening was not observed."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "No enlarged lymph nodes in prevascular, pre-paratracheal, subcarinal or bilateral hilar-axillary pathological dimensions were detected."}
-      - {name: Lung opacity, gold: 1, evidence: "patchy ground glass densities are observed in crazy paving pattern"}
-
-  - task_id: valid_81_a_1
-    volume_name: valid_81_a_1.nii.gz
-    bucket: light
-    labels:
-      - {name: Cardiomegaly, gold: 0, evidence: "heart contour, size are normal"}
-      - {name: Pericardial effusion, gold: 0, evidence: "Pericardial effusion-thickening was not observed."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "No enlarged lymph nodes in prevascular, pre-paratracheal, subcarinal or bilateral hilar-axillary pathological dimensions were detected."}
-      - {name: Emphysema, gold: 1, evidence: "Subpleural emphysema areas in paraseptal-centracinar style are observed in both lungs"}
-      - {name: Lung nodule, gold: 1, evidence: "there are nonspecific millimetric nodules in both lungs"}
-
-  - task_id: valid_16_a_1
-    volume_name: valid_16_a_1.nii.gz
-    bucket: light
-    labels:
-      - {name: Cardiomegaly, gold: 0, evidence: "heart contour, size are normal"}
-      - {name: Pericardial effusion, gold: 0, evidence: "Pericardial effusion-thickening was not observed."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "No enlarged lymph nodes in prevascular, pre-paratracheal, subcarinal or bilateral hilar-axillary pathological dimensions were detected."}
-      - {name: Lung opacity, gold: 1, evidence: "ground glass areas ... in the left lung lower lobe anteromediobasal segment"}
-      - {name: Consolidation, gold: 1, evidence: "nodular consolidation areas in the left lung lower lobe anteromediobasal segment"}
-
-  - task_id: valid_137_a_1
-    volume_name: valid_137_a_1.nii.gz
-    bucket: moderate
-    labels:
-      - {name: Pericardial effusion, gold: 0, evidence: "Pericardial effusion-thickening was not observed."}
-      - {name: Hiatal hernia, gold: 1, evidence: "There is a hiatal hernia."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "No lymph node with pathological size and configuration was detected at the mediastinal and hilar level."}
-      - {name: Lung opacity, gold: 1, evidence: "ground glass densities around both lungs"}
-      - {name: Pleural effusion, gold: 0, evidence: "No bilateral pleural effusion or pneumothorax was detected."}
-      - {name: Consolidation, gold: 1, evidence: "common consolidative parenchyma areas ... around both lungs"}
-
-  - task_id: valid_481_a_2
-    volume_name: valid_481_a_2.nii.gz
-    bucket: moderate
-    labels:
-      - {name: Cardiomegaly, gold: 0, evidence: "The heart and mediastinal vascular structures have a natural appearance."}
-      - {name: Lung opacity, gold: 1, evidence: "Patchy ground glass densities are observed peripherally in the upper lobe of the right lung"}
-      - {name: Pleural effusion, gold: 0, evidence: "Pleural effusion-thickening was not detected in both hemithorax."}
-      - {name: Consolidation, gold: 1, evidence: "consolidations in the converging ground-glass appearance observed especially in the superior and basal segments of the right lung lower lobe, creating a cobblestone appearance"}
-      - {name: Interlobular septal thickening, gold: 1, evidence: "Interlobular septal thickenings are observed within the consolidations"}
-
-  - task_id: valid_636_a_1
-    volume_name: valid_636_a_1.nii.gz
-    bucket: moderate
-    labels:
-      - {name: Pericardial effusion, gold: 1, evidence: "There is mild protrusion compatible with pericardial thickening-effusion."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "No lymph node with pathological size and configuration was detected in the mediastinum."}
-      - {name: Lung opacity, gold: 1, evidence: "ground glass-style density increments in places"}
-      - {name: Mosaic attenuation pattern, gold: 1, evidence: "Mosaic attenuation pattern is observed in both lungs"}
-      - {name: Consolidation, gold: 1, evidence: "Consolidative areas containing partially air bronchograms are observed in the lingular segment of the left lung"}
-
-  - task_id: valid_265_a_2
-    volume_name: valid_265_a_2.nii.gz
-    bucket: moderate
-    labels:
-      - {name: Cardiomegaly, gold: 0, evidence: "Heart contour and size are normal."}
-      - {name: Pericardial effusion, gold: 0, evidence: "No pleural or pericardial effusion is observed"}
-      - {name: Hiatal hernia, gold: 1, evidence: "Sliding type minimal hiatal hernia is observed at the lower end of the esophagus."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "There are no pathologically enlarged lymph nodes in the mediastinum and hilar regions."}
-      - {name: Atelectasis, gold: 1, evidence: "Linear atelectasis and minimal pleuroparenchymal sequelae changes were also observed in both lungs"}
-      - {name: Lung nodule, gold: 1, evidence: "There are millimetric nonspecific nodules in both lungs"}
-      - {name: Pleural effusion, gold: 0, evidence: "No pleural or pericardial effusion is observed"}
-      - {name: Mosaic attenuation pattern, gold: 1, evidence: "A mosaic attenuation pattern was observed in both lungs"}
-
-  - task_id: valid_46_a_1
-    volume_name: valid_46_a_1.nii.gz
-    bucket: heavy
-    labels:
-      - {name: Medical material, gold: 1, evidence: "There is an appearance of a stent in the aortic root."}
-      - {name: Cardiomegaly, gold: 1, evidence: "The heart is larger than normal."}
-      - {name: Pericardial effusion, gold: 0, evidence: "No pleural or pericardial effusion was detected."}
-      - {name: Hiatal hernia, gold: 1, evidence: "There is a sliding type hiatal hernia at the lower end of the esophagus."}
-      - {name: Lymphadenopathy, gold: 0, evidence: "There are no pathologically enlarged lymph nodes in the mediastinum and hilar regions."}
-      - {name: Emphysema, gold: 1, evidence: "Minimal emphysematous changes ... were observed in both lungs"}
-      - {name: Atelectasis, gold: 1, evidence: "locally linear atelectasis were observed in both lungs"}
-      - {name: Lung nodule, gold: 1, evidence: "There are millimetric nonspecific nodules in both lungs"}
-      - {name: Pleural effusion, gold: 0, evidence: "No pleural or pericardial effusion was detected."}
-      - {name: Peribronchial thickening, gold: 1, evidence: "Minimal peribronchial thickening in both lungs"}
-      - {name: Bronchiectasis, gold: 1, evidence: "Minimal bronchiectasis is observed in the central parts of both lungs, more prominent on the left."}
-
-  - task_id: valid_144_a_1
-    volume_name: valid_144_a_1.nii.gz
-    bucket: heavy
-    labels:
-      - {name: Medical material, gold: 1, evidence: "densities of the stent material in the coronary arteries were observed"}
-      - {name: Arterial wall calcification, gold: 1, evidence: "Calcified atherosclerotic changes in the thoracic aorta"}
-      - {name: Cardiomegaly, gold: 1, evidence: "Heart size increased."}
-      - {name: Coronary artery wall calcification, gold: 1, evidence: "Calcified atherosclerotic changes in the thoracic aorta and coronary artery walls"}
-      - {name: Lymphadenopathy, gold: 1, evidence: "conglomerated lymphadenopathies"}
-      - {name: Emphysema, gold: 1, evidence: "Emphysematous changes were observed in both lungs"}
-      - {name: Atelectasis, gold: 1, evidence: "atelectatic changes distal to the mass"}
-      - {name: Lung nodule, gold: 1, evidence: "Millimetric parenchymal nodules were observed in both lungs"}
-      - {name: Lung opacity, gold: 1, evidence: "reticulated nodular opacity increases were observed in the lower lobe of the right lung"}
-      - {name: Pleural effusion, gold: 1, evidence: "An effusion measuring 31 mm in thickness was observed between the pleural leaves on the right"}
-      - {name: Consolidation, gold: 1, evidence: "around the consolidation area in the peripheral subpleura in the posterior right lung upper lobe"}
-      - {name: Interlobular septal thickening, gold: 1, evidence: "Interlobular septal thickenings are observed in the middle lobe, upper lobe and lower lobe of the right lung"}
+  - {volume_name: valid_670_a_1.nii.gz, bucket: normal}
+  - {volume_name: valid_304_a_1.nii.gz, bucket: light}
+  - {volume_name: valid_81_a_1.nii.gz, bucket: light}
+  - {volume_name: valid_16_a_1.nii.gz, bucket: light}
+  - {volume_name: valid_137_a_1.nii.gz, bucket: moderate}
+  - {volume_name: valid_481_a_2.nii.gz, bucket: moderate}
+  - {volume_name: valid_636_a_1.nii.gz, bucket: moderate}
+  - {volume_name: valid_265_a_2.nii.gz, bucket: moderate}
+  - {volume_name: valid_46_a_1.nii.gz, bucket: heavy}
+  - {volume_name: valid_144_a_1.nii.gz, bucket: heavy}

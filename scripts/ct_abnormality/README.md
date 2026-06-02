@@ -1,4 +1,4 @@
-# CT-RATE — Chest CT Multi-Abnormality Classification
+# Chest CT Multi-Abnormality Classification
 
 Patient-level chest-CT abnormality detection benchmark built on the CT-RATE
 dataset (Hamamci et al., 2024). Ten Harbor subtasks, one per CT volume; the
@@ -28,28 +28,49 @@ Setup, once per host:
 1. Visit <https://huggingface.co/datasets/ibrahimhamamci/CT-RATE> while signed
    in to your Hugging Face account and click *Agree and access repository*.
 2. Provision a read token at <https://huggingface.co/settings/tokens>.
-3. Cache the token. Either approach works:
-   - `huggingface-cli login` (writes `~/.cache/huggingface/token`).
-   - `export HF_TOKEN="hf_..."` (the downloader checks the env var first).
+3. Add it to the repo-root `.env` file (gitignored):
 
-The asset downloader (`scripts/ct_abnormality/download_volumes.py`) and the per-task
-container `entrypoint.sh` both read the token via the same precedence:
-`HF_TOKEN` env var first, otherwise `~/.cache/huggingface/token`. If neither
-is found, the downloader exits with a clear message naming the access URL,
-and the entrypoint prints the same message before the agent boots.
+       HF_TOKEN="hf_..."
+
+The per-task `bootstrap` service reads `HF_TOKEN` from `.env` via
+`env_file: ../../../../.env` in its `docker-compose.yaml`, so a one-click
+`uv run harbor run -c jobs/ct_abnormality.yaml` needs no `export` and no
+host-side `huggingface-cli login`. The credential is given to `bootstrap`
+only — `main` (where the agent runs) never receives it, so the download
+token cannot leak to the agent. If `HF_TOKEN` is empty the bootstrap exits
+with a clear message naming the access URL.
+
+The host-side asset downloader (`scripts/ct_abnormality/download_volumes.py`,
+used for optional pre-staging) reads the token with the precedence `HF_TOKEN`
+env var first, otherwise `~/.cache/huggingface/token`.
 
 ## How the benchmark works
 
-- **Manifest** (`scripts/ct_abnormality/assets/manifest.yaml`) pins the 10 volumes,
-  their density bucket, and the labels we evaluate. Each evaluated label has a
-  `gold` value (0 or 1) and an `evidence` string — the verbatim quote from the
-  paired physician report that justifies the value.
-- **Strict report-derived gold.** CT-RATE ships predicted (silver) labels that
-  disagree with the report text in places. The MedCLI integration ignores
-  those and re-derives gold from the report under a strict exact-wording rule.
-  Per volume, only labels whose value is unambiguously grounded in the report
-  are retained (4–12 labels). Labels not retained are dropped from the
-  verifier's view of that volume.
+- **Manifest** (`scripts/ct_abnormality/assets/manifest.yaml`) pins only the 10
+  volume IDs (and a density `bucket`). It contains **no gold labels and no report
+  text** — so the gated CT-RATE answer key / reports are never committed.
+- **Runtime gold derivation.** Gold is reconstructed in-container at task
+  bootstrap by `scripts/ct_abnormality/gold_derivation.py`, which downloads the
+  volume's paired radiology report and applies a hardcoded set of **unambiguous
+  report phrases** (`finding -> present/absent`). For each of the 17 evaluated
+  findings:
+  - a *present* phrase (and no *absent* phrase) → gold 1;
+  - an *absent* phrase (and no *present* phrase) → gold 0;
+  - both match (intra-report conflict, e.g. effusion present on one side, absent
+    on the other) **or** neither matches → the finding is **dropped** (not
+    scored). So only findings the report addresses unambiguously are retained
+    (4–12 per volume).
+  The derived polarity always agrees with CT-RATE's silver label for retained
+  findings — the rules only *abstain* on ambiguous cases, never contradict
+  silver. The verifier reads the runtime-written `tests/gold.json` (gitignored).
+- **Silver-label filtering + manual review.** The phrase-identification rules
+  act as a *filter* over CT-RATE's silver (model-predicted) labels: they keep
+  only findings the paired report states unambiguously and abstain on the rest.
+  On top of this automated filtering, the labels for **all 10 selected volumes
+  were thoroughly reviewed by hand** against the reports to confirm correctness.
+  So the gold for these cases is human-verified, not silver-trusted — the phrase
+  rules make derivation reproducible, and the manual review guarantees the
+  retained labels are right.
 - **Per-volume reward.** Binary `1.0` iff every retained label matches gold;
   `0.0` otherwise. The agent is asked only about the retained labels for the
   volume, so the "perfect prediction" bar is well-defined.
@@ -57,9 +78,9 @@ and the entrypoint prints the same message before the agent boots.
   that retained the disease (volumes that didn't mention a disease do not
   contribute to its TP/FP/FN). Macro-F1 averages across the 17 evaluated
   diseases; micro-F1 pools across all (volume, disease) pairs.
-- **Categories scored.** 17 of CT-RATE's 18 abnormalities — Pulmonary fibrotic
-  sequela was dropped because no volume retained it under the strict-wording
-  rule. See `.agent/plans/ct_abnormality.md` decision log for details.
+- **Categories scored.** 17 of CT-RATE's 18 abnormalities (`gold_derivation.FINDINGS`);
+  Pulmonary fibrotic sequela is excluded. See `.agent/plans/ct_abnormality.md`
+  decision log for details.
 
 ## Bootstrapping the cache
 
@@ -67,10 +88,11 @@ Stage all 10 volumes into the host cache once:
 
     uv run python scripts/ct_abnormality/download_volumes.py
 
-That populates `scripts/ct_abnormality/assets/raw_cache/<volume_name>.nii.gz` (~1 GB
-total). The cache is gitignored. Per-task container entrypoints fall back to
-the same downloader if they find a missing volume at run time, so a missing
-host cache does not block a Harbor run — it only makes the first run slower.
+That populates `scripts/ct_abnormality/assets/raw_cache/<volume_name>.nii.gz`
+(~100–350 MB each, ~3.5 GB total). The cache is gitignored. Each per-task
+`bootstrap` service falls back to downloading its own volume (using `HF_TOKEN`
+from `.env`) if it finds the volume missing at run time, so a missing host
+cache does not block a Harbor run — it only makes the first run slower.
 
 ## Generating Harbor tasks
 
@@ -89,11 +111,17 @@ back to the original scan and report. Each task directory contains:
   Harbor's base compose layer overrides `main`'s command to
   `sleep infinity` to keep the container alive.
 - `environment/bootstrap.sh` — runs in a separate compose service. Pulls
-  the volume from Hugging Face on cache miss (under a global host-side
-  `flock` so concurrent task containers don't hammer the CDN), freezes
-  the cached file read-only, copies it to `/workspace/data/scan.nii.gz`
-  via the shared workspace volume, writes `labels.txt`, and exits 0.
-- `environment/docker-compose.yaml` — two services and a named volume:
+  the volume **and the validation reports CSV** from Hugging Face on cache miss
+  (under a global host-side `flock` so concurrent task containers don't hammer
+  the CDN), freezes cached files read-only, runs `gold_derivation.py` to derive
+  this volume's gold from its report (writing `tests/gold.json` + the agent's
+  `/workspace/data/labels.txt`), copies the volume to
+  `/workspace/data/scan.nii.gz`, and exits 0.
+- `environment/gold_derivation.py` — copy of the phrase-rule module, run by the
+  bootstrap to derive gold at run time.
+- `environment/docker-compose.yaml` — two services and a named volume. All
+  host paths are **repo-relative** (`../../../../`), so the generated tasks
+  carry no absolute host path and run unchanged on any machine:
 
       services:
         main:                   # the agent runs here
@@ -102,11 +130,13 @@ back to the original scan and report. Each task directory contains:
           depends_on:
             bootstrap:
               condition: service_completed_successfully
-        bootstrap:              # one-shot data staging
+        bootstrap:              # one-shot data staging + gold derivation
           image: ${PROJECT}-img
+          env_file:
+            - ../../../../.env  # HF_TOKEN; bootstrap-only, never reaches main
           volumes:
-            - <host raw_cache>:/data/_cache:rw
-            - ${HOME}/.cache/huggingface/token:/root/.cache/huggingface/token:ro
+            - ../../../../scripts/ct_abnormality/assets/raw_cache:/data/_cache:rw
+            - ../tests:/tests:rw   # bootstrap writes the runtime gold.json here
             - workspace-data:/workspace/data
           command: ["/bin/bash", "/bootstrap.sh"]
       volumes:
@@ -118,7 +148,8 @@ back to the original scan and report. Each task directory contains:
   at the compose layer (mirrors `tasks/medagentbench/`); there are no
   per-`/workspace/` sentinel files and the installed-agent wrappers
   (`codex.py`, `claude_code.py`) are bit-identical to `origin/main`.
-- `tests/gold.json` — verifier-only gold derived from the manifest.
+- `tests/gold.json` — **not committed**; written by the bootstrap at run time
+  (gitignored) from the rule-derived gold.
 
 ## Running the benchmark
 

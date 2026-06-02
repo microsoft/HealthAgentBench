@@ -32,10 +32,14 @@ scripts/ehr_data_quality/assets/*
 scripts/clinical_trial_matching/assets/*
 !scripts/clinical_trial_matching/assets/task_configs.yaml
 # ct_abnormality build artifacts. Only ``manifest.yaml`` is committed; everything
-# else under ``assets/`` is regenerable cache (downloaded NIfTI volumes from
-# Hugging Face, ~1 GB total).
+# else under ``assets/`` is regenerable cache (downloaded NIfTI volumes + the
+# reports CSV from Hugging Face, ~3.5 GB total).
 scripts/ct_abnormality/assets/*
 !scripts/ct_abnormality/assets/manifest.yaml
+# Per-task gold is derived in-container at run time from the downloaded report
+# (see scripts/ct_abnormality/gold_derivation.py) and written here by the
+# bootstrap. It is never committed — the answer key / report text stay out of git.
+tasks/ct_abnormality/*/tests/gold.json
 # ehrshot build artifacts. Only ``task_configs.yaml`` is committed; the bulk
 # EHRSHOT bundle is staged on the host (NOT under scripts/ehrshot/assets/) at
 # ``$EHRSHOT_ASSETS_DIR``. If the user does choose to put it under
