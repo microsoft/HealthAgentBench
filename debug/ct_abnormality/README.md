@@ -28,10 +28,11 @@ The manual replay path here distinguishes among them.
 
 1. Accept the CT-RATE access agreement at
    <https://huggingface.co/datasets/ibrahimhamamci/CT-RATE> while signed in.
-2. Run `huggingface-cli login` once on the host to cache a token at
-   `~/.cache/huggingface/token`. The downloader and the per-task `bootstrap`
-   container both read this path; the docker-compose mounts the host
-   token read-only into the bootstrap service.
+2. Add `HF_TOKEN="hf_..."` to the repo-root `.env` (gitignored). The per-task
+   `bootstrap` service loads it via `env_file: ../../../../.env` in its
+   `docker-compose.yaml`; the token is given to `bootstrap` only and never
+   reaches `main`/the agent. (The optional host-side downloader in step 3 also
+   accepts `~/.cache/huggingface/token` from `huggingface-cli login`.)
 3. Pre-stage the 10 NIfTI volumes (~3.5 GB) into the host cache (optional):
 
        uv run python scripts/ct_abnormality/download_volumes.py
@@ -55,6 +56,16 @@ the volume is already at `/workspace/data/scan.nii.gz` (via a shared
 `workspace-data` named volume) and `labels.txt` is staged. There are
 no sentinel files in `/workspace/`; synchronization is purely at the
 compose layer.
+
+**Gold is derived at run time, not committed.** The bootstrap also downloads the
+volume's radiology report and runs `gold_derivation.py` (the phrase-rule module
+shipped into the image) to write `tests/gold.json` — bind-mounted from the host
+`tasks/ct_abnormality/<stem>/tests/` dir, which is **gitignored**. Harbor mounts
+that same host dir as `/tests` when it later runs the verifier. `main` never
+mounts `tests/`, so the agent never sees the gold. If you need to inspect the
+derived gold, look at `tests/gold.json` after a bootstrap run, or run
+`gold_derivation.py --reports-csv <csv> --volume <name>.nii.gz --out-gold ... --out-labels ...`
+directly.
 
 ## Running a manual replay
 
@@ -125,11 +136,11 @@ If a Harbor run fails:
    `environment/` directory). If bootstrap exited non-zero, the most
    likely cause is HF auth (next item).
 3. **HF token problem.** If the bootstrap service exits early with the
-   message "no Hugging Face token at /root/.cache/huggingface/token",
-   the host token is missing or the docker-compose mount didn't pick it
-   up. Check `tasks/ct_abnormality/<volume_stem>/environment/docker-compose.yaml`
-   for the `${HOME}/.cache/huggingface/token` mount and ensure
-   `~/.cache/huggingface/token` exists on the host.
+   message "no Hugging Face token: HF_TOKEN is empty", the token is missing
+   from `.env` or compose didn't load it. Check
+   `tasks/ct_abnormality/<volume_stem>/environment/docker-compose.yaml`
+   for the `env_file: ../../../../.env` entry and ensure the repo-root
+   `.env` defines `HF_TOKEN=hf_...`.
 4. **Cache miss + slow CDN.** Concurrent containers all racing to download
    are serialized by a global flock over `/data/_cache/.bootstrap.lock`,
    so this should not produce thrashing. If you see all containers stuck

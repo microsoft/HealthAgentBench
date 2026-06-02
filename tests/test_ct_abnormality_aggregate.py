@@ -116,6 +116,94 @@ def test_missing_prediction_counted_as_wrong(tmp_path: Path) -> None:
     assert out["n_evaluated_lung_nodule"] == 2
 
 
+def _flat_trial(reward: float, per_label: list[tuple[str, int, int]]) -> dict:
+    """Build a per-trial dict shaped like the REAL flat reward.json.
+
+    No ``per_label`` list (Harbor's uv-script metric never feeds it); instead the
+    per-disease signal is carried as flat ``gold_<suffix>`` / ``pred_<suffix>``
+    int keys. ``pred == -1`` denotes a missing prediction.
+    """
+    import re
+
+    def sanitize(name: str) -> str:
+        s = name.lower().replace("/", " ").replace("-", " ")
+        return re.sub(r"[^a-z0-9]+", "_", s).strip("_")
+
+    n_retained = len(per_label)
+    n_correct = sum(1 for _, g, p in per_label if g == p)
+    row: dict = {
+        "reward": reward,
+        "accuracy": n_correct / n_retained if n_retained else 0.0,
+        "n_retained": n_retained,
+        "n_correct": n_correct,
+    }
+    for name, gold, pred in per_label:
+        s = sanitize(name)
+        row[f"gold_{s}"] = gold
+        row[f"pred_{s}"] = pred  # -1 already means "missing"
+    return row
+
+
+def test_per_disease_f1_from_flat_keys_only(tmp_path: Path) -> None:
+    """The real Harbor path: reward.json carries flat gold_/pred_ keys and NO
+    per_label. The aggregator must still reconstruct per-disease/macro/micro F1.
+
+    This is the regression guard for the bug where Harbor's uv-script metric
+    fed only the flat reward stream, so per_label was never available and all
+    F1 collapsed to 0.0.
+    """
+    rows = [
+        _flat_trial(1.0, [("Lung opacity", 1, 1)]),     # TP for lung_opacity
+        _flat_trial(0.0, [("Cardiomegaly", 0, 1)]),     # FP for cardiomegaly
+        _flat_trial(1.0, [("Cardiomegaly", 0, 0)]),     # TN for cardiomegaly
+    ]
+    _write_jsonl(tmp_path / "rewards.jsonl", rows)
+    out = _run(tmp_path / "rewards.jsonl", tmp_path / "metric.json")
+
+    # lung_opacity: TP=1 → F1 1.0
+    assert out["f1_lung_opacity"] == 1.0
+    assert out["n_evaluated_lung_opacity"] == 1
+    # cardiomegaly: TP=0, FP=1, FN=0 → F1 0.0, evaluated over the 2 volumes that retained it
+    assert out["f1_cardiomegaly"] == 0.0
+    assert out["n_evaluated_cardiomegaly"] == 2
+    # micro F1 over pooled TP=1, FP=1, FN=0 → 2/(2+1) = 0.6667; NOT 0.0
+    assert out["micro_f1"] == 0.6667
+    # macro F1 = mean(1.0, 0.0) = 0.5
+    assert out["macro_f1"] == 0.5
+
+
+def test_flat_keys_missing_prediction_counted_wrong(tmp_path: Path) -> None:
+    """pred=-1 in the flat keys is treated as wrong (same as per_label None)."""
+    rows = [
+        _flat_trial(0.0, [("Lung nodule", 1, -1)]),  # gold+ , missing → FN
+        _flat_trial(0.0, [("Lung nodule", 0, -1)]),  # gold- , missing → FP
+    ]
+    _write_jsonl(tmp_path / "rewards.jsonl", rows)
+    out = _run(tmp_path / "rewards.jsonl", tmp_path / "metric.json")
+    assert out["f1_lung_nodule"] == 0.0
+    assert out["n_evaluated_lung_nodule"] == 2
+
+
+def test_crashed_trial_null_counts_against_denominator(tmp_path: Path) -> None:
+    """Harbor writes a literal `null` line for a trial that crashed before the
+    verifier ran. It must count as a zero-reward trial (denominator includes
+    it), not be silently dropped — otherwise pass_rate is inflated.
+    """
+    # Two real passes + one crashed (null) trial.
+    good = "\n".join(
+        json.dumps(_flat_trial(1.0, [("Lung opacity", 1, 1)])) for _ in range(2)
+    )
+    (tmp_path / "rewards.jsonl").write_text(good + "\nnull\n")
+    out = _run(tmp_path / "rewards.jsonl", tmp_path / "metric.json")
+
+    assert out["n_trials"] == 3          # crashed trial counted
+    assert out["success"] == 2           # two passes
+    assert out["pass_rate"] == 0.6667    # 2/3, NOT 2/2
+    # Crashed trial contributes no per-disease confusion.
+    assert out["f1_lung_opacity"] == 1.0
+    assert out["n_evaluated_lung_opacity"] == 2
+
+
 def test_empty_input(tmp_path: Path) -> None:
     (tmp_path / "rewards.jsonl").write_text("")
     out = _run(tmp_path / "rewards.jsonl", tmp_path / "metric.json")

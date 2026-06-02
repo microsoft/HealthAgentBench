@@ -190,28 +190,34 @@ uv run python scripts/run_harbor_baselines_multitask.py \
 ## ct_abnormality
 
 - Task path: `tasks`
-- Generated at: `20260507T184703Z`
+- Generated at: `20260602T192126Z`
 - Raw results root: `/mnt/hanoverdev/scratch/qianchuliu/medcli/results/ct_abnormality`
 - Source run dirs:
-  - `ct_abnormality__claude-code__claude-opus-4-7__20260507T002218Z`
-  - `ct_abnormality__claude-code__claude-sonnet-4-6__20260506T235956Z`
-  - `ct_abnormality__codex__gpt-5.3-codex__20260506T235029Z`
-  - `ct_abnormality__codex__gpt-5.4__20260506T230833Z`
-  - `ct_abnormality__codex__gpt-5.5__20260507T001936Z`
+  - `ct_abnormality__claude-code__claude-opus-4-6__20260602T032007Z`
+  - `ct_abnormality__claude-code__claude-opus-4-7__20260602T011230Z`
+  - `ct_abnormality__claude-code__claude-opus-4-8__20260602T032007Z`
+  - `ct_abnormality__claude-code__claude-sonnet-4-6__20260602T032007Z`
+  - `ct_abnormality__codex__gpt-5.3-codex__20260602T014538Z`
+  - `ct_abnormality__codex__gpt-5.4-mini__20260602T010821Z`
+  - `ct_abnormality__codex__gpt-5.4__20260602T010821Z`
+  - `ct_abnormality__codex__gpt-5.5__20260601T222404Z`
 
 ### Aggregate Summary
 
-| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | success | reward | reward_stdev | macro_f1 | micro_f1 |
+| Task | Harness | Model | Reasoning | Runs | Sample size | Mean total wall time (s) | Cost (USD) | success | reward | reward_stdev | micro_f1 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ct_abnormality | claude-code | claude-sonnet-4-6 | medium | 1 | 10 | 1551.30 | 1.000 | 0.100 | 0.316 | 0.517 | 0.590 |
-| ct_abnormality | codex | gpt-5.3-codex | medium | 1 | 10 | 273.95 | 1.000 | 0.100 | 0.316 | 0.493 | 0.677 |
-| ct_abnormality | codex | gpt-5.4 | medium | 1 | 10 | 466.92 | 1.000 | 0.100 | 0.316 | 0.466 | 0.656 |
-| ct_abnormality | codex | gpt-5.5 | medium | 1 | 10 | 461.48 | 1.000 | 0.100 | 0.316 | 0.604 | 0.761 |
-| ct_abnormality | claude-code | claude-opus-4-7 | medium | 1 | 10 | 763.70 | 0.000 | 0.000 | 0.000 | 0.511 | 0.588 |
+| ct_abnormality | codex | gpt-5.5 | xhigh | 3 | 10 | 841.74 | 2.2361 | 11.000 | 0.367 | 0.490 | 0.840 |
+| ct_abnormality | claude-code | claude-opus-4-7 | xhigh | 3 | 10 | 1077.31 | 4.7328 | 6.000 | 0.200 | 0.407 | 0.731 |
+| ct_abnormality | claude-code | claude-opus-4-8 | xhigh | 3 | 10 | 1628.48 | 4.0180 | 6.000 | 0.200 | 0.407 | 0.588 |
+| ct_abnormality | codex | gpt-5.4 | xhigh | 3 | 10 | 741.98 | 0.9765 | 6.000 | 0.200 | 0.407 | 0.640 |
+| ct_abnormality | codex | gpt-5.3-codex | xhigh | 3 | 10 | 740.45 | 0.9807 | 5.000 | 0.167 | 0.379 | 0.561 |
+| ct_abnormality | codex | gpt-5.4-mini | xhigh | 3 | 10 | 734.24 | 0.3071 | 4.000 | 0.133 | 0.346 | 0.670 |
+| ct_abnormality | claude-code | claude-opus-4-6 | xhigh | 3 | 10 | 1639.06 | 2.6446 | 0.000 | 0.000 | 0.000 | 0.524 |
+| ct_abnormality | claude-code | claude-sonnet-4-6 | xhigh | 3 | 10 | 1938.32 | 2.5746 | 0.000 | 0.000 | 0.000 | 0.582 |
 
 Per-trial metrics (mean ± sample stdev across subtasks): `reward`.
 
-Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`, `macro_f1`, `micro_f1`.
+Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json → stats.evals.<key>.metrics[0]`; no per-trial variance available): `success`, `micro_f1`.
 
 ### Reproducibility
 
@@ -221,19 +227,17 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --task-path tasks \
   --harness codex \
   --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/ct_abnormality \
-  --attempts 1 \
-  --reasoning-effort medium \
-  --concurrency 2 \
+  --attempts 3 \
+  --reasoning-effort xhigh \
+  --metrics-script scripts/ct_abnormality/aggregate_metric.py \
   --no-detailed \
   --metric-to-report success \
   --metric-to-report reward \
-  --metric-to-report macro_f1 \
   --metric-to-report micro_f1 \
-  --model gpt-5.4 \
-  --model gpt-5.3-codex \
   --model gpt-5.5 \
-  --model claude-opus-4-7 \
-  --model claude-sonnet-4-6
+  --model gpt-5.4 \
+  --model gpt-5.4-mini \
+  --model gpt-5.3-codex
 ```
 
 ## ehrshot
@@ -313,7 +317,7 @@ Pooled aggregate metrics from the uv-script aggregator (`<run_dir>/result.json �
 uv run python scripts/run_harbor_baselines_multitask.py \
   --task-name ehr_data_quality \
   --task-path tasks \
-  --harness copilot-cli \
+  --harness codex \
   --output-root /mnt/hanoverdev/scratch/qianchuliu/medcli/results/ehr_data_quality \
   --attempts 3 \
   --reasoning-effort medium \

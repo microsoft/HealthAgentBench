@@ -77,10 +77,10 @@ bottom confirms the cross-task wiring works.
 ### A8. Evaluation script emits the standard metrics
 
 - [ ] Per-trial `reward.json` is flat scalars and includes at least
-      `{reward, n_tasks, n_pass, pass_rate}`.
+      `{reward/pass_rate, n_tasks, n_pass/n_correct}`.
 - [ ] `scripts/<task>/aggregate_metric.py` pools per-trial rewards
       into job-level **success** (count of passing trials) and
-      **mean reward** (pass rate). Reference `xray_report_correction`.
+      **reward** or **pass_rate** (count of passing trials/total trials). Reference `xray_report_correction`.
 
 ---
 
@@ -89,11 +89,11 @@ bottom confirms the cross-task wiring works.
 ### B1. Single-task smoke
 
 - [ ] `uv run harbor run -c jobs/<task>.yaml` completes for one model
-      end-to-end (bootstrap → agent → verifier → reward.json).
+      end-to-end (bootstrap → agent → verifier → reward.json) with removed or renamed `scripts/<task>/assets/` to test on-the-fly boostrapping.
 
 ### B2. Multi-model multitask sweep
 
-Run `scripts/run_harbor_baselines_multitask.py` with all models with xhigh reasoning effort and `--attempts 3`. Before launching:
+Run `scripts/run_harbor_baselines_multitask.py` with all models (codex gpt-5.5, gpt-5.4, gpt-5.4-mini, gpt-5.3-codex, claude code opus-4-8, opus-4-7, opus-4-6, sonnet-4-6) with xhigh reasoning effort and `--attempts 3`. Before launching:
 
 - [ ] Docker address pool is healthy (`docker network ls` not near the
       ~31-bridge ceiling).
@@ -185,3 +185,5 @@ Also make sure these mnt mounted result directories are rendered in paper/baseli
    - How to re-run a single task.
    - All required credentials and their setup paths.
    - Pointers to per-task READMEs (`scripts/<task>/README.md`).
+
+3. Check all tests are passed for all tasks. 

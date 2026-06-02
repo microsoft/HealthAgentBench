@@ -14,9 +14,19 @@ services:
 
   bootstrap:
     image: ${COMPOSE_PROJECT_NAME}-img
+    env_file:
+      # HF_TOKEN (CT-RATE is OpenRAIL-gated) lives here. Other vars in .env
+      # are loaded harmlessly. Only bootstrap reads .env, so the token never
+      # reaches main / the agent.
+      - ../../../../.env
     volumes:
-      - /home/qianchuliu/projects/MedCLI/scripts/ct_abnormality/assets/raw_cache:/data/_cache:rw
-      - ${HOME}/.cache/huggingface/token:/root/.cache/huggingface/token:ro
+      # Repo-relative shared NIfTI + report cache (RW so bootstrap can populate
+      # on a cache miss). Resolves to <repo_root>/scripts/ct_abnormality/assets/raw_cache.
+      - ../../../../scripts/ct_abnormality/assets/raw_cache:/data/_cache:rw
+      # Per-task tests/ dir, RW: bootstrap writes the runtime-derived gold.json
+      # here (gitignored). Harbor mounts the same host dir as /tests for the
+      # verifier. main does NOT mount this — the agent never sees the gold.
+      - ../tests:/tests:rw
       - workspace-data:/workspace/data
     command: ["/bin/bash", "/bootstrap.sh"]
 

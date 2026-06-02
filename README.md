@@ -79,8 +79,10 @@ container can run. Each is documented in its own `scripts/<benchmark>/README.md`
 
 - **EHRSHOT** — Redivis dataset (Stanford SHAH lab). Needs an accepted DUA + an
   API token at `~/.redivis/api_token`. See [`scripts/ehrshot/README.md`](scripts/ehrshot/README.md).
-- **ct_abnormality** — CT-RATE (Hugging Face, OpenRAIL gated). Needs a HF token
-  at `~/.cache/huggingface/token`.
+- **ct_abnormality** — CT-RATE (Hugging Face, OpenRAIL gated). Accept the
+  dataset agreement, then set `HF_TOKEN` in `.env`; the per-task bootstrap
+  service reads it via `env_file`. See
+  [`scripts/ct_abnormality/README.md`](scripts/ct_abnormality/README.md).
 - **xray_report_correction** — Two PhysioNet credentialed-access projects,
   both gated by a single `PN_USER` / `PN_PASS` pair in `.env`:
   [MIMIC-CXR v2.1.0](https://physionet.org/content/mimic-cxr/2.1.0/) for the
@@ -124,6 +126,9 @@ AZURE_OPENAI_DEPLOYMENT=
 # PhysioNet credentials (xray_report_correction).
 PN_USER=
 PN_PASS=
+# Hugging Face token (ct_abnormality / CT-RATE, OpenRAIL gated). The per-task
+# bootstrap service reads this via env_file; main/the agent never sees it.
+HF_TOKEN=
 ```
 
 **CheXprompt verifier default model.** If neither `CHEXPROMPT_DEPLOYMENT` nor

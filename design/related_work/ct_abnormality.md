@@ -26,7 +26,7 @@ Chest CT is the highest-volume cross-sectional radiology study. A general-purpos
 
 ## Why MedCLI's integration is non-trivial
 
-CT-RATE's predicted labels are silver (not physician-judged) and disagree with the report text in several places we sampled. MedCLI's integration therefore re-derives gold labels from the radiology report under a strict exact-wording rule: only labels whose value (positive or negative) is unambiguously grounded in the report text are retained per volume. This produces a smaller but verifiable label set per volume (4–12 labels) and makes pass-rate reporting deterministic. The 10-volume manifest is pinned in `scripts/ct_abnormality/assets/manifest.yaml`.
+CT-RATE's predicted labels are silver (not physician-judged) and disagree with the report text in several places we sampled. MedCLI's integration therefore **filters the silver labels with phrase-identification rules**: gold is re-derived from the paired radiology report under a strict exact-wording rule (`scripts/ct_abnormality/gold_derivation.py`), keeping only labels whose value (positive or negative) is unambiguously grounded in the report text and abstaining on the rest. On top of this automated filtering, **the labels for all 10 selected cases were thoroughly reviewed by hand** against the reports — so the retained gold is human-verified, not silver-trusted. This produces a smaller but verifiable label set per volume (4–12 labels) and makes pass-rate reporting deterministic. The 10-volume manifest is pinned in `scripts/ct_abnormality/assets/manifest.yaml`.
 
 ## What MedCLI does NOT cover
 

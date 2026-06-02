@@ -32,12 +32,26 @@ The binary 0.0/1.0 reward is what Harbor reads for its ``Successes`` column.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
 
 _TRUE_TOKENS = frozenset({"yes", "y", "true", "t", "1", "positive", "pos"})
 _FALSE_TOKENS = frozenset({"no", "n", "false", "f", "0", "negative", "neg"})
+
+
+def _sanitize(name: str) -> str:
+    """Convert a disease label to a flat metric-key suffix.
+
+    Lower-case, alphanumeric + underscore only. Must match the identical
+    helper in ``scripts/ct_abnormality/aggregate_metric.py`` so the
+    ``gold_<suffix>`` / ``pred_<suffix>`` keys written here line up with the
+    ``f1_<suffix>`` keys the aggregator emits.
+    """
+    s = name.lower().replace("/", " ").replace("-", " ")
+    s = re.sub(r"[^a-z0-9]+", "_", s).strip("_")
+    return s
 
 
 def _read_turn_count() -> int | None:
@@ -123,6 +137,11 @@ def evaluate(
         )
 
     per_label: list[dict[str, Any]] = []
+    # Flat per-disease keys (gold_<suffix> / pred_<suffix>) carried in reward.json
+    # so the aggregator can rebuild per-disease F1 from the flat reward stream
+    # Harbor feeds it (Harbor's uv-script metric hands the aggregator only the
+    # flat reward.json contents — never the rich per_label in metrics.json).
+    per_disease_flat: dict[str, int] = {}
     n_correct = 0
     tp = fp = tn = fn = 0
     for entry in gold_labels:
@@ -131,6 +150,11 @@ def evaluate(
         evidence = str(entry.get("evidence", ""))
         pred = predictions.get(name.lower())
         match = pred is not None and pred == gold_value
+        suffix = _sanitize(name)
+        if suffix:
+            per_disease_flat[f"gold_{suffix}"] = gold_value
+            # -1 encodes "no parseable prediction" (None) as a flat int.
+            per_disease_flat[f"pred_{suffix}"] = pred if pred is not None else -1
         if match:
             n_correct += 1
             if gold_value == 1:
@@ -204,6 +228,9 @@ def evaluate(
         "n_false_negatives": fn,
         "turn_count": int(turn_count) if turn_count is not None else -1,
     }
+    # Per-disease gold/pred as flat ints — lets the aggregator compute
+    # macro/micro/per-disease F1 from reward.json alone (see note above).
+    reward_payload.update(per_disease_flat)
     (log_dir / "reward.json").write_text(json.dumps(reward_payload, indent=2))
     return reward
 
