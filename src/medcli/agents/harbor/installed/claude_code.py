@@ -21,7 +21,7 @@ import json
 import os
 from pathlib import Path
 
-from harbor.agents.installed.base import with_prompt_template
+from harbor.agents.installed.base import CliFlag, with_prompt_template
 from harbor.agents.installed.claude_code import ClaudeCode as HarborClaudeCode
 from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
@@ -29,6 +29,17 @@ from harbor.models.agent.context import AgentContext
 
 class ClaudeCode(HarborClaudeCode):
     """MedCLI wrapper around Harbor's Claude Code installed agent."""
+
+    # Extend upstream's CLI_FLAGS with a `betas` kwarg → `--betas <ids...>`,
+    # which Harbor 0.8.0 doesn't expose. Needed to enable beta headers like
+    # `context-1m-2025-08-07` (1M-context window on Opus 4.x).
+    CLI_FLAGS = HarborClaudeCode.CLI_FLAGS + [
+        CliFlag(
+            "betas",
+            cli="--betas",
+            type="str",
+        ),
+    ]
 
     @staticmethod
     def _resolve_auth_file() -> Path | None:
@@ -80,6 +91,8 @@ class ClaudeCode(HarborClaudeCode):
             )
         os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = token
 
+    _1M_BETA: str = "context-1m-2025-08-07"
+
     @with_prompt_template
     async def run(
         self,
@@ -90,4 +103,22 @@ class ClaudeCode(HarborClaudeCode):
         # Resolve auth lazily so unit tests that import this module don't
         # require a credentials file on disk.
         self.ensure_auth_env()
-        await super().run(instruction, environment, context)
+
+        # Translate logical "-1m" suffix → real Anthropic slug + 1M beta header.
+        # The launcher's run dir name uses the logical (suffixed) name, so rows
+        # with and without the beta are distinguishable in the rendered table.
+        logical_name = self.model_name
+        if logical_name and logical_name.endswith("-1m"):
+            self.model_name = logical_name[:-3]
+            existing_betas = (self._resolved_flags.get("betas") or "").strip()
+            self._resolved_flags["betas"] = (
+                f"{existing_betas} {self._1M_BETA}".strip()
+                if existing_betas
+                else self._1M_BETA
+            )
+            try:
+                await super().run(instruction, environment, context)
+            finally:
+                self.model_name = logical_name
+        else:
+            await super().run(instruction, environment, context)
