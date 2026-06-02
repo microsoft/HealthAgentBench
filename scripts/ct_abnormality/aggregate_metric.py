@@ -31,14 +31,29 @@ import sys
 from pathlib import Path
 
 
+def _failed_trial_row() -> dict:
+    """Synthetic zero-reward payload for a trial that crashed before the
+    verifier ran (no reward.json). It counts against the denominator (pass
+    rate, n_trials, mean accuracy) but contributes nothing to per-disease
+    confusion — a crashed trial made no predictions.
+    """
+    return {"reward": 0.0, "accuracy": 0.0, "n_retained": 0, "n_correct": 0}
+
+
 def _scan_trial_payloads(run_dir: Path) -> list[dict]:
     """Load per-trial payloads, preferring metrics.json (which carries the
     per-label breakdown) over reward.json (flat-scalar only because Harbor's
     VerifierResult schema rejects nested structures). Falls back to
     reward.json if metrics.json is absent.
+
+    Trials that crashed before the verifier ran (an ``exception.txt`` or a
+    per-trial ``result.json`` but no usable ``reward.json``) are folded in as
+    synthetic zero-reward rows so they still count against the pass rate.
     """
     trials: list[dict] = []
+    handled: set[str] = set()
     for trial_dir in sorted(run_dir.glob("*/verifier")):
+        parent = trial_dir.parent
         metrics_path = trial_dir / "metrics.json"
         reward_path = trial_dir / "reward.json"
         path = metrics_path if metrics_path.exists() else reward_path
@@ -50,6 +65,13 @@ def _scan_trial_payloads(run_dir: Path) -> list[dict]:
             continue
         if isinstance(obj, dict):
             trials.append(obj)
+            handled.add(parent.name)
+    # Synthesize zero rows for crashed trial dirs the loop above didn't cover.
+    for trial_dir in sorted(p for p in run_dir.glob("*") if p.is_dir()):
+        if trial_dir.name in handled:
+            continue
+        if (trial_dir / "exception.txt").exists() or (trial_dir / "result.json").exists():
+            trials.append(_failed_trial_row())
     return trials
 
 
@@ -59,6 +81,14 @@ _scan_reward_jsons = _scan_trial_payloads
 
 
 def _parse_jsonl(path: Path) -> list[dict]:
+    """Parse Harbor's ``rewards.jsonl``.
+
+    Harbor writes one line per trial and a literal ``null`` for any trial that
+    crashed before the verifier produced a reward (see
+    ``harbor/metrics/uv_script.py`` and ``job.py`` appending ``None``). Those
+    ``null`` lines are folded in as synthetic zero-reward rows so crashed trials
+    count against the denominator instead of being silently dropped.
+    """
     out: list[dict] = []
     for line in path.read_text().splitlines():
         line = line.strip()
@@ -68,7 +98,9 @@ def _parse_jsonl(path: Path) -> list[dict]:
             obj = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if isinstance(obj, dict):
+        if obj is None:
+            out.append(_failed_trial_row())
+        elif isinstance(obj, dict):
             out.append(obj)
     return out
 
@@ -92,6 +124,74 @@ def _sanitize(name: str) -> str:
     return s
 
 
+def _accumulate(entry: dict[str, int], gold: int, pred: int | None) -> None:
+    """Add one (gold, pred) observation to a disease confusion bucket.
+
+    ``pred`` is ``None`` (or negative) for a missing/unparseable prediction,
+    which counts as wrong on the side opposite to gold.
+    """
+    entry["n"] += 1
+    if pred is None or pred < 0:
+        if gold == 1:
+            entry["fn"] += 1
+        else:
+            entry["fp"] += 1
+    elif pred == 1 and gold == 1:
+        entry["tp"] += 1
+    elif pred == 1 and gold == 0:
+        entry["fp"] += 1
+    elif pred == 0 and gold == 0:
+        entry["tn"] += 1
+    else:
+        entry["fn"] += 1
+
+
+def _new_bucket() -> dict[str, int]:
+    return {"tp": 0, "fp": 0, "tn": 0, "fn": 0, "n": 0}
+
+
+def _disease_confusion(trials: list[dict]) -> dict[str, dict[str, int]]:
+    """Per-disease confusion keyed by sanitized suffix, across all trials.
+
+    Two trial shapes are supported, in priority order:
+
+    1. ``per_label`` list (present when the aggregator can read the rich
+       ``metrics.json`` — e.g. run manually against the run root).
+    2. flat ``gold_<suffix>`` / ``pred_<suffix>`` int keys (always present in
+       ``reward.json``). This is the path that works through Harbor's uv-script
+       metric hook, which feeds the aggregator only the flat reward stream.
+
+    A disease only contributes for the volumes (trials) that retained it, so a
+    volume whose report never mentioned a disease does not affect its F1.
+    """
+    by_label: dict[str, dict[str, int]] = {}
+    for t in trials:
+        per_label = t.get("per_label")
+        if per_label:
+            for pl in per_label:
+                suffix = _sanitize(str(pl.get("name", "")))
+                if not suffix:
+                    continue
+                pred = pl.get("predicted")
+                _accumulate(
+                    by_label.setdefault(suffix, _new_bucket()),
+                    int(pl.get("gold", 0)),
+                    None if pred is None else int(pred),
+                )
+            continue
+        # Flat-key fallback: reconstruct from gold_<suffix> / pred_<suffix>.
+        for key, gold_val in t.items():
+            if not isinstance(key, str) or not key.startswith("gold_"):
+                continue
+            suffix = key[len("gold_") :]
+            if not suffix:
+                continue
+            pred_raw = t.get(f"pred_{suffix}")
+            pred = None if pred_raw is None else int(pred_raw)
+            _accumulate(by_label.setdefault(suffix, _new_bucket()), int(gold_val), pred)
+    return by_label
+
+
 def main(input_path: Path, output_path: Path) -> None:
     trials: list[dict] = _scan_reward_jsons(input_path.parent)
     if not trials:
@@ -106,34 +206,7 @@ def main(input_path: Path, output_path: Path) -> None:
     successes = [1 if r >= 1.0 else 0 for r in rewards]
 
     # Per-disease confusion matrix across the volumes that retained the disease.
-    by_label: dict[str, dict[str, int]] = {}
-    for t in trials:
-        for pl in t.get("per_label", []):
-            name = str(pl.get("name", ""))
-            if not name:
-                continue
-            entry = by_label.setdefault(
-                name, {"tp": 0, "fp": 0, "tn": 0, "fn": 0, "n": 0}
-            )
-            gold = int(pl.get("gold", 0))
-            pred = pl.get("predicted")
-            entry["n"] += 1
-            if pred is None:
-                # Missing prediction — treat as wrong on the side opposite to gold.
-                if gold == 1:
-                    entry["fn"] += 1
-                else:
-                    entry["fp"] += 1
-                continue
-            pred_int = int(pred)
-            if pred_int == 1 and gold == 1:
-                entry["tp"] += 1
-            elif pred_int == 1 and gold == 0:
-                entry["fp"] += 1
-            elif pred_int == 0 and gold == 0:
-                entry["tn"] += 1
-            else:
-                entry["fn"] += 1
+    by_label = _disease_confusion(trials)
 
     # Per-label F1 / precision / recall (only over labels with ≥1 retained pair).
     per_label_f1: dict[str, float] = {}

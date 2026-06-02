@@ -4,15 +4,19 @@
 # the main service up (via depends_on: condition: service_completed_successfully).
 #
 # Responsibilities:
-#   1. Stage the per-task labels list to /workspace/data/labels.txt.
-#   2. If /data/_cache/<volume>.nii.gz is missing, download it from Hugging
-#      Face (CT-RATE; OpenRAIL-gated; needs host token at
-#      /root/.cache/huggingface/token).
-#   3. Freeze the just-downloaded volume read-only (per-file chmod a-w,
-#      under a global flock so concurrent fetches of *different* volumes
-#      into the same cache dir don't block each other).
-#   4. Copy the volume to /workspace/data/scan.nii.gz so main sees it
-#      via the shared workspace-data named volume.
+#   1. If /data/_cache/<volume>.nii.gz is missing, download it from Hugging
+#      Face (CT-RATE; OpenRAIL-gated; needs HF_TOKEN, supplied via the
+#      env_file: ../../../../.env entry in docker-compose.yaml). Freeze it
+#      read-only. The whole fetch runs under a global flock so concurrent
+#      task bootstraps don't hammer the CDN for the same file.
+#   2. Download the validation reports CSV into the same cache (once, shared).
+#   3. Derive THIS volume's gold from its report via /opt/gold_derivation.py
+#      (the committed phrase rules) and write:
+#         - /tests/gold.json          (verifier-only; gitignored on the host)
+#         - /workspace/data/labels.txt (agent-visible label list, names only)
+#      Gold is never committed to git — it is reconstructed here at run time.
+#   4. Copy the volume to /workspace/data/scan.nii.gz so main sees it via the
+#      shared workspace-data named volume.
 #
 # When this script exits 0, Compose lets main start.
 set -euo pipefail
@@ -22,63 +26,67 @@ GLOBAL_LOCK="$CACHE/.bootstrap.lock"
 VOLUME_NAME="valid_670_a_1.nii.gz"
 HF_REPO="ibrahimhamamci/CT-RATE"
 HF_PATH="dataset/valid_fixed/valid_670/valid_670_a/valid_670_a_1.nii.gz"
+HF_REPORTS_PATH="dataset/radiology_text_reports/validation_reports.csv"
 SRC="$CACHE/$VOLUME_NAME"
+REPORTS_CSV="$CACHE/$(basename "$HF_REPORTS_PATH")"
 DST=/workspace/data/scan.nii.gz
 
-mkdir -p /workspace/data "$CACHE"
+mkdir -p /workspace/data /tests "$CACHE"
 
-# Stage labels.txt up-front (no network needed).
-cat > /workspace/data/labels.txt <<'__LABELS_EOF__'
-Cardiomegaly
-Pericardial effusion
-Lymphadenopathy
-Lung nodule
-__LABELS_EOF__
-
-_fetch() {
-    if [ -f "$SRC" ] && [ -s "$SRC" ]; then
-        echo "[bootstrap] cache hit: $SRC"
-        return
-    fi
-    if [ ! -f /root/.cache/huggingface/token ]; then
-        echo "[bootstrap] no Hugging Face token at /root/.cache/huggingface/token." 1>&2
+_require_token() {
+    if [ -z "${HF_TOKEN:-}" ]; then
+        echo "[bootstrap] no Hugging Face token: HF_TOKEN is empty." 1>&2
         echo "  Accept the access agreement at https://huggingface.co/datasets/ibrahimhamamci/CT-RATE" 1>&2
-        echo "  and run 'huggingface-cli login' on the host." 1>&2
+        echo "  and add HF_TOKEN=hf_... to the repo-root .env file." 1>&2
         exit 2
     fi
-    echo "[bootstrap] downloading $HF_PATH ..."
-    python3 - <<PYEOF
-import shutil
-from pathlib import Path
-from huggingface_hub import hf_hub_download
-
-token = Path('/root/.cache/huggingface/token').read_text().strip()
-local = hf_hub_download(
-    repo_id="$HF_REPO",
-    filename="$HF_PATH",
-    repo_type='dataset',
-    token=token,
-    local_dir="$CACHE/.hf_staging",
-)
-src = Path(local)
-dst = Path("$SRC")
-if dst.exists() or dst.is_symlink():
-    dst.unlink()
-shutil.copyfile(src, dst)
-PYEOF
-    # Freeze the just-downloaded file read-only. Per-FILE chmod (not
-    # directory-wide) so concurrent bootstraps fetching *different*
-    # volumes into the same cache dir aren't blocked.
-    chmod a-w "$SRC" 2>/dev/null || true
 }
 
-# Serialize cold downloads across concurrent task containers (one bootstrap
-# per task can be running). The chmod runs inside this critical section so
-# the file is frozen before another container can race against the same path.
+# Download an HF dataset file into $CACHE/<basename> on cache miss.
+_download() {
+    local hf_path="$1" dest="$2"
+    if [ -f "$dest" ] && [ -s "$dest" ]; then
+        echo "[bootstrap] cache hit: $dest"
+        return
+    fi
+    _require_token
+    echo "[bootstrap] downloading $hf_path ..."
+    HF_PATH="$hf_path" DEST="$dest" python3 - <<'PYEOF'
+import os, shutil
+from pathlib import Path
+from huggingface_hub import hf_hub_download
+token = os.environ["HF_TOKEN"].strip()
+local = hf_hub_download(
+    repo_id=os.environ["HF_REPO"],
+    filename=os.environ["HF_PATH"],
+    repo_type="dataset",
+    token=token,
+    local_dir=os.environ["CACHE"] + "/.hf_staging",
+)
+dest = Path(os.environ["DEST"])
+if dest.exists() or dest.is_symlink():
+    dest.unlink()
+shutil.copyfile(local, dest)
+PYEOF
+    chmod a-w "$dest" 2>/dev/null || true
+}
+
+# Serialize cold downloads across concurrent task containers. chmod runs inside
+# the critical section so files are frozen before another container races them.
+export HF_REPO CACHE
 exec 9>"$GLOBAL_LOCK"
 flock 9
-_fetch
+_download "$HF_PATH" "$SRC"
+_download "$HF_REPORTS_PATH" "$REPORTS_CSV"
 flock -u 9
+
+# Derive this volume's gold from its report and stage the agent label list.
+# Writes /tests/gold.json (gitignored host file) + /workspace/data/labels.txt.
+python3 /opt/gold_derivation.py \
+    --reports-csv "$REPORTS_CSV" \
+    --volume "$VOLUME_NAME" \
+    --out-gold /tests/gold.json \
+    --out-labels /workspace/data/labels.txt
 
 # Stage volume into the workspace-data named volume that main shares.
 cp "$SRC" "$DST"
