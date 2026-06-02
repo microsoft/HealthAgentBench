@@ -5,9 +5,12 @@ Harbor baseline runs across tasks and installed-agent harnesses, generated with 
 ## ehr_to_meds_etl
 
 - Task path: `tasks`
-- Generated at: `20260527T203514Z`
-- Raw results root: `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds`
-- Source run dirs (retain the prior `mimic_iv_meds__*` prefix; the task was renamed after these runs were captured):
+- Generated at: `20260602T222522Z`
+- Raw results root: `/mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl` (new); `/mnt/hanoverdev/scratch/shengz/medcli/results/mimic_iv_meds` (historical, pre-rename)
+- Source run dirs (the 12 entries with the `mimic_iv_meds__*` prefix predate the task rename; the 3 entries with the `ehr_to_meds_etl__*` prefix are the 1M-context Opus sweep added 2026-06-02):
+  - `ehr_to_meds_etl__claude-code__claude-opus-4-6-1m__20260602T211149Z`
+  - `ehr_to_meds_etl__claude-code__claude-opus-4-7-1m__20260602T211149Z`
+  - `ehr_to_meds_etl__claude-code__claude-opus-4-8-1m__20260602T211149Z`
   - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T172546Z`
   - `mimic_iv_meds__claude-code__claude-opus-4-6__20260527T181803Z`
   - `mimic_iv_meds__claude-code__claude-opus-4-7__20260527T172546Z`
@@ -25,6 +28,8 @@ Harbor baseline runs across tasks and installed-agent harnesses, generated with 
 
 | Task | Harness | Model | Reasoning | Runs | Sample size | Mean reward | Reward stdev | Successes | Mean total wall time (s) | Cost (USD) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ehr_to_meds_etl | claude-code | claude-opus-4-7-1m | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 428.73 | 2.1640 |
+| ehr_to_meds_etl | claude-code | claude-opus-4-8-1m | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 434.70 | 1.9967 |
 | ehr_to_meds_etl | claude-code | claude-opus-4-7 | medium | 3 | 1 | 1.000 | 0.000 | 3 | 257.29 | 0.9682 |
 | ehr_to_meds_etl | claude-code | claude-opus-4-7 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 342.70 | 2.0179 |
 | ehr_to_meds_etl | claude-code | claude-sonnet-4-6 | xhigh | 3 | 1 | 1.000 | 0.000 | 3 | 380.29 | 0.6488 |
@@ -35,6 +40,7 @@ Harbor baseline runs across tasks and installed-agent harnesses, generated with 
 | ehr_to_meds_etl | codex | gpt-5.4 | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 466.88 | 0.6579 |
 | ehr_to_meds_etl | codex | gpt-5.4-mini | xhigh | 3 | 1 | 0.667 | 0.577 | 2 | 760.81 | 0.4666 |
 | ehr_to_meds_etl | codex | gpt-5.4-mini | medium | 3 | 1 | 0.333 | 0.577 | 1 | 366.78 | 0.1654 |
+| ehr_to_meds_etl | claude-code | claude-opus-4-6-1m | xhigh | 3 | 1 | 0.000 | 0.000 | 0 | 334.01 | 0.8220 |
 | ehr_to_meds_etl | claude-code | claude-opus-4-6 | medium | 3 | 1 | 0.000 | 0.000 | 0 | 328.45 | 0.8552 |
 | ehr_to_meds_etl | claude-code | claude-opus-4-6 | xhigh | 3 | 1 | 0.000 | 0.000 | 0 | 334.17 | 0.8219 |
 
@@ -42,7 +48,10 @@ Harbor baseline runs across tasks and installed-agent harnesses, generated with 
 
 ### Reproducibility
 
-Four phases: claude-code and codex sweeps at each of two effort levels (medium, xhigh), then a single render-mode merge.
+Four base sweep phases plus one 1M-context Opus sweep, then a single
+render-mode merge into the final 15-row table. The historical 12 dirs
+retain the prior `mimic_iv_meds__*` prefix; the new 1M dirs use the
+post-rename `ehr_to_meds_etl__*` prefix.
 
 ```bash
 # Phase A — claude-code @ xhigh
@@ -73,24 +82,36 @@ uv run python scripts/run_harbor_baselines_multitask.py \
   --attempts 3 --concurrency 3 --reasoning-effort medium --no-detailed \
   --model gpt-5.4 --model gpt-5.3-codex --model gpt-5.4-mini
 
-# Phase C — merge all 12 run dirs into the final 12-row table
+# Phase D — claude-code @ xhigh with the 1M-context beta header.
+# The `-1m` suffix is intercepted by our claude_code wrapper and translated
+# to the real Anthropic slug plus `--betas context-1m-2025-08-07`.
 uv run python scripts/run_harbor_baselines_multitask.py \
-  --task-name ehr_to_meds_etl --task-path tasks --harness codex --mode render \
+  --task-name ehr_to_meds_etl --task-path tasks --harness claude-code \
+  --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl \
+  --attempts 3 --concurrency 3 --reasoning-effort xhigh --no-detailed \
+  --model claude-opus-4-6-1m --model claude-opus-4-7-1m --model claude-opus-4-8-1m
+
+# Phase C — merge all 15 run dirs into the final 15-row table
+uv run python scripts/run_harbor_baselines_multitask.py \
+  --task-name ehr_to_meds_etl --task-path tasks --harness claude-code --mode render \
   --output-root /mnt/hanoverdev/scratch/shengz/medcli/results/ehr_to_meds_etl \
   --attempts 3 --reasoning-effort xhigh --no-detailed \
   --baselines-md paper/baselines.md \
-  --run-dir <Phase A:  claude-code  claude-opus-4-7   xhigh  run dir> \
-  --run-dir <Phase A:  claude-code  claude-opus-4-6   xhigh  run dir> \
-  --run-dir <Phase A:  claude-code  claude-sonnet-4-6 xhigh  run dir> \
-  --run-dir <Phase B:  codex        gpt-5.4           xhigh  run dir> \
-  --run-dir <Phase B:  codex        gpt-5.3-codex     xhigh  run dir> \
-  --run-dir <Phase B:  codex        gpt-5.4-mini      xhigh  run dir> \
-  --run-dir <Phase A': claude-code  claude-opus-4-7   medium run dir> \
-  --run-dir <Phase A': claude-code  claude-opus-4-6   medium run dir> \
-  --run-dir <Phase A': claude-code  claude-sonnet-4-6 medium run dir> \
-  --run-dir <Phase B': codex        gpt-5.4           medium run dir> \
-  --run-dir <Phase B': codex        gpt-5.3-codex     medium run dir> \
-  --run-dir <Phase B': codex        gpt-5.4-mini      medium run dir>
+  --run-dir <Phase A:  claude-code  claude-opus-4-7    xhigh  run dir> \
+  --run-dir <Phase A:  claude-code  claude-opus-4-6    xhigh  run dir> \
+  --run-dir <Phase A:  claude-code  claude-sonnet-4-6  xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.4            xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.3-codex      xhigh  run dir> \
+  --run-dir <Phase B:  codex        gpt-5.4-mini       xhigh  run dir> \
+  --run-dir <Phase A': claude-code  claude-opus-4-7    medium run dir> \
+  --run-dir <Phase A': claude-code  claude-opus-4-6    medium run dir> \
+  --run-dir <Phase A': claude-code  claude-sonnet-4-6  medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.4            medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.3-codex      medium run dir> \
+  --run-dir <Phase B': codex        gpt-5.4-mini       medium run dir> \
+  --run-dir <Phase D:  claude-code  claude-opus-4-6-1m xhigh  run dir> \
+  --run-dir <Phase D:  claude-code  claude-opus-4-7-1m xhigh  run dir> \
+  --run-dir <Phase D:  claude-code  claude-opus-4-8-1m xhigh  run dir>
 ```
 
 ## tumor_area_selection_pathology
