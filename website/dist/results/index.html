@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents"><title>Results — HealthAgentBench</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232dd4bf'/%3E%3Cpath d='M30 50h12l6-16 8 32 6-16h8' stroke='%2304121a' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"><script>
+      (() => {
+        const key = 'hab-theme';
+        const stored = localStorage.getItem(key);
+        const theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script><link rel="stylesheet" href="/HealthAgentBench/_astro/contribute.HO9thEca.css"></head> <body> <nav class="nav"> <div class="container"> <a class="brand" href="/HealthAgentBench/">HealthAgent<span>Bench</span></a> <div class="links"> <a href="/HealthAgentBench/#leaderboard">Leaderboard</a> <a href="/HealthAgentBench/#positioning">Related Work</a> <a href="/HealthAgentBench/#breakdown">Task Categories</a> <a class="external-link" href="https://github.com/microsoft/HealthAgentBench" target="_blank" rel="noreferrer">
+GitHub
+<span class="external-icon" aria-hidden="true">↗</span> </a> <a class="external-link" href="https://arxiv.org" target="_blank" rel="noreferrer">
+Paper
+<span class="external-icon" aria-hidden="true">↗</span> </a> <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle color theme"> <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"> <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle> <path d="M12 2.5v2.3M12 19.2v2.3M21.5 12h-2.3M4.8 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"></path> </svg> <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"> <path d="M16.8 14.7A7.5 7.5 0 0 1 9.3 7.2a7.1 7.1 0 0 1 .3-2.1 8.9 8.9 0 1 0 9.3 9.3 7.1 7.1 0 0 1-2.1.3Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"></path> </svg> </button> </div> </div> </nav>  <section> <div class="container"> <div class="section-head"> <h2>Detailed Results</h2> <p>Full per-category leaderboard for the current HealthAgentBench release, including the task-category breakdown behind the pooled success rate.</p> </div> <div class="leaderboard-actions"> <a class="btn" href="/HealthAgentBench/">Back to overview</a> </div> <div class="leaderboard-wrap"> <span class="lb-reveal-sentinel" aria-hidden="true"></span> <div class="table-wrap"> <table class="lb" id="leaderboard-results"> <thead> <tr> <th class="rank-col" data-key="rank" data-type="num" data-active data-dir="asc"># <span class="arrow">▲</span></th> <th class="model-col" data-key="agent" data-type="str">Agent <span class="arrow">↕</span></th> <th class="resolved-col" data-key="pooled" data-type="num">Success Rate <span class="arrow">↕</span></th> <th data-key="task:xray_report_correction" data-type="num" title="X-ray Report Correction"> X-ray   <span class="arrow">↕</span> </th><th data-key="task:tumor_area_selection_pathology" data-type="num" title="Pathology Tumor Area Selection"> Tumor   <span class="arrow">↕</span> </th><th data-key="task:ct_abnormality" data-type="num" title="CT Abnormality Classification"> CT   <span class="arrow">↕</span> </th><th data-key="task:ehr_data_quality" data-type="num" title="EHR Data Quality Auditing"> EHR DQ   <span class="arrow">↕</span> </th><th data-key="task:ehr_to_meds_etl" data-type="num" title="EHR Format Conversion"> Format Conv.   <span class="arrow">↕</span> </th><th data-key="task:ehr_event_modelling" data-type="num" title="EHR Event Modelling"> Event Model.   <span class="arrow">↕</span> </th><th data-key="task:clinical_trial_matching" data-type="num" title="Clinical Trial Matching"> Trial Match   <span class="arrow">↕</span> </th> <th class="cost-col" data-key="cost" data-type="num">cost/task <span class="arrow">↕</span></th> <th class="time-col" data-key="time" data-type="num">time/task <span class="arrow">↕</span></th> </tr> </thead> <tbody> <tr> <td class="rank rank-col" data-key="rank" data-val="1">1</td> <td class="model-col" data-key="agent" data-val="Codex (GPT 5.5)"> <div class="model-name">Codex (GPT 5.5)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.41975308641975306"> <div class="bar resolved-bar" style="--lb-width:42.0%;--lb-delay:0ms"> <span></span> <strong class="resolved-label">42%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.333" title="10/30 successful attempts"> <span class="score">0.33</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.4" title="12/30 successful attempts"> <span class="score">0.40</span> </td><td data-key="task:ct_abnormality" data-val="0.333" title="10/30 successful attempts"> <span class="score">0.33</span> </td><td data-key="task:ehr_data_quality" data-val="0.25" title="6/24 successful attempts"> <span class="score">0.25</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.722" title="13/18 successful attempts"> <span class="score">0.72</span> </td><td data-key="task:clinical_trial_matching" data-val="0.519" title="14/27 successful attempts"> <span class="score">0.52</span> </td> <td class="cost-col" data-key="cost" data-val="2.846514814814815"> <span class="score muted">$2.8</span> </td> <td class="time-col" data-key="time" data-val="881.3679629629629"> <span class="score muted" title="881 seconds"> 14.7m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="2">2</td> <td class="model-col" data-key="agent" data-val="Copilot (Opus 4.8)"> <div class="model-name">Copilot (Opus 4.8)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.35802469135802467"> <div class="bar resolved-bar" style="--lb-width:35.8%;--lb-delay:70ms"> <span></span> <strong class="resolved-label">36%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.2" title="6/30 successful attempts"> <span class="score">0.20</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.167" title="5/30 successful attempts"> <span class="score">0.17</span> </td><td data-key="task:ct_abnormality" data-val="0.167" title="5/30 successful attempts"> <span class="score">0.17</span> </td><td data-key="task:ehr_data_quality" data-val="0.333" title="8/24 successful attempts"> <span class="score">0.33</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.722" title="13/18 successful attempts"> <span class="score">0.72</span> </td><td data-key="task:clinical_trial_matching" data-val="0.667" title="18/27 successful attempts"> <span class="score">0.67</span> </td> <td class="cost-col" data-key="cost" data-val="3.0875018518518518"> <span class="score muted">$3.1</span> </td> <td class="time-col" data-key="time" data-val="1104.9624074074072"> <span class="score muted" title="1105 seconds"> 18.4m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="3">3</td> <td class="model-col" data-key="agent" data-val="Copilot (GPT 5.5)"> <div class="model-name">Copilot (GPT 5.5)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.345679012345679"> <div class="bar resolved-bar" style="--lb-width:34.6%;--lb-delay:140ms"> <span></span> <strong class="resolved-label">35%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.267" title="8/30 successful attempts"> <span class="score">0.27</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.133" title="4/30 successful attempts"> <span class="score">0.13</span> </td><td data-key="task:ct_abnormality" data-val="0.233" title="7/30 successful attempts"> <span class="score">0.23</span> </td><td data-key="task:ehr_data_quality" data-val="0.417" title="10/24 successful attempts"> <span class="score">0.42</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.667" title="12/18 successful attempts"> <span class="score">0.67</span> </td><td data-key="task:clinical_trial_matching" data-val="0.444" title="12/27 successful attempts"> <span class="score">0.44</span> </td> <td class="cost-col" data-key="cost" data-val="2.61627037037037"> <span class="score muted">$2.6</span> </td> <td class="time-col" data-key="time" data-val="1067.6266666666668"> <span class="score muted" title="1068 seconds"> 17.8m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="4">4</td> <td class="model-col" data-key="agent" data-val="Claude Code (Opus 4.8)"> <div class="model-name">Claude Code (Opus 4.8)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.32098765432098764"> <div class="bar resolved-bar" style="--lb-width:32.1%;--lb-delay:210ms"> <span></span> <strong class="resolved-label">32%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.167" title="5/30 successful attempts"> <span class="score">0.17</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.2" title="6/30 successful attempts"> <span class="score">0.20</span> </td><td data-key="task:ct_abnormality" data-val="0.167" title="5/30 successful attempts"> <span class="score">0.17</span> </td><td data-key="task:ehr_data_quality" data-val="0.333" title="8/24 successful attempts"> <span class="score">0.33</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.667" title="12/18 successful attempts"> <span class="score">0.67</span> </td><td data-key="task:clinical_trial_matching" data-val="0.481" title="13/27 successful attempts"> <span class="score">0.48</span> </td> <td class="cost-col" data-key="cost" data-val="3.9887333333333332"> <span class="score muted">$4.0</span> </td> <td class="time-col" data-key="time" data-val="985.4542592592594"> <span class="score muted" title="985 seconds"> 16.4m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="5">5</td> <td class="model-col" data-key="agent" data-val="Codex (GPT 5.4)"> <div class="model-name">Codex (GPT 5.4)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.2777777777777778"> <div class="bar resolved-bar" style="--lb-width:27.8%;--lb-delay:280ms"> <span></span> <strong class="resolved-label">28%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.4" title="12/30 successful attempts"> <span class="score">0.40</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.067" title="2/30 successful attempts"> <span class="score">0.07</span> </td><td data-key="task:ct_abnormality" data-val="0.3" title="9/30 successful attempts"> <span class="score">0.30</span> </td><td data-key="task:ehr_data_quality" data-val="0.125" title="3/24 successful attempts"> <span class="score">0.13</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.611" title="11/18 successful attempts"> <span class="score">0.61</span> </td><td data-key="task:clinical_trial_matching" data-val="0.185" title="5/27 successful attempts"> <span class="score">0.18</span> </td> <td class="cost-col" data-key="cost" data-val="1.2604185185185186"> <span class="score muted">$1.3</span> </td> <td class="time-col" data-key="time" data-val="1057.2248148148149"> <span class="score muted" title="1057 seconds"> 17.6m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="6">6</td> <td class="model-col" data-key="agent" data-val="Claude Code (Opus 4.7)"> <div class="model-name">Claude Code (Opus 4.7)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.2654320987654321"> <div class="bar resolved-bar" style="--lb-width:26.5%;--lb-delay:350ms"> <span></span> <strong class="resolved-label">27%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.133" title="4/30 successful attempts"> <span class="score">0.13</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.1" title="3/30 successful attempts"> <span class="score">0.10</span> </td><td data-key="task:ct_abnormality" data-val="0.133" title="4/30 successful attempts"> <span class="score">0.13</span> </td><td data-key="task:ehr_data_quality" data-val="0.333" title="8/24 successful attempts"> <span class="score">0.33</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.778" title="14/18 successful attempts"> <span class="score">0.78</span> </td><td data-key="task:clinical_trial_matching" data-val="0.259" title="7/27 successful attempts"> <span class="score">0.26</span> </td> <td class="cost-col" data-key="cost" data-val="4.753262962962962"> <span class="score muted">$4.8</span> </td> <td class="time-col" data-key="time" data-val="982.8199999999999"> <span class="score muted" title="983 seconds"> 16.4m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="7">7</td> <td class="model-col" data-key="agent" data-val="Codex (GPT 5.3)"> <div class="model-name">Codex (GPT 5.3)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.2222222222222222"> <div class="bar resolved-bar" style="--lb-width:22.2%;--lb-delay:420ms"> <span></span> <strong class="resolved-label">22%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.2" title="6/30 successful attempts"> <span class="score">0.20</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.167" title="5/30 successful attempts"> <span class="score">0.17</span> </td><td data-key="task:ct_abnormality" data-val="0.1" title="3/30 successful attempts"> <span class="score">0.10</span> </td><td data-key="task:ehr_data_quality" data-val="0.125" title="3/24 successful attempts"> <span class="score">0.13</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.611" title="11/18 successful attempts"> <span class="score">0.61</span> </td><td data-key="task:clinical_trial_matching" data-val="0.185" title="5/27 successful attempts"> <span class="score">0.18</span> </td> <td class="cost-col" data-key="cost" data-val="0.9634574074074072"> <span class="score muted">$1.0</span> </td> <td class="time-col" data-key="time" data-val="818.5338888888888"> <span class="score muted" title="819 seconds"> 13.6m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="8">8</td> <td class="model-col" data-key="agent" data-val="Claude Code (Opus 4.6)"> <div class="model-name">Claude Code (Opus 4.6)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.18518518518518517"> <div class="bar resolved-bar" style="--lb-width:18.5%;--lb-delay:490ms"> <span></span> <strong class="resolved-label">19%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.1" title="3/30 successful attempts"> <span class="score">0.10</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.167" title="5/30 successful attempts"> <span class="score">0.17</span> </td><td data-key="task:ct_abnormality" data-val="0" title="0/30 successful attempts"> <span class="score">0.00</span> </td><td data-key="task:ehr_data_quality" data-val="0.417" title="10/24 successful attempts"> <span class="score">0.42</span> </td><td data-key="task:ehr_to_meds_etl" data-val="0" title="0/3 successful attempts"> <span class="score">0.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.333" title="6/18 successful attempts"> <span class="score">0.33</span> </td><td data-key="task:clinical_trial_matching" data-val="0.222" title="6/27 successful attempts"> <span class="score">0.22</span> </td> <td class="cost-col" data-key="cost" data-val="4.1439870370370375"> <span class="score muted">$4.1</span> </td> <td class="time-col" data-key="time" data-val="1294.027037037037"> <span class="score muted" title="1294 seconds"> 21.6m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="9">9</td> <td class="model-col" data-key="agent" data-val="Claude Code (Sonnet 4.6)"> <div class="model-name">Claude Code (Sonnet 4.6)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.16666666666666666"> <div class="bar resolved-bar" style="--lb-width:16.7%;--lb-delay:560ms"> <span></span> <strong class="resolved-label">17%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.1" title="3/30 successful attempts"> <span class="score">0.10</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0.1" title="3/30 successful attempts"> <span class="score">0.10</span> </td><td data-key="task:ct_abnormality" data-val="0.033" title="1/30 successful attempts"> <span class="score">0.03</span> </td><td data-key="task:ehr_data_quality" data-val="0.125" title="3/24 successful attempts"> <span class="score">0.13</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.611" title="11/18 successful attempts"> <span class="score">0.61</span> </td><td data-key="task:clinical_trial_matching" data-val="0.111" title="3/27 successful attempts"> <span class="score">0.11</span> </td> <td class="cost-col" data-key="cost" data-val="2.9486648148148147"> <span class="score muted">$2.9</span> </td> <td class="time-col" data-key="time" data-val="1410.7957407407407"> <span class="score muted" title="1411 seconds"> 23.5m </span> </td> </tr><tr> <td class="rank rank-col" data-key="rank" data-val="10">10</td> <td class="model-col" data-key="agent" data-val="Codex (GPT 5.4 Mini)"> <div class="model-name">Codex (GPT 5.4 Mini)</div> </td> <td class="resolved-col" data-key="pooled" data-val="0.16049382716049382"> <div class="bar resolved-bar" style="--lb-width:16.0%;--lb-delay:630ms"> <span></span> <strong class="resolved-label">16%</strong> </div> </td> <td data-key="task:xray_report_correction" data-val="0.1" title="3/30 successful attempts"> <span class="score">0.10</span> </td><td data-key="task:tumor_area_selection_pathology" data-val="0" title="0/30 successful attempts"> <span class="score">0.00</span> </td><td data-key="task:ct_abnormality" data-val="0.233" title="7/30 successful attempts"> <span class="score">0.23</span> </td><td data-key="task:ehr_data_quality" data-val="0.042" title="1/24 successful attempts"> <span class="score">0.04</span> </td><td data-key="task:ehr_to_meds_etl" data-val="1" title="3/3 successful attempts"> <span class="score">1.00</span> </td><td data-key="task:ehr_event_modelling" data-val="0.389" title="7/18 successful attempts"> <span class="score">0.39</span> </td><td data-key="task:clinical_trial_matching" data-val="0.185" title="5/27 successful attempts"> <span class="score">0.18</span> </td> <td class="cost-col" data-key="cost" data-val="0.5687555555555555"> <span class="score muted">$0.6</span> </td> <td class="time-col" data-key="time" data-val="940.1735185185184"> <span class="score muted" title="940 seconds"> 15.7m </span> </td> </tr> </tbody> </table> </div> <p class="note">
+Score metric: Mean task success rate. Resolved = task success. Cost is the summed mean run cost
+    for completing a task sweep over the benchmark's 54 tasks.
+</p> </div> <script>(function(){const tableId = "leaderboard-results";
+
+  const table = document.getElementById(tableId);
+  const leaderboard = table.closest('.leaderboard-wrap');
+  const revealTarget = leaderboard.querySelector('.lb-reveal-sentinel') || leaderboard;
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+
+  const revealLeaderboard = () => {
+    if (leaderboard.classList.contains('is-visible')) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => leaderboard.classList.add('is-visible')));
+  };
+
+  const setupLeaderboardReveal = () => {
+    const isRevealTargetVisible = () => {
+      const rect = revealTarget.getBoundingClientRect();
+      const viewportH = window.innerHeight || document.documentElement.clientHeight;
+      return rect.top <= viewportH && rect.bottom >= 0;
+    };
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            observer.disconnect();
+            revealLeaderboard();
+          }
+        },
+        { threshold: [0] },
+      );
+      observer.observe(revealTarget);
+      return;
+    }
+
+    let raf = 0;
+    const checkReveal = () => {
+      raf = 0;
+      if (leaderboard.classList.contains('is-visible')) return;
+      if (isRevealTargetVisible()) {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onResize);
+        revealLeaderboard();
+      }
+    };
+    const queueCheck = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(checkReveal);
+    };
+    const onScroll = () => queueCheck();
+    const onResize = () => queueCheck();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    queueCheck();
+  };
+
+  setupLeaderboardReveal();
+
+  function sortBy(key, type, dir) {
+    const mult = dir === 'asc' ? 1 : -1;
+    rows.sort((ra, rb) => {
+      const a = ra.querySelector(`[data-key="${key}"]`).dataset.val;
+      const b = rb.querySelector(`[data-key="${key}"]`).dataset.val;
+      if (type === 'num') return (parseFloat(a) - parseFloat(b)) * mult;
+      return a.localeCompare(b) * mult;
+    });
+    rows.forEach((r) => tbody.appendChild(r));
+  }
+
+  table.querySelectorAll('thead th').forEach((th) => {
+    th.addEventListener('click', () => {
+      const { key, type } = th.dataset;
+      let dir = th.dataset.dir;
+      if (th.hasAttribute('data-active')) {
+        dir = dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        dir = key === 'rank' || type === 'str' ? 'asc' : 'desc';
+      }
+      table.querySelectorAll('thead th').forEach((o) => {
+        o.removeAttribute('data-active');
+        const arr = o.querySelector('.arrow');
+        if (arr) arr.textContent = '↕';
+      });
+      th.setAttribute('data-active', '');
+      th.dataset.dir = dir;
+      const arrow = th.querySelector('.arrow');
+      if (arrow) arrow.textContent = dir === 'asc' ? '▲' : '▼';
+      sortBy(key, type, dir);
+    });
+  });
+})();</script> <p class="note">This page expands the homepage summary into per-category success rates across all 54 tasks.</p> </div> </section>  <footer> <div class="container">
+HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents.
+        Site data generated from the paper's baseline metrics and task-count metadata.
+</div> </footer> <script>
+      (() => {
+        const key = 'hab-theme';
+        const root = document.documentElement;
+        const toggle = document.querySelector('[data-theme-toggle]');
+        const media = window.matchMedia('(prefers-color-scheme: light)');
+
+        const applyTheme = (theme, persist = false) => {
+          root.dataset.theme = theme;
+          root.style.colorScheme = theme;
+          if (toggle) {
+            toggle.setAttribute('aria-pressed', String(theme === 'light'));
+            toggle.setAttribute('aria-label', `Switch to ${theme === 'light' ? 'dark' : 'light'} mode`);
+            toggle.setAttribute('title', `Switch to ${theme === 'light' ? 'dark' : 'light'} mode`);
+          }
+          if (persist) localStorage.setItem(key, theme);
+        };
+
+        applyTheme(root.dataset.theme || 'dark');
+
+        toggle?.addEventListener('click', () => {
+          const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+          applyTheme(next, true);
+        });
+
+        media.addEventListener?.('change', (event) => {
+          if (!localStorage.getItem(key)) applyTheme(event.matches ? 'light' : 'dark');
+        });
+      })();
+    </script> </body> </html>
