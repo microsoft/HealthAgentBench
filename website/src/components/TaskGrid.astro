@@ -3,6 +3,8 @@ import tasks from '../data/tasks.json';
 import results from '../data/results.json';
 
 const best = results.bestByTask;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path) => `${basePath}${path}`;
 ---
 
 <div class="grid">
@@ -31,7 +33,7 @@ const best = results.bestByTask;
       </div>
     );
   })}
-  <a class="card card-link contribute-card" href="/contribute">
+  <a class="card card-link contribute-card" href={withBase('/contribute')}>
     <div class="slug">Open call</div>
     <h3>Add Your Healthcare Task</h3>
     <div class="tags">

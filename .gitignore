@@ -61,3 +61,23 @@ resume-codex.sh
 .env
 .env.local
 .env.*.local
+
+# JavaScript / website dependencies and generated output
+node_modules/
+.astro/
+
+# Logs and caches
+*.log
+npm-debug.log*
+.npm/
+.cache/
+
+# Environment / local overrides
+.env.*
+!.env.example
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

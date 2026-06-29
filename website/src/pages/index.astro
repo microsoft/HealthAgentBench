@@ -12,6 +12,8 @@ const nCategories = tasks.families.length;
 const totalTasks = results.totalTaskCount;
 const leader = results.agents[0];
 const leaderScore = leader.pooled.toFixed(2);
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path) => `${basePath}${path}`;
 const citationEntry = String.raw`@misc{liu2026healthagentbench,
   title = {HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents},
   author = {Liu, Qianchu and Zhang, Sheng and Qin, Guanghui and Valanarasu, Jeya Maria Jose and Rokuss, Maximilian and Lu, Mingyu and Ossowski, Timothy and Chaves, Juan Manuel Zambrano and Wong, Cliff and Argaw, Peniel and Hasija, Yashna and Wei, Mu and Yim, Wen-wai and Liu, Qin and Jing, Zilin and Entenmann, Jason and Usuyama, Naoto and Naumann, Tristan and Poon, Hoifung},
@@ -36,7 +38,7 @@ const citationEntry = String.raw`@misc{liu2026healthagentbench,
         <a class="btn primary" href="#leaderboard">View leaderboard</a>
         <a class="btn" href="https://github.com/microsoft/HealthAgentBench">GitHub</a>
         <a class="btn" href="https://arxiv.org">Paper</a>
-        <a class="btn" href="/contribute">Contribute</a>
+        <a class="btn" href={withBase('/contribute')}>Contribute</a>
       </div>
       <div class="stats">
         <div class="stat"><div class="num">{totalTasks}</div><div class="lbl">tasks</div></div>
@@ -56,7 +58,7 @@ const citationEntry = String.raw`@misc{liu2026healthagentbench,
       </div>
       <Leaderboard compact tableId="leaderboard-compact" />
       <div class="leaderboard-actions">
-        <a class="btn" href="/results">Expand Results</a>
+        <a class="btn" href={withBase('/results')}>Expand Results</a>
       </div>
     </div>
   </section>

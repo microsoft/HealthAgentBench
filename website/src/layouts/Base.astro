@@ -2,6 +2,8 @@
 import '../styles/global.css';
 const paperTitle = 'HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents';
 const { title = paperTitle, description = paperTitle } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path) => `${basePath}${path}`;
 ---
 
 <!doctype html>
@@ -25,11 +27,11 @@ const { title = paperTitle, description = paperTitle } = Astro.props;
   <body>
     <nav class="nav">
       <div class="container">
-        <a class="brand" href="/">HealthAgent<span>Bench</span></a>
+        <a class="brand" href={withBase('/')}>HealthAgent<span>Bench</span></a>
         <div class="links">
-          <a href="/#leaderboard">Leaderboard</a>
-          <a href="/#positioning">Related Work</a>
-          <a href="/#breakdown">Task Categories</a>
+          <a href={withBase('/#leaderboard')}>Leaderboard</a>
+          <a href={withBase('/#positioning')}>Related Work</a>
+          <a href={withBase('/#breakdown')}>Task Categories</a>
           <a class="external-link" href="https://github.com/microsoft/HealthAgentBench" target="_blank" rel="noreferrer">
             GitHub
             <span class="external-icon" aria-hidden="true">↗</span>
