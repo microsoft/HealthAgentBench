@@ -1,0 +1,96 @@
+{
+  "comment": "The 7 benchmark environments in the current paper draft. Titles and short labels follow the canonical paper-facing names in medcli-paper-latex/main.tex. `metricsKey` links the environment to results.json, `taskCount` follows the auto-generated counts in medcli-paper-latex/figures/coverage_data.tex, and `group` (image|text) drives the modality split in the heat-circle chart.",
+  "families": [
+    {
+      "slug": "xray_report_correction",
+      "metricsKey": "xray_report_correction",
+      "group": "image",
+      "tableLabel": "X-ray",
+      "chartLabel": "X-ray Report Corr.",
+      "title": "X-ray Report Correction",
+      "modality": "Longitudinal 2D Imaging + Text",
+      "taskType": "Multimodal report editing",
+      "taskCount": 10,
+      "dataAccess": "PhysioNet credentialed (MIMIC-CXR)",
+      "blurb": "Review a counterfactual chest X-ray Findings draft against the target study and longitudinal history, then write the corrected report section. Task success criteria: 0 errors in the corrected report."
+    },
+    {
+      "slug": "tumor_area_selection_pathology",
+      "metricsKey": "tumor_area_selection_pathology",
+      "group": "image",
+      "tableLabel": "Tumor",
+      "chartLabel": "Path. Tumor Area Sel.",
+      "title": "Pathology Tumor Area Selection",
+      "modality": "Pathology WSI",
+      "taskType": "Tile prediction",
+      "taskCount": 10,
+      "dataAccess": "Public (TCGA, CAMELYON16)",
+      "blurb": "Inspect a gigapixel pathology slide and predict the set of tumor tiles on a fixed analysis grid. Success criteria: 0.9 tile F1."
+    },
+    {
+      "slug": "ct_abnormality",
+      "metricsKey": "ct_abnormality",
+      "group": "image",
+      "tableLabel": "CT",
+      "chartLabel": "CT Abnorm. Classif.",
+      "title": "CT Abnormality Classification",
+      "modality": "3D imaging",
+      "taskType": "Visual finding detection",
+      "taskCount": 10,
+      "dataAccess": "HuggingFace gated (CT-RATE)",
+      "blurb": "Interpret a chest CT volume and emit a per-volume yes/no label vector for the report-grounded abnormality findings. Success criteria: 1.0 accuracy."
+    },
+    {
+      "slug": "ehr_data_quality",
+      "metricsKey": "ehr_data_quality",
+      "group": "text",
+      "tableLabel": "EHR DQ",
+      "chartLabel": "EHR Quality Audit",
+      "title": "EHR Data Quality Auditing",
+      "modality": "Tabular EHR",
+      "taskType": "Data quality auditing",
+      "taskCount": 8,
+      "dataAccess": "Public (MIMIC-IV demo + synthetic errors)",
+      "blurb": "Audit a corrupted EHR corpus that contin errors and flag the offending rows. Success criteria: 1.0 recall and > 0.01 precision."
+    },
+    {
+      "slug": "ehr_to_meds_etl",
+      "metricsKey": "ehr_to_meds_etl",
+      "group": "text",
+      "tableLabel": "Format Conv.",
+      "chartLabel": "EHR Format Conv.",
+      "title": "EHR Format Conversion",
+      "modality": "EHR (MEDS)",
+      "taskType": "Pipeline customization",
+      "taskCount": 1,
+      "dataAccess": "Public (MIMIC-IV demo)",
+      "blurb": "Customize a real MEDS ETL repository so it emits the required transformed cohort from raw demo EHR input. Success criteria: output exact match."
+    },
+    {
+      "slug": "ehrshot",
+      "metricsKey": "ehr_event_modelling",
+      "group": "text",
+      "tableLabel": "Event Model.",
+      "chartLabel": "EHR Event Model.",
+      "title": "EHR Event Modelling",
+      "modality": "Longitudinal EHR",
+      "taskType": "Clinical event prediction",
+      "taskCount": 6,
+      "dataAccess": "Redivis-gated (Stanford STARR via EHRSHOT)",
+      "blurb": "Learn a prediction strategy from longitudinal event timelines and output held-out patient risk scrores. Success rate: Match human engineered baseline."
+    },
+    {
+      "slug": "clinical_trial_matching",
+      "metricsKey": "clinical_trial_matching",
+      "group": "text",
+      "tableLabel": "Trial Match",
+      "chartLabel": "Clinical Trial Match.",
+      "title": "Clinical Trial Matching",
+      "modality": "Text",
+      "taskType": "Ranking / retrieval",
+      "taskCount": 9,
+      "dataAccess": "Public (TREC-CT 2021)",
+      "blurb": "Rank candidate clinical-trial IDs for a patient profile by eligibility confidence over a trial pool. Success criteria: 1.0 recall@50."
+    }
+  ]
+}

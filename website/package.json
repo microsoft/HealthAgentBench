@@ -1,0 +1,16 @@
+{
+  "name": "medcli-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Leaderboard website for the MedCLI agentic healthcare benchmark suite.",
+  "scripts": {
+    "gen": "node scripts/build-results.mjs",
+    "dev": "npm run gen && astro dev",
+    "build": "npm run gen && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^4.16.0"
+  }
+}

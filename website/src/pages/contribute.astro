@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+
+const contacts = [
+  { name: 'Flora Liu', email: 'qianchu.liu.flora@gmail.com' },
+  { name: 'Sheng Zhang', email: 'zhangsheng.zero@gmail.com' },
+  { name: 'Guanghui Qin', email: 'qin.guanghui@microsoft.com' },
+];
+---
+
+<Base
+  title="Contribute Tasks — HealthAgentBench"
+  description="Contribute realistic healthcare tasks to the HealthAgentBench benchmark."
+>
+  <header class="hero contribute-hero">
+    <div class="container">
+      <span class="eyebrow">Contribute to HealthAgentBench</span>
+      <h1>Add realistic healthcare tasks to the benchmark</h1>
+      <p class="lede">
+        HealthAgentBench grows through clinically meaningful tasks that test agent behavior in real
+        healthcare workflows. We welcome new task proposals, datasets, evaluation ideas, and domain
+        collaborations that broaden the benchmark.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="mailto:qianchu.liu.flora@gmail.com,zhangsheng.zero@gmail.com,qin.guanghui@microsoft.com?subject=HealthAgentBench%20task%20contribution">Email the team</a>
+        <a class="btn" href="https://github.com/microsoft/HealthAgentBench">GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container contribute-layout">
+      <div class="section-head">
+        <h2>What to Share</h2>
+        <p>
+          Send us a short description of the task, the healthcare workflow it represents, available
+          data or environment constraints, and how success should be evaluated.
+        </p>
+      </div>
+
+      <div class="contact-grid" aria-label="Contribution contacts">
+        {contacts.map((contact) => (
+          <a class="contact-card" href={`mailto:${contact.email}`}>
+            <span>{contact.name}</span>
+            <strong>{contact.email}</strong>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

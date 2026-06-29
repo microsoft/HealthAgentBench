@@ -1,0 +1,538 @@
+---
+// Interactive SVG adaptation of the paper's Figure 2,
+// "Positioning of healthcare agent benchmarks" (related_work_alt).
+//   x = three colour-coded interaction tiers (static QA / dialogue+simulation /
+//       executable environment); benchmarks are pinned to their column centre.
+//   y = number of input modalities a benchmark covers.
+//   marker size = number of clinical workflow stages a benchmark covers.
+// HealthAgentBench (red star) is the sole occupant of the top-right
+// "open territory": broad coverage in a fully executable environment.
+
+const OURS = 'HealthAgentBench';
+
+const CATEGORY_META = {
+  qa: {
+    label: 'Static QA',
+    axisLabel: 'Static question answering',
+    x: 1,
+  },
+  dlg: {
+    label: 'Dialogue / simulation',
+    axisLabel: 'Conversational or simulated interaction',
+    x: 2,
+  },
+  exec: {
+    label: 'Executable environment',
+    axisLabel: 'Acting in an executable environment',
+    x: 3,
+  },
+};
+
+const BENCHMARK_META = {
+  'MedAgentBoard': { modalities: ['text', 'EHR', '2D'], workflowStages: ['diagnosis', 'comms', 'research', 'data'] },
+  'ClinicalAgent Bench': { modalities: ['text', 'EHR', '2D'], workflowStages: ['diagnosis', 'data'] },
+  'HealthBench': { modalities: ['text'], workflowStages: ['comms', 'diagnosis'] },
+  'HealthBench Pro': { modalities: ['text'], workflowStages: ['comms', 'diagnosis', 'treatment', 'research'] },
+  'MAI-DxO': { modalities: ['text'], workflowStages: ['diagnosis'] },
+  'AgentClinic': { modalities: ['text', 'EHR', '2D'], workflowStages: ['diagnosis', 'comms'] },
+  'AI Hospital': { modalities: ['text'], workflowStages: ['diagnosis', 'comms'] },
+  'MedAgentSim': { modalities: ['text', '2D'], workflowStages: ['diagnosis', 'comms'] },
+  'CP-Env': { modalities: ['text'], workflowStages: ['diagnosis', 'treatment', 'comms'] },
+  'MedAgentBench': { modalities: ['EHR'], workflowStages: ['treatment', 'data'] },
+  'PhysicianBench': { modalities: ['text', 'EHR'], workflowStages: ['diagnosis', 'treatment', 'data'] },
+  'MedAgentGym': { modalities: ['text', 'EHR'], workflowStages: ['data', 'research'] },
+  'AutoMedBench': { modalities: ['2D', '3D', 'WSI'], workflowStages: ['research'] },
+  'CamylaBench': { modalities: ['2D', '3D'], workflowStages: ['research'] },
+  'HealthAdminBench': { modalities: ['GUI', 'EHR'], workflowStages: ['admin'] },
+  'HealthAgentBench': { modalities: ['text', 'EHR', '2D', '3D', 'WSI'], workflowStages: ['diagnosis', 'treatment', 'data', 'research'] },
+};
+
+// Groups of benchmarks that share one marker (same category, #modalities and
+// #workflow stages). Mirrors GROUPS in scripts/plot_related_work_alt.py.
+const RAW_GROUPS = [
+  { category: 'qa', names: ['MedAgentBoard'] },
+  { category: 'qa', names: ['ClinicalAgent Bench'] },
+  { category: 'dlg', names: ['MAI-DxO'] },
+  { category: 'dlg', names: ['HealthBench', 'AI Hospital'] },
+  { category: 'dlg', names: ['CP-Env'] },
+  { category: 'dlg', names: ['HealthBench Pro'] },
+  { category: 'dlg', names: ['MedAgentSim'] },
+  { category: 'dlg', names: ['AgentClinic'] },
+  { category: 'exec', names: ['MedAgentBench'] },
+  { category: 'exec', names: ['CamylaBench', 'HealthAdminBench'] },
+  { category: 'exec', names: ['MedAgentGym'] },
+  { category: 'exec', names: ['PhysicianBench'] },
+  { category: 'exec', names: ['AutoMedBench'] },
+  { category: 'exec', names: [OURS] },
+];
+
+// Names whose labels read better placed above their marker (avoiding overlap).
+const ABOVE_LABEL = new Set([
+  'ClinicalAgent Bench',
+  'MAI-DxO',
+  'CP-Env',
+  'CamylaBench',
+  'PhysicianBench',
+  OURS,
+]);
+
+// Plot geometry.
+const yMin = 0.4;
+const yMax = 5.7;
+const plot = { x0: 92, x1: 844, y0: 34, y1: 512 };
+const bandWidth = (plot.x1 - plot.x0) / 3;
+const xFor = (value) => plot.x0 + (value - 0.5) * bandWidth;
+const yFor = (value) => plot.y1 - ((value - yMin) / (yMax - yMin)) * (plot.y1 - plot.y0);
+
+// Marker radius encodes the number of workflow stages (area-proportional,
+// matching the matplotlib s = {1:70, 2:180, 3:330, 4:520} mapping).
+const STAGE_AREA = { 1: 70, 2: 180, 3: 330, 4: 520 };
+const stageRadius = (n) => Math.sqrt(STAGE_AREA[n] ?? STAGE_AREA[1]) * 0.98;
+
+const CAT_X = { qa: 1, dlg: 2, exec: 3 };
+
+// Resolve breadth (modalities / workflow stages) for every group.
+const groups = RAW_GROUPS.map((group, index) => {
+  const benchmarks = group.names.map((name) => {
+    const meta = BENCHMARK_META[name];
+    return {
+      name,
+      modalities: meta.modalities,
+      workflowStages: meta.workflowStages,
+      modalityCount: meta.modalities.length,
+      workflowCount: meta.workflowStages.length,
+    };
+  });
+  const isOurs = group.names.includes(OURS);
+  const nmod = benchmarks[0].modalityCount;
+  const nstage = benchmarks[0].workflowCount;
+  return {
+    id: `rw-${index}`,
+    index,
+    category: group.category,
+    names: group.names,
+    benchmarks,
+    isOurs,
+    nmod,
+    nstage,
+    detailTitle: group.names.join(', '),
+    detailDescription: isOurs
+      ? 'The sole occupant of the open top-right region: broad coverage across five modalities and four workflow stages, all inside a fully executable clinical environment.'
+      : `${group.names.length > 1 ? 'These benchmarks sit' : 'This benchmark sits'} in the ${CATEGORY_META[group.category].label.toLowerCase()} category, spanning ${nmod} ${nmod === 1 ? 'modality' : 'modalities'} and ${nstage} workflow ${nstage === 1 ? 'stage' : 'stages'}.`,
+  };
+});
+
+// Horizontal placement: pin to column centre, spreading markers that share a
+// (category, #modalities) cell. Mirrors the offset logic in the plot script.
+const cells = {};
+groups.forEach((group) => {
+  const key = `${group.category}:${group.nmod}`;
+  (cells[key] ||= []).push(group);
+});
+Object.values(cells).forEach((items) => {
+  items.sort((a, b) => a.nstage - b.nstage);
+  const n = items.length;
+  items.forEach((group, i) => {
+    let x = CAT_X[group.category] + (n === 1 ? 0 : (i - (n - 1) / 2) * (0.84 / (n - 1)));
+    if (group.category === 'exec' && group.nmod === 2) {
+      x = CAT_X[group.category] + (i - (n - 1) / 2) * (0.6 / (n - 1));
+    } else if (group.names[0] === 'ClinicalAgent Bench') {
+      x = 0.78;
+    } else if (group.names[0] === 'MedAgentBoard') {
+      x = 1.22;
+    }
+    group.xPos = x;
+  });
+});
+
+const oursId = groups.find((group) => group.isOurs).id;
+
+const renderedGroups = groups.map((group) => {
+  const cx = xFor(group.xPos);
+  const cy = yFor(group.nmod);
+  const radius = stageRadius(group.nstage);
+  // "Ours" is drawn as a red circle sized like the other data points (4 stages).
+  const markerR = radius;
+  const above = group.isOurs || ABOVE_LABEL.has(group.names[0]);
+  const lines = group.names;
+  const lineHeight = 15;
+  const aboveGap = group.isOurs ? 18 : 10;
+  const labelLines = lines.map((name, i) => {
+    const y = above
+      ? cy - markerR - aboveGap - (lines.length - 1 - i) * lineHeight
+      : cy + markerR + 16 + i * lineHeight;
+    return { name, y };
+  });
+  return {
+    ...group,
+    cx,
+    cy,
+    radius,
+    focusRadius: markerR + (group.isOurs ? 12 : 9),
+    hitRadius: Math.max(markerR + 8, 16),
+    labelLines,
+    catColor: `var(--rw-cat-${group.category})`,
+  };
+});
+
+const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
+---
+
+<div class="related-work-wrap" id="related-work-chart" data-selected-id={oursId}>
+  <div class="related-work-topbar">
+    <p class="related-work-caption">
+      Hover or tap a benchmark to inspect its modalities and workflow stages.
+    </p>
+  </div>
+
+  <div class="related-work-figure">
+    <svg
+      viewBox="0 0 880 600"
+      role="img"
+      aria-label="Positioning of healthcare agent benchmarks: interaction realism on the horizontal axis, number of modalities on the vertical axis, and number of workflow stages encoded as marker size."
+      style="width:100%;height:auto"
+    >
+      <defs>
+        <filter id="rw-soft-shadow" x="-40%" y="-40%" width="180%" height="180%">
+          <feDropShadow dx="0" dy="5" stdDeviation="8" flood-opacity="0.22" />
+        </filter>
+      </defs>
+
+      {Object.keys(CATEGORY_META).map((cat) => (
+        <rect
+          x={xFor(CAT_X[cat] - 0.5)}
+          y={plot.y0}
+          width={bandWidth}
+          height={plot.y1 - plot.y0}
+          fill={`var(--rw-band-${cat})`}
+        />
+      ))}
+      {Object.keys(CATEGORY_META).map((cat) => (
+        <line
+          x1={xFor(CAT_X[cat])}
+          y1={plot.y0}
+          x2={xFor(CAT_X[cat])}
+          y2={plot.y1}
+          stroke={`var(--rw-guide-${cat})`}
+          stroke-width="1"
+        />
+      ))}
+
+      {[1, 2, 3, 4, 5].map((tick) => (
+        <g>
+          <line
+            x1={plot.x0}
+            y1={yFor(tick)}
+            x2={plot.x1}
+            y2={yFor(tick)}
+            stroke="var(--rw-grid)"
+            stroke-dasharray="4 6"
+            stroke-width="1"
+          />
+          <text x={plot.x0 - 12} y={yFor(tick) + 4} text-anchor="end" fill="var(--rw-axis)" font-size="11">
+            {tick}
+          </text>
+        </g>
+      ))}
+
+      <rect
+        x={xFor(2.6)}
+        y={yFor(5.65)}
+        width={xFor(3.4) - xFor(2.6)}
+        height={yFor(3.55) - yFor(5.65)}
+        rx="12"
+        fill="var(--rw-callout-fill)"
+        stroke="var(--rw-callout)"
+        stroke-width="1.4"
+        stroke-dasharray="7 6"
+      />
+      <text x={xFor(3)} y={yFor(4.05)} text-anchor="middle" fill="var(--rw-callout)" font-size="14" font-style="italic" opacity="0.9">
+        open territory
+      </text>
+
+      <line x1={plot.x0} y1={plot.y1} x2={plot.x1} y2={plot.y1} stroke="var(--rw-axis)" stroke-width="1.5" />
+      <line x1={plot.x0} y1={plot.y0} x2={plot.x0} y2={plot.y1} stroke="var(--rw-axis)" stroke-width="1.5" />
+
+      <text x={(plot.x0 + plot.x1) / 2} y="592" text-anchor="middle" fill="var(--rw-axis)" font-size="14" font-style="italic">
+        Interaction realism &amp; agent autonomy →
+      </text>
+      <text
+        x="50"
+        y={(plot.y0 + plot.y1) / 2}
+        text-anchor="middle"
+        fill="var(--rw-axis)"
+        font-size="14"
+        font-style="italic"
+        transform={`rotate(-90 50 ${(plot.y0 + plot.y1) / 2})`}
+      >
+        Number of modalities
+      </text>
+
+      {Object.entries(CATEGORY_META).map(([cat, meta]) => (
+        <text
+          x={xFor(meta.x)}
+          y={plot.y1 + 34}
+          text-anchor="middle"
+          fill={`var(--rw-cat-${cat})`}
+          font-size="13"
+          font-weight="700"
+        >
+          {meta.label}
+        </text>
+      ))}
+
+      <g class="rw-legend">
+        <rect
+          x={plot.x0 + 8}
+          y={plot.y0 + 8}
+          width="248"
+          height="104"
+          rx="12"
+          fill="var(--rw-legend-fill)"
+          stroke="var(--border)"
+          stroke-width="1"
+        />
+        <text x={plot.x0 + 132} y={plot.y0 + 30} text-anchor="middle" fill="var(--rw-name)" font-size="13" font-weight="700">
+          Workflow stages (marker size)
+        </text>
+        {stageLegend.map((entry, i) => {
+          const lx = plot.x0 + 40 + i * 58;
+          const ly = plot.y0 + 68;
+          return (
+            <g>
+              <circle cx={lx} cy={ly} r={entry.r * 0.82} fill="var(--rw-dot)" />
+              <text x={lx} y={ly + 34} text-anchor="middle" fill="var(--rw-axis)" font-size="12">
+                {entry.n}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+
+      <circle
+        class="rw-focus-ring"
+        cx={renderedGroups.find((group) => group.id === oursId).cx}
+        cy={renderedGroups.find((group) => group.id === oursId).cy}
+        r={renderedGroups.find((group) => group.id === oursId).focusRadius}
+        fill="none"
+        stroke="var(--accent)"
+        stroke-width="2"
+      />
+
+      {renderedGroups.map((group, index) => (
+        <g class="rw-group" data-group-id={group.id} data-category={group.category} style={`--rw-delay:${index * 55}ms`}>
+          {group.isOurs ? (
+            <circle
+              class="rw-marker rw-marker-ours"
+              cx={group.cx}
+              cy={group.cy}
+              r={group.radius}
+              fill="var(--rw-ours)"
+              stroke="var(--rw-marker-edge)"
+              stroke-width="0.8"
+              filter="url(#rw-soft-shadow)"
+            />
+          ) : (
+            <circle
+              class="rw-marker"
+              cx={group.cx}
+              cy={group.cy}
+              r={group.radius}
+              fill={group.catColor}
+              stroke="var(--rw-marker-edge)"
+              stroke-width="0.8"
+            />
+          )}
+
+          {group.labelLines.map((line) => (
+            <text
+              class={group.isOurs ? 'rw-label rw-label-ours' : 'rw-label'}
+              x={group.cx}
+              y={line.y}
+              text-anchor="middle"
+              fill={group.isOurs ? 'var(--rw-ours)' : 'var(--rw-name)'}
+              font-size={group.isOurs ? '14' : '12'}
+              font-weight={group.isOurs ? '800' : '500'}
+            >
+              {line.name}
+            </text>
+          ))}
+
+          <circle
+            class="rw-hit"
+            cx={group.cx}
+            cy={group.cy}
+            r={group.hitRadius}
+            fill="transparent"
+            tabindex="0"
+            role="button"
+            aria-label={`${group.detailTitle}, ${CATEGORY_META[group.category].axisLabel}, ${group.nmod} modalities, ${group.nstage} workflow stages`}
+            data-group-id={group.id}
+            data-category={group.category}
+            data-title={group.detailTitle}
+            data-category-label={CATEGORY_META[group.category].label}
+            data-axis-label={CATEGORY_META[group.category].axisLabel}
+            data-nmod={group.nmod}
+            data-nstage={group.nstage}
+            data-description={group.detailDescription}
+            data-names={group.names.join('||')}
+            data-breakdown={JSON.stringify(group.benchmarks)}
+            data-cx={group.cx}
+            data-cy={group.cy}
+            data-focus={group.focusRadius}
+          />
+        </g>
+      ))}
+    </svg>
+
+    <div class="rw-tip" role="tooltip" hidden></div>
+  </div>
+
+  <div class="related-work-detail" aria-live="polite">
+    <div>
+      <span class="related-work-detail-label">Selected benchmark</span>
+      <h3>{OURS}</h3>
+    </div>
+    <p class="related-work-detail-copy">
+      The sole occupant of the open top-right region: broad coverage across five modalities and four
+      workflow stages, all inside a fully executable clinical environment.
+    </p>
+    <div class="related-work-detail-breakdown">
+      <article class="related-work-detail-entry">
+        <h4>{OURS}</h4>
+        <p><strong>Modalities (5):</strong> text, EHR, 2D, 3D, WSI</p>
+        <p><strong>Workflow stages (4):</strong> diagnosis, treatment, data, research</p>
+      </article>
+    </div>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('related-work-chart');
+
+  if (root) {
+    const tip = root.querySelector('.rw-tip');
+    const focusRing = root.querySelector('.rw-focus-ring');
+    const groupEls = Array.from(root.querySelectorAll('.rw-group'));
+    const hits = Array.from(root.querySelectorAll('.rw-hit'));
+    const detailTitle = root.querySelector('.related-work-detail h3');
+    const detailCopy = root.querySelector('.related-work-detail-copy');
+    const detailBreakdown = root.querySelector('.related-work-detail-breakdown');
+
+    let selectedId = root.dataset.selectedId;
+    let activeId = selectedId;
+
+    const updateDetail = (hit) => {
+      detailTitle.textContent = hit.dataset.title;
+      detailCopy.textContent = hit.dataset.description;
+      const breakdown = JSON.parse(hit.dataset.breakdown || '[]');
+      detailBreakdown.innerHTML = '';
+
+      breakdown.forEach((entry) => {
+        const card = document.createElement('article');
+        card.className = 'related-work-detail-entry';
+
+        const heading = document.createElement('h4');
+        heading.textContent = entry.name;
+
+        const modality = document.createElement('p');
+        modality.innerHTML = `<strong>Modalities (${entry.modalityCount}):</strong> ${entry.modalities.join(', ')}`;
+
+        const workflow = document.createElement('p');
+        workflow.innerHTML = `<strong>Workflow stages (${entry.workflowCount}):</strong> ${entry.workflowStages.join(', ')}`;
+
+        card.appendChild(heading);
+        card.appendChild(modality);
+        card.appendChild(workflow);
+        detailBreakdown.appendChild(card);
+      });
+    };
+
+    const moveFocusRing = (hit) => {
+      focusRing.setAttribute('cx', hit.dataset.cx);
+      focusRing.setAttribute('cy', hit.dataset.cy);
+      focusRing.setAttribute('r', hit.dataset.focus);
+      focusRing.style.visibility = 'visible';
+    };
+
+    const setActiveVisual = (id) => {
+      groupEls.forEach((group) => {
+        group.classList.toggle('is-active', group.dataset.groupId === id);
+      });
+    };
+
+    const showTip = (hit, clientX, clientY) => {
+      const nmod = hit.dataset.nmod;
+      const nstage = hit.dataset.nstage;
+      tip.innerHTML =
+        `<strong>${hit.dataset.title}</strong>` +
+        `<span>${hit.dataset.categoryLabel}</span>` +
+        `<span>${nmod} ${nmod === '1' ? 'modality' : 'modalities'} · ${nstage} workflow ${nstage === '1' ? 'stage' : 'stages'}</span>`;
+      tip.hidden = false;
+      if (clientX == null || clientY == null) return;
+      const pad = 14;
+      let x = clientX + pad;
+      let y = clientY + pad;
+      if (x + tip.offsetWidth > window.innerWidth) x = clientX - tip.offsetWidth - pad;
+      if (y + tip.offsetHeight > window.innerHeight) y = clientY - tip.offsetHeight - pad;
+      tip.style.left = `${x}px`;
+      tip.style.top = `${y}px`;
+    };
+
+    const hideTip = () => {
+      tip.hidden = true;
+    };
+
+    const activate = (hit, options = {}) => {
+      activeId = hit.dataset.groupId;
+      setActiveVisual(activeId);
+      moveFocusRing(hit);
+      updateDetail(hit);
+      if (options.sticky) {
+        selectedId = activeId;
+        root.dataset.selectedId = selectedId;
+      }
+      if (options.clientX != null && options.clientY != null) {
+        showTip(hit, options.clientX, options.clientY);
+      }
+    };
+
+    const restoreSelected = () => {
+      const selectedHit = hits.find((hit) => hit.dataset.groupId === selectedId);
+      if (!selectedHit) return;
+      activate(selectedHit);
+      hideTip();
+    };
+
+    hits.forEach((hit) => {
+      hit.addEventListener('mouseenter', (event) => {
+        activate(hit, { clientX: event.clientX, clientY: event.clientY });
+      });
+      hit.addEventListener('mousemove', (event) => {
+        showTip(hit, event.clientX, event.clientY);
+      });
+      hit.addEventListener('mouseleave', () => {
+        restoreSelected();
+      });
+      hit.addEventListener('focus', () => {
+        activate(hit);
+      });
+      hit.addEventListener('blur', () => {
+        restoreSelected();
+      });
+      hit.addEventListener('click', () => {
+        activate(hit, { sticky: true });
+        hideTip();
+      });
+      hit.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          activate(hit, { sticky: true });
+          hideTip();
+        }
+      });
+    });
+
+    restoreSelected();
+  }
+</script>

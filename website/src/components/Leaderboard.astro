@@ -1,0 +1,202 @@
+---
+import results from '../data/results.json';
+import taskMeta from '../data/tasks.json';
+
+const { compact = false, tableId = 'leaderboard-table' } = Astro.props;
+
+const metaByTask = Object.fromEntries(
+  taskMeta.families.filter((f) => f.metricsKey).map((f) => [f.metricsKey, f]),
+);
+const orderedTasks = [
+  ...taskMeta.families.map((f) => f.metricsKey).filter((key) => key && results.tasks.includes(key)),
+  ...results.tasks.filter((key) => !(key in metaByTask)),
+];
+const { agents, scoreMetric, totalTaskCount } = results;
+const fmt = (v) => (v === undefined || v === null ? '—' : v.toFixed(2));
+const weightedMean = (agent, key) => {
+  let weightedTotal = 0;
+  let totalTrials = 0;
+
+  for (const task of orderedTasks) {
+    const entry = agent.perTask[task];
+    const value = entry?.[key];
+    const trials = entry?.totalTrials ?? 0;
+    if (value === undefined || value === null || trials <= 0) continue;
+    weightedTotal += value * trials;
+    totalTrials += trials;
+  }
+
+  return totalTrials > 0 ? weightedTotal / totalTrials : null;
+};
+const fmtMinutes = (seconds) => (seconds === undefined || seconds === null ? '—' : `${(seconds / 60).toFixed(1)}m`);
+---
+
+<div class="leaderboard-wrap">
+  <span class="lb-reveal-sentinel" aria-hidden="true"></span>
+  <div class="table-wrap">
+    <table class:list={['lb', compact && 'lb-compact']} id={tableId}>
+      <thead>
+        <tr>
+          <th class="rank-col" data-key="rank" data-type="num" data-active data-dir="asc"># <span class="arrow">▲</span></th>
+          <th class="model-col" data-key="agent" data-type="str">Agent <span class="arrow">↕</span></th>
+          <th class="resolved-col" data-key="pooled" data-type="num">Success Rate <span class="arrow">↕</span></th>
+          {!compact &&
+            orderedTasks.map((t) => (
+              <th data-key={`task:${t}`} data-type="num" title={metaByTask[t]?.title ?? t}>
+                {metaByTask[t]?.tableLabel ?? metaByTask[t]?.chartLabel ?? t}
+                {' '}
+                <span class="arrow">↕</span>
+              </th>
+            ))}
+          <th class="cost-col" data-key="cost" data-type="num">cost/task <span class="arrow">↕</span></th>
+          {!compact && <th class="time-col" data-key="time" data-type="num">time/task <span class="arrow">↕</span></th>}
+        </tr>
+      </thead>
+      <tbody>
+        {agents.map((a, ai) => (
+          (() => {
+            const timePerTaskS = weightedMean(a, 'wallTimeS');
+            return (
+          <tr>
+            <td class="rank rank-col" data-key="rank" data-val={a.rank}>{a.rank}</td>
+            <td class:list={['model-col', compact && 'model-col-compact']} data-key="agent" data-val={a.agentLabel}>
+              <div class="model-name">{a.agentLabel}</div>
+            </td>
+            <td class:list={['resolved-col', compact && 'resolved-col-compact']} data-key="pooled" data-val={a.pooled}>
+              <div
+                class:list={['bar', 'resolved-bar', compact && 'resolved-bar-compact']}
+                style={`--lb-width:${(a.pooled * 100).toFixed(1)}%;--lb-delay:${ai * 70}ms`}
+              >
+                <span></span>
+                <strong class="resolved-label">{Math.round(a.pooled * 100)}%</strong>
+              </div>
+            </td>
+            {!compact &&
+              orderedTasks.map((t) => (
+                <td
+                  data-key={`task:${t}`}
+                  data-val={a.perTask[t]?.score ?? -1}
+                  title={
+                    a.perTask[t]?.successes !== null &&
+                    a.perTask[t]?.successes !== undefined &&
+                    a.perTask[t]?.totalTrials !== null &&
+                    a.perTask[t]?.totalTrials !== undefined
+                      ? `${a.perTask[t].successes}/${a.perTask[t].totalTrials} successful attempts`
+                      : undefined
+                  }
+                >
+                  <span class="score">{fmt(a.perTask[t]?.score)}</span>
+                </td>
+              ))}
+            <td class="cost-col" data-key="cost" data-val={a.costPerTaskUsd ?? a.totalCostUsd}>
+              <span class="score muted">${(a.costPerTaskUsd ?? a.totalCostUsd).toFixed(1)}</span>
+            </td>
+            {!compact && (
+              <td class="time-col" data-key="time" data-val={timePerTaskS ?? -1}>
+                <span class="score muted" title={timePerTaskS !== null ? `${timePerTaskS.toFixed(0)} seconds` : undefined}>
+                  {fmtMinutes(timePerTaskS)}
+                </span>
+              </td>
+            )}
+          </tr>
+            );
+          })()
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="note">
+    Score metric: Mean task success rate. Resolved = task success. Cost is the summed mean run cost
+    for completing a task sweep over the benchmark's 54 tasks.
+  </p>
+</div>
+
+<script define:vars={{ tableId }}>
+  const table = document.getElementById(tableId);
+  const leaderboard = table.closest('.leaderboard-wrap');
+  const revealTarget = leaderboard.querySelector('.lb-reveal-sentinel') || leaderboard;
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+
+  const revealLeaderboard = () => {
+    if (leaderboard.classList.contains('is-visible')) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => leaderboard.classList.add('is-visible')));
+  };
+
+  const setupLeaderboardReveal = () => {
+    const isRevealTargetVisible = () => {
+      const rect = revealTarget.getBoundingClientRect();
+      const viewportH = window.innerHeight || document.documentElement.clientHeight;
+      return rect.top <= viewportH && rect.bottom >= 0;
+    };
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            observer.disconnect();
+            revealLeaderboard();
+          }
+        },
+        { threshold: [0] },
+      );
+      observer.observe(revealTarget);
+      return;
+    }
+
+    let raf = 0;
+    const checkReveal = () => {
+      raf = 0;
+      if (leaderboard.classList.contains('is-visible')) return;
+      if (isRevealTargetVisible()) {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onResize);
+        revealLeaderboard();
+      }
+    };
+    const queueCheck = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(checkReveal);
+    };
+    const onScroll = () => queueCheck();
+    const onResize = () => queueCheck();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    queueCheck();
+  };
+
+  setupLeaderboardReveal();
+
+  function sortBy(key, type, dir) {
+    const mult = dir === 'asc' ? 1 : -1;
+    rows.sort((ra, rb) => {
+      const a = ra.querySelector(`[data-key="${key}"]`).dataset.val;
+      const b = rb.querySelector(`[data-key="${key}"]`).dataset.val;
+      if (type === 'num') return (parseFloat(a) - parseFloat(b)) * mult;
+      return a.localeCompare(b) * mult;
+    });
+    rows.forEach((r) => tbody.appendChild(r));
+  }
+
+  table.querySelectorAll('thead th').forEach((th) => {
+    th.addEventListener('click', () => {
+      const { key, type } = th.dataset;
+      let dir = th.dataset.dir;
+      if (th.hasAttribute('data-active')) {
+        dir = dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        dir = key === 'rank' || type === 'str' ? 'asc' : 'desc';
+      }
+      table.querySelectorAll('thead th').forEach((o) => {
+        o.removeAttribute('data-active');
+        const arr = o.querySelector('.arrow');
+        if (arr) arr.textContent = '↕';
+      });
+      th.setAttribute('data-active', '');
+      th.dataset.dir = dir;
+      const arrow = th.querySelector('.arrow');
+      if (arrow) arrow.textContent = dir === 'asc' ? '▲' : '▼';
+      sortBy(key, type, dir);
+    });
+  });
+</script>

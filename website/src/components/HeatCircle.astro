@@ -1,0 +1,376 @@
+---
+// Native SVG re-creation of the paper's baseline heat-circle figure.
+// Three signals per cell, all read from results.json:
+//   color  = task success rate (YlGnBu, higher = darker blue)
+//   radius = avg wall-clock time   (bigger = slower)
+//   $ tier = run cost in USD
+// Tasks are grouped by the paper's capability buckets; agents grouped by harness.
+import results from '../data/results.json';
+import tasks from '../data/tasks.json';
+
+// --- geometry ---
+const ML = 160; // left margin for row labels
+const MT = 100; // top margin for column headers
+const CELL = 72;
+const RH = 72;
+
+const CHART_GROUPS = [
+  {
+    id: 'medical-imaging',
+    label: 'Medical Imaging\n(multimodal)',
+    tasks: ['xray_report_correction', 'ct_abnormality', 'tumor_area_selection_pathology'],
+  },
+  {
+    id: 'database-retrieval',
+    label: 'Database Retrieval\n(text)',
+    tasks: ['ehr_data_quality', 'clinical_trial_matching'],
+  },
+  {
+    id: 'ml-for-ehr',
+    label: 'EHR modeling',
+    tasks: ['ehr_event_modelling', 'ehr_to_meds_etl'],
+  },
+];
+
+// --- columns: follow the paper's capability-group order ---
+const fams = tasks.families;
+const famByTask = new Map(fams.map((f) => [f.metricsKey || f.slug, f]));
+
+function wrap(text, max = 13) {
+  const words = text.split(' ');
+  const lines = [];
+  let cur = '';
+  for (const w of words) {
+    if (cur && (cur + ' ' + w).length > max) {
+      lines.push(cur);
+      cur = w;
+    } else {
+      cur = cur ? cur + ' ' + w : w;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+const ordered = CHART_GROUPS.flatMap((group) =>
+  group.tasks
+    .map((task) => famByTask.get(task))
+    .filter(Boolean)
+    .map((f) => ({ ...f, chartGroupId: group.id, chartGroupLabel: group.label })),
+);
+
+const cols = ordered.map((f, i) => ({
+  ...f,
+  cx: ML + i * CELL + CELL / 2,
+  lines: wrap(f.chartLabel || f.title),
+}));
+const GRID_W = cols.length * CELL;
+
+// --- rows: match the paper's harness grouping order ---
+const HARNESS_ORDER = ['codex', 'copilot-cli', 'claude-code'];
+const groupedAgents = HARNESS_ORDER.flatMap((harnessId) => results.agents.filter((a) => a.harnessId === harnessId));
+const rows = [...groupedAgents, ...results.agents.filter((a) => !HARNESS_ORDER.includes(a.harnessId))].map((a, i) => ({
+  ...a,
+  rowLabel: a.agentLabel,
+  cy: MT + i * RH + RH / 2,
+}));
+
+// --- scales ---
+const STOPS = [
+  [0, '#ffffd9'], [0.125, '#edf8b1'], [0.25, '#c7e9b4'], [0.375, '#7fcdbb'],
+  [0.5, '#41b6c4'], [0.625, '#1d91c0'], [0.75, '#225ea8'], [0.875, '#253494'], [1, '#081d58'],
+];
+const hex2rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+function colorFor(s) {
+  s = Math.max(0, Math.min(1, s));
+  for (let i = 1; i < STOPS.length; i++) {
+    if (s <= STOPS[i][0]) {
+      const [p0, c0] = STOPS[i - 1];
+      const [p1, c1] = STOPS[i];
+      const t = (s - p0) / (p1 - p0);
+      const a = hex2rgb(c0), b = hex2rgb(c1);
+      const m = a.map((v, k) => Math.round(v + (b[k] - v) * t));
+      return `rgb(${m[0]},${m[1]},${m[2]})`;
+    }
+  }
+  return STOPS[STOPS.length - 1][1];
+}
+const WALL_FLOOR = 60;
+const WALL_CEIL = 3900;
+function rFor(t) {
+  const clamped = Math.max(WALL_FLOOR, Math.min(WALL_CEIL, t || WALL_FLOOR));
+  return 4 + 16 * ((Math.sqrt(clamped) - Math.sqrt(WALL_FLOOR)) / (Math.sqrt(WALL_CEIL) - Math.sqrt(WALL_FLOOR)));
+}
+const tierFor = (c) => (c < 1 ? '$' : c < 2 ? '$$' : c < 3 ? '$$$' : '$$$$');
+
+// --- cells ---
+const cells = [];
+rows.forEach((row, ri) => {
+  cols.forEach((col, ci) => {
+    const pt = col.metricsKey ? row.perTask[col.metricsKey] : null;
+    const base = {
+      cx: col.cx,
+      cy: row.cy,
+      ri,
+      ci,
+      agent: row.rowLabel,
+      task: col.title,
+      revealDelayMs: ci * 90 + ri * 18,
+    };
+    if (!pt) cells.push({ ...base, noScore: true });
+    else
+      cells.push({
+        ...base,
+        color: colorFor(pt.score),
+        r: rFor(pt.wallTimeS),
+        tier: tierFor(pt.costUsd),
+        score: pt.score,
+        wallTimeS: pt.wallTimeS,
+        turns: pt.avgTurns,
+        cost: pt.costUsd,
+      });
+  });
+});
+
+// --- group brackets ---
+const brackets = CHART_GROUPS.map((group) => {
+  const cs = cols.filter((c) => c.chartGroupId === group.id);
+  const x0 = cs[0].cx - CELL / 2;
+  const x1 = cs[cs.length - 1].cx + CELL / 2;
+  return { ...group, x0, x1, mid: (x0 + x1) / 2, lines: group.label.split('\n') };
+});
+const bracketY = MT + rows.length * RH + 16;
+
+// --- legends ---
+const legendX = 720;
+const sizeMinutes = [2, 5, 10, 20, 40, 60];
+const costTiers = [['$', '< $1'], ['$$', '$1–2'], ['$$$', '$2–3'], ['$$$$', '> $3']];
+
+const LABEL = 'var(--text)';
+const MUTED = 'var(--muted)';
+const GREEN = 'var(--good)';
+const VB_W = 910;
+const VB_H = Math.max(740, bracketY + 64);
+const VB_MINX = -56; // left gutter so the rotated "Agent" title clears the row labels
+---
+
+<div class="chart-wrap" id="heatcircle">
+  <svg viewBox={`${VB_MINX} 0 ${VB_W - VB_MINX} ${VB_H}`} role="img" aria-label="Per-task-category success rate, effort, and cost for each agent" style="width:100%;height:auto">
+    <defs>
+      <linearGradient id="ylgnbu" x1="0" y1="0" x2="1" y2="0">
+        {STOPS.map(([o, c]) => <stop offset={`${o * 100}%`} stop-color={c} />)}
+      </linearGradient>
+    </defs>
+
+    <!-- axis titles -->
+    <text x={ML + GRID_W / 2} y="28" text-anchor="middle" fill={MUTED} font-size="18" font-style="italic">Task Category (Environment)</text>
+    <text x="-28" y={MT + (rows.length * RH) / 2} text-anchor="middle" fill={MUTED} font-size="18" font-style="italic" transform={`rotate(-90 -28 ${MT + (rows.length * RH) / 2})`}>Agent</text>
+
+    <!-- column headers -->
+    {cols.map((col, ci) => (
+      <text class="hc-col" data-col={ci} text-anchor="middle" fill={LABEL} font-size="11">
+        {col.lines.map((ln, i) => (
+          <tspan x={col.cx} y={MT - 16 - (col.lines.length - 1 - i) * 13}>{ln}</tspan>
+        ))}
+      </text>
+    ))}
+
+    <!-- row labels -->
+    {rows.map((row, ri) => (
+      <text class="hc-row" data-row={ri} x={ML - 14} y={row.cy + 4} text-anchor="end" fill={LABEL} font-size="12">{row.rowLabel}</text>
+    ))}
+
+    <!-- cells -->
+    {cells.map((c) =>
+      c.noScore ? (
+        <g class="hc-cell hc-cell--empty" style={`--hc-delay:${c.revealDelayMs}ms`}>
+          <circle cx={c.cx} cy={c.cy} r="13" fill="#1b2942" stroke="#3a4a66" />
+          <line x1={c.cx - 6} y1={c.cy} x2={c.cx + 6} y2={c.cy} stroke="#6b7a96" stroke-width="1.5" />
+        </g>
+      ) : (
+        <g class="hc-cell hc-cell--scored" style={`--hc-delay:${c.revealDelayMs}ms`}>
+          <circle cx={c.cx} cy={c.cy} r={c.r} fill={c.color} stroke="rgba(0,0,0,0.25)" stroke-width="0.5" />
+          <text x={c.cx} y={c.cy + CELL / 2 - 6} text-anchor="middle" fill={GREEN} font-size="10" font-weight="700">{c.tier}</text>
+        </g>
+      ),
+    )}
+
+    <!-- group brackets -->
+    {brackets.map((b) => (
+      <g>
+        <line x1={b.x0 + 6} y1={bracketY} x2={b.x1 - 6} y2={bracketY} stroke="#5a6b88" stroke-width="1.5" />
+        <text x={b.mid} text-anchor="middle" fill={LABEL} font-size="12" font-weight="700">
+          {b.lines.map((ln, i) => (
+            <tspan x={b.mid} y={bracketY + 20 + i * 13}>{ln}</tspan>
+          ))}
+        </text>
+      </g>
+    ))}
+
+    <!-- color legend -->
+    <text x={legendX} y={MT + 4} fill={LABEL} font-size="12" font-weight="600">Task success rate</text>
+    <rect x={legendX} y={MT + 14} width="130" height="14" fill="url(#ylgnbu)" rx="2" />
+    {[0, 0.5, 1].map((t, i) => (
+      <text x={legendX + i * 65} y={MT + 44} text-anchor="middle" fill={MUTED} font-size="10">{t.toFixed(2)}</text>
+    ))}
+    <text x={legendX} y={MT + 62} fill={MUTED} font-size="10">higher is better</text>
+
+    <!-- size legend (two rows of three) -->
+    <text x={legendX} y={MT + 110} fill={LABEL} font-size="12" font-weight="600">Avg wall-clock time</text>
+    {sizeMinutes.map((t, i) => {
+      const cx = legendX + 24 + (i % 3) * 64;
+      const cy = MT + 142 + Math.floor(i / 3) * 52;
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r={rFor(t * 60)} fill={MUTED} fill-opacity="0.5" />
+          <text x={cx} y={cy + 28} text-anchor="middle" fill={MUTED} font-size="10">{t}m</text>
+        </g>
+      );
+    })}
+    <text x={legendX} y={MT + 256} fill={MUTED} font-size="10">smaller = faster</text>
+
+    <!-- cost legend -->
+    <text x={legendX} y={MT + 300} fill={LABEL} font-size="12" font-weight="600">Run cost tier (USD)</text>
+    {costTiers.map(([sym, range], i) => (
+      <g>
+        <text x={legendX + 6} y={MT + 328 + i * 26} fill={GREEN} font-size="12" font-weight="700">{sym}</text>
+        <text x={legendX + 70} y={MT + 328 + i * 26} fill={MUTED} font-size="11">{range}</text>
+      </g>
+    ))}
+
+    <!-- focus ring (repositioned on hover) -->
+    <rect id="hc-focus" width={CELL} height={RH} rx="8" fill="none" stroke="#2dd4bf" stroke-width="2" visibility="hidden" pointer-events="none" />
+
+    <!-- interactive hit layer -->
+    {cells.map((c) => (
+      <rect
+        class="hc-hit"
+        x={c.cx - CELL / 2}
+        y={c.cy - RH / 2}
+        width={CELL}
+        height={RH}
+        fill="transparent"
+        data-row={c.ri}
+        data-col={c.ci}
+        data-agent={c.agent}
+        data-task={c.task}
+        data-noscore={c.noScore ? '1' : ''}
+        data-score={c.noScore ? '' : c.score.toFixed(2)}
+        data-time={c.noScore ? '' : (c.wallTimeS / 60).toFixed(1)}
+        data-turns={c.noScore ? '' : Math.round(c.turns)}
+        data-cost={c.noScore ? '' : c.cost.toFixed(2)}
+      />
+    ))}
+  </svg>
+  <span class="hc-reveal-sentinel" aria-hidden="true"></span>
+  <div class="hc-tip" role="tooltip" hidden></div>
+</div>
+
+<script>
+  const root = document.getElementById('heatcircle');
+  if (root) {
+    const svg = root.querySelector('svg');
+    const tip = root.querySelector('.hc-tip');
+    const revealTarget = root.querySelector('.hc-reveal-sentinel') || root;
+    const focus = svg.querySelector('#hc-focus');
+    const rowEls = svg.querySelectorAll('.hc-row');
+    const colEls = svg.querySelectorAll('.hc-col');
+    const hits = svg.querySelectorAll('.hc-hit');
+    const revealChart = () => {
+      if (root.classList.contains('is-visible')) return;
+      requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('is-visible')));
+    };
+    const setupScrollReveal = () => {
+      const isRevealTargetVisible = () => {
+        const rect = revealTarget.getBoundingClientRect();
+        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+        return rect.top <= viewportH && rect.bottom >= 0;
+      };
+
+      if ('IntersectionObserver' in window) {
+        let hasScrolled = false;
+        let targetVisible = false;
+        const revealIfReady = () => {
+          if (hasScrolled && targetVisible) {
+            window.removeEventListener('scroll', onScroll);
+            observer.disconnect();
+            revealChart();
+          }
+        };
+        const onScroll = () => {
+          hasScrolled = true;
+          revealIfReady();
+        };
+        const observer = new IntersectionObserver(
+          (entries) => {
+            targetVisible = entries.some((entry) => entry.isIntersecting);
+            revealIfReady();
+          },
+          { threshold: [0] },
+        );
+        window.addEventListener('scroll', onScroll, { passive: true });
+        observer.observe(revealTarget);
+        return;
+      }
+
+      let raf = 0;
+      let hasScrolled = false;
+      const checkReveal = () => {
+        raf = 0;
+        if (!hasScrolled) return;
+        if (root.classList.contains('is-visible')) return;
+        if (isRevealTargetVisible()) {
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onResize);
+          revealChart();
+        }
+      };
+      const queueCheck = () => {
+        if (raf) return;
+        raf = window.requestAnimationFrame(checkReveal);
+      };
+      const onScroll = () => {
+        hasScrolled = true;
+        queueCheck();
+      };
+      const onResize = () => queueCheck();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onResize);
+    };
+
+    setupScrollReveal();
+
+    const clearHighlight = () => {
+      focus.setAttribute('visibility', 'hidden');
+      rowEls.forEach((r) => r.classList.remove('is-active'));
+      colEls.forEach((c) => c.classList.remove('is-active'));
+      tip.hidden = true;
+    };
+
+    hits.forEach((hit) => {
+      hit.addEventListener('mouseenter', () => {
+        const d = hit.dataset;
+        focus.setAttribute('x', hit.getAttribute('x'));
+        focus.setAttribute('y', hit.getAttribute('y'));
+        focus.setAttribute('visibility', 'visible');
+        rowEls.forEach((r) => r.classList.toggle('is-active', r.dataset.row === d.row));
+        colEls.forEach((c) => c.classList.toggle('is-active', c.dataset.col === d.col));
+        const body = d.noscore
+          ? 'No pooled success rate · per-class F1 only'
+          : `Success rate ${d.score} · ${d.time} min · ${d.turns} turns · $${d.cost}`;
+        tip.innerHTML = `<strong>${d.agent}</strong><span>${d.task}</span><span>${body}</span>`;
+        tip.hidden = false;
+      });
+      hit.addEventListener('mousemove', (e) => {
+        const pad = 14;
+        let x = e.clientX + pad;
+        let y = e.clientY + pad;
+        if (x + tip.offsetWidth > window.innerWidth) x = e.clientX - tip.offsetWidth - pad;
+        if (y + tip.offsetHeight > window.innerHeight) y = e.clientY - tip.offsetHeight - pad;
+        tip.style.left = x + 'px';
+        tip.style.top = y + 'px';
+      });
+      hit.addEventListener('mouseleave', clearHighlight);
+    });
+  }
+</script>

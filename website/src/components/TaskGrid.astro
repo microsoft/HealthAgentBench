@@ -1,0 +1,49 @@
+---
+import tasks from '../data/tasks.json';
+import results from '../data/results.json';
+
+const best = results.bestByTask;
+---
+
+<div class="grid">
+  {tasks.families.map((f) => {
+    const score = f.metricsKey ? best[f.metricsKey] : null;
+    return (
+      <div class="card">
+        <div class="slug">{f.chartLabel || f.title}</div>
+        <h3>{f.title}</h3>
+        <div class="tags">
+          <span class="tag">{f.modality}</span>
+          <span class="tag">{f.taskType}</span>
+          <span class="tag">{f.taskCount} {f.taskCount === 1 ? 'task' : 'tasks'}</span>
+        </div>
+        <p class="blurb">{f.blurb}</p>
+        <div class="foot">
+          <span class="muted" style="font-size:0.78rem">{f.dataAccess}</span>
+          <span class="best">
+            {score === null || score === undefined ? (
+              <small>n/a</small>
+            ) : (
+              <>{score.toFixed(2)} <small>best success rate</small></>
+            )}
+          </span>
+        </div>
+      </div>
+    );
+  })}
+  <a class="card card-link contribute-card" href="/contribute">
+    <div class="slug">Open call</div>
+    <h3>Add Your Healthcare Task</h3>
+    <div class="tags">
+      <span class="tag">Contribution</span>
+    </div>
+    <p class="blurb">
+      Help expand HealthAgentBench with realistic clinical workflows, datasets, and evaluation
+      protocols from your domain.
+    </p>
+    <div class="foot">
+      <span class="muted" style="font-size:0.78rem">Community submissions</span>
+      <span class="best">Contribute <small>task proposal</small></span>
+    </div>
+  </a>
+</div>

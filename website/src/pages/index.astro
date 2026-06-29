@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+import Leaderboard from '../components/Leaderboard.astro';
+import RelatedWorkPositioning from '../components/RelatedWorkPositioning.astro';
+import HeatCircle from '../components/HeatCircle.astro';
+import TaskGrid from '../components/TaskGrid.astro';
+import results from '../data/results.json';
+import tasks from '../data/tasks.json';
+
+const nAgents = results.agents.length;
+const nCategories = tasks.families.length;
+const totalTasks = results.totalTaskCount;
+const leader = results.agents[0];
+const leaderScore = leader.pooled.toFixed(2);
+const citationEntry = String.raw`@misc{liu2026healthagentbench,
+  title = {HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents},
+  author = {Liu, Qianchu and Zhang, Sheng and Qin, Guanghui and Valanarasu, Jeya Maria Jose and Rokuss, Maximilian and Lu, Mingyu and Ossowski, Timothy and Chaves, Juan Manuel Zambrano and Wong, Cliff and Argaw, Peniel and Hasija, Yashna and Wei, Mu and Yim, Wen-wai and Liu, Qin and Jing, Zilin and Entenmann, Jason and Usuyama, Naoto and Naumann, Tristan and Poon, Hoifung},
+  year = {2026}
+}`;
+---
+
+<Base title="HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents">
+  <header class="hero">
+    <div class="container">
+      <span class="eyebrow">{totalTasks} tasks across {nCategories} categories</span>
+      <h1><strong>HealthAgentBench</strong>: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents</h1>
+      <p class="lede">
+        HealthAgentBench evaluates frontier agents on realistic healthcare workflows spanning seven
+        task categories with distinct environments and diverse data modalities, including 2D chest
+        X-rays, 3D CT volumes, gigapixel whole-slide pathology images, free-text clinical documents,
+        and structured EHR data. Each task is executed in a terminal environment using real clinical
+        artefacts with minimal instructions, and evaluated against hidden gold labels to determine
+        task success.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#leaderboard">View leaderboard</a>
+        <a class="btn" href="https://github.com/microsoft/HealthAgentBench">GitHub</a>
+        <a class="btn" href="https://arxiv.org">Paper</a>
+        <a class="btn" href="/contribute">Contribute</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">{totalTasks}</div><div class="lbl">tasks</div></div>
+        <div class="stat"><div class="num">{nCategories}</div><div class="lbl">environments</div></div>
+        <div class="stat"><div class="num">{nCategories}</div><div class="lbl">categories</div></div>
+        <div class="stat"><div class="num">{nAgents}</div><div class="lbl">frontier agents</div></div>
+        <div class="stat"><div class="num">{leaderScore}</div><div class="lbl">best success rate</div></div>
+      </div>
+    </div>
+  </header>
+
+  <section id="leaderboard">
+    <div class="container">
+      <div class="section-head">
+        <h2>Leaderboard</h2>
+          <p>Frontier agents ranked by pooled task success rate across 3 attempts * 54 tasks (162 trials).</p>
+      </div>
+      <Leaderboard compact tableId="leaderboard-compact" />
+      <div class="leaderboard-actions">
+        <a class="btn" href="/results">Expand Results</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="positioning">
+    <div class="container">
+      <div class="section-head">
+        <h2>Related-Work Positioning</h2>
+        <p>
+          This interactive version of the paper figure situates HealthAgentBench among prior
+          healthcare-agent benchmarks. The horizontal axis tracks interaction realism and autonomy
+          across three categories, the vertical axis is the number of input modalities a benchmark
+          covers, and each marker's size encodes the number of clinical workflow stages.
+        </p>
+      </div>
+      <RelatedWorkPositioning />
+    </div>
+  </section>
+
+  <section id="breakdown">
+    <div class="container">
+      <div class="section-head">
+        <h2>Performance by Task Categories (Environments)</h2>
+        <p>
+          Each column is a task category with its unique environment. Each cell encodes three signals at once:
+          color is the per-category success rate, circle size is average wall-clock time, and the green
+          <strong>$</strong> tier is the mean run cost.
+        </p>
+      </div>
+      <HeatCircle />
+    </div>
+  </section>
+
+  <section id="benchmarks">
+    <div class="container">
+      <div class="section-head">
+        <h2>Task Categories and Environments</h2>
+        <p>The current release groups 54 tasks into 7 categories, each with its own unique environment. Each card below shows the category, modality, access regime, and best reported success rate.</p>
+      </div>
+      <TaskGrid />
+    </div>
+  </section>
+
+  <section id="citation">
+    <div class="container">
+      <div class="section-head">
+        <h2>Citation</h2>
+        <p>If you use HealthAgentBench, cite it with the following BibTeX entry.</p>
+      </div>
+      <pre class="citation-block"><code>{citationEntry}</code></pre>
+    </div>
+  </section>
+</Base>
