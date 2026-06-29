@@ -1,4 +1,0 @@
-interface:
-  display_name: "ArXiv Paper Reader"
-  short_description: "Read arXiv papers via source LaTeX archives."
-  default_prompt: "Use $arxiv-paper-reader to fetch the arXiv /src/ archive, and read the LaTeX sources."
