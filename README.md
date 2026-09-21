@@ -23,6 +23,7 @@
 </p>
 
 ## 📢 Updates
+* 2026-09-21: V2.0 in progress and will update here when it is ready. 
 * 2026-07-27: We added results from Claude Code Opus-5 and Codex GPT-5.6-sol
 * 2026-07-03: We released the benchmark.
 * 2026-07-01: We released our [paper](https://arxiv.org/abs/2606.31179) and [website](https://microsoft.github.io/HealthAgentBench/).
