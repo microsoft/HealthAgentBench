@@ -72,6 +72,7 @@ successful result.
 ## Constraints
 
 - You have up to one hour.
-- Internet access is available.
+- Internet access is unavailable. Use only the files in `/workspace/data` and
+  the analysis packages preinstalled in the environment.
 - Do not attempt to access training outcomes or held-out outcomes. They are not mounted during the
   agent run.

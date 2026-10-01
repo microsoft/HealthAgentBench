@@ -24,6 +24,8 @@ services:
       - ./stage_data.py:/opt/survival_prediction/stage_data.py:ro
     environment:
       - PYTHONUNBUFFERED=1
+    networks:
+      - default
     command: ["/bin/bash", "/bootstrap.sh"]
 
 volumes:
