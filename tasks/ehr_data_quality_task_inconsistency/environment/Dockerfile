@@ -1,9 +1,6 @@
-FROM python:3.12-slim
+FROM python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203
 
-# Agent image. The data-staging pipeline runs in a separate image
-# (Dockerfile.bootstrap); nothing from it leaks into this environment. The data
-# stack below uses the same pins as the bootstrap image (labels.csv was generated
-# with them), plus general analysis libraries.
+# Agent image contains only the fixed dataset and analysis tools.
 RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl jq tmux asciinema ripgrep wget util-linux && rm -rf /var/lib/apt/lists/*
 # Node.js preinstalled from NodeSource (one package). Harbor's codex setup only
 # apt-installs curl/node/npm/ripgrep when the commands are missing; Debian's
@@ -19,12 +16,7 @@ RUN pip install --no-cache-dir pandas==3.0.1 pyarrow==23.0.1 duckdb==1.5.2 numpy
 ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /workspace
-# Compose's build context is the parent (task root), so the path is
-# environment/workspace/ rather than workspace/. Match xray_report_gen.
-COPY environment/workspace/ /workspace/
-RUN mkdir -p /workspace/data /workspace/submission /logs/verifier
-
-# No ENTRYPOINT / CMD: Harbor's docker-compose-build.yaml overrides main's
-# command to ``sleep infinity`` so the container stays alive for the agent
-# + verifier. The bootstrap service uses an explicit ``command:`` in
-# docker-compose.yaml to run /bootstrap.sh (bind-mounted) and exit.
+COPY workspace/ /workspace/
+COPY data/csv/ /workspace/data/csv/
+RUN find /workspace/data/csv -type f -exec touch -d @0 {} + && \
+    mkdir -p /workspace/submission
