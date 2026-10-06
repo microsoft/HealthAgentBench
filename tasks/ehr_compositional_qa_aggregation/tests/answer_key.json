@@ -1,62 +1,90 @@
 [
   {
-    "question_id": "aki__variant_0",
-    "gt_answer": 2.0,
-    "answer_type": "numerical",
-    "concept": "aki"
-  },
-  {
     "question_id": "kdigo_stages__variant_0",
-    "gt_answer": 2.0,
+    "gt_answer": 0.0,
     "answer_type": "numerical",
-    "concept": "kdigo_stages"
+    "concept": "kdigo_stages",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "kdigo_stages__variant_1",
-    "gt_answer": 0.0,
+    "gt_answer": 1.0,
     "answer_type": "numerical",
-    "concept": "kdigo_stages"
-  },
-  {
-    "question_id": "kdigo_stages__variant_4",
-    "gt_answer": 0.0,
-    "answer_type": "numerical",
-    "concept": "kdigo_stages"
+    "concept": "kdigo_stages",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "meld__variant_0",
-    "gt_answer": 10.0,
+    "gt_answer": 6.0,
     "answer_type": "numerical",
-    "concept": "meld"
+    "concept": "meld",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "meld__variant_3",
-    "gt_answer": 0.9,
+    "gt_answer": 1.1,
     "answer_type": "numerical",
-    "concept": "meld"
+    "concept": "meld",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "meld__variant_4",
-    "gt_answer": 1.3,
+    "gt_answer": 0.9,
     "answer_type": "numerical",
-    "concept": "meld"
+    "concept": "meld",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_0",
-    "gt_answer": 0.151,
+    "gt_answer": 0.601,
     "answer_type": "numerical",
-    "concept": "norepinephrine_equivalent_dose"
+    "concept": "norepinephrine_equivalent_dose",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_1",
-    "gt_answer": 0.0775,
+    "gt_answer": 0.068529,
     "answer_type": "numerical",
-    "concept": "norepinephrine_equivalent_dose"
+    "concept": "norepinephrine_equivalent_dose",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "sofa__variant_0",
-    "gt_answer": 3.0,
+    "gt_answer": 0.0,
     "answer_type": "numerical",
-    "concept": "sofa"
+    "concept": "sofa",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
   }
 ]

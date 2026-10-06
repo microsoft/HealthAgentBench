@@ -1,7 +1,7 @@
 # Clinical Compositional Question Answering
 
 You are working inside a task environment that contains a MIMIC-IV DuckDB
-database and 10 numerical clinical questions about ICU patients. Your job is
+database and 8 numerical clinical questions about ICU patients. Your job is
 to answer each question and write all answers to `/workspace/submission.json`.
 
 ## Question type: aggregation
@@ -16,11 +16,11 @@ Every question asks for an aggregate over the ICU stay, such as the maximum stag
   and ICU tables. Always use fully-qualified table names (e.g.
   `mimiciv_icu.icustays`). IDs follow the chain `subject_id` (patient) →
   `hadm_id` (admission) → `stay_id` (ICU stay).
-- `/workspace/questions.json` — a JSON array of 10 questions. Each item has
+- `/workspace/questions.json` — a JSON array of 8 questions. Each item has
   a unique `question_id`, the natural-language `question`, and the patient
   identifiers (`subject_id`, `hadm_id`, `stay_id`) for which the question is
   to be answered.
-- `/workspace/train.json` — 200 labeled examples, twenty for each question
+- `/workspace/train.json` — 160 labeled examples, twenty for each question
   variant. Use these examples to validate your computations.
 
 - Bash, Python and standard CLI tools are available.
@@ -60,11 +60,14 @@ fields:
 
 ## Scoring
 
-Each answer is scored independently. An answer is correct if
+Each answer is scored independently, using the `tolerance` given for its
+question in `questions.json`:
 
-    |answer - gt_answer| <= max(0.5, 1e-3 * |gt_answer|)
+- `{"kind": "integer"}`: correct if `|answer - gt_answer| < 0.5`
+- `{"kind": "continuous", "rel": r, "abs": a}`: correct if
+  `|answer - gt_answer| <= max(r * |gt_answer|, a)`
 
-Overall reward is binary: 1 (pass) only if all 10 questions are answered
+Overall reward is binary: 1 (pass) only if all 8 questions are answered
 correctly in a valid submission; otherwise 0 (fail). Per-question accuracy
 and per-concept accuracy are reported as diagnostic metrics only.
 

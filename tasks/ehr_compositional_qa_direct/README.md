@@ -1,15 +1,16 @@
 # `ehr_compositional_qa_direct`
 
 One of five tasks in HealthAgentBench's **EHR Compositional QA** category, partitioned
-by question type. This task holds the **20 `direct` questions**: direct look-ups of total scores and single score components.
-Concepts covered: apsiii, first_day_sofa, lods, oasis, sapsii, sirs, sofa.
+by question type. This task holds the **15 `direct` questions**: direct look-ups of total scores and single score components.
+Concepts covered: apsiii, lods, oasis, sapsii, sirs, sofa.
 
-**Training:** `train.json` holds 400 labeled examples, twenty per question variant (the complete generator pool for these variants).
-The per-variant split is retained from the original benchmark; patients can appear
-across variants, so this is not a patient-disjoint evaluation.
+**Training:** `train.json` holds 300 labeled examples, twenty per question variant.
+Test patients never appear in `train.json` (patient-disjoint split); each test question
+is asked about a stay for which every input the label depends on is recorded.
 
-**Pass condition:** all **20/20** answers correct in a valid submission.
-The numerical tolerance is `max(0.5, 1e-3 * abs(gt_answer))`.
+**Pass condition:** all **15/15** answers correct in a valid submission.
+Integer-valued answers must be within 0.5 (strictly); continuous answers within
+`max(1% of |gt_answer|, 0.001)`. Each question carries its `tolerance` in the answer key.
 The verifier reports diagnostic accuracy separately from the binary reward.
 
 Data: public MIMIC-IV-demo v2.2, downloaded by a bootstrap service at runtime; no dataset

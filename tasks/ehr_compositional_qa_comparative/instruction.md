@@ -60,9 +60,12 @@ fields:
 
 ## Scoring
 
-Each answer is scored independently. An answer is correct if
+Each answer is scored independently, using the `tolerance` given for its
+question in `questions.json`:
 
-    |answer - gt_answer| <= max(0.5, 1e-3 * |gt_answer|)
+- `{"kind": "integer"}`: correct if `|answer - gt_answer| < 0.5`
+- `{"kind": "continuous", "rel": r, "abs": a}`: correct if
+  `|answer - gt_answer| <= max(r * |gt_answer|, a)`
 
 Overall reward is binary: 1 (pass) only if all 7 questions are answered
 correctly in a valid submission; otherwise 0 (fail). Per-question accuracy

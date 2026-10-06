@@ -1,16 +1,16 @@
 # Clinical Compositional Question Answering
 
 You are working inside a task environment that contains a MIMIC-IV DuckDB
-database and 60 numerical clinical questions about ICU patients. Your job is
+database and 51 numerical clinical questions about ICU patients. Your job is
 to answer each question and write all answers to `/workspace/submission.json`.
 
 ## Question types
 
-The 60 questions span five types, recorded in each item's `question_type` field:
+The 51 questions span five types, recorded in each item's `question_type` field:
 
 - `direct`: a score, or one named component of a score, as defined by the reference implementation.
 - `aggregation`: an aggregate over the ICU stay, such as a maximum stage or score or an average dose.
-- `temporal`: a value anchored to a time window or time point (first 24 hours, ICU admission, time of suspected infection). "How many hours after ICU admission" questions expect a signed number of hours; when the reference implementation finds no qualifying event, the expected answer is 0.
+- `temporal`: a value anchored to a time window or time point (first 24 hours, ICU admission, time of suspected infection). "How many hours after ICU admission" questions expect a signed number of hours.
 - `derived`: a sum of named sub-scores, or a signed difference between two quantities (first minus second, not absolute).
 - `comparative`: by how many units a value exceeds a stated threshold. When it does not exceed the threshold, the expected answer is 0, never negative.
 
@@ -22,11 +22,11 @@ The 60 questions span five types, recorded in each item's `question_type` field:
   and ICU tables. Always use fully-qualified table names (e.g.
   `mimiciv_icu.icustays`). IDs follow the chain `subject_id` (patient) →
   `hadm_id` (admission) → `stay_id` (ICU stay).
-- `/workspace/questions.json` — a JSON array of 60 questions. Each item has
+- `/workspace/questions.json` — a JSON array of 51 questions. Each item has
   a unique `question_id`, the natural-language `question`, and the patient
   identifiers (`subject_id`, `hadm_id`, `stay_id`) for which the question is
   to be answered.
-- `/workspace/train.json` — 1200 labeled examples, twenty for each question
+- `/workspace/train.json` — 1020 labeled examples, twenty for each question
   variant. Use these examples to validate your computations.
 
 - Bash, Python and standard CLI tools are available.
@@ -66,11 +66,14 @@ fields:
 
 ## Scoring
 
-Each answer is scored independently. An answer is correct if
+Each answer is scored independently, using the `tolerance` given for its
+question in `questions.json`:
 
-    |answer - gt_answer| <= max(0.5, 1e-3 * |gt_answer|)
+- `{"kind": "integer"}`: correct if `|answer - gt_answer| < 0.5`
+- `{"kind": "continuous", "rel": r, "abs": a}`: correct if
+  `|answer - gt_answer| <= max(r * |gt_answer|, a)`
 
-Overall reward is binary: 1 (pass) only if all 60 questions are answered
+Overall reward is binary: 1 (pass) only if all 51 questions are answered
 correctly in a valid submission; otherwise 0 (fail). Per-question accuracy
 and per-concept accuracy are reported as diagnostic metrics only.
 

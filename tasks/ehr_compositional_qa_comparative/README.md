@@ -4,12 +4,13 @@ One of five tasks in HealthAgentBench's **EHR Compositional QA** category, parti
 by question type. This task holds the **7 `comparative` questions**: excess over a stated threshold, clamped at zero.
 Concepts covered: aki, norepinephrine_equivalent_dose, sepsis3.
 
-**Training:** `train.json` holds 140 labeled examples, twenty per question variant (the complete generator pool for these variants).
-The per-variant split is retained from the original benchmark; patients can appear
-across variants, so this is not a patient-disjoint evaluation.
+**Training:** `train.json` holds 140 labeled examples, twenty per question variant.
+Test patients never appear in `train.json` (patient-disjoint split); each test question
+is asked about a stay for which every input the label depends on is recorded.
 
 **Pass condition:** all **7/7** answers correct in a valid submission.
-The numerical tolerance is `max(0.5, 1e-3 * abs(gt_answer))`.
+Integer-valued answers must be within 0.5 (strictly); continuous answers within
+`max(1% of |gt_answer|, 0.001)`. Each question carries its `tolerance` in the answer key.
 The verifier reports diagnostic accuracy separately from the binary reward.
 
 Data: public MIMIC-IV-demo v2.2, downloaded by a bootstrap service at runtime; no dataset

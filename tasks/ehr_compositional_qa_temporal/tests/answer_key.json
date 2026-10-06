@@ -1,92 +1,148 @@
 [
   {
-    "question_id": "aki__variant_1",
-    "gt_answer": 1.0,
-    "answer_type": "numerical",
-    "concept": "aki"
-  },
-  {
     "question_id": "apsiii__variant_3",
-    "gt_answer": 0.0,
+    "gt_answer": 4.0,
     "answer_type": "numerical",
-    "concept": "apsiii"
+    "concept": "apsiii",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "first_day_sofa__variant_3",
-    "gt_answer": 1.0,
+    "gt_answer": 4.0,
     "answer_type": "numerical",
-    "concept": "first_day_sofa"
+    "concept": "first_day_sofa",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "kdigo_stages__variant_3",
     "gt_answer": 1.0,
     "answer_type": "numerical",
-    "concept": "kdigo_stages"
+    "concept": "kdigo_stages",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "lods__variant_3",
-    "gt_answer": 0.0,
+    "gt_answer": 1.0,
     "answer_type": "numerical",
-    "concept": "lods"
+    "concept": "lods",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "meld__variant_1",
-    "gt_answer": 10.0,
+    "gt_answer": 9.0,
     "answer_type": "numerical",
-    "concept": "meld"
+    "concept": "meld",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_3",
-    "gt_answer": 0.15,
+    "gt_answer": 0.09,
     "answer_type": "numerical",
-    "concept": "norepinephrine_equivalent_dose"
+    "concept": "norepinephrine_equivalent_dose",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "oasis__variant_2",
-    "gt_answer": 0.07222222222222222,
+    "gt_answer": 0.024514,
     "answer_type": "numerical",
-    "concept": "oasis"
+    "concept": "oasis",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "oasis__variant_3",
-    "gt_answer": 60.0,
+    "gt_answer": 46.0,
     "answer_type": "numerical",
-    "concept": "oasis"
+    "concept": "oasis",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "sapsii__variant_3",
-    "gt_answer": 12.0,
+    "gt_answer": 18.0,
     "answer_type": "numerical",
-    "concept": "sapsii"
+    "concept": "sapsii",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sepsis3__variant_0",
-    "gt_answer": 0.0,
+    "gt_answer": 3.0,
     "answer_type": "numerical",
-    "concept": "sepsis3"
+    "concept": "sepsis3",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sepsis3__variant_1",
-    "gt_answer": 0.0,
+    "gt_answer": 18.0,
     "answer_type": "numerical",
-    "concept": "sepsis3"
+    "concept": "sepsis3",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sepsis3__variant_4",
-    "gt_answer": 0.0,
+    "gt_answer": -2.0,
     "answer_type": "numerical",
-    "concept": "sepsis3"
+    "concept": "sepsis3",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sirs__variant_3",
-    "gt_answer": 1.0,
+    "gt_answer": 0.0,
     "answer_type": "numerical",
-    "concept": "sirs"
+    "concept": "sirs",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sofa__variant_3",
-    "gt_answer": 3.0,
+    "gt_answer": 6.0,
     "answer_type": "numerical",
-    "concept": "sofa"
+    "concept": "sofa",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   }
 ]

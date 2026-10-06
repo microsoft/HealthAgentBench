@@ -63,11 +63,36 @@ class EvaluatorTests(unittest.TestCase):
                 answers[0]["answer"] = value
                 self.assertFalse(self.score(answers)["passed"])
 
-    def test_numerical_tolerance_boundaries(self):
-        self.assertTrue(is_correct(2.5, 2))
-        self.assertFalse(is_correct(2.5001, 2))
-        self.assertTrue(is_correct(10010, 10000))
-        self.assertFalse(is_correct(10010.1, 10000))
+    def test_integer_tolerance_boundaries(self):
+        tol = {"kind": "integer"}
+        self.assertTrue(is_correct(2, 2.0, tol))
+        self.assertTrue(is_correct(2.49, 2.0, tol))
+        # A half-integer must not match both neighbouring integers.
+        self.assertFalse(is_correct(2.5, 2.0, tol))
+        self.assertFalse(is_correct(2.5, 3.0, tol))
+        self.assertFalse(is_correct(-2.5, -3.0, tol))
+
+    def test_continuous_tolerance_boundaries(self):
+        tol = {"kind": "continuous", "rel": 0.01, "abs": 0.001}
+        self.assertTrue(is_correct(0.1514, 0.15, tol))
+        self.assertFalse(is_correct(0.1516, 0.15, tol))
+        self.assertTrue(is_correct(0.001, 0.0, tol))
+        self.assertFalse(is_correct(0.0011, 0.0, tol))
+        self.assertTrue(is_correct(101, 100.0, tol))
+        self.assertFalse(is_correct(101.01, 100.0, tol))
+
+    def test_invalid_tolerance_in_key_raises(self):
+        key = json.loads(self.key.read_text())
+        bad_key = self.root / "bad_key.json"
+        for tol in [None, {}, {"kind": "loose"}, {"kind": "continuous", "rel": 0.01},
+                    {"kind": "continuous", "rel": -1, "abs": 0.001}]:
+            with self.subTest(tol=tol):
+                broken = copy.deepcopy(key)
+                broken[0]["tolerance"] = tol
+                bad_key.write_text(json.dumps(broken))
+                self.submission.write_text(json.dumps(self.answers))
+                with self.assertRaises(ValueError):
+                    score_submission(self.submission, bad_key)
 
     def test_cli_writes_binary_reward(self):
         for delta, expected in [(0, 1.0), (100, 0.0)]:

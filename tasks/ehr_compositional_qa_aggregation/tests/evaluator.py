@@ -8,9 +8,10 @@ Usage:
         --metrics-out /logs/verifier/metrics.json \\
         --reward-out /logs/verifier/reward.json
 
-Scoring rule (single rule across all clinical concepts in this task, all numerical):
+Scoring rule (per question, from the answer key's ``tolerance`` field):
 
-    correct  ↔  |answer - gt_answer|  <=  max(0.5, 1e-3 * |gt_answer|)
+    integer     correct  ↔  |answer - gt_answer|  <   0.5
+    continuous  correct  ↔  |answer - gt_answer|  <=  max(rel * |gt_answer|, abs)
 
 Outputs ``metrics.json`` with per-concept breakdown and ``reward.json`` with
 ``{"reward": 1.0}`` only when every answer is correct, otherwise 0.0.
@@ -26,7 +27,7 @@ from collections import defaultdict
 from pathlib import Path
 
 
-def is_correct(pred: object, gt: float) -> bool:
+def is_correct(pred: object, gt: float, tolerance: dict) -> bool:
     if isinstance(pred, bool) or not isinstance(pred, (int, float)):
         return False
     try:
@@ -35,7 +36,21 @@ def is_correct(pred: object, gt: float) -> bool:
         return False
     if not math.isfinite(pred_f):
         return False
-    return abs(pred_f - gt) <= max(0.5, 1e-3 * abs(gt))
+    if tolerance["kind"] == "integer":
+        return abs(pred_f - gt) < 0.5
+    return abs(pred_f - gt) <= max(tolerance["rel"] * abs(gt), tolerance["abs"])
+
+
+def valid_tolerance(tol: object) -> bool:
+    if not isinstance(tol, dict) or tol.get("kind") not in ("integer", "continuous"):
+        return False
+    if tol["kind"] == "integer":
+        return True
+    return all(
+        not isinstance(tol.get(f), bool) and isinstance(tol.get(f), (int, float))
+        and math.isfinite(tol[f]) and tol[f] >= 0
+        for f in ("rel", "abs")
+    )
 
 
 def score_submission(submission_path: Path, answer_key_path: Path) -> dict:
@@ -52,6 +67,8 @@ def score_submission(submission_path: Path, answer_key_path: Path) -> dict:
         gt = r.get("gt_answer")
         if isinstance(gt, bool) or not isinstance(gt, (int, float)) or not math.isfinite(gt):
             raise ValueError(f"answer_key has non-finite gt_answer for {r.get('question_id')}: {gt!r}")
+        if not valid_tolerance(r.get("tolerance")):
+            raise ValueError(f"answer_key has invalid tolerance for {r.get('question_id')}: {r.get('tolerance')!r}")
 
     submission_obj = None
     error: str | None = None
@@ -92,7 +109,7 @@ def score_submission(submission_path: Path, answer_key_path: Path) -> dict:
         concept = r["concept"]
         gt = float(r["gt_answer"])
         pred = sub_by_id.get(qid)
-        ok = is_correct(pred, gt)
+        ok = is_correct(pred, gt, r["tolerance"])
         per_question.append({
             "question_id": qid,
             "concept": concept,
