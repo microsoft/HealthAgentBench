@@ -5,12 +5,16 @@ by question type. This task holds the **7 `derived` questions**: sums and signed
 Concepts covered: apsiii, kdigo_stages, lods, meld, sapsii, sofa.
 
 **Training:** `train.json` holds 140 labeled examples, twenty per question variant.
-Test patients never appear in `train.json` (patient-disjoint split); each test question
-is asked about a stay for which every input the label depends on is recorded.
+Test patients never appear in `train.json` (patient-disjoint split). Questions can involve
+missing data: a score input that was never measured (scored by the reference convention) or
+a quantity that does not exist for the patient (expected answer `"not_applicable"`). Every
+missing-data pattern used in a test question appears in at least three training examples of
+the same question variant.
 
 **Pass condition:** all **7/7** answers correct in a valid submission.
 Integer-valued answers must be within 0.5 (strictly); continuous answers within
-`max(1% of |gt_answer|, 0.001)`. Each question carries its `tolerance` in the answer key.
+`max(1% of |gt_answer|, 0.001)`; a `"not_applicable"` answer must match exactly. Each question
+carries its `tolerance` in the answer key.
 The verifier reports diagnostic accuracy separately from the binary reward.
 
 Data: public MIMIC-IV-demo v2.2, downloaded by a bootstrap service at runtime; no dataset

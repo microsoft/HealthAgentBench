@@ -1,7 +1,7 @@
 [
   {
     "question_id": "apsiii__variant_3",
-    "gt_answer": 4.0,
+    "gt_answer": 7.0,
     "answer_type": "numerical",
     "concept": "apsiii",
     "question_type": "temporal",
@@ -21,7 +21,7 @@
   },
   {
     "question_id": "kdigo_stages__variant_3",
-    "gt_answer": 1.0,
+    "gt_answer": 2.0,
     "answer_type": "numerical",
     "concept": "kdigo_stages",
     "question_type": "temporal",
@@ -51,7 +51,7 @@
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_3",
-    "gt_answer": 0.09,
+    "gt_answer": 0.0,
     "answer_type": "numerical",
     "concept": "norepinephrine_equivalent_dose",
     "question_type": "temporal",
@@ -63,7 +63,7 @@
   },
   {
     "question_id": "oasis__variant_2",
-    "gt_answer": 0.024514,
+    "gt_answer": 0.045081,
     "answer_type": "numerical",
     "concept": "oasis",
     "question_type": "temporal",
@@ -75,7 +75,7 @@
   },
   {
     "question_id": "oasis__variant_3",
-    "gt_answer": 46.0,
+    "gt_answer": 55.0,
     "answer_type": "numerical",
     "concept": "oasis",
     "question_type": "temporal",
@@ -87,7 +87,7 @@
   },
   {
     "question_id": "sapsii__variant_3",
-    "gt_answer": 18.0,
+    "gt_answer": 0.0,
     "answer_type": "numerical",
     "concept": "sapsii",
     "question_type": "temporal",
@@ -97,7 +97,7 @@
   },
   {
     "question_id": "sepsis3__variant_0",
-    "gt_answer": 3.0,
+    "gt_answer": "not_applicable",
     "answer_type": "numerical",
     "concept": "sepsis3",
     "question_type": "temporal",
@@ -107,7 +107,7 @@
   },
   {
     "question_id": "sepsis3__variant_1",
-    "gt_answer": 18.0,
+    "gt_answer": "not_applicable",
     "answer_type": "numerical",
     "concept": "sepsis3",
     "question_type": "temporal",
@@ -117,7 +117,7 @@
   },
   {
     "question_id": "sepsis3__variant_4",
-    "gt_answer": -2.0,
+    "gt_answer": -4.0,
     "answer_type": "numerical",
     "concept": "sepsis3",
     "question_type": "temporal",
@@ -137,7 +137,7 @@
   },
   {
     "question_id": "sofa__variant_3",
-    "gt_answer": 6.0,
+    "gt_answer": 4.0,
     "answer_type": "numerical",
     "concept": "sofa",
     "question_type": "temporal",

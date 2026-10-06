@@ -1,7 +1,7 @@
 [
   {
     "question_id": "aki__variant_2",
-    "gt_answer": 1.0,
+    "gt_answer": 2.0,
     "answer_type": "numerical",
     "concept": "aki",
     "question_type": "comparative",
@@ -31,7 +31,7 @@
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_2",
-    "gt_answer": 0.252,
+    "gt_answer": 0.6,
     "answer_type": "numerical",
     "concept": "norepinephrine_equivalent_dose",
     "question_type": "comparative",
@@ -43,7 +43,7 @@
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_4",
-    "gt_answer": 0.001,
+    "gt_answer": 0.727,
     "answer_type": "numerical",
     "concept": "norepinephrine_equivalent_dose",
     "question_type": "comparative",
@@ -55,7 +55,7 @@
   },
   {
     "question_id": "sepsis3__variant_2",
-    "gt_answer": 7.0,
+    "gt_answer": "not_applicable",
     "answer_type": "numerical",
     "concept": "sepsis3",
     "question_type": "comparative",
@@ -65,7 +65,7 @@
   },
   {
     "question_id": "sepsis3__variant_3",
-    "gt_answer": 1.0,
+    "gt_answer": "not_applicable",
     "answer_type": "numerical",
     "concept": "sepsis3",
     "question_type": "comparative",

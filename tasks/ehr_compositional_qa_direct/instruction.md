@@ -49,10 +49,11 @@ For each question:
 `/workspace/submission.json` is a JSON list. Each row contains exactly two
 fields:
 
-    {"question_id": "<string>", "answer": <number or null>}
+    {"question_id": "<string>", "answer": <number, "not_applicable", or null>}
 
-- The verifier expects a number. Strings, booleans, and `null` all score as
-  wrong.
+- If a question cannot be answered for its patient, answer with the string
+  `"not_applicable"`; `train.json` uses the same label. Otherwise the verifier
+  expects a number. Other strings, booleans, and `null` all score as wrong.
 - If you genuinely cannot compute an answer, leave it `null`. It will score
   as wrong but the verifier will still run.
 - Do not add or remove rows. Do not rename `question_id` values.

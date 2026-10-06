@@ -1,7 +1,7 @@
 [
   {
     "question_id": "apsiii__variant_2",
-    "gt_answer": 16.0,
+    "gt_answer": 28.0,
     "answer_type": "numerical",
     "concept": "apsiii",
     "question_type": "derived",
@@ -11,7 +11,7 @@
   },
   {
     "question_id": "kdigo_stages__variant_2",
-    "gt_answer": -2.0,
+    "gt_answer": 1.0,
     "answer_type": "numerical",
     "concept": "kdigo_stages",
     "question_type": "derived",
@@ -21,7 +21,7 @@
   },
   {
     "question_id": "lods__variant_2",
-    "gt_answer": 5.0,
+    "gt_answer": 2.0,
     "answer_type": "numerical",
     "concept": "lods",
     "question_type": "derived",
@@ -41,7 +41,7 @@
   },
   {
     "question_id": "sapsii__variant_2",
-    "gt_answer": 10.0,
+    "gt_answer": 9.0,
     "answer_type": "numerical",
     "concept": "sapsii",
     "question_type": "derived",
@@ -51,7 +51,7 @@
   },
   {
     "question_id": "sapsii__variant_4",
-    "gt_answer": 8.0,
+    "gt_answer": 15.0,
     "answer_type": "numerical",
     "concept": "sapsii",
     "question_type": "derived",
@@ -61,7 +61,7 @@
   },
   {
     "question_id": "sofa__variant_2",
-    "gt_answer": 2.0,
+    "gt_answer": 4.0,
     "answer_type": "numerical",
     "concept": "sofa",
     "question_type": "derived",

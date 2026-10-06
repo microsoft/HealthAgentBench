@@ -13,6 +13,9 @@ Scoring rule (per question, from the answer key's ``tolerance`` field):
     integer     correct  ↔  |answer - gt_answer|  <   0.5
     continuous  correct  ↔  |answer - gt_answer|  <=  max(rel * |gt_answer|, abs)
 
+A ``gt_answer`` of ``"not_applicable"`` (the question cannot be answered for its
+patient) is matched only by that exact string; a numeric ``gt_answer`` never is.
+
 Outputs ``metrics.json`` with per-concept breakdown and ``reward.json`` with
 ``{"reward": 1.0}`` only when every answer is correct, otherwise 0.0.
 """
@@ -26,8 +29,12 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+NOT_APPLICABLE = "not_applicable"
 
-def is_correct(pred: object, gt: float, tolerance: dict) -> bool:
+
+def is_correct(pred: object, gt: float | str, tolerance: dict) -> bool:
+    if gt == NOT_APPLICABLE:
+        return pred == NOT_APPLICABLE
     if isinstance(pred, bool) or not isinstance(pred, (int, float)):
         return False
     try:
@@ -65,8 +72,9 @@ def score_submission(submission_path: Path, answer_key_path: Path) -> dict:
         raise ValueError("answer_key must contain unique string question IDs")
     for r in answer_key:
         gt = r.get("gt_answer")
-        if isinstance(gt, bool) or not isinstance(gt, (int, float)) or not math.isfinite(gt):
-            raise ValueError(f"answer_key has non-finite gt_answer for {r.get('question_id')}: {gt!r}")
+        if gt != NOT_APPLICABLE and (
+                isinstance(gt, bool) or not isinstance(gt, (int, float)) or not math.isfinite(gt)):
+            raise ValueError(f"answer_key has invalid gt_answer for {r.get('question_id')}: {gt!r}")
         if not valid_tolerance(r.get("tolerance")):
             raise ValueError(f"answer_key has invalid tolerance for {r.get('question_id')}: {r.get('tolerance')!r}")
 
@@ -107,7 +115,7 @@ def score_submission(submission_path: Path, answer_key_path: Path) -> dict:
     for r in answer_key:
         qid = r["question_id"]
         concept = r["concept"]
-        gt = float(r["gt_answer"])
+        gt = r["gt_answer"]
         pred = sub_by_id.get(qid)
         ok = is_correct(pred, gt, r["tolerance"])
         per_question.append({
