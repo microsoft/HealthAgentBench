@@ -662,7 +662,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10032725,
     "hadm_id": 20611640,
     "stay_id": 30101877,
@@ -673,7 +673,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10026406,
     "hadm_id": 25260176,
     "stay_id": 30864406,
@@ -684,7 +684,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10018328,
     "hadm_id": 23786647,
     "stay_id": 31269608,
@@ -695,7 +695,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10015860,
     "hadm_id": 25085565,
     "stay_id": 32496174,
@@ -706,7 +706,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10014729,
     "hadm_id": 28889419,
     "stay_id": 33558396,
@@ -717,7 +717,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10016150,
     "hadm_id": 29374560,
     "stay_id": 33652203,
@@ -728,7 +728,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10037861,
     "hadm_id": 24540843,
     "stay_id": 34531557,
@@ -739,7 +739,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10003400,
     "hadm_id": 23559586,
     "stay_id": 34577403,
@@ -750,7 +750,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10014354,
     "hadm_id": 27487226,
     "stay_id": 34600477,
@@ -761,7 +761,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10006053,
     "hadm_id": 22942076,
     "stay_id": 34617352,
@@ -772,7 +772,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10031404,
     "hadm_id": 21606243,
     "stay_id": 35544374,
@@ -783,7 +783,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10040025,
     "hadm_id": 27996267,
     "stay_id": 36107367,
@@ -794,7 +794,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10021118,
     "hadm_id": 24490144,
     "stay_id": 36558922,
@@ -805,7 +805,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10015860,
     "hadm_id": 24698912,
     "stay_id": 36734659,
@@ -816,7 +816,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10002495,
     "hadm_id": 24982426,
     "stay_id": 36753294,
@@ -827,7 +827,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10039997,
     "hadm_id": 24294180,
     "stay_id": 36893762,
@@ -838,7 +838,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10018081,
     "hadm_id": 21027282,
     "stay_id": 37293400,
@@ -849,7 +849,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10003400,
     "hadm_id": 23559586,
     "stay_id": 38383343,
@@ -860,7 +860,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10039831,
     "hadm_id": 26924951,
     "stay_id": 39142259,
@@ -871,7 +871,7 @@
   {
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10014354,
     "hadm_id": 29600294,
     "stay_id": 39864867,

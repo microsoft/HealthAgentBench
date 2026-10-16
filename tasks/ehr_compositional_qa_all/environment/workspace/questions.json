@@ -283,7 +283,7 @@
     "question_id": "meld__variant_2",
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
     "subject_id": 10009049,
     "hadm_id": 22995465,
     "stay_id": 35636875,
