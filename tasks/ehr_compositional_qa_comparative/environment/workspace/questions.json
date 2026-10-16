@@ -4,76 +4,101 @@
     "concept": "aki",
     "variant_id": "variant_2",
     "question": "By how many stages above stage 1 does this patient's maximum AKI progress?",
-    "subject_id": 10002495,
-    "hadm_id": 24982426,
-    "stay_id": 36753294,
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 35026312,
     "answer_type": "numerical",
-    "question_type": "comparative"
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "aki__variant_3",
     "concept": "aki",
     "variant_id": "variant_3",
     "question": "By how many AKI stages above stage 1 does this patient progress within the first 24 hours of ICU admission?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 35889503,
     "answer_type": "numerical",
-    "question_type": "comparative"
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "aki__variant_4",
     "concept": "aki",
     "variant_id": "variant_4",
     "question": "By how many stages above stage 2 does this patient's peak AKI progress?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10016742,
+    "hadm_id": 29281842,
+    "stay_id": 37057036,
     "answer_type": "numerical",
-    "question_type": "comparative"
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_2",
     "concept": "norepinephrine_equivalent_dose",
     "variant_id": "variant_2",
     "question": "By how many mcg/kg/min does this patient's maximum norepinephrine-equivalent dose exceed the high-dose vasopressor threshold of 0.25 mcg/kg/min?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10037975,
+    "hadm_id": 27617929,
+    "stay_id": 39061571,
     "answer_type": "numerical",
-    "question_type": "comparative"
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_4",
     "concept": "norepinephrine_equivalent_dose",
     "variant_id": "variant_4",
     "question": "By how many mcg/kg/min does this patient's maximum norepinephrine-equivalent dose exceed the moderate vasopressor threshold of 0.5 mcg/kg/min?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10007818,
+    "hadm_id": 22987108,
+    "stay_id": 32359580,
     "answer_type": "numerical",
-    "question_type": "comparative"
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "sepsis3__variant_2",
     "concept": "sepsis3",
     "variant_id": "variant_2",
     "question": "By how many SOFA points above 2 is this patient's SOFA score at the time of infection?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10026255,
+    "hadm_id": 22059910,
+    "stay_id": 38229329,
     "answer_type": "numerical",
-    "question_type": "comparative"
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sepsis3__variant_3",
     "concept": "sepsis3",
     "variant_id": "variant_3",
     "question": "By how many SOFA points above 4 is this patient's SOFA score at the time of infection?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10020187,
+    "hadm_id": 26842957,
+    "stay_id": 32554129,
     "answer_type": "numerical",
-    "question_type": "comparative"
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
   }
 ]

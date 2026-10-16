@@ -1,50 +1,72 @@
 [
   {
     "question_id": "apsiii__variant_2",
-    "gt_answer": 21.0,
+    "gt_answer": 28.0,
     "answer_type": "numerical",
-    "concept": "apsiii"
-  },
-  {
-    "question_id": "first_day_sofa__variant_2",
-    "gt_answer": 1.0,
-    "answer_type": "numerical",
-    "concept": "first_day_sofa"
+    "concept": "apsiii",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "kdigo_stages__variant_2",
-    "gt_answer": -1.0,
+    "gt_answer": 1.0,
     "answer_type": "numerical",
-    "concept": "kdigo_stages"
+    "concept": "kdigo_stages",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "lods__variant_2",
     "gt_answer": 2.0,
     "answer_type": "numerical",
-    "concept": "lods"
+    "concept": "lods",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "meld__variant_2",
-    "gt_answer": 0.0,
+    "gt_answer": 1.0,
     "answer_type": "numerical",
-    "concept": "meld"
+    "concept": "meld",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sapsii__variant_2",
-    "gt_answer": 7.0,
+    "gt_answer": 9.0,
     "answer_type": "numerical",
-    "concept": "sapsii"
+    "concept": "sapsii",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sapsii__variant_4",
-    "gt_answer": 6.0,
+    "gt_answer": 15.0,
     "answer_type": "numerical",
-    "concept": "sapsii"
+    "concept": "sapsii",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sofa__variant_2",
-    "gt_answer": 1.0,
+    "gt_answer": 4.0,
     "answer_type": "numerical",
-    "concept": "sofa"
+    "concept": "sofa",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   }
 ]

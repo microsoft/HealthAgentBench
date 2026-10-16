@@ -1,15 +1,20 @@
 # `ehr_compositional_qa_all`
 
-The full **EHR Compositional QA** benchmark as a single task: all 60 questions
-(12 MIMIC-IV concepts x 5 variants) that the five question-type tasks partition.
+The full **EHR Compositional QA** benchmark as a single task: all 51 questions
+(12 MIMIC-IV concepts, 51 question variants) that the five question-type tasks partition.
 Use it for a whole-benchmark pass/fail; use the per-type tasks for diagnosis.
 
-**Training:** `train.json` holds 1200 labeled examples, twenty per question variant (the complete generator pool for these variants).
-The per-variant split is retained from the original benchmark; patients can appear
-across variants, so this is not a patient-disjoint evaluation.
+**Training:** `train.json` holds 1020 labeled examples, twenty per question variant.
+Test patients never appear in `train.json` (patient-disjoint split). Questions can involve
+missing data: a score input that was never measured (scored by the reference convention) or
+a quantity that does not exist for the patient (expected answer `"not_applicable"`). Every
+missing-data pattern used in a test question appears in at least three training examples of
+the same question variant.
 
-**Pass condition:** all **60/60** answers correct in a valid submission.
-The numerical tolerance is `max(0.5, 1e-3 * abs(gt_answer))`.
+**Pass condition:** all **51/51** answers correct in a valid submission.
+Integer-valued answers must be within 0.5 (strictly); continuous answers within
+`max(1% of |gt_answer|, 0.001)`; a `"not_applicable"` answer must match exactly. Each question
+carries its `tolerance` in the answer key.
 The verifier reports diagnostic accuracy separately from the binary reward.
 
 Data: public MIMIC-IV-demo v2.2, downloaded by a bootstrap service at runtime; no dataset

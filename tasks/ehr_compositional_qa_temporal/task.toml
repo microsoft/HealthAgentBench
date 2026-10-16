@@ -5,8 +5,8 @@ artifacts = ["/workspace/submission.json"]
 benchmark = "ehr_compositional_qa"
 mode = "with_train"
 question_set = "temporal"
-question_count = 15
-training_examples = 300
+question_count = 14
+training_examples = 280
 submission_path = "/workspace/submission.json"
 
 [verifier]

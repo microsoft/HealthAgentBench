@@ -49,10 +49,11 @@ For each question:
 `/workspace/submission.json` is a JSON list. Each row contains exactly two
 fields:
 
-    {"question_id": "<string>", "answer": <number or null>}
+    {"question_id": "<string>", "answer": <number, "not_applicable", or null>}
 
-- The verifier expects a number. Strings, booleans, and `null` all score as
-  wrong.
+- If a question cannot be answered for its patient, answer with the string
+  `"not_applicable"`; `train.json` uses the same label. Otherwise the verifier
+  expects a number. Other strings, booleans, and `null` all score as wrong.
 - If you genuinely cannot compute an answer, leave it `null`. It will score
   as wrong but the verifier will still run.
 - Do not add or remove rows. Do not rename `question_id` values.
@@ -60,9 +61,12 @@ fields:
 
 ## Scoring
 
-Each answer is scored independently. An answer is correct if
+Each answer is scored independently, using the `tolerance` given for its
+question in `questions.json`:
 
-    |answer - gt_answer| <= max(0.5, 1e-3 * |gt_answer|)
+- `{"kind": "integer"}`: correct if `|answer - gt_answer| < 0.5`
+- `{"kind": "continuous", "rel": r, "abs": a}`: correct if
+  `|answer - gt_answer| <= max(r * |gt_answer|, a)`
 
 Overall reward is binary: 1 (pass) only if all 7 questions are answered
 correctly in a valid submission; otherwise 0 (fail). Per-question accuracy

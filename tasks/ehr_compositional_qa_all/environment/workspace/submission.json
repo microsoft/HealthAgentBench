@@ -1,13 +1,5 @@
 [
   {
-    "question_id": "aki__variant_0",
-    "answer": null
-  },
-  {
-    "question_id": "aki__variant_1",
-    "answer": null
-  },
-  {
     "question_id": "aki__variant_2",
     "answer": null
   },
@@ -40,23 +32,7 @@
     "answer": null
   },
   {
-    "question_id": "first_day_sofa__variant_0",
-    "answer": null
-  },
-  {
-    "question_id": "first_day_sofa__variant_1",
-    "answer": null
-  },
-  {
-    "question_id": "first_day_sofa__variant_2",
-    "answer": null
-  },
-  {
     "question_id": "first_day_sofa__variant_3",
-    "answer": null
-  },
-  {
-    "question_id": "first_day_sofa__variant_4",
     "answer": null
   },
   {
@@ -73,10 +49,6 @@
   },
   {
     "question_id": "kdigo_stages__variant_3",
-    "answer": null
-  },
-  {
-    "question_id": "kdigo_stages__variant_4",
     "answer": null
   },
   {
@@ -201,14 +173,6 @@
   },
   {
     "question_id": "sirs__variant_0",
-    "answer": null
-  },
-  {
-    "question_id": "sirs__variant_1",
-    "answer": null
-  },
-  {
-    "question_id": "sirs__variant_2",
     "answer": null
   },
   {
