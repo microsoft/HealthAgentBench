@@ -3,7 +3,7 @@ FROM python:3.12-slim
 # Agent image. Only the agent-visible workspace is baked in; the bootstrap
 # material (bootstrap.sh, stage_mri.py, task_manifest.json) is bind-mounted
 # into the separate bootstrap service and never reaches this image.
-RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl jq tmux asciinema ripgrep && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl procps jq tmux asciinema ripgrep && rm -rf /var/lib/apt/lists/*
 # Node.js preinstalled from NodeSource (one package). Harbor's codex setup only
 # apt-installs curl/node/npm/ripgrep when the commands are missing; Debian's
 # ``npm`` meta-package pulls in ~700 debs and made five concurrent trials exceed

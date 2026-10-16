@@ -29,6 +29,7 @@ allowed_hosts = [
   "chatgpt.com", "*.chatgpt.com",
   "openai.com", "*.openai.com",
   "anthropic.com", "*.anthropic.com",
+  "openai.azure.com", "*.openai.azure.com",
 ]
 
 [environment]

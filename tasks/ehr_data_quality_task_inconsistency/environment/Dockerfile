@@ -1,7 +1,7 @@
 FROM python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203
 
 # Agent image contains only the fixed dataset and analysis tools.
-RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl jq tmux asciinema ripgrep wget util-linux && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl procps jq tmux asciinema ripgrep wget util-linux && rm -rf /var/lib/apt/lists/*
 # Node.js preinstalled from NodeSource (one package). Harbor's codex setup only
 # apt-installs curl/node/npm/ripgrep when the commands are missing; Debian's
 # ``npm`` meta-package pulls in ~700 debs and made five concurrent trials exceed
