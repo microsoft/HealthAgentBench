@@ -20,8 +20,9 @@ Every question asks directly for a score, or for one named component of a score,
   a unique `question_id`, the natural-language `question`, and the patient
   identifiers (`subject_id`, `hadm_id`, `stay_id`) for which the question is
   to be answered.
-- `/workspace/train.json` — 300 labeled examples, twenty for each question
-  variant. Use these examples to validate your computations.
+- `/workspace/train.json` — 1020 labeled examples, twenty for each of the 60
+  question variants in the benchmark, including the variants asked here. Use
+  these examples to validate your computations.
 
 - Bash, Python and standard CLI tools are available.
 - `/workspace/submission.json` — pre-populated with one row per question,
