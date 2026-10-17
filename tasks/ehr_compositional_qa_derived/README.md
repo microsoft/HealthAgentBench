@@ -4,7 +4,7 @@ One of five tasks in HealthAgentBench's **EHR Compositional QA** category, parti
 by question type. This task holds the **7 `derived` questions**: sums and signed differences of component values.
 Concepts covered: apsiii, kdigo_stages, lods, meld, sapsii, sofa.
 
-**Training:** `train.json` holds 140 labeled examples, twenty per question variant.
+**Training:** `train.json` holds 1020 labeled examples, twenty per question variant for all 60 variants in the benchmark (shared across the six compositional-QA tasks).
 Test patients never appear in `train.json` (patient-disjoint split). Questions can involve
 missing data: a score input that was never measured (scored by the reference convention) or
 a quantity that does not exist for the patient (expected answer `"not_applicable"`). Every
