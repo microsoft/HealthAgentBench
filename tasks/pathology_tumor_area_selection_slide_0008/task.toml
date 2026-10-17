@@ -26,6 +26,7 @@ network_mode = "allowlist"
 allowed_hosts = [
   "chatgpt.com", "*.chatgpt.com",
   "openai.com", "*.openai.com",
+  "openai.azure.com", "*.openai.azure.com",
   "anthropic.com", "*.anthropic.com",
 ]
 

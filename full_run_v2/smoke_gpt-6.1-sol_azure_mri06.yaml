@@ -1,0 +1,22 @@
+jobs_dir: full_run_v2/smoke_gpt-6.1-sol_azure
+n_attempts: 1
+n_concurrent_trials: 1
+agent_setup_timeout_multiplier: 3
+environment:
+  type: docker
+  delete: true
+agents:
+  - name: codex
+    model_name: gpt-6.1-sol
+    kwargs:
+      reasoning_effort: xhigh
+      web_search: disabled
+      config: full_run_v2/codex_azure_compact.toml
+    env:
+      CODEX_FORCE_AUTH_JSON: "0"            # API-key mode even though .env sets it to 1
+      OPENAI_API_KEY: "${AZURE_OPENAI_EUS_API_KEY}"
+      OPENAI_BASE_URL: "https://hanoveroaieus.openai.azure.com/openai/v1"
+datasets:
+  - path: tasks
+    task_names:
+      - mri_qa_set_06

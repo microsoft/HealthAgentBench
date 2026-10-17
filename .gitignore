@@ -53,3 +53,6 @@ jobs/*/
 
 # Local research scratch (probes, legacy task sets, audits); not part of the benchmark
 research/
+
+# Full-benchmark sweep outputs (Harbor run dirs); the job yamls beside them are tracked
+full_run_v2/*/

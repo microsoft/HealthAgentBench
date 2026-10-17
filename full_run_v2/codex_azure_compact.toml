@@ -1,0 +1,4 @@
+# Native Codex config used for Azure-routed runs. Azure's responses endpoint rejects
+# requests carrying more than 50 images; Codex only drops old images at compaction,
+# so compact early. Provider/base URL/key come from Harbor (OPENAI_BASE_URL/OPENAI_API_KEY).
+model_auto_compact_token_limit = 40000
