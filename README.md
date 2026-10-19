@@ -86,7 +86,6 @@ HealthAgentBench/                       # repo root
     ├── ehr_data_quality_task_*/                #  8 tasks — flag injected EHR errors
     ├── ehr_event_modelling_*/                  #  6 tasks — future clinical-event prediction
     ├── survival_prediction_mskchord_*/         # 10 tasks — MSK-CHORD survival prediction
-    └── ehr_to_meds_etl/                        #  1 task  — MIMIC-IV → MEDS ETL
     └── ehr_compositional_qa_*/                 #  6 tasks — clinical QA over MIMIC-IV demo with a training set
 ```
 
