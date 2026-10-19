@@ -6,6 +6,9 @@
   "num_folds": 5,
   "fold": 0,
   "seed": 20,
+  "n_source_rows": 3109,
+  "n_exact_duplicate_rows_removed": 0,
+  "n_train": 2487,
   "n_test": 622,
   "cox": {
     "c_index": 0.7084907003709002,
@@ -13,9 +16,15 @@
     "ibs": 0.2142105662634192
   },
   "rsf": {
-    "c_index": 0.7253846310322147,
-    "cmae_years": 1.5976475599214903,
-    "ibs": 0.2027323496049865
+    "c_index": 0.7256761979671682,
+    "cmae_years": 1.5904367962636694,
+    "ibs": 0.20115712852536372
   },
-  "baseline_source": "Survprompt MSK-CHORD TTE_OS fold 0, 5 folds, seed 20; all-metrics evaluation"
+  "baseline_source": "scripts/regenerate_survival_baselines.py; exact-row deduplication before SurvPrompt fold 0; CoxPHFitter penalizer=0.1; RandomSurvivalForest n_estimators=1000, min_samples_split=10, min_samples_leaf=15, random_state=20",
+  "baseline_versions": {
+    "lifelines": "0.30.0",
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scikit-survival": "0.28.0"
+  }
 }

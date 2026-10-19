@@ -97,7 +97,9 @@ _REQUIRED_COLUMNS = {"PATIENT_ID", "entry", "stop", "dead"}
 _OUTCOME_COLUMNS = ["sample_id", "observed_time_days", "event_observed"]
 
 
-def load_cohort(source_dir: Path) -> tuple[pd.DataFrame, list[str]]:
+def load_cohort(
+    source_dir: Path,
+) -> tuple[pd.DataFrame, list[str], dict[str, int]]:
     path = source_dir / SOURCE_FILENAME
     if not path.is_file():
         raise FileNotFoundError(f"MSK-CHORD cohort file not found: {path}")
@@ -106,6 +108,19 @@ def load_cohort(source_dir: Path) -> tuple[pd.DataFrame, list[str]]:
     missing = sorted(_REQUIRED_COLUMNS - set(frame.columns))
     if missing:
         raise ValueError(f"{path} is missing required columns: {', '.join(missing)}")
+
+    n_source_rows = len(frame)
+    frame = frame.drop_duplicates(ignore_index=True)
+    n_exact_duplicate_rows_removed = n_source_rows - len(frame)
+    patient_ids = frame["PATIENT_ID"].astype(str)
+    duplicate_patient_ids = sorted(
+        patient_ids[patient_ids.duplicated(keep=False)].unique()
+    )
+    if duplicate_patient_ids:
+        raise ValueError(
+            "source contains non-identical rows for PATIENT_ID values: "
+            + ", ".join(duplicate_patient_ids)
+        )
 
     frame = frame.copy()
     frame["observed_time_days"] = frame["stop"].astype(float) - frame["entry"].astype(
@@ -119,7 +134,12 @@ def load_cohort(source_dir: Path) -> tuple[pd.DataFrame, list[str]]:
     cohort_flag = f"has_{COHORT}"
     frame[cohort_flag] = 1
     features.append(cohort_flag)
-    return frame, features
+    preprocessing = {
+        "n_source_rows": n_source_rows,
+        "n_exact_duplicate_rows_removed": n_exact_duplicate_rows_removed,
+        "n_rows_after_deduplication": len(frame),
+    }
+    return frame, features, preprocessing
 
 
 def split_cohort(
@@ -148,7 +168,7 @@ def stage_cohort(
     fold: int = FOLD,
     seed: int = SEED,
 ) -> dict[str, object]:
-    frame, features = load_cohort(source_dir)
+    frame, features, preprocessing = load_cohort(source_dir)
     train, test = split_cohort(frame, num_folds=num_folds, fold=fold, seed=seed)
     if test["sample_id"].duplicated().any():
         raise ValueError("selected test fold contains duplicate PATIENT_ID values")
@@ -176,6 +196,7 @@ def stage_cohort(
         "n_train": len(train),
         "n_test": len(test),
         "features": features,
+        **preprocessing,
     }
     (workspace_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
