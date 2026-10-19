@@ -5,8 +5,8 @@ artifacts = ["/workspace/submission.json"]
 benchmark = "ehr_compositional_qa"
 mode = "with_train"
 question_set = "aggregation"
-question_count = 10
-training_examples = 200
+question_count = 8
+training_examples = 160
 submission_path = "/workspace/submission.json"
 
 [verifier]
@@ -29,6 +29,7 @@ allowed_hosts = [
   "chatgpt.com", "*.chatgpt.com",
   "openai.com", "*.openai.com",
   "anthropic.com", "*.anthropic.com",
+  "openai.azure.com", "*.openai.azure.com",
 ]
 
 [environment]

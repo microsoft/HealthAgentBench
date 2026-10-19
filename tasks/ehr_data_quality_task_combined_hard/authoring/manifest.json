@@ -1,0 +1,41 @@
+{
+  "dataset_version": "2.0",
+  "dataset": "combined",
+  "required_families": [
+    "demographic_conflict",
+    "impossible_value",
+    "inconsistency"
+  ],
+  "required_clusters": 69,
+  "injected_label_entries": 645,
+  "preexisting_label_entries": 110,
+  "excluded_source_review_clusters": [],
+  "source_sha256": {
+    "hosp/patients.csv.gz": "59dcc6cd8450ddf03ad32cc7d76e41caa4c9633541715987f590c74835cf6fae",
+    "hosp/admissions.csv.gz": "910b9f160ffdf1e08ea673585393f347c773ccc87d66875c627584a903ae8493",
+    "hosp/labevents.csv.gz": "d51a4cf1ea63245abe7d544b0d50a928e9ee2ec5eb9a5ce85500aed0bd6c6dfc",
+    "hosp/prescriptions.csv.gz": "33c392ba5b9299b08eca0a61911ba106f0aebdba26ed31b856bb9ffd49fe3654",
+    "hosp/d_labitems.csv.gz": "72ea5f020469fd24543bd98ab3bd0a4f645a5a4b7802d9d52af20d736f9d76db",
+    "icu/icustays.csv.gz": "e05e81aa52a3022e522b6832a898101a69b84e64c17bb344d819e458d5bc21b3",
+    "icu/chartevents.csv.gz": "90f096ad3db847ed1aaec073f8d86053c51fea7b616d3b046410e030f083d560",
+    "icu/d_items.csv.gz": "1690467a822345226a041c1149237c418aa60098c6b699fb4cef64d73588a01f"
+  },
+  "config_sha256": "5fb99d913fba2f65be799992ab89c770402e070b63902dceb68d2d602559bb69",
+  "generator_sha256": "a96cd56ecf8151c4951206b314a31423afe490a0d3a7943bcb292df63dffb1a7",
+  "entrypoint_sha256": "6143a74f516a8cfdc5857fa9e676feb4ccb70b83c7348f88a775b8e41d6617d5",
+  "review_rules_sha256": "d7465a752d8ae8cf963e3655420729675e66b8ad3ebb4b262865d8f0179d059b",
+  "python": "3.12.3",
+  "pandas": "2.2.2",
+  "numpy": "1.26.4",
+  "data_sha256": {
+    "admissions.csv.gz": "2f2201c36ada4de528cc0885b1ccad6ffc9d08068ed102744ff29feb430c87db",
+    "chartevents.csv.gz": "40ec1a5f5626904104b2289ff277616f62dcc7ab9c122caa053b2fbedcd3e7bd",
+    "d_items.csv.gz": "4b9fede0d3b0ea7f61eb2de2a35f0818c503af1ad5b7c2da330899f79a5cbdaa",
+    "d_labitems.csv.gz": "a65f72cb2ac7bc838300f28c266a522a88f0f6f54ac293ac55dc335da86b9aa5",
+    "icustays.csv.gz": "a39a3cb1b2272c9ee64ec1c97b550f0d0ac922433a72f8e6642bd2a73cb6fa28",
+    "labevents.csv.gz": "758eac7ed2095d69680a79cb3064e4da3f61f2c1f0bbebae9d6d6379d4880cdf",
+    "patients.csv.gz": "9c0ab721afbdf25455dd818e3d28d81a05b9b2426a96a506c9b808ba781fd9b3",
+    "prescriptions.csv.gz": "c591f21d24648cff19ed475ff77d0b8b710d0ccdb63077bf71a5d23b4f5125b9"
+  },
+  "labels_sha256": "5a3475055cc774eb891b4b7e2eff7d3847741f4d5073aeff44644fb722d6d49c"
+}

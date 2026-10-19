@@ -1,9 +1,0 @@
-id: task_inconsistency
-seed: 2
-in_scope_patient_count: 20
-tables:
-- labevents
-- chartevents
-injectors:
-- family: inconsistency
-  count: 16

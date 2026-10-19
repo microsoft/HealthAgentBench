@@ -1,167 +1,204 @@
 [
   {
-    "question_id": "aki__variant_1",
-    "concept": "aki",
-    "variant_id": "variant_1",
-    "question": "What was the maximum AKI stage this patient reached within the first 24 hours of their ICU admission?",
-    "subject_id": 10002428,
-    "hadm_id": 20321825,
-    "stay_id": 34807493,
-    "answer_type": "numerical",
-    "question_type": "temporal"
-  },
-  {
     "question_id": "apsiii__variant_3",
     "concept": "apsiii",
     "variant_id": "variant_3",
     "question": "What was this patient's creatinine APS III component score at the time of ICU admission?",
-    "subject_id": 10001725,
-    "hadm_id": 25563031,
-    "stay_id": 31205490,
+    "subject_id": 10015931,
+    "hadm_id": 24420677,
+    "stay_id": 38137964,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "first_day_sofa__variant_3",
     "concept": "first_day_sofa",
     "variant_id": "variant_3",
     "question": "What was this patient's cardiovascular SOFA component score on the first day of their ICU admission?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10002428,
+    "hadm_id": 23473524,
+    "stay_id": 35479615,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "kdigo_stages__variant_3",
     "concept": "kdigo_stages",
     "variant_id": "variant_3",
     "question": "What was the maximum KDIGO AKI stage this patient reached within the first 24 hours of their ICU admission?",
-    "subject_id": 10002428,
-    "hadm_id": 20321825,
-    "stay_id": 34807493,
+    "subject_id": 10031757,
+    "hadm_id": 28477280,
+    "stay_id": 33244906,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "lods__variant_3",
     "concept": "lods",
     "variant_id": "variant_3",
     "question": "What was this patient's neurological LODS component score at the time of ICU admission?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10021312,
+    "hadm_id": 28829452,
+    "stay_id": 37507305,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "meld__variant_1",
     "concept": "meld",
     "variant_id": "variant_1",
     "question": "What was this patient's admission MELD score?",
-    "subject_id": 10004457,
-    "hadm_id": 23251352,
-    "stay_id": 31494479,
+    "subject_id": 10023239,
+    "hadm_id": 29295881,
+    "stay_id": 33846653,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "norepinephrine_equivalent_dose__variant_3",
     "concept": "norepinephrine_equivalent_dose",
     "variant_id": "variant_3",
     "question": "What was this patient's maximum norepinephrine-equivalent vasopressor dose (mcg/kg/min) within the first 24 hours of ICU admission?",
-    "subject_id": 10004422,
-    "hadm_id": 21255400,
-    "stay_id": 32155744,
+    "subject_id": 10002428,
+    "hadm_id": 28662225,
+    "stay_id": 33987268,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "oasis__variant_2",
     "concept": "oasis",
     "variant_id": "variant_2",
     "question": "How many days did this patient spend in the hospital before their ICU admission?",
-    "subject_id": 10019568,
-    "hadm_id": 28710730,
-    "stay_id": 30876334,
+    "subject_id": 10039708,
+    "hadm_id": 24928679,
+    "stay_id": 37323533,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "oasis__variant_3",
     "concept": "oasis",
     "variant_id": "variant_3",
     "question": "What was this patient's mean blood pressure (mmHg) component value used in their OASIS score at the time of ICU admission?",
-    "subject_id": 10022017,
-    "hadm_id": 22342963,
-    "stay_id": 39497668,
+    "subject_id": 10037928,
+    "hadm_id": 22490490,
+    "stay_id": 31552399,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
   },
   {
     "question_id": "sapsii__variant_3",
     "concept": "sapsii",
     "variant_id": "variant_3",
     "question": "What was this patient's age component score in the SAPS II at the time of ICU admission?",
-    "subject_id": 10003046,
-    "hadm_id": 26048429,
-    "stay_id": 35514836,
+    "subject_id": 10023239,
+    "hadm_id": 21759936,
+    "stay_id": 35024147,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sepsis3__variant_0",
     "concept": "sepsis3",
     "variant_id": "variant_0",
     "question": "What is this patient's SOFA score at the time of suspected infection?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10005866,
+    "hadm_id": 20364112,
+    "stay_id": 34170353,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sepsis3__variant_1",
     "concept": "sepsis3",
     "variant_id": "variant_1",
     "question": "How many hours after ICU admission was this patient first administered antibiotics in the context of suspected infection?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10020187,
+    "hadm_id": 24104168,
+    "stay_id": 37509585,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sepsis3__variant_4",
     "concept": "sepsis3",
     "variant_id": "variant_4",
     "question": "How many hours after ICU admission was a microbiological culture obtained in the context of suspected infection?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10019003,
+    "hadm_id": 21457723,
+    "stay_id": 35727289,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sirs__variant_3",
     "concept": "sirs",
     "variant_id": "variant_3",
     "question": "What was this patient's WBC SIRS component score on their first ICU day?",
-    "subject_id": 10001217,
-    "hadm_id": 24597018,
-    "stay_id": 37067082,
+    "subject_id": 10027445,
+    "hadm_id": 29163082,
+    "stay_id": 36084484,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sofa__variant_3",
     "concept": "sofa",
     "variant_id": "variant_3",
     "question": "What was this patient's maximum SOFA score within their first 12 hours in the ICU?",
-    "subject_id": 10002495,
-    "hadm_id": 24982426,
-    "stay_id": 36753294,
+    "subject_id": 10016742,
+    "hadm_id": 28506150,
+    "stay_id": 32314488,
     "answer_type": "numerical",
-    "question_type": "temporal"
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
   }
 ]

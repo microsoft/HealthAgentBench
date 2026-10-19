@@ -2,6 +2,7 @@ version = "1.0"
 artifacts = ["/workspace/submission/flagged_rows.csv"]
 
 [metadata]
+dataset_version = "2.0"
 benchmark = "ehr_data_quality"
 mode = "etl-task"
 task_id = "ehr_data_quality_task_inconsistency_hard"
@@ -26,6 +27,7 @@ network_mode = "allowlist"
 allowed_hosts = [
   "chatgpt.com", "*.chatgpt.com",
   "openai.com", "*.openai.com",
+  "openai.azure.com", "*.openai.azure.com",
   "anthropic.com", "*.anthropic.com",
 ]
 

@@ -25,6 +25,6 @@
 - test labels and bootstrap materials should be separate from the agent main container. The verifier should be in a separate container
 
 ## Trajectory Checks
-- Check the model successes are reflecting model's genuine capabilities
-- Check model failures are reflecting model's genuine failures. 
+- Check the model successes are reflecting model's genuine capabilities and not because of cheating or shortcuts
+- Check model failures are reflecting model's genuine failures not because poor task design or environment issues.
 

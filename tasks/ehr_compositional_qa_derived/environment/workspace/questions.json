@@ -4,87 +4,97 @@
     "concept": "apsiii",
     "variant_id": "variant_2",
     "question": "What is the combined vital-signs APS III sub-score for this patient?",
-    "subject_id": 10006053,
-    "hadm_id": 22942076,
-    "stay_id": 32895909,
+    "subject_id": 10019172,
+    "hadm_id": 24997044,
+    "stay_id": 32283063,
     "answer_type": "numerical",
-    "question_type": "derived"
-  },
-  {
-    "question_id": "first_day_sofa__variant_2",
-    "concept": "first_day_sofa",
-    "variant_id": "variant_2",
-    "question": "What is the combined respiratory and cardiovascular SOFA sub-score on this patient's first ICU day?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
-    "answer_type": "numerical",
-    "question_type": "derived"
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "kdigo_stages__variant_2",
     "concept": "kdigo_stages",
     "variant_id": "variant_2",
     "question": "What is the difference between this patient's creatinine-based and urine-output-based KDIGO AKI stages?",
-    "subject_id": 10002428,
-    "hadm_id": 20321825,
-    "stay_id": 34807493,
+    "subject_id": 10039708,
+    "hadm_id": 24928679,
+    "stay_id": 37323533,
     "answer_type": "numerical",
-    "question_type": "derived"
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "lods__variant_2",
     "concept": "lods",
     "variant_id": "variant_2",
     "question": "What is the combined neurological, cardiovascular, and renal LODS sub-score for this patient?",
-    "subject_id": 10001725,
-    "hadm_id": 25563031,
-    "stay_id": 31205490,
+    "subject_id": 10027445,
+    "hadm_id": 26275841,
+    "stay_id": 34499716,
     "answer_type": "numerical",
-    "question_type": "derived"
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "meld__variant_2",
     "concept": "meld",
     "variant_id": "variant_2",
-    "question": "By how many points did this patient's MELD score change from admission to peak during their ICU stay?",
-    "subject_id": 10001217,
-    "hadm_id": 24597018,
-    "stay_id": 37067082,
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
+    "subject_id": 10009049,
+    "hadm_id": 22995465,
+    "stay_id": 35636875,
     "answer_type": "numerical",
-    "question_type": "derived"
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sapsii__variant_2",
     "concept": "sapsii",
     "variant_id": "variant_2",
     "question": "What is the combined hemodynamic and neurological SAPS II sub-score for this patient?",
-    "subject_id": 10001725,
-    "hadm_id": 25563031,
-    "stay_id": 31205490,
+    "subject_id": 10019003,
+    "hadm_id": 29279905,
+    "stay_id": 34107647,
     "answer_type": "numerical",
-    "question_type": "derived"
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sapsii__variant_4",
     "concept": "sapsii",
     "variant_id": "variant_4",
     "question": "What is the combined comorbidity and admission-type SAPS II sub-score for this patient?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10026255,
+    "hadm_id": 22059910,
+    "stay_id": 31248398,
     "answer_type": "numerical",
-    "question_type": "derived"
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   },
   {
     "question_id": "sofa__variant_2",
     "concept": "sofa",
     "variant_id": "variant_2",
     "question": "What is the combined respiratory and cardiovascular SOFA component score during this patient's first 24 hours?",
-    "subject_id": 10000032,
-    "hadm_id": 29079034,
-    "stay_id": 39553978,
+    "subject_id": 10015931,
+    "hadm_id": 22130791,
+    "stay_id": 37093652,
     "answer_type": "numerical",
-    "question_type": "derived"
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
   }
 ]

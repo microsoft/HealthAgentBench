@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl jq tmux asciinema ripgrep util-linux && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl procps jq tmux asciinema ripgrep util-linux && rm -rf /var/lib/apt/lists/*
 # Node.js preinstalled from NodeSource (one package). Harbor's codex setup only
 # apt-installs curl/node/npm/ripgrep when the commands are missing; Debian's
 # ``npm`` meta-package pulls in ~700 debs and made five concurrent trials exceed

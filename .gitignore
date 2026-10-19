@@ -61,3 +61,6 @@ jobs/*/
 
 # Local research scratch (probes, legacy task sets, audits); not part of the benchmark
 research/
+
+# Full-benchmark sweep outputs and job configs (local only)
+full_run_v2/
