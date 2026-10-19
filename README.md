@@ -57,10 +57,10 @@ HealthAgentBench currently ships **eight** task categories:
 | CT Abnormality Classification (`ct_abnormality`) | 10 | Patient-level chest-CT abnormality detection built on the CT-RATE dataset. |
 | EHR Data Quality Auditing (`ehr_data_quality`) | 8 | Flag rows containing injected data-quality errors in a corrupted MIMIC-IV EHR subset. |
 | EHR Event Modelling (`ehr_event_modelling`) | 6 | Predict future clinical events over longitudinal EHR timelines (Stanford SHAH lab's EHRSHOT benchmark). |
-| Survival Prediction (`survival_prediction`) | 20 | Predict overall survival for 5 MSK-CHORD cohorts (NSCLC, breast, colorectal, pancreatic, and prostate). Tasks cover scalar time-to-event and survival probability curve predictions, each with and without labeled training data, and requires outperforming survival baselines. |
+| Survival Prediction (`survival_prediction`) | 10 | Predict overall survival for 5 MSK-CHORD cohorts (NSCLC, breast, colorectal, pancreatic, and prostate). Tasks cover scalar time-to-event and survival probability curve predictions with labeled training data and require outperforming survival baselines. |
 | EHR Compositional QA (`ehr_compositional_qa`) | 6 | Numerical clinical questions (severity scores, AKI stages, sepsis timing) answered from raw MIMIC-IV demo tables with a labelled training set: five sets of 7 to 15 questions split by question type plus one 51-question set; pass requires every answer correct. |
 | Knee MRI QA (`mri_qa`) | 10 | Three knee MRI exams per task; answer ACL tear and meniscal tear for each from all three planes. All six answers must match the source labels. |
-| **Total** | **76** | |
+| **Total** | **80** | |
 
 Each task has its own `README.md` under [`tasks/`](tasks/) with the task's category, success criteria, data/credentials, and commands to run that task or its whole category.
 
@@ -77,7 +77,7 @@ HealthAgentBench/                       # repo root
 ├── website/                            # Astro leaderboard / docs site
 ├── LICENSE
 ├── SECURITY.md
-└── tasks/                              # 76 Harbor tasks, one flat directory per task
+└── tasks/                              # 80 Harbor tasks, one flat directory per task
     ├── xray_report_correction_case_*/         # 10 tasks - Longitudinal X-ray report correction
     ├── pathology_tumor_area_selection_slide_*/ # 10 tasks — WSI tumor-tile selection
     ├── pathology_tumor_slide_selection_set_*/  # 10 tasks — pick the tumor slides among several WSIs
@@ -85,12 +85,12 @@ HealthAgentBench/                       # repo root
     ├── ct_abnormality_valid_*/                 # 10 tasks — chest-CT abnormality detection
     ├── ehr_data_quality_task_*/                #  8 tasks — flag injected EHR errors
     ├── ehr_event_modelling_*/                  #  6 tasks — future clinical-event prediction
-    ├── survival_prediction_mskchord_*/         # 20 tasks — MSK-CHORD survival prediction
+    ├── survival_prediction_mskchord_*/         # 10 tasks — MSK-CHORD survival prediction
     └── ehr_to_meds_etl/                        #  1 task  — MIMIC-IV → MEDS ETL
     └── ehr_compositional_qa_*/                 #  6 tasks — clinical QA over MIMIC-IV demo with a training set
 ```
 
-All 76 tasks live as **flat, sibling directories** directly under `tasks/` — the task
+All 80 tasks live as **flat, sibling directories** directly under `tasks/` — the task
 directory name is prefixed with its category (e.g. `xray_report_correction_case_01`,
 `ct_abnormality_valid_16_a_1`).
 Every task follows the same Harbor layout (`task.toml` + `instruction.md` +
