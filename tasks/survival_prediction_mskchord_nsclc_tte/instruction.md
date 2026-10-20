@@ -22,6 +22,9 @@ The following files are available under `/workspace/data/`:
 
 `event_observed` is true when death was observed and false when the survival
 time is right-censored. Missing feature values may be present.
+The prediction landmark is first sequencing, and `observed_time_days` is
+follow-up after that landmark (`stop - entry`). Treat all supplied features,
+including `progressed` and `MAX_*` fields, as the fixed landmark snapshot.
 
 ## Output
 
@@ -62,6 +65,11 @@ The verifier logs the Survprompt TTE_OS metrics:
 - Integrated Brier score over the 0.5-to-10-year grid. Each scalar time is
   converted to a deterministic survival curve that is 1 before the predicted
   time and 0 afterward; lower is better.
+
+For cMAE, predictions are converted from days to years. Deaths use their
+observed times. A censoring time `c` uses the jackknife KM-mean surrogate
+`(n + 1) * mean(KM with c) - n * mean(training KM)`, clipped at the smaller of
+30 years and maximum training follow-up.
 
 The final reward is binary. Reward is 1.0 only when:
 

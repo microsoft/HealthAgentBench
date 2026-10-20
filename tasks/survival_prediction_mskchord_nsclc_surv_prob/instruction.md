@@ -21,6 +21,9 @@ The following files are available under `/workspace/data/`:
 
 `event_observed` is true when death was observed and false when the survival
 time is right-censored. Missing feature values may be present.
+The prediction landmark is first sequencing, and `observed_time_days` is
+follow-up after that landmark (`stop - entry`). Treat all supplied features,
+including `progressed` and `MAX_*` fields, as the fixed landmark snapshot.
 
 ## Output
 
@@ -47,10 +50,11 @@ The `prediction` value must be a Python-style list of
 
 For every curve:
 
+- Each point must contain exactly two numbers.
+- Start at `(0.0, 1.0)`, end at 10.0 years, and include no later times.
 - Times must be finite, nonnegative, and strictly increasing.
-- Probabilities must be finite and between 0 and 1.
+- Probabilities must be finite, between 0 and 1, and non-increasing.
 - Probabilities should represent survival through the corresponding time.
-- Include enough of the curve to support evaluation from 0.5 through 10 years.
 
 CSV quoting is required because each prediction contains commas. A standard
 CSV writer such as `pandas.DataFrame.to_csv(..., index=False)` handles this.
@@ -64,8 +68,14 @@ The verifier logs all survival-probability metrics:
   higher is better.
 - Censoring-adjusted MAE in years: error of predicted median survival after
   pseudo-observation adjustment for censoring; lower is better.
-- Integrated Brier score over the supported 0.5-to-10-year grid; lower is
-  better.
+- Integrated Brier score at 0.5-year increments from 0.5 through 10 years,
+  using linear curve interpolation; lower is better.
+
+For cMAE, the predicted median is the first 0.5 crossing by linear
+interpolation, or 10 years if the curve never falls below 0.5. Deaths use their
+observed times. A censoring time `c` uses the jackknife KM-mean surrogate
+`(n + 1) * mean(KM with c) - n * mean(training KM)`, clipped at the smaller of
+30 years and maximum training follow-up.
 
 The final reward is binary. Reward is 1.0 only when:
 
