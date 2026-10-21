@@ -23,6 +23,7 @@
 </p>
 
 ## 📢 Updates
+* 2026-09-21: V2.0 in progress and will update here when it is ready. 
 * 2026-09-15: We added the Pathology Tumor Slide Selection category (`pathology_tumor_slide_selection`, 10 tasks)
 * 2026-07-27: We added results from Claude Code Opus-5 and Codex GPT-5.6-sol
 * 2026-07-03: We released the benchmark.
@@ -56,9 +57,10 @@ HealthAgentBench currently ships **eight** task categories:
 | CT Abnormality Classification (`ct_abnormality`) | 10 | Patient-level chest-CT abnormality detection built on the CT-RATE dataset. |
 | EHR Data Quality Auditing (`ehr_data_quality`) | 8 | Flag rows containing injected data-quality errors in a corrupted MIMIC-IV EHR subset. |
 | EHR Event Modelling (`ehr_event_modelling`) | 6 | Predict future clinical events over longitudinal EHR timelines (Stanford SHAH lab's EHRSHOT benchmark). |
+| Survival Prediction (`survival_prediction`) | 10 | Predict overall survival for 5 MSK-CHORD cohorts (NSCLC, breast, colorectal, pancreatic, and prostate). Tasks cover scalar time-to-event and survival probability curve predictions with labeled training data and require outperforming survival baselines. |
 | EHR Compositional QA (`ehr_compositional_qa`) | 6 | Numerical clinical questions (severity scores, AKI stages, sepsis timing) answered from raw MIMIC-IV demo tables with a labelled training set: five sets of 7 to 15 questions split by question type plus one 51-question set; pass requires every answer correct. |
 | Knee MRI QA (`mri_qa`) | 10 | Three knee MRI exams per task; answer ACL tear and meniscal tear for each from all three planes. All six answers must match the source labels. |
-| **Total** | **70** | |
+| **Total** | **80** | |
 
 Each task has its own `README.md` under [`tasks/`](tasks/) with the task's category, success criteria, data/credentials, and commands to run that task or its whole category.
 
@@ -75,7 +77,7 @@ HealthAgentBench/                       # repo root
 ├── website/                            # Astro leaderboard / docs site
 ├── LICENSE
 ├── SECURITY.md
-└── tasks/                              # 70 Harbor tasks, one flat directory per task
+└── tasks/                              # 80 Harbor tasks, one flat directory per task
     ├── xray_report_correction_case_*/         # 10 tasks - Longitudinal X-ray report correction
     ├── pathology_tumor_area_selection_slide_*/ # 10 tasks — WSI tumor-tile selection
     ├── pathology_tumor_slide_selection_set_*/  # 10 tasks — pick the tumor slides among several WSIs
@@ -83,10 +85,11 @@ HealthAgentBench/                       # repo root
     ├── ct_abnormality_valid_*/                 # 10 tasks — chest-CT abnormality detection
     ├── ehr_data_quality_task_*/                #  8 tasks — flag injected EHR errors
     ├── ehr_event_modelling_*/                  #  6 tasks — future clinical-event prediction
+    ├── survival_prediction_mskchord_*/         # 10 tasks — MSK-CHORD survival prediction
     └── ehr_compositional_qa_*/                 #  6 tasks — clinical QA over MIMIC-IV demo with a training set
 ```
 
-All 70 tasks live as **flat, sibling directories** directly under `tasks/` — the task
+All 80 tasks live as **flat, sibling directories** directly under `tasks/` — the task
 directory name is prefixed with its category (e.g. `xray_report_correction_case_01`,
 `ct_abnormality_valid_16_a_1`).
 Every task follows the same Harbor layout (`task.toml` + `instruction.md` +
@@ -129,6 +132,10 @@ instructions below and fill in the credentials in `.env` (there is a file
   (radiology reports) and [MIMIC-CXR-JPG v2.1.0](https://physionet.org/content/mimic-cxr-jpg/2.1.0/)
   (JPG frames + metadata), both on PhysioNet. Once approved, set your PhysioNet
   username as `PN_USER` and password as `PN_PASS` in `.env`.
+- **survival_prediction** — Download the five public
+  [MSK-CHORD cohorts](https://github.com/clinical-data-mining/msk-chord-figures-public/tree/main/data)
+  (`nsclc`, `brca`, `crc`, `panc`, and `prostate`) and place the files
+  under `assets/survival_prediction/mskchord/`.
 
 
 ### Setting up other secrets
@@ -205,7 +212,7 @@ uv run harbor run \
   --n-attempts 1 --n-concurrent 5
 ```
 
-Category prefixes for `--include-task-name`: `mri_qa_set_*`, `ct_abnormality_*`, `ehr_data_quality_*`, `ehr_event_modelling_*`, `ehr_compositional_qa_*`, `pathology_tumor_area_selection_*`, `pathology_tumor_slide_selection_*`, `xray_report_correction_*`
+Category prefixes for `--include-task-name`: `mri_qa_set_*`, `ct_abnormality_*`, `ehr_data_quality_*`, `ehr_event_modelling_*`, `ehr_compositional_qa_*`, `pathology_tumor_area_selection_*`, `pathology_tumor_slide_selection_*`, `xray_report_correction_*`, `survival_prediction_*`
 
 
 
@@ -230,5 +237,3 @@ If you use HealthAgentBench in your research, please cite:
   year = {2026}
 }
 ```
-
-

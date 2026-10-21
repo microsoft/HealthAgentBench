@@ -1,0 +1,32 @@
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-img
+    volumes:
+      - workspace-data:/workspace/data:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+
+  bootstrap:
+    image: ${COMPOSE_PROJECT_NAME}-img
+    volumes:
+      # Shared MSK-CHORD source-data directory, mounted only into bootstrap.
+      - ../../../assets/survival_prediction/mskchord:/data/_cache:ro
+      - workspace-data:/workspace/data:rw
+      # Harbor mounts this directory only while running the verifier.
+      - ../tests:/tests:rw
+      - ./bootstrap.sh:/bootstrap.sh:ro
+      - ./stage_data.py:/opt/survival_prediction/stage_data.py:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - default
+    command: ["/bin/bash", "/bootstrap.sh"]
+
+volumes:
+  workspace-data:

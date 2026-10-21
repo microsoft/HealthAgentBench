@@ -1,0 +1,30 @@
+{
+  "task_id": "survival_prediction_mskchord_brca_surv_prob",
+  "dataset": "mskchord",
+  "cohort": "brca",
+  "prediction_task": "SURV_PROB",
+  "num_folds": 5,
+  "fold": 0,
+  "seed": 20,
+  "n_source_rows": 5368,
+  "n_exact_duplicate_rows_removed": 0,
+  "n_train": 4294,
+  "n_test": 1074,
+  "cox": {
+    "c_index": 0.5263415716528982,
+    "cmae_years": 4.902411567465077,
+    "ibs": 0.33570550885619366
+  },
+  "rsf": {
+    "c_index": 0.7896412234587288,
+    "cmae_years": 2.334982990040252,
+    "ibs": 0.1484520220576674
+  },
+  "baseline_source": "scripts/regenerate_survival_baselines.py; exact-row deduplication before SurvPrompt fold 0; CoxPHFitter penalizer=0.1; RandomSurvivalForest n_estimators=1000, min_samples_split=10, min_samples_leaf=15, random_state=20",
+  "baseline_versions": {
+    "lifelines": "0.30.0",
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scikit-survival": "0.28.0"
+  }
+}

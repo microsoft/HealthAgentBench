@@ -27,10 +27,18 @@ tasks/ehr_event_modelling_*/tests/test_labels.csv
 # service from credentialed PhysioNet downloads. Never commit —
 # PhysioNet redistribution rules apply.
 tasks/xray_report_correction_*/tests/target_report.txt
+
+# Survival-task bootstrap services write verifier-only outcomes into each
+# task's tests directory.
+assets/survival_prediction
+tasks/survival_prediction_mskchord_*/tests/test_labels.csv
+tasks/survival_prediction_mskchord_*/tests/train_outcomes.csv
+
 # mri_qa: gold is derived in the bootstrap container at run time from the
 # Redivis label tables and written here; never committed (MRNet access terms).
 tasks/mri_qa_set_*/tests/gold.json
 tasks/mri_qa_set_*/tests/data_verification.json
+
 # local convenience helpers
 resume-codex.sh
 # project-level env file (schema documented in README.md; never commit secrets)
