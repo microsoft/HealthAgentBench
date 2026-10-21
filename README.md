@@ -23,7 +23,7 @@
 </p>
 
 ## 📢 Updates
-* 2026-09-21: V2.0 in progress and will update here when it is ready. 
+* 2026-09-21: V2.0 in progress and will update here when it is ready.
 * 2026-09-15: We added the Pathology Tumor Slide Selection category (`pathology_tumor_slide_selection`, 10 tasks)
 * 2026-07-27: We added results from Claude Code Opus-5 and Codex GPT-5.6-sol
 * 2026-07-03: We released the benchmark.
@@ -42,12 +42,12 @@ clinical or biomedical problem, then a task-specific verifier scores the result.
   <img src="assets/hero_chart.png" alt="Task success rate across 54 × 3 trials for frontier agents, with cost and time per task" width="820" />
 </p>
 <p align="center">
-  <em>Previously reported results across 54 × 3 trials (Wilson 95% CI), with cost and time per task. The current suite contains 70 tasks; this figure does not cover the expanded suite.</em>
+  <em>Previously reported results across 54 × 3 trials (Wilson 95% CI), with cost and time per task. The current suite contains 75 tasks; this figure does not cover the expanded suite.</em>
 </p>
 
 ### Task Categories
 
-HealthAgentBench currently ships **eight** task categories:
+HealthAgentBench currently ships **nine** task categories:
 
 | Category (name in this codebase) | # Tasks | What is the task |
 | --- | --- | --- |
@@ -57,10 +57,10 @@ HealthAgentBench currently ships **eight** task categories:
 | CT Abnormality Classification (`ct_abnormality`) | 10 | Patient-level chest-CT abnormality detection built on the CT-RATE dataset. |
 | EHR Data Quality Auditing (`ehr_data_quality`) | 8 | Flag rows containing injected data-quality errors in a corrupted MIMIC-IV EHR subset. |
 | EHR Event Modelling (`ehr_event_modelling`) | 6 | Predict future clinical events over longitudinal EHR timelines (Stanford SHAH lab's EHRSHOT benchmark). |
-| Survival Prediction (`survival_prediction`) | 10 | Predict overall survival for 5 MSK-CHORD cohorts (NSCLC, breast, colorectal, pancreatic, and prostate). Tasks cover scalar time-to-event and survival probability curve predictions with labeled training data and require outperforming survival baselines. |
+| Survival Prediction (`survival_prediction`) | 5 | Predict overall survival time in days for five MSK-CHORD cohorts (NSCLC, breast, colorectal, pancreatic, and prostate), using labeled training data. Pass requires outperforming both Cox and RSF baselines on C-index, confidence-weighted MAE-PO, and integrated Brier score. |
 | EHR Compositional QA (`ehr_compositional_qa`) | 6 | Numerical clinical questions (severity scores, AKI stages, sepsis timing) answered from raw MIMIC-IV demo tables with a labelled training set: five sets of 7 to 15 questions split by question type plus one 51-question set; pass requires every answer correct. |
 | Knee MRI QA (`mri_qa`) | 10 | Three knee MRI exams per task; answer ACL tear and meniscal tear for each from all three planes. All six answers must match the source labels. |
-| **Total** | **80** | |
+| **Total** | **75** | |
 
 Each task has its own `README.md` under [`tasks/`](tasks/) with the task's category, success criteria, data/credentials, and commands to run that task or its whole category.
 
@@ -77,7 +77,7 @@ HealthAgentBench/                       # repo root
 ├── website/                            # Astro leaderboard / docs site
 ├── LICENSE
 ├── SECURITY.md
-└── tasks/                              # 80 Harbor tasks, one flat directory per task
+└── tasks/                              # 75 Harbor tasks, one flat directory per task
     ├── xray_report_correction_case_*/         # 10 tasks - Longitudinal X-ray report correction
     ├── pathology_tumor_area_selection_slide_*/ # 10 tasks — WSI tumor-tile selection
     ├── pathology_tumor_slide_selection_set_*/  # 10 tasks — pick the tumor slides among several WSIs
@@ -85,11 +85,11 @@ HealthAgentBench/                       # repo root
     ├── ct_abnormality_valid_*/                 # 10 tasks — chest-CT abnormality detection
     ├── ehr_data_quality_task_*/                #  8 tasks — flag injected EHR errors
     ├── ehr_event_modelling_*/                  #  6 tasks — future clinical-event prediction
-    ├── survival_prediction_mskchord_*/         # 10 tasks — MSK-CHORD survival prediction
+    ├── survival_prediction_mskchord_*_tte/     #  5 tasks — MSK-CHORD survival time prediction
     └── ehr_compositional_qa_*/                 #  6 tasks — clinical QA over MIMIC-IV demo with a training set
 ```
 
-All 80 tasks live as **flat, sibling directories** directly under `tasks/` — the task
+All 75 tasks live as **flat, sibling directories** directly under `tasks/` — the task
 directory name is prefixed with its category (e.g. `xray_report_correction_case_01`,
 `ct_abnormality_valid_16_a_1`).
 Every task follows the same Harbor layout (`task.toml` + `instruction.md` +
@@ -173,7 +173,7 @@ uv run harbor run \
 Harbor will print out a `mean` column that records the success rate and all the tasks' rewards (1 or 0) across the runs. You will find full results in the output directory. We also record additional metrics in addition to binary pass in `verifier/metrics.json` in each task subdirectory in output directory. 
 
 Note: 
-1. The harbor runs above will download data and mount the data to `assets/<task_category>/` to speed up multiple task setups using the same data assets. For one agent running all 70 tasks once with `--n-concurrent 5`, **250 GB of free disk space is a planning recommendation, not a measured minimum**. Existing shared dataset caches occupy about 73 GB, and completed single-agent sweep outputs occupy about 11–16 GB. Additional space is needed for Docker images/build caches, downloads, and up to five active task workspaces; peak use depends on the agent and task mix. Keep Harbor environment cleanup enabled. Allow space on both the repository and Docker data filesystems if they are separate; retained environments or repeated sweeps require additional capacity.
+1. The harbor runs above will download data and mount the data to `assets/<task_category>/` to speed up multiple task setups using the same data assets. For one agent running the full suite once with `--n-concurrent 5`, **250 GB of free disk space is a planning recommendation, not a measured minimum**. Existing shared dataset caches occupy about 73 GB, and completed single-agent sweep outputs occupy about 11–16 GB. Additional space is needed for Docker images/build caches, downloads, and up to five active task workspaces; peak use depends on the agent and task mix. Keep Harbor environment cleanup enabled. Allow space on both the repository and Docker data filesystems if they are separate; retained environments or repeated sweeps require additional capacity.
 2. Some task families include answer keys or labels under `tasks/<task_name>/tests`; others fetch or derive gold labels during bootstrap. These files are for the separate verifier and must not be exposed to the agent. Run tasks through their Harbor environments rather than giving the agent the full repository.
 3. The agent must not reach the internet, so it cannot look up gold labels online. This is enforced in three layers:
    - **Network allowlist (the actual block).** Every `task.toml` sets `[agent] network_mode = "allowlist"` with `allowed_hosts` limited to the Claude Code and Codex API domains (`anthropic.com`, `openai.com`, `chatgpt.com`, `openai.azure.com` for Codex via Azure OpenAI, and their subdomains). Harbor's egress-control sidecar drops every other connection from the agent container, so `pip install`, `curl` and Python `urlopen` fail. The verifier runs in a separate container with `network_mode = "no-network"` (the X-ray judge allowlists `api.openai.com` and `*.openai.com` by default), and the credentialed data bootstrap runs outside the sidecar and exits before the agent starts.
