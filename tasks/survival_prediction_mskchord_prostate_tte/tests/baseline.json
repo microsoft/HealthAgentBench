@@ -1,0 +1,30 @@
+{
+  "task_id": "survival_prediction_mskchord_prostate_tte",
+  "dataset": "mskchord",
+  "cohort": "prostate",
+  "prediction_task": "TTE_OS",
+  "num_folds": 5,
+  "fold": 0,
+  "seed": 20,
+  "n_source_rows": 3211,
+  "n_exact_duplicate_rows_removed": 0,
+  "n_train": 2568,
+  "n_test": 643,
+  "cox": {
+    "c_index": 0.7912084829443446,
+    "cmae_years": 6.788026649145542,
+    "ibs": 0.2208415070362662
+  },
+  "rsf": {
+    "c_index": 0.8169322262118492,
+    "cmae_years": 6.560372673937143,
+    "ibs": 0.19910684629595957
+  },
+  "baseline_source": "scripts/regenerate_survival_baselines.py; exact-row deduplication before SurvPrompt fold 0; CoxPHFitter penalizer=0.1; RandomSurvivalForest n_estimators=1000, min_samples_split=10, min_samples_leaf=15, random_state=20",
+  "baseline_versions": {
+    "lifelines": "0.30.0",
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scikit-survival": "0.28.0"
+  }
+}
