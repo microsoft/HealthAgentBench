@@ -20,7 +20,7 @@ Every question is anchored to a time window or time point, such as the first 24 
   a unique `question_id`, the natural-language `question`, and the patient
   identifiers (`subject_id`, `hadm_id`, `stay_id`) for which the question is
   to be answered.
-- `/workspace/train.json` — 1020 labeled examples, twenty for each of the 60
+- `/workspace/train.json` — 1020 labeled examples, twenty for each of the 51
   question variants in the benchmark, including the variants asked here. Use
   these examples to validate your computations.
 
@@ -58,7 +58,6 @@ fields:
 - If you genuinely cannot compute an answer, leave it `null`. It will score
   as wrong but the verifier will still run.
 - Do not add or remove rows. Do not rename `question_id` values.
-- Do not write anything outside `/workspace/submission.json`.
 
 ## Scoring
 
@@ -75,7 +74,7 @@ and per-concept accuracy are reported as diagnostic metrics only.
 
 ## Rules
 
-- Do not modify files outside `/workspace/submission.json`.
+- Do not modify the supplied input data.
 
 ## Resources
 

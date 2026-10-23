@@ -22,6 +22,11 @@ six answers must match the reference labels to pass.
 Example output format (illustrative, not a diagnosis):
 `{"exam_1": {"acl": 0, "meniscus": 1}, "exam_2": {"acl": 1, "meniscus": 1}, "exam_3": {"acl": 0, "meniscus": 0}}`
 
+## Rules
+
+Answer from the supplied images only. Do not use any external dataset, label file,
+pretrained model or other resource that could reveal or predict the reference
+labels for these examinations. Network access other than the model API is blocked.
 
 ## Resources
 

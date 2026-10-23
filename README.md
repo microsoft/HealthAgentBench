@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="HealthAgentBench banner">
+  <img src="assets/banner.png" alt="HealthAgentBench: 75 tasks, nine categories, six evaluated agents, and 57.3% best task success rate">
 </p>
 
 <p align="center">
@@ -23,6 +23,7 @@
 </p>
 
 ## 📢 Updates
+* 2026-10-21: V2.0 is released
 * 2026-09-21: V2.0 in progress and will update here when it is ready.
 * 2026-09-15: We added the Pathology Tumor Slide Selection category (`pathology_tumor_slide_selection`, 10 tasks)
 * 2026-07-27: We added results from Claude Code Opus-5 and Codex GPT-5.6-sol
@@ -30,20 +31,29 @@
 * 2026-07-01: We released our [paper](https://arxiv.org/abs/2606.31179) and [website](https://microsoft.github.io/HealthAgentBench/).
 
 
+## What changed in V2
+
+- **Retired EHR-to-MEDS conversion:** current agents solved it too easily for it to remain a useful challenge.
+- **Retired Clinical Trial Matching:** review found ambiguous cases in the original qrel-derived negative candidate pool.
+- **Added four task categories:** Pathology Tumor Slide Selection, MRI QA, Survival Prediction, and EHR Compositional QA.
+- **Restricted online access:** agents can access model APIs only, with web browsing disabled, to prevent increasingly persistent agents from fetching answers online.
+- **Clarified instructions and resources:** specify agent-visible data and tools, required outputs, scoring conventions, and per-task time, CPU, memory, disk, and GPU availability.
 
 ## Overview
 
 **HealthAgentBench** is a terminal-based benchmark suite for evaluating agents on
 realistic health tasks. Each task drops an agent into a terminal environment
 where it must inspect data, use tools, reason, and act to solve a concrete
-clinical or biomedical problem, then a task-specific verifier scores the result. The figure below shows the main results from frontier agents on this benchmark. 
+clinical or biomedical problem, then a task-specific verifier scores the result. The figure below shows the current results from six frontier agents across all 75 tasks.
 
 <p align="center">
-  <img src="assets/hero_chart.png" alt="Task success rate across 54 × 3 trials for frontier agents, with cost and time per task" width="820" />
+  <img src="assets/hero_chart.png" alt="Task success rate across 75 tasks with one selected attempt per task for six agents, with cost and time per task" width="820" />
 </p>
 <p align="center">
-  <em>Previously reported results across 54 × 3 trials (Wilson 95% CI), with cost and time per task. The current suite contains 75 tasks; this figure does not cover the expanded suite.</em>
+  <em>Six agents, one selected scored attempt on each of 75 tasks (450 evaluations; xhigh reasoning, web tools disabled, model API access only). Error bars are descriptive Wilson 95% intervals over task outcomes; costs are API-equivalent agent estimates and time is complete trial wall time, including setup and verification.</em>
 </p>
+
+Opus-5.5 leads with **43/75 successes (57.3%)**, followed by GPT-6-astra and Sonnet-5.5 with **38/75 each (50.7%)**. Official rewards retain the row-order tie-breaking caveat in GPT-5.6-sol and GPT-6-sol lung-survival runs; full contextual review of the 15 new Claude survival trajectories is pending.
 
 ### Task Categories
 
@@ -59,7 +69,7 @@ HealthAgentBench currently ships **nine** task categories:
 | EHR Event Modelling (`ehr_event_modelling`) | 6 | Predict future clinical events over longitudinal EHR timelines (Stanford SHAH lab's EHRSHOT benchmark). |
 | Survival Prediction (`survival_prediction`) | 5 | Predict overall survival time in days for five MSK-CHORD cohorts (NSCLC, breast, colorectal, pancreatic, and prostate), using labeled training data. Pass requires outperforming both Cox and RSF baselines on C-index, confidence-weighted MAE-PO, and integrated Brier score. |
 | EHR Compositional QA (`ehr_compositional_qa`) | 6 | Numerical clinical questions (severity scores, AKI stages, sepsis timing) answered from raw MIMIC-IV demo tables with a labelled training set: five sets of 7 to 15 questions split by question type plus one 51-question set; pass requires every answer correct. |
-| Knee MRI QA (`mri_qa`) | 10 | Three knee MRI exams per task; answer ACL tear and meniscal tear for each from all three planes. All six answers must match the source labels. |
+| MRI QA (`mri_qa`) | 10 | Three knee MRI exams per task; answer ACL tear and meniscal tear for each from all three planes. All six answers must match the source labels. |
 | **Total** | **75** | |
 
 Each task has its own `README.md` under [`tasks/`](tasks/) with the task's category, success criteria, data/credentials, and commands to run that task or its whole category.

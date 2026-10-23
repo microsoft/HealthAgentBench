@@ -63,7 +63,6 @@ fields:
 - If you genuinely cannot compute an answer, leave it `null`. It will score
   as wrong but the verifier will still run.
 - Do not add or remove rows. Do not rename `question_id` values.
-- Do not write anything outside `/workspace/submission.json`.
 
 ## Scoring
 
@@ -80,7 +79,7 @@ and per-concept accuracy are reported as diagnostic metrics only.
 
 ## Rules
 
-- Do not modify files outside `/workspace/submission.json`.
+- Do not modify the supplied input data.
 
 ## Resources
 
