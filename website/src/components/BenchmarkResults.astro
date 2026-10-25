@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import Leaderboard from './Leaderboard.astro';
+import { releaseData } from '../data/releases';
+
+const { version = 'v2' } = Astro.props;
+const { results, tasks } = releaseData(version);
+
+const totalTasks = results.totalTaskCount;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path) => `${basePath}${path}`;
+---
+
+<Base version={version} title={version === 'v1' ? 'Results — HealthAgentBench' : 'Results (v2) — HealthAgentBench'}>
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <h2>Detailed Results</h2>
+        <p>Full per-category leaderboard for the current HealthAgentBench release, including the task-category breakdown behind the pooled success rate.</p>
+      </div>
+      <div class="leaderboard-actions">
+        <a class="btn" href={withBase(`/${version}/`)}>Back to overview</a>
+      </div>
+      <Leaderboard tableId="leaderboard-results" results={results} taskMeta={tasks} />
+      {version === 'v2' && <p class="note">{results.evaluationNote} {results.caveats.join(' ')}</p>}
+      <p class="note">This page expands the homepage summary into per-category success rates across all {totalTasks} tasks.</p>
+    </div>
+  </section>
+</Base>

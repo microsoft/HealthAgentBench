@@ -1,6 +1,8 @@
 ---
-import tasks from '../data/tasks.json';
-import results from '../data/results.json';
+import v1Tasks from '../data/tasks.json';
+import v1Results from '../data/results.json';
+
+const { tasks = v1Tasks, results = v1Results } = Astro.props;
 
 const best = results.bestByTask;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');

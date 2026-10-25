@@ -5,8 +5,10 @@
 //   radius = avg wall-clock time   (bigger = slower)
 //   $ tier = run cost in USD
 // Tasks are grouped by the paper's capability buckets; agents grouped by harness.
-import results from '../data/results.json';
-import tasks from '../data/tasks.json';
+import v1Results from '../data/results.json';
+import v1Tasks from '../data/tasks.json';
+
+const { results = v1Results, tasks = v1Tasks } = Astro.props;
 
 // --- geometry ---
 const ML = 160; // left margin for row labels
@@ -14,7 +16,7 @@ const MT = 100; // top margin for column headers
 const CELL = 72;
 const RH = 72;
 
-const CHART_GROUPS = [
+const CHART_GROUPS = tasks.chartGroups ?? [
   {
     id: 'medical-imaging',
     label: 'Medical Imaging\n(multimodal)',
@@ -37,6 +39,7 @@ const fams = tasks.families;
 const famByTask = new Map(fams.map((f) => [f.metricsKey || f.slug, f]));
 
 function wrap(text, max = 13) {
+  if (text.includes('\n')) return text.split('\n');
   const words = text.split(' ');
   const lines = [];
   let cur = '';
@@ -143,14 +146,14 @@ const brackets = CHART_GROUPS.map((group) => {
 const bracketY = MT + rows.length * RH + 16;
 
 // --- legends ---
-const legendX = 720;
+const legendX = ML + GRID_W + 56;
 const sizeMinutes = [2, 5, 10, 20, 40, 60];
 const costTiers = [['$', '< $1'], ['$$', '$1–2'], ['$$$', '$2–3'], ['$$$$', '> $3']];
 
 const LABEL = 'var(--text)';
 const MUTED = 'var(--muted)';
 const GREEN = 'var(--good)';
-const VB_W = 910;
+const VB_W = legendX + 190;
 const VB_H = Math.max(740, bracketY + 64);
 const VB_MINX = -56; // left gutter so the rotated "Agent" title clears the row labels
 ---

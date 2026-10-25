@@ -1,8 +1,8 @@
 ---
-import results from '../data/results.json';
-import taskMeta from '../data/tasks.json';
+import v1Results from '../data/results.json';
+import v1Tasks from '../data/tasks.json';
 
-const { compact = false, tableId = 'leaderboard-table' } = Astro.props;
+const { compact = false, tableId = 'leaderboard-table', results = v1Results, taskMeta = v1Tasks } = Astro.props;
 
 const metaByTask = Object.fromEntries(
   taskMeta.families.filter((f) => f.metricsKey).map((f) => [f.metricsKey, f]),
@@ -12,7 +12,7 @@ const orderedTasks = [
   ...results.tasks.filter((key) => !(key in metaByTask)),
 ];
 const { agents, scoreMetric, totalTaskCount } = results;
-const fmtPercent = (v) => (v === undefined || v === null ? 'â€”' : `${Math.round(v * 100)}%`);
+const fmtPercent = (v) => (v === undefined || v === null ? 'â€”' : `${results.version === 'v2' ? (v * 100).toFixed(1) : Math.round(v * 100)}%`);
 const weightedMean = (agent, key) => {
   let weightedTotal = 0;
   let totalTrials = 0;
@@ -68,7 +68,7 @@ const fmtMinutes = (seconds) => (seconds === undefined || seconds === null ? 'â€
                 style={`--lb-width:${(a.pooled * 100).toFixed(1)}%;--lb-delay:${ai * 70}ms`}
               >
                 <span></span>
-                <strong class="resolved-label">{Math.round(a.pooled * 100)}%</strong>
+                <strong class="resolved-label">{fmtPercent(a.pooled)}</strong>
               </div>
             </td>
             {!compact &&
@@ -106,8 +106,12 @@ const fmtMinutes = (seconds) => (seconds === undefined || seconds === null ? 'â€
     </table>
   </div>
   <p class="note">
-    Score metric: Mean task success rate. Resolved = task success. Cost is the summed mean run cost
-    for completing a task sweep over the benchmark's 54 tasks.
+    {results.version === 'v2' ? (
+      <>Score metric: Mean task success rate across {totalTaskCount} tasks. Cost/task is total recorded agent cost divided by {totalTaskCount}; costs are API-equivalent estimates.</>
+    ) : (
+      <>Score metric: Mean task success rate. Resolved = task success. Cost is the summed mean run cost
+      for completing a task sweep over the benchmark's 54 tasks.</>
+    )}
   </p>
 </div>
 

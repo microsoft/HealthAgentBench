@@ -1,0 +1,160 @@
+{
+  "comment": "HealthAgentBench v2: 75 tasks in nine categories. Frozen v1 metadata remains in tasks.json.",
+  "families": [
+    {
+      "slug": "xray_report_correction",
+      "metricsKey": "xray_report_correction",
+      "group": "image",
+      "tableLabel": "X-ray",
+      "chartLabel": "X-ray\nreports",
+      "title": "X-ray Report Correction",
+      "modality": "Longitudinal 2D Imaging + Text",
+      "taskType": "Multimodal report editing",
+      "taskCount": 10,
+      "dataAccess": "PhysioNet credentialed (MIMIC-CXR)",
+      "blurb": "Review a chest X-ray Findings draft against the target study and longitudinal history, then write the corrected report section. Success requires a majority of judges to find no significant errors.",
+      "category": "xray"
+    },
+    {
+      "slug": "ct_abnormality",
+      "metricsKey": "ct_abnormality",
+      "group": "image",
+      "tableLabel": "CT",
+      "chartLabel": "Chest\nCT",
+      "title": "CT Abnormality Classification",
+      "modality": "3D CT",
+      "taskType": "Visual finding detection",
+      "taskCount": 10,
+      "dataAccess": "HuggingFace gated (CT-RATE)",
+      "blurb": "Interpret a chest CT volume and emit a per-volume yes/no label vector for the report-grounded abnormality findings. Success criteria: 1.0 accuracy.",
+      "category": "ct"
+    },
+    {
+      "slug": "tumor_area_selection_pathology",
+      "metricsKey": "tumor_area_selection_pathology",
+      "group": "image",
+      "tableLabel": "Tumor",
+      "chartLabel": "Pathology\narea",
+      "title": "Pathology Tumor Area Selection",
+      "modality": "Pathology WSI",
+      "taskType": "Tile prediction",
+      "taskCount": 10,
+      "dataAccess": "Public (CAMELYON16)",
+      "blurb": "Inspect a gigapixel pathology slide and predict the set of tumor tiles on a fixed analysis grid. Success criteria: \u2265 0.9 tile F1.",
+      "category": "path_area"
+    },
+    {
+      "slug": "tumor_slide_selection_pathology",
+      "metricsKey": "tumor_slide_selection_pathology",
+      "category": "path_slide",
+      "group": "image",
+      "tableLabel": "Slides",
+      "chartLabel": "Pathology\nslides",
+      "title": "Pathology Tumor Slide Selection",
+      "modality": "Pathology WSI",
+      "taskType": "Slide selection",
+      "taskCount": 10,
+      "dataAccess": "Public (TCGA/GDC)",
+      "blurb": "Inspect eight whole-slide H&E images and identify every slide containing malignant tumor cells. Success requires an exact match to the tumor-slide set, including empty sets."
+    },
+    {
+      "slug": "mri_qa",
+      "metricsKey": "mri_qa",
+      "category": "mri",
+      "group": "image",
+      "tableLabel": "MRI",
+      "chartLabel": "MRI\nQA",
+      "title": "MRI QA",
+      "modality": "3D MRI",
+      "taskType": "Visual question answering",
+      "taskCount": 10,
+      "dataAccess": "Redivis-gated (MRNet)",
+      "blurb": "Review three MRI examinations from the supplied axial, coronal, and sagittal arrays. Answer ACL-tear and meniscal-tear questions for each exam. All six answers must match the source labels."
+    },
+    {
+      "slug": "ehr_data_quality",
+      "metricsKey": "ehr_data_quality",
+      "group": "text",
+      "tableLabel": "EHR DQ",
+      "chartLabel": "Data\nquality",
+      "title": "EHR Data Quality Auditing",
+      "modality": "Tabular EHR",
+      "taskType": "Data quality auditing",
+      "taskCount": 8,
+      "dataAccess": "Public (MIMIC-IV demo + synthetic errors)",
+      "blurb": "Audit an EHR corpus containing injected errors and flag affected rows. Success requires error-cluster recall of 1.0 and row-level precision of at least 0.1.",
+      "category": "dq"
+    },
+    {
+      "slug": "ehr_compositional_qa",
+      "metricsKey": "ehr_compositional_qa",
+      "category": "cqa",
+      "group": "text",
+      "tableLabel": "Clinical QA",
+      "chartLabel": "Clinical\nQA",
+      "title": "EHR Compositional QA",
+      "modality": "Structured EHR",
+      "taskType": "Numerical clinical QA",
+      "taskCount": 6,
+      "dataAccess": "Public (MIMIC-IV demo)",
+      "blurb": "Answer numerical clinical questions from raw MIMIC-IV tables, using 1,020 labeled examples to validate calculations. Five question-category tasks and one combined task require every answer correct."
+    },
+    {
+      "slug": "ehrshot",
+      "metricsKey": "ehr_event_modelling",
+      "group": "text",
+      "tableLabel": "Event Model.",
+      "chartLabel": "Event\nprediction",
+      "title": "EHR Event Modelling",
+      "modality": "Longitudinal EHR",
+      "taskType": "Clinical event prediction",
+      "taskCount": 6,
+      "dataAccess": "Redivis-gated (Stanford STARR via EHRSHOT)",
+      "blurb": "Learn from labeled longitudinal EHR timelines and predict held-out clinical-event risks using only observable history. Success requires AUROC to match or exceed the reference baseline.",
+      "category": "ehr"
+    },
+    {
+      "slug": "survival_prediction_tte",
+      "metricsKey": "survival_prediction_tte",
+      "category": "tte",
+      "group": "text",
+      "tableLabel": "Survival",
+      "chartLabel": "Survival\nprediction",
+      "title": "Cancer Survival Prediction",
+      "modality": "Structured EHR",
+      "taskType": "Survival modelling",
+      "taskCount": 5,
+      "dataAccess": "Public (MSK-CHORD)",
+      "blurb": "Predict overall survival time for five cancer cohorts using labeled training data. Success requires full prediction coverage and better C-index, censoring-adjusted error, and integrated Brier score than both Cox and RSF baselines."
+    }
+  ],
+  "chartGroups": [
+    {
+      "id": "medical-imaging",
+      "label": "Medical Imaging\n(multimodal)",
+      "tasks": [
+        "xray_report_correction",
+        "ct_abnormality",
+        "tumor_area_selection_pathology",
+        "tumor_slide_selection_pathology",
+        "mri_qa"
+      ]
+    },
+    {
+      "id": "database-retrieval",
+      "label": "Database Retrieval\n(text)",
+      "tasks": [
+        "ehr_data_quality",
+        "ehr_compositional_qa"
+      ]
+    },
+    {
+      "id": "ml-for-ehr",
+      "label": "EHR modeling\n(text)",
+      "tasks": [
+        "ehr_event_modelling",
+        "survival_prediction_tte"
+      ]
+    }
+  ]
+}
