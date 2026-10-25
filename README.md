@@ -23,7 +23,7 @@
 </p>
 
 ## 📢 Updates
-* 2026-10-21: V2.0 is released
+* 2026-10-25: V2.0 is released
 * 2026-09-21: V2.0 in progress and will update here when it is ready.
 * 2026-09-15: We added the Pathology Tumor Slide Selection category (`pathology_tumor_slide_selection`, 10 tasks)
 * 2026-07-27: We added results from Claude Code Opus-5 and Codex GPT-5.6-sol
@@ -142,10 +142,6 @@ instructions below and fill in the credentials in `.env` (there is a file
   (radiology reports) and [MIMIC-CXR-JPG v2.1.0](https://physionet.org/content/mimic-cxr-jpg/2.1.0/)
   (JPG frames + metadata), both on PhysioNet. Once approved, set your PhysioNet
   username as `PN_USER` and password as `PN_PASS` in `.env`.
-- **survival_prediction** — Download the five public
-  [MSK-CHORD cohorts](https://github.com/clinical-data-mining/msk-chord-figures-public/tree/main/data)
-  (`nsclc`, `brca`, `crc`, `panc`, and `prostate`) and place the files
-  under `assets/survival_prediction/mskchord/`.
 
 
 ### Setting up other secrets

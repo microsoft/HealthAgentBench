@@ -16,7 +16,7 @@ services:
     image: ${COMPOSE_PROJECT_NAME}-img
     volumes:
       # Shared MSK-CHORD source-data directory, mounted only into bootstrap.
-      - ../../../assets/survival_prediction/mskchord:/data/_cache:ro
+      - ../../../assets/survival_prediction/mskchord:/data/_cache:rw
       - workspace-data:/workspace/data:rw
       # Harbor mounts this directory only while running the verifier.
       - ../tests:/tests:rw
