@@ -173,7 +173,7 @@ trials run in parallel.
 uv run harbor run \
   --path tasks \
   --agent claude-code \
-  --model claude-opus-4-8 \
+  --model claude-opus-5 \
   --agent-kwarg reasoning_effort=xhigh \
   --agent-kwarg disallowed_tools="WebSearch WebFetch" \
   --n-attempts 1 --n-concurrent 5 \
@@ -199,7 +199,7 @@ Note:
 uv run harbor run \
   --path tasks/xray_report_correction_case_01 \
   --agent claude-code \
-  --model claude-opus-4-8 \
+  --model claude-opus-5 \
   --agent-kwarg reasoning_effort=xhigh \
   --agent-kwarg disallowed_tools="WebSearch WebFetch" \
   --n-attempts 1 --n-concurrent 1
@@ -216,7 +216,7 @@ uv run harbor run \
   --path tasks \
   --include-task-name "xray_report_correction_*" \
   --agent claude-code \
-  --model claude-opus-4-8 \
+  --model claude-opus-5 \
   --agent-kwarg reasoning_effort=xhigh \
   --agent-kwarg disallowed_tools="WebSearch WebFetch" \
   --n-attempts 1 --n-concurrent 5

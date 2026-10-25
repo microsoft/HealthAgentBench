@@ -85,6 +85,17 @@ ensure_translation_csv() {
     return 0
   fi
   local meta="$JPG_ROOT/mimic-cxr-2.0.0-metadata.csv.gz"
+  local partial="${meta}.part"
+  # A timed-out bootstrap can leave a nonempty but truncated metadata file.
+  # Keep incomplete bytes for resume; only publish a verified gzip as the cache.
+  if [ -s "$meta" ] && ! gzip -t "$meta" 2>/dev/null; then
+    echo "[bootstrap] Cached metadata is incomplete or invalid; recovering download." >&2
+    if [ ! -s "$partial" ]; then
+      mv "$meta" "$partial"
+    else
+      mv "$meta" "${meta}.invalid.$(date +%s)"
+    fi
+  fi
   if [ ! -s "$meta" ]; then
     if [ -z "${PN_USER:-}" ] || [ -z "${PN_PASS:-}" ]; then
       echo "[bootstrap] FATAL: $ID_TRANSLATION missing and PN_USER/PN_PASS unset; cannot build it." >&2
@@ -92,8 +103,19 @@ ensure_translation_csv() {
       return 1
     fi
     echo "[bootstrap] Downloading $(basename "$meta") to build id_translation.csv..."
-    wget -q --user "$PN_USER" --password "$PN_PASS" -O "$meta" \
-      "$PN_BASE_JPG/$(basename "$meta")"
+    # Retry stalled reads promptly and retain progress across Harbor attempts.
+    if ! wget --continue --connect-timeout=20 --read-timeout=20 \
+      --tries=10 --waitretry=2 --progress=dot:giga \
+      --user "$PN_USER" --password "$PN_PASS" -O "$partial" \
+      "$PN_BASE_JPG/$(basename "$meta")"; then
+      echo "[bootstrap] Metadata download failed; partial file retained for resume." >&2
+      return 1
+    fi
+    if ! gzip -t "$partial"; then
+      echo "[bootstrap] Downloaded metadata failed gzip validation; cache not published." >&2
+      return 1
+    fi
+    mv "$partial" "$meta"
   fi
   echo "[bootstrap] Building id_translation.csv from $(basename "$meta")..."
   python3 - "$meta" "$ID_TRANSLATION" <<'PY'
@@ -124,22 +146,40 @@ PY
   exec 8>&-
 }
 
+# Lock one asset at a time, rather than blocking every task for a patient.
+# A subshell releases the lock on completion or interruption.
+fetch_asset() (
+  local url="$1" dest="$2"
+  mkdir -p "$(dirname "$dest")"
+  exec 9>"${dest}.lock"
+  flock 9
+  if [ -s "$dest" ]; then
+    if [[ "$dest" != *.jpg ]] || python3 -c 'from PIL import Image; import sys; Image.open(sys.argv[1]).load()' "$dest"; then
+      return 0
+    fi
+    # Resume an incomplete JPEG left by the previous direct-cache downloader.
+    if [ ! -s "${dest}.part" ]; then
+      mv "$dest" "${dest}.part"
+    else
+      mv "$dest" "${dest}.invalid.$(date +%s)"
+    fi
+  fi
+  wget --continue --connect-timeout=20 --read-timeout=20 \
+    --tries=10 --waitretry=2 --progress=dot:giga \
+    --user "$PN_USER" --password "$PN_PASS" \
+    -O "${dest}.part" "$url" || return 1
+  [ -s "${dest}.part" ] || return 1
+  if [[ "$dest" == *.jpg ]]; then
+    python3 -c 'from PIL import Image; import sys; Image.open(sys.argv[1]).load()' "${dest}.part" || return 1
+  fi
+  mv "${dest}.part" "$dest"
+)
+
 bootstrap_assets() {
   ensure_translation_csv
 
-  # Per-patient lock: concurrent task containers for DIFFERENT patients
-  # bootstrap in parallel (disjoint file subtrees), while tasks for the
-  # SAME patient still serialize (guards against self-races).
   local subject_id
-  # Read hashed subject_id from manifest, translate to real for the
-  # per-patient lock so concurrent trials of the SAME patient still
-  # serialize (the host cache is keyed by real subject_id).
   subject_id="$(python3 -c 'import sys, json; sys.path.insert(0, "/opt"); from _translate import real; m=json.load(open("/opt/task_manifest.json")); print(real("subject", m["subject_id"]))')"
-  local lock_dir="$JPG_ROOT/.bootstrap.locks"
-  local lock_file="$lock_dir/p${subject_id}.lock"
-  mkdir -p "$JPG_ROOT" "$lock_dir"
-  exec 9>"$lock_file"
-  flock 9
 
   # --- Target study's full report (verifier-only stash) ---
   # Fetch the target study's .txt to /tests/target_report.txt. /tests is
@@ -154,11 +194,8 @@ bootstrap_assets() {
   target_group="p${target_subj:0:2}"
   if [ ! -s /tests/target_report.txt ] && [ -n "${PN_USER:-}" ] && [ -n "${PN_PASS:-}" ]; then
     echo "[bootstrap] Fetching target study s${target_sid}.txt..."
-    wget -q --no-clobber \
-      --user "$PN_USER" --password "$PN_PASS" \
-      -O /tests/target_report.txt \
-      "$PN_BASE_REPORTS/files/${target_group}/p${target_subj}/s${target_sid}.txt" \
-      || { rm -f /tests/target_report.txt; echo "[bootstrap] target report fetch failed"; }
+    fetch_asset "$PN_BASE_REPORTS/files/${target_group}/p${target_subj}/s${target_sid}.txt" /tests/target_report.txt \
+      || { echo "[bootstrap] target report fetch failed" >&2; return 1; }
     if [ -s /tests/target_report.txt ]; then
       chmod 444 /tests/target_report.txt 2>/dev/null || true
     fi
@@ -187,22 +224,16 @@ for study in m["studies"]:
     if study["is_target"]:
         continue
     sid = real("study", study["study_id"])
-    if not (dest / f"s{sid}.txt").exists():
+    if not (dest / f"s{sid}.txt").is_file() or (dest / f"s{sid}.txt").stat().st_size == 0:
         # PhysioNet URL-relative path (resolved via --base)
         print(f"files/{group}/p{subj}/s{sid}.txt")
 PY
     if [ -s /tmp/_missing_reports.txt ]; then
       echo "[bootstrap] Fetching $(wc -l </tmp/_missing_reports.txt) missing prior report(s)..."
-      (
-        # Each URL writes to its basename in cwd, so we cd into the
-        # per-patient cache dir keyed by REAL subject_id. The Python
-        # heredoc above already mkdir'd it.
-        cd "$PATIENT_REPORTS_ROOT/p${subject_id}"
-        wget -c -N \
-          --user "$PN_USER" --password "$PN_PASS" \
-          -i /tmp/_missing_reports.txt \
-          --base="$PN_BASE_REPORTS/"
-      )
+      while IFS= read -r rel; do
+        [ -n "$rel" ] || continue
+        fetch_asset "$PN_BASE_REPORTS/$rel" "$PATIENT_REPORTS_ROOT/p${subject_id}/${rel##*/}"
+      done < /tmp/_missing_reports.txt
     fi
     rm -f /tmp/_missing_reports.txt
   elif ! ls "$PATIENT_REPORTS_ROOT/p${subject_id}"/s*.txt >/dev/null 2>&1; then
@@ -234,28 +265,23 @@ for study in m["studies"]:
     for dicom_id_hash in study["dicom_ids"]:
         dicom_id = real("dicom", dicom_id_hash)
         jpg = sdir / f"{dicom_id}.jpg"
-        if not jpg.exists():
-            # Path that wget -nH --cut-dirs=1 expects: relative to jpg_root
-            rel = f"files/{group}/p{subject_id}/s{sid}/{dicom_id}.jpg"
-            missing.append(rel)
+        # Validate cached JPEGs too; the helper rechecks under the file lock.
+        rel = f"files/{group}/p{subject_id}/s{sid}/{dicom_id}.jpg"
+        missing.append(rel)
 print("\n".join(missing))
 PY
 
   if [ -s /tmp/_missing_jpgs.txt ]; then
-    echo "[bootstrap] Downloading $(wc -l </tmp/_missing_jpgs.txt) missing JPG(s)..."
-    # --cut-dirs=3 strips "files/mimic-cxr-jpg/2.1.0" from the URL path so
-    # files land at "$JPG_ROOT/files/p10/..." (matching manifest paths).
-    (
-      cd "$JPG_ROOT"
-      wget -r -N -c -np -nH --cut-dirs=3 \
-        --user "$PN_USER" --password "$PN_PASS" \
-        -i /tmp/_missing_jpgs.txt \
-        --base="$PN_BASE_JPG/"
-    )
+    echo "[bootstrap] Checking/fetching $(wc -l </tmp/_missing_jpgs.txt) JPG(s)..."
+    # Bound parallelism while retaining per-file locking and atomic publication.
+    export -f fetch_asset
+    export PN_BASE_JPG JPG_ROOT PN_USER PN_PASS
+    xargs -r -P 3 -I '{}' bash -euo pipefail -c \
+      'fetch_asset "$PN_BASE_JPG/$1" "$JPG_ROOT/$1"' _ '{}' \
+      < /tmp/_missing_jpgs.txt
   fi
 
   rm -f /tmp/_missing_jpgs.txt
-  # Lock released when fd 9 closes at shell exit.
 }
 
 bootstrap_assets

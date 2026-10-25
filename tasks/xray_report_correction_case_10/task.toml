@@ -33,9 +33,9 @@ allowed_hosts = [
 ]
 
 [environment]
-# Cold build installs the tiny chexprompt + openai==0.28 verifier venv
-# (~30 s) and apt deps (~2 min). Pinning generously.
-build_timeout_sec = 1800.0
+# Cold setup downloads the patient image history from PhysioNet. Large cases
+# can take several hours on slow connections; cached setup finishes sooner.
+build_timeout_sec = 21600.0
 # Setup baseline is public; the agent phase is allowlisted (see [agent]).
 network_mode = "public"
 cpus = 2

@@ -2,8 +2,15 @@ FROM python:3.12-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        bash ca-certificates curl \
+        bash ca-certificates curl procps \
     && rm -rf /var/lib/apt/lists/*
+
+# Preinstall CLI prerequisites so Harbor does not pull Debian's large npm
+# dependency tree during its short agent-setup phase.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/* \
+    && node --version && npm --version
 
 RUN pip install --no-cache-dir \
     numpy==2.5.1 \
