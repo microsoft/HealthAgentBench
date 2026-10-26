@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        bash ca-certificates curl procps \
+        bash ca-certificates curl procps ripgrep \
     && rm -rf /var/lib/apt/lists/*
 
 # Preinstall CLI prerequisites so Harbor does not pull Debian's large npm
