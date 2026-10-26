@@ -24,6 +24,7 @@
 
 ## 📢 Updates
 * 2026-10-25: V2.0 is released
+* V1.0 is preserved [here](https://github.com/microsoft/HealthAgentBench/tree/v1).
 * 2026-09-21: V2.0 in progress and will update here when it is ready.
 * 2026-09-15: We added the Pathology Tumor Slide Selection category (`pathology_tumor_slide_selection`, 10 tasks)
 * 2026-07-27: We added results from Claude Code Opus-5 and Codex GPT-5.6-sol
