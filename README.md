@@ -179,12 +179,12 @@ uv run harbor run \
 Harbor will print out a `mean` column that records the success rate and all the tasks' rewards (1 or 0) across the runs. You will find full results in the output directory. We also record additional metrics in addition to binary pass in `verifier/metrics.json` in each task subdirectory in output directory. 
 
 Note: 
-1. The harbor runs above will download data and mount the data to `assets/<task_category>/` to speed up multiple task setups using the same data assets. For one agent running the full suite once with `--n-concurrent 5`, **250 GB of free disk space is a planning recommendation, not a measured minimum**. Existing shared dataset caches occupy about 73 GB, and completed single-agent sweep outputs occupy about 11–16 GB. Additional space is needed for Docker images/build caches, downloads, and up to five active task workspaces; peak use depends on the agent and task mix. Keep Harbor environment cleanup enabled. Allow space on both the repository and Docker data filesystems if they are separate; retained environments or repeated sweeps require additional capacity.
-2. Some task families include answer keys or labels under `tasks/<task_name>/tests`; others fetch or derive gold labels during bootstrap. These files are for the separate verifier and must not be exposed to the agent. Run tasks through their Harbor environments rather than giving the agent the full repository.
+1. The harbor runs above will download data and mount the data to `assets/<task_category>/` to speed up multiple task setups using the same data assets. For one agent running the full suite once with `--n-concurrent 5`, **250 GB of free disk space is a planning recommendation**. 
+2. Some task families include answer keys or labels under `tasks/<task_name>/tests`; others fetch or derive gold labels during bootstrap.
 3. The agent must not reach the internet, so it cannot look up gold labels online. This is enforced in three layers:
-   - **Network allowlist (the actual block).** Every `task.toml` sets `[agent] network_mode = "allowlist"` with `allowed_hosts` limited to the Claude Code and Codex API domains (`anthropic.com`, `openai.com`, `chatgpt.com`, `openai.azure.com` for Codex via Azure OpenAI, and their subdomains). Harbor's egress-control sidecar drops every other connection from the agent container, so `pip install`, `curl` and Python `urlopen` fail. The verifier runs in a separate container with `network_mode = "no-network"` (the X-ray judge allowlists `api.openai.com` and `*.openai.com` by default), and the credentialed data bootstrap runs outside the sidecar and exits before the agent starts.
-   - **Turn off the agents' own web tools.** For Claude Code pass `--agent-kwarg disallowed_tools="WebSearch WebFetch"` as in the commands above. For Codex pass `--agent-kwarg web_search=disabled`, which Harbor renders as Codex's `-c web_search="disabled"` config override (see the [Codex config reference](https://developers.openai.com/codex/config-reference)). Either flag alone is not an egress block; the allowlist is.
-   - **Adding another agent.** To run an agent that talks to a different model API, add `--allow-agent-host your-api-host.example.com` to `uv run harbor run`. Repeat the flag for each additional API host; this extends the agent allowlist without modifying `task.toml`. Keep the added hosts limited to model API endpoints. Also disable that agent's own browsing or fetch tools if it has them. Harbor prints the allowlist at trial start; a no-op agent that tries `curl` against a few hosts is the quickest way to confirm only those hosts are reachable.
+   - **Network allowlist (the actual block).** Every `task.toml` sets `[agent] network_mode = "allowlist"` with `allowed_hosts` limited only to model APIs.
+   - **Turn off the agents' own web tools.** For Claude Code pass `--agent-kwarg disallowed_tools="WebSearch WebFetch"` as in the commands above. For Codex pass `--agent-kwarg web_search=disabled`, which Harbor renders as Codex's `-c web_search="disabled"` config override.
+   - **Adding another agent.** To run an agent that talks to a different model API, add `--allow-agent-host your-api-host.example.com` to `uv run harbor run`. Repeat the flag for each additional API host; Also disable that agent's own browsing or fetch tools if it has them.
 4. Check the exception errors (if any) reported by Harbor. We treat agenttimeout trials as failures (reward=0) when reporting the overall success rate.
 
 
@@ -237,9 +237,14 @@ Important pointers:
 If you use HealthAgentBench in your research, please cite:
 
 ```bibtex
+
 @misc{liu2026healthagentbench,
   title = {HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents},
-  author = {Liu, Qianchu and Zhang, Sheng and Qin, Guanghui and Valanarasu, Jeya Maria Jose and Rokuss, Maximilian and Lu, Mingyu and Ossowski, Timothy and Chaves, Juan Manuel Zambrano and Wong, Cliff and Argaw, Peniel and Hasija, Yashna and Wei, Mu and Yim, Wen-wai and Liu, Qin and Jing, Zilin and Entenmann, Jason and Usuyama, Naoto and Naumann, Tristan and Poon, Hoifung},
-  year = {2026}
+  author = {Liu, Qianchu and Zhang, Sheng and Qin, Guanghui and Valanarasu, Jeya Maria Jose and Huang, Xiaoke and Argaw, Peniel and Rokuss, Maximilian and Lu, Mingyu and Ossowski, Timothy and Chaves, Juan Manuel Zambrano and Wong, Cliff and Patel, Naisargi and Hasija, Yashna and Wei, Mu and Yim, Wen-wai and Liu, Qin and Jing, Zilin and Entenmann, Jason and Usuyama, Naoto and Naumann, Tristan and Poon, Hoifung},
+  year = {2026},
+  eprint = {2606.31179},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.AI},
+  url = {https://arxiv.org/abs/2606.31179}
 }
 ```
