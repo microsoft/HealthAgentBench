@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "slide_0001",
+    "task_type": "tumor area selection",
+    "analysis_tile_size": 256,
+    "analysis_downsample": 16,
+    "tumor_threshold": 0.2
+  }
+]

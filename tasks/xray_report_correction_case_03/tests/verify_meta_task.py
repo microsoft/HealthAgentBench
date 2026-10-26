@@ -6,7 +6,7 @@ Called by Harbor after the agent completes. Reads
 in memory with gold FINDINGS + IMPRESSION parsed from
 ``/tests/target_report.txt`` (the ``bootstrap`` compose service wrote
 this into the host's tests/ dir from PhysioNet before main started;
-Harbor mounts it as /tests only at verifier time), then calls
+Harbor bakes it into the separate verifier image at verification time), then calls
 CheXprompt and writes:
 
   * ``/logs/verifier/reward.txt``      — the binary reward scalar Harbor reads

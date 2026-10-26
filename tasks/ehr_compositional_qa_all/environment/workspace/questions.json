@@ -1,0 +1,736 @@
+[
+  {
+    "question_id": "aki__variant_2",
+    "concept": "aki",
+    "variant_id": "variant_2",
+    "question": "By how many stages above stage 1 does this patient's maximum AKI progress?",
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 35026312,
+    "answer_type": "numerical",
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "aki__variant_3",
+    "concept": "aki",
+    "variant_id": "variant_3",
+    "question": "By how many AKI stages above stage 1 does this patient progress within the first 24 hours of ICU admission?",
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 35889503,
+    "answer_type": "numerical",
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "aki__variant_4",
+    "concept": "aki",
+    "variant_id": "variant_4",
+    "question": "By how many stages above stage 2 does this patient's peak AKI progress?",
+    "subject_id": 10016742,
+    "hadm_id": 29281842,
+    "stay_id": 37057036,
+    "answer_type": "numerical",
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "apsiii__variant_0",
+    "concept": "apsiii",
+    "variant_id": "variant_0",
+    "question": "What is this patient's APS III score?",
+    "subject_id": 10039708,
+    "hadm_id": 23819016,
+    "stay_id": 38559363,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "apsiii__variant_1",
+    "concept": "apsiii",
+    "variant_id": "variant_1",
+    "question": "What is this patient's GCS-based neurological APS III component score?",
+    "subject_id": 10005817,
+    "hadm_id": 28661809,
+    "stay_id": 31316840,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "apsiii__variant_2",
+    "concept": "apsiii",
+    "variant_id": "variant_2",
+    "question": "What is the combined vital-signs APS III sub-score for this patient?",
+    "subject_id": 10019172,
+    "hadm_id": 24997044,
+    "stay_id": 32283063,
+    "answer_type": "numerical",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "apsiii__variant_3",
+    "concept": "apsiii",
+    "variant_id": "variant_3",
+    "question": "What was this patient's creatinine APS III component score at the time of ICU admission?",
+    "subject_id": 10015931,
+    "hadm_id": 24420677,
+    "stay_id": 38137964,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "apsiii__variant_4",
+    "concept": "apsiii",
+    "variant_id": "variant_4",
+    "question": "What is this patient's urine output APS III component score?",
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 31077365,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "first_day_sofa__variant_3",
+    "concept": "first_day_sofa",
+    "variant_id": "variant_3",
+    "question": "What was this patient's cardiovascular SOFA component score on the first day of their ICU admission?",
+    "subject_id": 10002428,
+    "hadm_id": 23473524,
+    "stay_id": 35479615,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "kdigo_stages__variant_0",
+    "concept": "kdigo_stages",
+    "variant_id": "variant_0",
+    "question": "What is the maximum KDIGO AKI stage this patient reaches during their ICU stay?",
+    "subject_id": 10023771,
+    "hadm_id": 20044587,
+    "stay_id": 33177122,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "kdigo_stages__variant_1",
+    "concept": "kdigo_stages",
+    "variant_id": "variant_1",
+    "question": "What is the maximum KDIGO AKI stage based on creatinine criteria for this patient during their ICU stay?",
+    "subject_id": 10007795,
+    "hadm_id": 28477357,
+    "stay_id": 31921355,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "kdigo_stages__variant_2",
+    "concept": "kdigo_stages",
+    "variant_id": "variant_2",
+    "question": "What is the difference between this patient's creatinine-based and urine-output-based KDIGO AKI stages?",
+    "subject_id": 10039708,
+    "hadm_id": 24928679,
+    "stay_id": 37323533,
+    "answer_type": "numerical",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "kdigo_stages__variant_3",
+    "concept": "kdigo_stages",
+    "variant_id": "variant_3",
+    "question": "What was the maximum KDIGO AKI stage this patient reached within the first 24 hours of their ICU admission?",
+    "subject_id": 10031757,
+    "hadm_id": 28477280,
+    "stay_id": 33244906,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_0",
+    "concept": "lods",
+    "variant_id": "variant_0",
+    "question": "What is this patient's LODS score?",
+    "subject_id": 10019003,
+    "hadm_id": 27525946,
+    "stay_id": 35214014,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_1",
+    "concept": "lods",
+    "variant_id": "variant_1",
+    "question": "What is this patient's cardiovascular LODS component score?",
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 35044342,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_2",
+    "concept": "lods",
+    "variant_id": "variant_2",
+    "question": "What is the combined neurological, cardiovascular, and renal LODS sub-score for this patient?",
+    "subject_id": 10027445,
+    "hadm_id": 26275841,
+    "stay_id": 34499716,
+    "answer_type": "numerical",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_3",
+    "concept": "lods",
+    "variant_id": "variant_3",
+    "question": "What was this patient's neurological LODS component score at the time of ICU admission?",
+    "subject_id": 10021312,
+    "hadm_id": 28829452,
+    "stay_id": 37507305,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_4",
+    "concept": "lods",
+    "variant_id": "variant_4",
+    "question": "What is this patient's hepatic LODS component score?",
+    "subject_id": 10000032,
+    "hadm_id": 29079034,
+    "stay_id": 39553978,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_0",
+    "concept": "meld",
+    "variant_id": "variant_0",
+    "question": "What is this patient's maximum MELD score during their ICU stay?",
+    "subject_id": 10021487,
+    "hadm_id": 28998349,
+    "stay_id": 38197705,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_1",
+    "concept": "meld",
+    "variant_id": "variant_1",
+    "question": "What was this patient's admission MELD score?",
+    "subject_id": 10023239,
+    "hadm_id": 29295881,
+    "stay_id": 33846653,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_2",
+    "concept": "meld",
+    "variant_id": "variant_2",
+    "question": "By how many points does sodium adjustment change this patient's first-day MELD score?",
+    "subject_id": 10009049,
+    "hadm_id": 22995465,
+    "stay_id": 35636875,
+    "answer_type": "numerical",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_3",
+    "concept": "meld",
+    "variant_id": "variant_3",
+    "question": "What was this patient's maximum serum creatinine used in the MELD score calculation?",
+    "subject_id": 10031757,
+    "hadm_id": 28477280,
+    "stay_id": 30458995,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "meld__variant_4",
+    "concept": "meld",
+    "variant_id": "variant_4",
+    "question": "What is this patient's maximum INR value used in the MELD score calculation?",
+    "subject_id": 10037928,
+    "hadm_id": 24656677,
+    "stay_id": 39804682,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_0",
+    "concept": "norepinephrine_equivalent_dose",
+    "variant_id": "variant_0",
+    "question": "What is this patient's maximum norepinephrine-equivalent vasopressor dose (mcg/kg/min) during their ICU stay?",
+    "subject_id": 10005817,
+    "hadm_id": 20626031,
+    "stay_id": 32604416,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_1",
+    "concept": "norepinephrine_equivalent_dose",
+    "variant_id": "variant_1",
+    "question": "What is this patient's average norepinephrine-equivalent vasopressor dose (mcg/kg/min) during their ICU stay?",
+    "subject_id": 10025612,
+    "hadm_id": 23403708,
+    "stay_id": 32587226,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_2",
+    "concept": "norepinephrine_equivalent_dose",
+    "variant_id": "variant_2",
+    "question": "By how many mcg/kg/min does this patient's maximum norepinephrine-equivalent dose exceed the high-dose vasopressor threshold of 0.25 mcg/kg/min?",
+    "subject_id": 10037975,
+    "hadm_id": 27617929,
+    "stay_id": 39061571,
+    "answer_type": "numerical",
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_3",
+    "concept": "norepinephrine_equivalent_dose",
+    "variant_id": "variant_3",
+    "question": "What was this patient's maximum norepinephrine-equivalent vasopressor dose (mcg/kg/min) within the first 24 hours of ICU admission?",
+    "subject_id": 10002428,
+    "hadm_id": 28662225,
+    "stay_id": 33987268,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_4",
+    "concept": "norepinephrine_equivalent_dose",
+    "variant_id": "variant_4",
+    "question": "By how many mcg/kg/min does this patient's maximum norepinephrine-equivalent dose exceed the moderate vasopressor threshold of 0.5 mcg/kg/min?",
+    "subject_id": 10007818,
+    "hadm_id": 22987108,
+    "stay_id": 32359580,
+    "answer_type": "numerical",
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "oasis__variant_0",
+    "concept": "oasis",
+    "variant_id": "variant_0",
+    "question": "What is this patient's OASIS score?",
+    "subject_id": 10037928,
+    "hadm_id": 22490490,
+    "stay_id": 31552399,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "oasis__variant_1",
+    "concept": "oasis",
+    "variant_id": "variant_1",
+    "question": "What is this patient's GCS component value used in their OASIS score?",
+    "subject_id": 10020740,
+    "hadm_id": 25826145,
+    "stay_id": 32145159,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "oasis__variant_2",
+    "concept": "oasis",
+    "variant_id": "variant_2",
+    "question": "How many days did this patient spend in the hospital before their ICU admission?",
+    "subject_id": 10039708,
+    "hadm_id": 24928679,
+    "stay_id": 37323533,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "oasis__variant_3",
+    "concept": "oasis",
+    "variant_id": "variant_3",
+    "question": "What was this patient's mean blood pressure (mmHg) component value used in their OASIS score at the time of ICU admission?",
+    "subject_id": 10037928,
+    "hadm_id": 22490490,
+    "stay_id": 31552399,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "oasis__variant_4",
+    "concept": "oasis",
+    "variant_id": "variant_4",
+    "question": "What is this patient's respiratory rate OASIS component value?",
+    "subject_id": 10021487,
+    "hadm_id": 27660781,
+    "stay_id": 35065627,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "sapsii__variant_0",
+    "concept": "sapsii",
+    "variant_id": "variant_0",
+    "question": "What is this patient's SAPS II score?",
+    "subject_id": 10023239,
+    "hadm_id": 29295881,
+    "stay_id": 33846653,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sapsii__variant_1",
+    "concept": "sapsii",
+    "variant_id": "variant_1",
+    "question": "What is this patient's GCS component score in the SAPS II?",
+    "subject_id": 10002428,
+    "hadm_id": 28662225,
+    "stay_id": 38875437,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sapsii__variant_2",
+    "concept": "sapsii",
+    "variant_id": "variant_2",
+    "question": "What is the combined hemodynamic and neurological SAPS II sub-score for this patient?",
+    "subject_id": 10019003,
+    "hadm_id": 29279905,
+    "stay_id": 34107647,
+    "answer_type": "numerical",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sapsii__variant_3",
+    "concept": "sapsii",
+    "variant_id": "variant_3",
+    "question": "What was this patient's age component score in the SAPS II at the time of ICU admission?",
+    "subject_id": 10023239,
+    "hadm_id": 21759936,
+    "stay_id": 35024147,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sapsii__variant_4",
+    "concept": "sapsii",
+    "variant_id": "variant_4",
+    "question": "What is the combined comorbidity and admission-type SAPS II sub-score for this patient?",
+    "subject_id": 10026255,
+    "hadm_id": 22059910,
+    "stay_id": 31248398,
+    "answer_type": "numerical",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sepsis3__variant_0",
+    "concept": "sepsis3",
+    "variant_id": "variant_0",
+    "question": "What is this patient's SOFA score at the time of suspected infection?",
+    "subject_id": 10005866,
+    "hadm_id": 20364112,
+    "stay_id": 34170353,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sepsis3__variant_1",
+    "concept": "sepsis3",
+    "variant_id": "variant_1",
+    "question": "How many hours after ICU admission was this patient first administered antibiotics in the context of suspected infection?",
+    "subject_id": 10020187,
+    "hadm_id": 24104168,
+    "stay_id": 37509585,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sepsis3__variant_2",
+    "concept": "sepsis3",
+    "variant_id": "variant_2",
+    "question": "By how many SOFA points above 2 is this patient's SOFA score at the time of infection?",
+    "subject_id": 10026255,
+    "hadm_id": 22059910,
+    "stay_id": 38229329,
+    "answer_type": "numerical",
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sepsis3__variant_3",
+    "concept": "sepsis3",
+    "variant_id": "variant_3",
+    "question": "By how many SOFA points above 4 is this patient's SOFA score at the time of infection?",
+    "subject_id": 10020187,
+    "hadm_id": 26842957,
+    "stay_id": 32554129,
+    "answer_type": "numerical",
+    "question_type": "comparative",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sepsis3__variant_4",
+    "concept": "sepsis3",
+    "variant_id": "variant_4",
+    "question": "How many hours after ICU admission was a microbiological culture obtained in the context of suspected infection?",
+    "subject_id": 10019003,
+    "hadm_id": 21457723,
+    "stay_id": 35727289,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sirs__variant_0",
+    "concept": "sirs",
+    "variant_id": "variant_0",
+    "question": "What is this patient's SIRS score during their first ICU day?",
+    "subject_id": 10016742,
+    "hadm_id": 27568122,
+    "stay_id": 30425410,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sirs__variant_3",
+    "concept": "sirs",
+    "variant_id": "variant_3",
+    "question": "What was this patient's WBC SIRS component score on their first ICU day?",
+    "subject_id": 10027445,
+    "hadm_id": 29163082,
+    "stay_id": 36084484,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sirs__variant_4",
+    "concept": "sirs",
+    "variant_id": "variant_4",
+    "question": "What is this patient's temperature SIRS component score on their first ICU day?",
+    "subject_id": 10015931,
+    "hadm_id": 28157142,
+    "stay_id": 39544395,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sofa__variant_0",
+    "concept": "sofa",
+    "variant_id": "variant_0",
+    "question": "What is this patient's maximum SOFA score during their first 24 hours in the ICU?",
+    "subject_id": 10002428,
+    "hadm_id": 20321825,
+    "stay_id": 34807493,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sofa__variant_1",
+    "concept": "sofa",
+    "variant_id": "variant_1",
+    "question": "What is this patient's CNS (GCS-based) SOFA component score during their first 24 hours in the ICU?",
+    "subject_id": 10012853,
+    "hadm_id": 27882036,
+    "stay_id": 31338022,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sofa__variant_2",
+    "concept": "sofa",
+    "variant_id": "variant_2",
+    "question": "What is the combined respiratory and cardiovascular SOFA component score during this patient's first 24 hours?",
+    "subject_id": 10015931,
+    "hadm_id": 22130791,
+    "stay_id": 37093652,
+    "answer_type": "numerical",
+    "question_type": "derived",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sofa__variant_3",
+    "concept": "sofa",
+    "variant_id": "variant_3",
+    "question": "What was this patient's maximum SOFA score within their first 12 hours in the ICU?",
+    "subject_id": 10016742,
+    "hadm_id": 28506150,
+    "stay_id": 32314488,
+    "answer_type": "numerical",
+    "question_type": "temporal",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sofa__variant_4",
+    "concept": "sofa",
+    "variant_id": "variant_4",
+    "question": "What is this patient's renal SOFA component score during their first 24 hours in the ICU?",
+    "subject_id": 10039708,
+    "hadm_id": 28258130,
+    "stay_id": 33281088,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  }
+]

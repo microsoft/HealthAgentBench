@@ -1,0 +1,57 @@
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-img
+    volumes:
+      # Agent-visible MRI files staged by bootstrap, read-only. /data/_cache
+      # and /tests are intentionally NOT mounted here; the verifier runs in a
+      # separate container built from tests/ (tests/Dockerfile).
+      - mri-data:/workspace/mri:ro
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    environment:
+      - PYTHONUNBUFFERED=1
+    # No explicit networking: Harbor attaches main to its egress-control sidecar
+    # and applies the [agent] allowlist from task.toml.
+
+  bootstrap:
+    # Separate image from main: carries ``redivis`` for the gated download.
+    image: ${COMPOSE_PROJECT_NAME}-bootstrap
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile.bootstrap
+    env_file:
+      # REDIVIS_API_TOKEN (MRNet is Redivis-gated) lives here and is needed
+      # only on a cache miss. Only the bootstrap service reads .env, so the
+      # token never reaches the agent's main container.
+      - ../../../.env
+    volumes:
+      # bootstrap.sh, stage_mri.py and task_manifest.json are bind-mounted
+      # into the bootstrap service ONLY (never baked into an image), so the
+      # agent's container cannot read the exam identities or the staging code.
+      - ./bootstrap.sh:/bootstrap.sh:ro
+      - ./stage_mri.py:/opt/stage_mri.py:ro
+      - ./task_manifest.json:/opt/task_manifest.json:ro
+      # Repo-relative shared cache (RW so bootstrap can populate it on a
+      # cache miss). Holds the raw .npy series and the label-table snapshots.
+      - ../../../assets/mri_qa/assets/raw_cache:/data/_cache:rw
+      # Per-task tests/ dir, RW: bootstrap writes the run-time-derived
+      # gold.json and data_verification.json here (gitignored). Harbor builds
+      # the separate verifier image from this dir at verification time.
+      # main never mounts it.
+      - ../tests:/tests:rw
+      # Named volume that carries the staged MRI files into main.
+      - mri-data:/workspace/mri:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Explicit networking keeps bootstrap outside Harbor's egress control: it must
+    # reach Redivis on a cache miss, and no agent code runs in it.
+    networks:
+      - default
+    command: ["/bin/bash", "/bootstrap.sh"]
+
+volumes:
+  mri-data:

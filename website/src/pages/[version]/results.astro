@@ -1,0 +1,10 @@
+---
+import BenchmarkResults from '../../components/BenchmarkResults.astro';
+
+export function getStaticPaths() {
+  return ['v1', 'v2'].map((version) => ({ params: { version }, props: { version } }));
+}
+const { version } = Astro.props;
+---
+
+<BenchmarkResults version={version} />

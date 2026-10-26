@@ -122,6 +122,13 @@ a:hover { text-decoration: underline; }
 .nav .container { display: flex; align-items: center; gap: 18px; height: 60px; }
 .nav .brand { font-weight: 800; letter-spacing: 0.2px; font-size: 1rem; }
 .nav .brand span { color: var(--accent); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.version-switcher { display: inline-flex; flex: 0 0 auto; }
+.version-switcher select {
+  padding: 6px 9px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--panel); color: var(--text); font: inherit; font-size: 0.85rem; cursor: pointer;
+}
+.version-switcher select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .nav .links { margin-left: auto; display: flex; align-items: center; gap: 30px; flex-wrap: wrap; }
 .nav .links a { color: var(--muted); font-weight: 600; font-size: 0.92rem; }
 .nav .links a.external-link { display: inline-flex; align-items: center; gap: 6px; }

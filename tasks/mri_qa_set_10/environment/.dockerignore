@@ -1,0 +1,5 @@
+*
+!workspace/
+!workspace/**
+!Dockerfile
+!Dockerfile.bootstrap

@@ -1,0 +1,214 @@
+[
+  {
+    "question_id": "apsiii__variant_0",
+    "concept": "apsiii",
+    "variant_id": "variant_0",
+    "question": "What is this patient's APS III score?",
+    "subject_id": 10039708,
+    "hadm_id": 23819016,
+    "stay_id": 38559363,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "apsiii__variant_1",
+    "concept": "apsiii",
+    "variant_id": "variant_1",
+    "question": "What is this patient's GCS-based neurological APS III component score?",
+    "subject_id": 10005817,
+    "hadm_id": 28661809,
+    "stay_id": 31316840,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "apsiii__variant_4",
+    "concept": "apsiii",
+    "variant_id": "variant_4",
+    "question": "What is this patient's urine output APS III component score?",
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 31077365,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_0",
+    "concept": "lods",
+    "variant_id": "variant_0",
+    "question": "What is this patient's LODS score?",
+    "subject_id": 10019003,
+    "hadm_id": 27525946,
+    "stay_id": 35214014,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_1",
+    "concept": "lods",
+    "variant_id": "variant_1",
+    "question": "What is this patient's cardiovascular LODS component score?",
+    "subject_id": 10020740,
+    "hadm_id": 23831430,
+    "stay_id": 35044342,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "lods__variant_4",
+    "concept": "lods",
+    "variant_id": "variant_4",
+    "question": "What is this patient's hepatic LODS component score?",
+    "subject_id": 10000032,
+    "hadm_id": 29079034,
+    "stay_id": 39553978,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "oasis__variant_0",
+    "concept": "oasis",
+    "variant_id": "variant_0",
+    "question": "What is this patient's OASIS score?",
+    "subject_id": 10037928,
+    "hadm_id": 22490490,
+    "stay_id": 31552399,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "oasis__variant_1",
+    "concept": "oasis",
+    "variant_id": "variant_1",
+    "question": "What is this patient's GCS component value used in their OASIS score?",
+    "subject_id": 10020740,
+    "hadm_id": 25826145,
+    "stay_id": 32145159,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "oasis__variant_4",
+    "concept": "oasis",
+    "variant_id": "variant_4",
+    "question": "What is this patient's respiratory rate OASIS component value?",
+    "subject_id": 10021487,
+    "hadm_id": 27660781,
+    "stay_id": 35065627,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "sapsii__variant_0",
+    "concept": "sapsii",
+    "variant_id": "variant_0",
+    "question": "What is this patient's SAPS II score?",
+    "subject_id": 10023239,
+    "hadm_id": 29295881,
+    "stay_id": 33846653,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sapsii__variant_1",
+    "concept": "sapsii",
+    "variant_id": "variant_1",
+    "question": "What is this patient's GCS component score in the SAPS II?",
+    "subject_id": 10002428,
+    "hadm_id": 28662225,
+    "stay_id": 38875437,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sirs__variant_0",
+    "concept": "sirs",
+    "variant_id": "variant_0",
+    "question": "What is this patient's SIRS score during their first ICU day?",
+    "subject_id": 10016742,
+    "hadm_id": 27568122,
+    "stay_id": 30425410,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sirs__variant_4",
+    "concept": "sirs",
+    "variant_id": "variant_4",
+    "question": "What is this patient's temperature SIRS component score on their first ICU day?",
+    "subject_id": 10015931,
+    "hadm_id": 28157142,
+    "stay_id": 39544395,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sofa__variant_1",
+    "concept": "sofa",
+    "variant_id": "variant_1",
+    "question": "What is this patient's CNS (GCS-based) SOFA component score during their first 24 hours in the ICU?",
+    "subject_id": 10012853,
+    "hadm_id": 27882036,
+    "stay_id": 31338022,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "sofa__variant_4",
+    "concept": "sofa",
+    "variant_id": "variant_4",
+    "question": "What is this patient's renal SOFA component score during their first 24 hours in the ICU?",
+    "subject_id": 10039708,
+    "hadm_id": 28258130,
+    "stay_id": 33281088,
+    "answer_type": "numerical",
+    "question_type": "direct",
+    "tolerance": {
+      "kind": "integer"
+    }
+  }
+]

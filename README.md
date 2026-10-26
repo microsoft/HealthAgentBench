@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="HealthAgentBench banner">
+  <img src="assets/banner.png" alt="HealthAgentBench: 75 tasks, nine categories, six evaluated agents, and 57.3% best task success rate">
 </p>
 
 <p align="center">
@@ -23,40 +23,54 @@
 </p>
 
 ## 📢 Updates
+* 2026-10-25: V2.0 is released. V1.0 is preserved [here](https://github.com/microsoft/HealthAgentBench/tree/v1).
+* 2026-09-21: V2.0 in progress and will update here when it is ready.
+* 2026-09-15: We added the Pathology Tumor Slide Selection category (`pathology_tumor_slide_selection`, 10 tasks)
 * 2026-07-27: We added results from Claude Code Opus-5 and Codex GPT-5.6-sol
 * 2026-07-03: We released the benchmark.
 * 2026-07-01: We released our [paper](https://arxiv.org/abs/2606.31179) and [website](https://microsoft.github.io/HealthAgentBench/).
 
 
+## What changed in V2
+
+- **Retired EHR-to-MEDS conversion:** current agents solved it too easily for it to remain a useful challenge.
+- **Retired Clinical Trial Matching:** review found ambiguous cases in the original qrel-derived negative candidate pool.
+- **Added four task categories:** Pathology Tumor Slide Selection, MRI QA, Survival Prediction, and EHR Compositional QA.
+- **Restricted online access:** agents can access model APIs only, with web browsing disabled, to prevent increasingly persistent agents from fetching answers online.
+- **Clarified instructions and resources:** specify agent-visible data and tools, required outputs, scoring conventions, and per-task time, CPU, memory, disk, and GPU availability.
 
 ## Overview
 
 **HealthAgentBench** is a terminal-based benchmark suite for evaluating agents on
 realistic health tasks. Each task drops an agent into a terminal environment
 where it must inspect data, use tools, reason, and act to solve a concrete
-clinical or biomedical problem, then a task-specific verifier scores the result. The figure below shows the main results from frontier agents on this benchmark. 
+clinical or biomedical problem, then a task-specific verifier scores the result. The figure below shows the current results from six frontier agents across all 75 tasks.
 
 <p align="center">
-  <img src="assets/hero_chart.png" alt="Task success rate across 54 × 3 trials for frontier agents, with cost and time per task" width="820" />
+  <img src="assets/hero_chart.png" alt="Task success rate across 75 tasks with one selected attempt per task for six agents, with cost and time per task" width="820" />
 </p>
 <p align="center">
-  <em>Task success rate across all 54 × 3 trials (Wilson 95% CI), with cost and time per task.</em>
+  <em>Six agents, one selected scored attempt on each of 75 tasks (450 evaluations; xhigh reasoning, web tools disabled, model API access only). Error bars are descriptive Wilson 95% intervals over task outcomes; costs are API-equivalent agent estimates and time is complete trial wall time, including setup and verification.</em>
 </p>
+
+Opus-5.5 leads with **43/75 successes (57.3%)**, followed by GPT-6-astra and Sonnet-5.5 with **38/75 each (50.7%)**. Official rewards retain the row-order tie-breaking caveat in GPT-5.6-sol and GPT-6-sol lung-survival runs; full contextual review of the 15 new Claude survival trajectories is pending.
 
 ### Task Categories
 
-HealthAgentBench currently ships **seven** task categories:
+HealthAgentBench currently ships **nine** task categories:
 
 | Category (name in this codebase) | # Tasks | What is the task |
 | --- | --- | --- |
 | X-ray Report Correction (`xray_report_correction`) | 10 | Correct a chest X-ray radiology report for the latest MIMIC-CXR study, scored with the CheXprompt LLM judge verifier. |
-| Pathology Tumor Area Selection (`tumor_area_selection_pathology`) | 10 | Predict the set of tumor-containing tiles over public whole-slide H&E pathology images. |
-| EHR Format Conversion (`ehr_to_meds_etl`) | 1 | ETL raw MIMIC-IV EHR data into the MEDS common data format. |
+| Pathology Tumor Area Selection (`pathology_tumor_area_selection`) | 10 | Predict the set of tumor-containing tiles over public whole-slide H&E pathology images. |
+| Pathology Tumor Slide Selection (`pathology_tumor_slide_selection`) | 10 | Given several whole-slide H&E pathology images, identify which slides (possibly none) contain tumor (TCGA slides from the NCI GDC). |
 | CT Abnormality Classification (`ct_abnormality`) | 10 | Patient-level chest-CT abnormality detection built on the CT-RATE dataset. |
-| Clinical Trial Matching (`clinical_trial_matching`) | 9 | Identify every clinical trial a patient is eligible for from a candidate pool (TREC Clinical Trials 2021, set-recall). |
 | EHR Data Quality Auditing (`ehr_data_quality`) | 8 | Flag rows containing injected data-quality errors in a corrupted MIMIC-IV EHR subset. |
 | EHR Event Modelling (`ehr_event_modelling`) | 6 | Predict future clinical events over longitudinal EHR timelines (Stanford SHAH lab's EHRSHOT benchmark). |
-| **Total** | **54** | |
+| Survival Prediction (`survival_prediction`) | 5 | Predict overall survival time in days for five MSK-CHORD cohorts (NSCLC, breast, colorectal, pancreatic, and prostate), using labeled training data. Pass requires outperforming both Cox and RSF baselines on C-index, confidence-weighted MAE-PO, and integrated Brier score. |
+| EHR Compositional QA (`ehr_compositional_qa`) | 6 | Numerical clinical questions (severity scores, AKI stages, sepsis timing) answered from raw MIMIC-IV demo tables with a labelled training set: five sets of 7 to 15 questions split by question type plus one 51-question set; pass requires every answer correct. |
+| MRI QA (`mri_qa`) | 10 | Three knee MRI exams per task; answer ACL tear and meniscal tear for each from all three planes. All six answers must match the source labels. |
+| **Total** | **75** | |
 
 Each task has its own `README.md` under [`tasks/`](tasks/) with the task's category, success criteria, data/credentials, and commands to run that task or its whole category.
 
@@ -73,17 +87,19 @@ HealthAgentBench/                       # repo root
 ├── website/                            # Astro leaderboard / docs site
 ├── LICENSE
 ├── SECURITY.md
-└── tasks/                              # 54 Harbor tasks, one flat directory per task
+└── tasks/                              # 75 Harbor tasks, one flat directory per task
     ├── xray_report_correction_case_*/         # 10 tasks - Longitudinal X-ray report correction
-    ├── tumor_area_selection_pathology_slide_*/ # 10 tasks — WSI tumor-tile selection
+    ├── pathology_tumor_area_selection_slide_*/ # 10 tasks — WSI tumor-tile selection
+    ├── pathology_tumor_slide_selection_set_*/  # 10 tasks — pick the tumor slides among several WSIs
+    ├── mri_qa_set_*/                          # 10 tasks — three knee MRIs, ACL + meniscus tear per exam
     ├── ct_abnormality_valid_*/                 # 10 tasks — chest-CT abnormality detection
-    ├── clinical_trial_matching_task_*/         #  9 tasks — patient ↔ trial matching
     ├── ehr_data_quality_task_*/                #  8 tasks — flag injected EHR errors
     ├── ehr_event_modelling_*/                  #  6 tasks — future clinical-event prediction
-    └── ehr_to_meds_etl/                        #  1 task  — MIMIC-IV → MEDS ETL
+    ├── survival_prediction_mskchord_*_tte/     #  5 tasks — MSK-CHORD survival time prediction
+    └── ehr_compositional_qa_*/                 #  6 tasks — clinical QA over MIMIC-IV demo with a training set
 ```
 
-All 54 tasks live as **flat, sibling directories** directly under `tasks/` — the task
+All 75 tasks live as **flat, sibling directories** directly under `tasks/` — the task
 directory name is prefixed with its category (e.g. `xray_report_correction_case_01`,
 `ct_abnormality_valid_16_a_1`).
 Every task follows the same Harbor layout (`task.toml` + `instruction.md` +
@@ -114,6 +130,11 @@ instructions below and fill in the credentials in `.env` (there is a file
   (Redivis, Stanford SHAH lab). Apply for access from [EHRSHOT](https://stanford.redivis.com/datasets/53gc-8rhx41kgt); once approved, create a 
   [Redivis API token](https://redivis.com/workspace/settings/tokens) and set it
   as `REDIVIS_API_TOKEN` in `.env`.
+- **mri_qa** — [MRNet knee MRI](https://stanford.redivis.com/datasets/4a2c-4cpkzrn2c)
+  (Redivis, Stanford AIMI). Apply for access on Redivis; the same
+  `REDIVIS_API_TOKEN` in `.env` is used. Each task's bootstrap service downloads
+  the axial, coronal, and sagittal series for its three exams (plus the label tables) on first run and
+  caches them under `assets/mri_qa/assets/raw_cache/`.
 - **ct_abnormality** — [CT-RATE](https://huggingface.co/datasets/ibrahimhamamci/CT-RATE)
   (Hugging Face, OpenRAIL gated). Accept the dataset agreement from [CT-RATE](https://huggingface.co/datasets/ibrahimhamamci/CT-RATE), then set your
   Hugging Face token as `HF_TOKEN` in `.env`.
@@ -139,7 +160,7 @@ set -a; source .env; set +a
 
 ## Usage
 
-We use Harbor to run evaluation. Refer to the [Harbor Background](#harbor-background) section for more details especially if you want to evalute additional agents. 
+We use Harbor to run evaluation. Refer to the [Harbor Background](#harbor-background) section for more details especially if you want to evaluate additional agents.
 
 ### Run the full HealthAgentBench Suite
 `--n-attempts` specifies how many independent times each task is run and `--n-concurrent` specifies how many
@@ -148,7 +169,7 @@ trials run in parallel.
 uv run harbor run \
   --path tasks \
   --agent claude-code \
-  --model claude-opus-4-8 \
+  --model claude-opus-5 \
   --agent-kwarg reasoning_effort=xhigh \
   --agent-kwarg disallowed_tools="WebSearch WebFetch" \
   --n-attempts 1 --n-concurrent 5 \
@@ -158,9 +179,12 @@ uv run harbor run \
 Harbor will print out a `mean` column that records the success rate and all the tasks' rewards (1 or 0) across the runs. You will find full results in the output directory. We also record additional metrics in addition to binary pass in `verifier/metrics.json` in each task subdirectory in output directory. 
 
 Note: 
-1. The harbor runs above will download data and mount the data to `assets/<task_category>/` to speed up multiple task setups using the same data assets. You will need at least 30GB on disk available to download the data assets. 
-2. This repo does not host labels, but the harbor runs above will fetch gold labels which will appear under `tasks/<task_name>/tests` after the run.
-3. We suggest disallowing web browsing / web fetching when running this benchmark, so the agent can't cheat by searching for gold labels online. Harbor's built-in Codex agent has no web-search toggle, so you need to create a thin wrapper that subclasses it and adds a CliFlag mapping a kwarg (eg. disable_web_search) to Codex's `-c web_search="disabled"` config override (see the [Codex config reference](https://developers.openai.com/codex/config-reference) and the [Harbor agents docs](https://deepwiki.com/harbor-framework/harbor/4-agents)).
+1. The harbor runs above will download data and mount the data to `assets/<task_category>/` to speed up multiple task setups using the same data assets. For one agent running the full suite once with `--n-concurrent 5`, **250 GB of free disk space is a planning recommendation**. 
+2. Some task families include answer keys or labels under `tasks/<task_name>/tests`; others fetch or derive gold labels during bootstrap.
+3. The agent must not reach the internet, so it cannot look up gold labels online. This is enforced in three layers:
+   - **Network allowlist (the actual block).** Every `task.toml` sets `[agent] network_mode = "allowlist"` with `allowed_hosts` limited only to model APIs.
+   - **Turn off the agents' own web tools.** For Claude Code pass `--agent-kwarg disallowed_tools="WebSearch WebFetch"` as in the commands above. For Codex pass `--agent-kwarg web_search=disabled`, which Harbor renders as Codex's `-c web_search="disabled"` config override.
+   - **Adding another agent.** To run an agent that talks to a different model API, add `--allow-agent-host your-api-host.example.com` to `uv run harbor run`. Repeat the flag for each additional API host; Also disable that agent's own browsing or fetch tools if it has them.
 4. Check the exception errors (if any) reported by Harbor. We treat agenttimeout trials as failures (reward=0) when reporting the overall success rate.
 
 
@@ -171,7 +195,7 @@ Note:
 uv run harbor run \
   --path tasks/xray_report_correction_case_01 \
   --agent claude-code \
-  --model claude-opus-4-8 \
+  --model claude-opus-5 \
   --agent-kwarg reasoning_effort=xhigh \
   --agent-kwarg disallowed_tools="WebSearch WebFetch" \
   --n-attempts 1 --n-concurrent 1
@@ -188,13 +212,13 @@ uv run harbor run \
   --path tasks \
   --include-task-name "xray_report_correction_*" \
   --agent claude-code \
-  --model claude-opus-4-8 \
+  --model claude-opus-5 \
   --agent-kwarg reasoning_effort=xhigh \
   --agent-kwarg disallowed_tools="WebSearch WebFetch" \
   --n-attempts 1 --n-concurrent 5
 ```
 
-Category prefixes for `--include-task-name`: `clinical_trial_matching_*`, `ct_abnormality_*`, `ehr_data_quality_*`, `ehr_event_modelling_*`, `ehr_to_meds_etl`, `tumor_area_selection_pathology_*`, `xray_report_correction_*`
+Category prefixes for `--include-task-name`: `mri_qa_set_*`, `ct_abnormality_*`, `ehr_data_quality_*`, `ehr_event_modelling_*`, `ehr_compositional_qa_*`, `pathology_tumor_area_selection_*`, `pathology_tumor_slide_selection_*`, `xray_report_correction_*`, `survival_prediction_*`
 
 
 
@@ -206,18 +230,21 @@ Important pointers:
 
 1. Harbor repo: https://github.com/harbor-framework/harbor
 2. Harbor docs/wiki: https://deepwiki.com/harbor-framework/harbor
-3. Stable Harbor version used here: `0.8.0` (see the `harbor==` pin in `pyproject.toml`)
+3. Stable Harbor version used here: `0.23.0` (see the `harbor==` pin in `pyproject.toml` and `uv.lock`; `uv sync` installs it). The task.toml fields used here (`[agent] network_mode = "allowlist"`, `[verifier] environment_mode = "separate"`, `artifacts`) need Harbor 0.23 or later.
 
 ## Citation
 
 If you use HealthAgentBench in your research, please cite:
 
 ```bibtex
+
 @misc{liu2026healthagentbench,
   title = {HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents},
-  author = {Liu, Qianchu and Zhang, Sheng and Qin, Guanghui and Valanarasu, Jeya Maria Jose and Rokuss, Maximilian and Lu, Mingyu and Ossowski, Timothy and Chaves, Juan Manuel Zambrano and Wong, Cliff and Argaw, Peniel and Hasija, Yashna and Wei, Mu and Yim, Wen-wai and Liu, Qin and Jing, Zilin and Entenmann, Jason and Usuyama, Naoto and Naumann, Tristan and Poon, Hoifung},
-  year = {2026}
+  author = {Liu, Qianchu and Zhang, Sheng and Qin, Guanghui and Valanarasu, Jeya Maria Jose and Huang, Xiaoke and Argaw, Peniel and Rokuss, Maximilian and Lu, Mingyu and Ossowski, Timothy and Chaves, Juan Manuel Zambrano and Wong, Cliff and Patel, Naisargi and Hasija, Yashna and Wei, Mu and Yim, Wen-wai and Liu, Qin and Jing, Zilin and Entenmann, Jason and Usuyama, Naoto and Naumann, Tristan and Poon, Hoifung},
+  year = {2026},
+  eprint = {2606.31179},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.AI},
+  url = {https://arxiv.org/abs/2606.31179}
 }
 ```
-
-

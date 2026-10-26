@@ -1,0 +1,43 @@
+services:
+  bootstrap:
+    image: ${COMPOSE_PROJECT_NAME}-bootstrap
+    build:
+      context: .
+      dockerfile: Dockerfile.bootstrap
+    volumes:
+      # Cache and bootstrap code are never mounted into main.
+      - ../../../assets/ehr_compositional_qa:/cache:rw
+      - task-data:/task-data:rw
+    command: ["bash", "/bootstrap.sh"]
+    # Explicit networking keeps bootstrap outside Harbor's egress-control sidecar:
+    # it must reach physionet.org on a cold cache, and no agent code runs in it.
+    networks:
+      - default
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  main:
+    # No explicit networking here: Harbor attaches main to its egress-control
+    # sidecar and applies the network policy from task.toml ([agent] allowlist).
+    image: ${COMPOSE_PROJECT_NAME}-main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    volumes:
+      # Raw data only. Test labels exist exclusively in the separate verifier.
+      - task-data:/workspace/data:ro
+    command: ["sleep", "infinity"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+volumes:
+  task-data:

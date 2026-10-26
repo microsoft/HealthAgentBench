@@ -2,9 +2,12 @@
 import '../styles/global.css';
 const paperTitle = 'HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents';
 const paperUrl = 'https://arxiv.org/pdf/2606.31179';
-const { title = paperTitle, description = paperTitle } = Astro.props;
+const { title = paperTitle, description = paperTitle, version = 'v2' } = Astro.props;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const withBase = (path) => `${basePath}${path}`;
+const homePath = withBase(`/${version}/`);
+const isResultsPage = Astro.url.pathname.replace(/\/$/, '').endsWith('/results');
+const versionTarget = (release) => withBase(`/${release}${isResultsPage ? '/results' : '/'}`);
 ---
 
 <!doctype html>
@@ -28,11 +31,18 @@ const withBase = (path) => `${basePath}${path}`;
   <body>
     <nav class="nav">
       <div class="container">
-        <a class="brand" href={withBase('/')}>HealthAgent<span>Bench</span></a>
+        <a class="brand" href={homePath}>HealthAgent<span>Bench</span></a>
+        <label class="version-switcher">
+          <span class="sr-only">Benchmark version</span>
+          <select aria-label="Benchmark version" data-version-select>
+            <option value={versionTarget('v1')} selected={version === 'v1'}>v1</option>
+            <option value={versionTarget('v2')} selected={version === 'v2'}>v2</option>
+          </select>
+        </label>
         <div class="links">
-          <a href={withBase('/#leaderboard')}>Leaderboard</a>
-          <a href={withBase('/#positioning')}>Related Work</a>
-          <a href={withBase('/#breakdown')}>Task Categories</a>
+          <a href={`${homePath}#leaderboard`}>Leaderboard</a>
+          {version === 'v2' && <a href={`${homePath}#positioning`}>Related Work</a>}
+          <a href={`${homePath}#breakdown`}>Task Categories</a>
           <a class="external-link" href="https://github.com/microsoft/HealthAgentBench" target="_blank" rel="noreferrer">
             GitHub
             <span class="external-icon" aria-hidden="true">↗</span>
@@ -62,6 +72,9 @@ const withBase = (path) => `${basePath}${path}`;
     </footer>
     <script is:inline>
       (() => {
+        document.querySelector('[data-version-select]')?.addEventListener('change', (event) => {
+          window.location.assign(event.target.value + window.location.hash);
+        });
         const key = 'hab-theme';
         const root = document.documentElement;
         const toggle = document.querySelector('[data-theme-toggle]');

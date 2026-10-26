@@ -1,0 +1,33 @@
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-img
+    volumes:
+      - slide-data:/data/slides
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  bootstrap:
+    image: ${COMPOSE_PROJECT_NAME}-img
+    volumes:
+      # bootstrap.sh holds the upstream URLs and the slide -> label mapping;
+      # bind-mounted into the bootstrap service ONLY so the agent's main
+      # container can never read it.
+      - ./bootstrap.sh:/bootstrap.sh:ro
+      # Repo-relative cross-run slide cache (RW so bootstrap can populate it).
+      - ../../../assets/tumor_slide_selection_pathology/assets/raw_cache:/data/_cache:rw
+      # Shared volume: bootstrap stages the slides here; main reads them.
+      - slide-data:/data/slides
+    # Explicit networking keeps bootstrap outside Harbor's egress control: it must
+    # reach upstream sources on a cache miss, and no agent code runs in it.
+    networks:
+      - default
+    command: ["/bin/bash", "/bootstrap.sh"]
+
+volumes:
+  slide-data:

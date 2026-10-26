@@ -34,6 +34,13 @@ const SRC = PAPER_ROOT && resolve(PAPER_ROOT, 'figures/baseline_metrics.json');
 const COUNTS = PAPER_ROOT && resolve(PAPER_ROOT, 'figures/coverage_data.tex');
 const COLLECT = PAPER_ROOT && resolve(PAPER_ROOT, 'scripts/collect_baseline_metrics.py');
 const OUT = resolve(ROOT, 'src/data/results.json');
+// v1 is a historical release. A normal build must never replace its frozen
+// results with numbers from a newer paper checkout.
+if (!process.argv.includes('--refresh-v1')) {
+  if (!existsSync(OUT)) throw new Error('Missing frozen v1 results.json');
+  console.log('build-results: preserving frozen v1 results.json');
+  process.exit(0);
+}
 const LIVE_MEDCLI_CANDIDATES = [
   resolve(ROOT, '../medcli'),
   resolve(ROOT, '../MedCLI'),

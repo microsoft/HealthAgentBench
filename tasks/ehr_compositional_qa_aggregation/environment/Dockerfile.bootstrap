@@ -1,0 +1,8 @@
+FROM python:3.12-slim
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash ca-certificates util-linux \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir duckdb==1.5.3
+COPY bootstrap_inputs/ /opt/bootstrap/
+COPY bootstrap.sh /bootstrap.sh
+CMD ["bash", "/bootstrap.sh"]

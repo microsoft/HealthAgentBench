@@ -4,11 +4,17 @@
 //   x = three colour-coded interaction tiers (static QA / dialogue+simulation /
 //       executable environment); benchmarks are pinned to their column centre.
 //   y = number of input modalities a benchmark covers.
-//   marker size = number of clinical workflow stages a benchmark covers.
-// HealthAgentBench (red star) is the sole occupant of the top-right
+//   marker size = number of clinical workflow scopes a benchmark covers.
+// HealthAgentBench (red circle) is the sole occupant of the top-right
 // "open territory": broad coverage in a fully executable environment.
 
 const OURS = 'HealthAgentBench';
+const { version = 'v1' } = Astro.props;
+const isV2 = version === 'v2';
+const workflowTerm = isV2 ? 'scope' : 'stage';
+const oursDescription = isV2
+  ? 'HealthAgentBench combines executable interaction with six modality groups and four workflow scopes: diagnosis, specimen assessment, research, and data management.'
+  : 'The sole occupant of the open top-right region: broad coverage across five modalities and four workflow stages, all inside a fully executable clinical environment.';
 
 const CATEGORY_META = {
   qa: {
@@ -17,8 +23,8 @@ const CATEGORY_META = {
     x: 1,
   },
   dlg: {
-    label: 'Dialogue / simulation',
-    axisLabel: 'Conversational or simulated interaction',
+    label: isV2 ? 'Conversation / simulation' : 'Dialogue / simulation',
+    axisLabel: isV2 ? 'Conversation context or simulated interaction' : 'Conversational or simulated interaction',
     x: 2,
   },
   exec: {
@@ -46,6 +52,16 @@ const BENCHMARK_META = {
   'HealthAdminBench': { modalities: ['GUI', 'EHR'], workflowStages: ['admin'] },
   'HealthAgentBench': { modalities: ['text', 'EHR', '2D', '3D', 'WSI'], workflowStages: ['diagnosis', 'treatment', 'data', 'research'] },
 };
+if (isV2) {
+  BENCHMARK_META[OURS].modalities = ['text', 'EHR', '2D', 'CT', 'MRI', 'WSI'];
+  BENCHMARK_META[OURS].workflowStages = ['diagnosis', 'specimen assessment', 'research', 'data management'];
+  BENCHMARK_META.MedAgentBoard.workflowStages = ['diagnosis', 'comms', 'data', 'research'];
+  BENCHMARK_META.HealthBench.workflowStages = ['diagnosis', 'treatment', 'comms'];
+  BENCHMARK_META['HealthBench Pro'].workflowStages = ['diagnosis', 'treatment', 'comms', 'research'];
+  BENCHMARK_META.PhysicianBench.workflowStages = ['diagnosis', 'treatment', 'comms'];
+  BENCHMARK_META.AutoMedBench.modalities = ['2D', 'CT', 'MRI', 'WSI'];
+  BENCHMARK_META.CamylaBench.modalities = ['2D', 'CT', 'MRI'];
+}
 
 // Groups of benchmarks that share one marker (same category, #modalities and
 // #workflow stages). Mirrors GROUPS in scripts/plot_related_work_alt.py.
@@ -64,7 +80,13 @@ const RAW_GROUPS = [
   { category: 'exec', names: ['PhysicianBench'] },
   { category: 'exec', names: ['AutoMedBench'] },
   { category: 'exec', names: [OURS] },
-];
+].flatMap((group) => {
+  if (!isV2) return [group];
+  if (group.names.includes('CamylaBench')) return group.names.map((name) => ({ ...group, names: [name] }));
+  if (group.names.includes('HealthBench')) return [{ ...group, names: ['AI Hospital'] }];
+  if (group.names.includes('CP-Env')) return [{ ...group, names: ['CP-Env', 'HealthBench'] }];
+  return [group];
+});
 
 // Names whose labels read better placed above their marker (avoiding overlap).
 const ABOVE_LABEL = new Set([
@@ -78,7 +100,7 @@ const ABOVE_LABEL = new Set([
 
 // Plot geometry.
 const yMin = 0.4;
-const yMax = 5.7;
+const yMax = isV2 ? 7 : 5.7;
 const plot = { x0: 92, x1: 844, y0: 34, y1: 512 };
 const bandWidth = (plot.x1 - plot.x0) / 3;
 const xFor = (value) => plot.x0 + (value - 0.5) * bandWidth;
@@ -117,8 +139,8 @@ const groups = RAW_GROUPS.map((group, index) => {
     nstage,
     detailTitle: group.names.join(', '),
     detailDescription: isOurs
-      ? 'The sole occupant of the open top-right region: broad coverage across five modalities and four workflow stages, all inside a fully executable clinical environment.'
-      : `${group.names.length > 1 ? 'These benchmarks sit' : 'This benchmark sits'} in the ${CATEGORY_META[group.category].label.toLowerCase()} category, spanning ${nmod} ${nmod === 1 ? 'modality' : 'modalities'} and ${nstage} workflow ${nstage === 1 ? 'stage' : 'stages'}.`,
+      ? oursDescription
+      : `${group.names.length > 1 ? 'These benchmarks sit' : 'This benchmark sits'} in the ${CATEGORY_META[group.category].label.toLowerCase()} category, spanning ${nmod} ${nmod === 1 ? 'modality' : 'modalities'} and ${nstage} workflow ${workflowTerm}${nstage === 1 ? '' : 's'}.`,
   };
 });
 
@@ -153,14 +175,14 @@ const renderedGroups = groups.map((group) => {
   const radius = stageRadius(group.nstage);
   // "Ours" is drawn as a red circle sized like the other data points (4 stages).
   const markerR = radius;
-  const above = group.isOurs || ABOVE_LABEL.has(group.names[0]);
+  const above = group.isOurs || ABOVE_LABEL.has(group.names[0]) || (isV2 && group.names[0] === 'MedAgentSim');
   const lines = group.names;
   const lineHeight = 15;
   const aboveGap = group.isOurs ? 18 : 10;
   const labelLines = lines.map((name, i) => {
     const y = above
       ? cy - markerR - aboveGap - (lines.length - 1 - i) * lineHeight
-      : cy + markerR + 16 + i * lineHeight;
+      : cy + markerR + 16 + i * lineHeight + (isV2 && group.names[0] === 'HealthAdminBench' ? 20 : 0);
     return { name, y };
   });
   return {
@@ -178,10 +200,10 @@ const renderedGroups = groups.map((group) => {
 const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
 ---
 
-<div class="related-work-wrap" id="related-work-chart" data-selected-id={oursId}>
+<div class="related-work-wrap" id="related-work-chart" data-selected-id={oursId} data-workflow-term={workflowTerm}>
   <div class="related-work-topbar">
     <p class="related-work-caption">
-      Hover or tap a benchmark to inspect its modalities and workflow stages.
+      Hover or tap a benchmark to inspect its modalities and workflow {workflowTerm}s.
     </p>
   </div>
 
@@ -189,7 +211,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
     <svg
       viewBox="0 0 880 600"
       role="img"
-      aria-label="Positioning of healthcare agent benchmarks: interaction realism on the horizontal axis, number of modalities on the vertical axis, and number of workflow stages encoded as marker size."
+      aria-label={`Positioning of healthcare agent benchmarks: interaction setting on the horizontal axis, number of modalities on the vertical axis, and number of workflow ${workflowTerm}s encoded as marker size.`}
       style="width:100%;height:auto"
     >
       <defs>
@@ -218,7 +240,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
         />
       ))}
 
-      {[1, 2, 3, 4, 5].map((tick) => (
+      {Array.from({ length: isV2 ? 7 : 5 }, (_, index) => index + 1).map((tick) => (
         <g>
           <line
             x1={plot.x0}
@@ -237,16 +259,16 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
 
       <rect
         x={xFor(2.6)}
-        y={yFor(5.65)}
+        y={yFor(isV2 ? 6.65 : 5.65) - (isV2 ? 24 : 0)}
         width={xFor(3.4) - xFor(2.6)}
-        height={yFor(3.55) - yFor(5.65)}
+        height={yFor(isV2 ? 4.55 : 3.55) - yFor(isV2 ? 6.65 : 5.65)}
         rx="12"
         fill="var(--rw-callout-fill)"
         stroke="var(--rw-callout)"
         stroke-width="1.4"
         stroke-dasharray="7 6"
       />
-      <text x={xFor(3)} y={yFor(4.05)} text-anchor="middle" fill="var(--rw-callout)" font-size="14" font-style="italic" opacity="0.9">
+      <text x={xFor(3)} y={yFor(isV2 ? 5.05 : 4.05)} text-anchor="middle" fill="var(--rw-callout)" font-size="14" font-style="italic" opacity="0.9">
         open territory
       </text>
 
@@ -254,7 +276,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
       <line x1={plot.x0} y1={plot.y0} x2={plot.x0} y2={plot.y1} stroke="var(--rw-axis)" stroke-width="1.5" />
 
       <text x={(plot.x0 + plot.x1) / 2} y="592" text-anchor="middle" fill="var(--rw-axis)" font-size="14" font-style="italic">
-        Interaction realism &amp; agent autonomy →
+        {isV2 ? 'Interaction setting' : 'Interaction realism & agent autonomy →'}
       </text>
       <text
         x="50"
@@ -293,7 +315,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
           stroke-width="1"
         />
         <text x={plot.x0 + 132} y={plot.y0 + 30} text-anchor="middle" fill="var(--rw-name)" font-size="13" font-weight="700">
-          Workflow stages (marker size)
+          Workflow {workflowTerm}s (marker size)
         </text>
         {stageLegend.map((entry, i) => {
           const lx = plot.x0 + 40 + i * 58;
@@ -366,7 +388,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
             fill="transparent"
             tabindex="0"
             role="button"
-            aria-label={`${group.detailTitle}, ${CATEGORY_META[group.category].axisLabel}, ${group.nmod} modalities, ${group.nstage} workflow stages`}
+            aria-label={`${group.detailTitle}, ${CATEGORY_META[group.category].axisLabel}, ${group.nmod} modalities, ${group.nstage} workflow ${workflowTerm}s`}
             data-group-id={group.id}
             data-category={group.category}
             data-title={group.detailTitle}
@@ -394,14 +416,13 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
       <h3>{OURS}</h3>
     </div>
     <p class="related-work-detail-copy">
-      The sole occupant of the open top-right region: broad coverage across five modalities and four
-      workflow stages, all inside a fully executable clinical environment.
+      {oursDescription}
     </p>
     <div class="related-work-detail-breakdown">
       <article class="related-work-detail-entry">
         <h4>{OURS}</h4>
-        <p><strong>Modalities (5):</strong> text, EHR, 2D, 3D, WSI</p>
-        <p><strong>Workflow stages (4):</strong> diagnosis, treatment, data, research</p>
+        <p><strong>Modalities ({BENCHMARK_META[OURS].modalities.length}):</strong> {BENCHMARK_META[OURS].modalities.join(', ')}</p>
+        <p><strong>Workflow {workflowTerm}s ({BENCHMARK_META[OURS].workflowStages.length}):</strong> {BENCHMARK_META[OURS].workflowStages.join(', ')}</p>
       </article>
     </div>
   </div>
@@ -411,6 +432,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
   const root = document.getElementById('related-work-chart');
 
   if (root) {
+    const workflowTerm = root.dataset.workflowTerm || 'stage';
     const tip = root.querySelector('.rw-tip');
     const focusRing = root.querySelector('.rw-focus-ring');
     const groupEls = Array.from(root.querySelectorAll('.rw-group'));
@@ -439,7 +461,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
         modality.innerHTML = `<strong>Modalities (${entry.modalityCount}):</strong> ${entry.modalities.join(', ')}`;
 
         const workflow = document.createElement('p');
-        workflow.innerHTML = `<strong>Workflow stages (${entry.workflowCount}):</strong> ${entry.workflowStages.join(', ')}`;
+        workflow.innerHTML = `<strong>Workflow ${workflowTerm}s (${entry.workflowCount}):</strong> ${entry.workflowStages.join(', ')}`;
 
         card.appendChild(heading);
         card.appendChild(modality);
@@ -467,7 +489,7 @@ const stageLegend = [1, 2, 3, 4].map((n) => ({ n, r: stageRadius(n) }));
       tip.innerHTML =
         `<strong>${hit.dataset.title}</strong>` +
         `<span>${hit.dataset.categoryLabel}</span>` +
-        `<span>${nmod} ${nmod === '1' ? 'modality' : 'modalities'} · ${nstage} workflow ${nstage === '1' ? 'stage' : 'stages'}</span>`;
+        `<span>${nmod} ${nmod === '1' ? 'modality' : 'modalities'} · ${nstage} workflow ${workflowTerm}${nstage === '1' ? '' : 's'}</span>`;
       tip.hidden = false;
       if (clientX == null || clientY == null) return;
       const pad = 14;
