@@ -3,10 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://microsoft.github.io/HealthAgentBench/">Website</a> -
-  <a href="https://arxiv.org/abs/2606.31179">Paper</a> -
-  <a href="https://github.com/microsoft/HealthAgentBench">Benchmark</a> -
-  <a href="https://github.com/microsoft/HealthAgentBench/blob/main/README.md">Doc</a>
+  <a href="https://microsoft.github.io/HealthAgentBench/">Website</a>
 </p>
 
 <p align="center">
