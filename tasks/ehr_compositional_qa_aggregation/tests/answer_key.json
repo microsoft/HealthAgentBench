@@ -1,0 +1,90 @@
+[
+  {
+    "question_id": "kdigo_stages__variant_0",
+    "gt_answer": 1.0,
+    "answer_type": "numerical",
+    "concept": "kdigo_stages",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "kdigo_stages__variant_1",
+    "gt_answer": 1.0,
+    "answer_type": "numerical",
+    "concept": "kdigo_stages",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_0",
+    "gt_answer": 17.0,
+    "answer_type": "numerical",
+    "concept": "meld",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_3",
+    "gt_answer": 0.7,
+    "answer_type": "numerical",
+    "concept": "meld",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "meld__variant_4",
+    "gt_answer": "not_applicable",
+    "answer_type": "numerical",
+    "concept": "meld",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_0",
+    "gt_answer": 0.05,
+    "answer_type": "numerical",
+    "concept": "norepinephrine_equivalent_dose",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_1",
+    "gt_answer": 0.135143,
+    "answer_type": "numerical",
+    "concept": "norepinephrine_equivalent_dose",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "sofa__variant_0",
+    "gt_answer": 5.0,
+    "answer_type": "numerical",
+    "concept": "sofa",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  }
+]

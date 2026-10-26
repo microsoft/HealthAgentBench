@@ -1,0 +1,206 @@
+[
+  {
+    "question_id": "aki__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "aki__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "aki__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "apsiii__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "apsiii__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "apsiii__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "apsiii__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "apsiii__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "first_day_sofa__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "kdigo_stages__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "kdigo_stages__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "kdigo_stages__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "kdigo_stages__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "lods__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "lods__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "lods__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "lods__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "lods__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "meld__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "meld__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "meld__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "meld__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "meld__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "oasis__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "oasis__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "oasis__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "oasis__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "oasis__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "sapsii__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "sapsii__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "sapsii__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "sapsii__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "sapsii__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "sepsis3__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "sepsis3__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "sepsis3__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "sepsis3__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "sepsis3__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "sirs__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "sirs__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "sirs__variant_4",
+    "answer": null
+  },
+  {
+    "question_id": "sofa__variant_0",
+    "answer": null
+  },
+  {
+    "question_id": "sofa__variant_1",
+    "answer": null
+  },
+  {
+    "question_id": "sofa__variant_2",
+    "answer": null
+  },
+  {
+    "question_id": "sofa__variant_3",
+    "answer": null
+  },
+  {
+    "question_id": "sofa__variant_4",
+    "answer": null
+  }
+]

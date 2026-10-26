@@ -16,6 +16,8 @@ Key alignment points with upstream:
     ``convert_multiclass_to_binary_labels(threshold=1)``).
   * **AUROC** uses ``sklearn.metrics.roc_auc_score`` with default args.
     AUPRC = ``average_precision_score``; Brier = ``brier_score_loss``.
+    scikit-learn is pinned in the task image (environment/Dockerfile) so
+    every trial is scored by the same implementation.
 
 What the bundle does NOT ship: per-patient probabilities from the
 count+gbm baseline. Only the aggregate AUROC/AUPRC/Brier is published.

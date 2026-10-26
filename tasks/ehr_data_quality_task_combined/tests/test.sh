@@ -1,5 +1,8 @@
 #!/bin/bash
-set -euo pipefail
-cd "$(dirname "${BASH_SOURCE[0]}")"
-mkdir -p /logs/verifier /logs/artifacts
-python verify.py
+set -uo pipefail
+mkdir -p /logs/verifier
+if python -m pytest /tests/test_flagged_rows.py -rA; then
+    echo "1.000000" > /logs/verifier/reward.txt
+else
+    echo "0.000000" > /logs/verifier/reward.txt
+fi

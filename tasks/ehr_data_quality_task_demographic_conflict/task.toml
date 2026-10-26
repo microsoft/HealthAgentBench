@@ -1,6 +1,8 @@
 version = "1.0"
+artifacts = ["/workspace/submission/flagged_rows.csv"]
 
 [metadata]
+dataset_version = "2.0"
 benchmark = "ehr_data_quality"
 mode = "etl-task"
 task_id = "ehr_data_quality_task_demographic_conflict"
@@ -8,13 +10,31 @@ submission_path = "/workspace/submission/flagged_rows.csv"
 
 [verifier]
 timeout_sec = 600.0
+environment_mode = "separate"
+
+[verifier.environment]
+build_timeout_sec = 300.0
+network_mode = "no-network"
+cpus = 1
+memory_mb = 1024
+storage_mb = 1024
 
 [agent]
 timeout_sec = 3600.0
+# Agent phase: only the model APIs are reachable (Harbor egress-control sidecar,
+# SNI/IP allowlist). Environment setup stays public so agent CLIs can install.
+network_mode = "allowlist"
+allowed_hosts = [
+  "chatgpt.com", "*.chatgpt.com",
+  "openai.com", "*.openai.com",
+  "openai.azure.com", "*.openai.azure.com",
+  "anthropic.com", "*.anthropic.com",
+]
 
 [environment]
 build_timeout_sec = 1800.0
-allow_internet = true
+# Setup baseline is public; the agent phase is allowlisted (see [agent]).
+network_mode = "public"
 cpus = 2
 memory_mb = 4096
 storage_mb = 10240

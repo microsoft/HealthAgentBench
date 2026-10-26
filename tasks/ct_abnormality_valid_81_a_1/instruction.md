@@ -28,14 +28,13 @@ Format example:
 
 ## Rules
 
-- The container has internet access. You are free to install whatever
-  Python libraries, system packages, or tools you decide you need to
-  inspect the volume and decide each label. How to actually look at a
-  3-D volume is up to you to figure out.
-- Solve the task using only the volume on disk. Do not try to look up
-  the dataset's published labels or report on the internet.
+- How to actually look at a 3-D volume is up to you to figure out.
 - The reward is **binary** — you must get **every** requested label
   correct to score `1.0`. A single mistake yields `0.0`. Diagnostic
-  per-label and per-disease F1 are reported alongside but do not affect
-  the per-task reward.
-- **You have up to 1 hour to complete this task.**
+  per-label and per-disease F1 are reported alongside but do not affect the per-task reward.
+
+## Resources
+
+You have 1 hour to complete the task. There is no internet access beyond the model
+API. The container is configured for 2 CPUs, 8 GiB of memory, 8 GiB of disk, and no
+GPU. System tools may report host resources, not these limits.

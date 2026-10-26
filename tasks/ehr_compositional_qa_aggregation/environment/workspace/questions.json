@@ -1,0 +1,122 @@
+[
+  {
+    "question_id": "kdigo_stages__variant_0",
+    "concept": "kdigo_stages",
+    "variant_id": "variant_0",
+    "question": "What is the maximum KDIGO AKI stage this patient reaches during their ICU stay?",
+    "subject_id": 10023771,
+    "hadm_id": 20044587,
+    "stay_id": 33177122,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "kdigo_stages__variant_1",
+    "concept": "kdigo_stages",
+    "variant_id": "variant_1",
+    "question": "What is the maximum KDIGO AKI stage based on creatinine criteria for this patient during their ICU stay?",
+    "subject_id": 10007795,
+    "hadm_id": 28477357,
+    "stay_id": 31921355,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_0",
+    "concept": "meld",
+    "variant_id": "variant_0",
+    "question": "What is this patient's maximum MELD score during their ICU stay?",
+    "subject_id": 10021487,
+    "hadm_id": 28998349,
+    "stay_id": 38197705,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  },
+  {
+    "question_id": "meld__variant_3",
+    "concept": "meld",
+    "variant_id": "variant_3",
+    "question": "What was this patient's maximum serum creatinine used in the MELD score calculation?",
+    "subject_id": 10031757,
+    "hadm_id": 28477280,
+    "stay_id": 30458995,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "meld__variant_4",
+    "concept": "meld",
+    "variant_id": "variant_4",
+    "question": "What is this patient's maximum INR value used in the MELD score calculation?",
+    "subject_id": 10037928,
+    "hadm_id": 24656677,
+    "stay_id": 39804682,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_0",
+    "concept": "norepinephrine_equivalent_dose",
+    "variant_id": "variant_0",
+    "question": "What is this patient's maximum norepinephrine-equivalent vasopressor dose (mcg/kg/min) during their ICU stay?",
+    "subject_id": 10005817,
+    "hadm_id": 20626031,
+    "stay_id": 32604416,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "norepinephrine_equivalent_dose__variant_1",
+    "concept": "norepinephrine_equivalent_dose",
+    "variant_id": "variant_1",
+    "question": "What is this patient's average norepinephrine-equivalent vasopressor dose (mcg/kg/min) during their ICU stay?",
+    "subject_id": 10025612,
+    "hadm_id": 23403708,
+    "stay_id": 32587226,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "continuous",
+      "rel": 0.01,
+      "abs": 0.001
+    }
+  },
+  {
+    "question_id": "sofa__variant_0",
+    "concept": "sofa",
+    "variant_id": "variant_0",
+    "question": "What is this patient's maximum SOFA score during their first 24 hours in the ICU?",
+    "subject_id": 10002428,
+    "hadm_id": 20321825,
+    "stay_id": 34807493,
+    "answer_type": "numerical",
+    "question_type": "aggregation",
+    "tolerance": {
+      "kind": "integer"
+    }
+  }
+]

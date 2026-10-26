@@ -1,0 +1,6 @@
+*
+!environment/
+!environment/Dockerfile
+!environment/Dockerfile.bootstrap
+!environment/workspace/
+!environment/workspace/**

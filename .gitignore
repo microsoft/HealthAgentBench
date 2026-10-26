@@ -22,21 +22,45 @@ results/
 # (see scripts/ct_abnormality/gold_derivation.py) and written here by the
 # bootstrap. It is never committed — the answer key / report text stay out of git.
 tasks/ct_abnormality_*/tests/gold.json
-# clinical_trial_matching: the patient note (topic.txt) and relevance-judgment
-# answer key (qrels.txt) are the TREC benchmark data. They are NOT committed —
-# the bootstrap downloads topics2021.xml / qrels2021.txt at run time and
-# extract_task_inputs.py writes them (qrels.txt into tests/ via a host
-# bind-mount; topic.txt only into the in-container workspace volume).
-tasks/clinical_trial_matching_*/tests/qrels.txt
-tasks/clinical_trial_matching_*/environment/workspace/topic.txt
 tasks/ehr_event_modelling_*/tests/test_labels.csv
 # MIMIC-CXR verifier-only artifacts written by the per-task bootstrap
 # service from credentialed PhysioNet downloads. Never commit —
 # PhysioNet redistribution rules apply.
 tasks/xray_report_correction_*/tests/target_report.txt
+
+# Survival-task bootstrap services write verifier-only outcomes into each
+# task's tests directory.
+assets/survival_prediction
+tasks/survival_prediction_mskchord_*/tests/test_labels.csv
+tasks/survival_prediction_mskchord_*/tests/train_outcomes.csv
+
+# mri_qa: gold is derived in the bootstrap container at run time from the
+# Redivis label tables and written here; never committed (MRNet access terms).
+tasks/mri_qa_set_*/tests/gold.json
+tasks/mri_qa_set_*/tests/data_verification.json
+
 # local convenience helpers
 resume-codex.sh
 # project-level env file (schema documented in README.md; never commit secrets)
 .env
 .env.local
 .env.*.local
+
+# Raw public demo cache used only by compositional-QA bootstrap
+assets/ehr_compositional_qa/
+
+# Raw data caches populated by the per-task bootstrap services (CT-RATE, GDC
+# slides, MIMIC-CXR, MIMIC-IV demo, EHRSHOT, MRNet). Never commit — licences
+# and size. Only the scripts beside them (e.g. assets/mri_qa/*.py) are tracked.
+assets/*/assets/
+assets/ehr_event_modelling
+
+# Harbor run outputs (trial logs, trajectories, artifacts). The job yamls in
+# jobs/*.yaml are tracked; the per-run directories are not.
+jobs/*/
+
+# Local research scratch (probes, legacy task sets, audits); not part of the benchmark
+research/
+
+# Full-benchmark sweep outputs and job configs (local only)
+full_run_v2/

@@ -30,10 +30,15 @@ services:
       # on a cache miss). Resolves to assets/ct_abnormality/assets/raw_cache.
       - ../../../assets/ct_abnormality/assets/raw_cache:/data/_cache:rw
       # Per-task tests/ dir, RW: bootstrap writes the runtime-derived gold.json
-      # here (gitignored). Harbor mounts the same host dir as /tests for the
-      # verifier. main does NOT mount this — the agent never sees the gold.
+      # here (gitignored). Harbor builds the separate verifier image from this
+      # dir at verification time (tests/Dockerfile copies gold.json). main does
+      # NOT mount this — the agent never sees the gold.
       - ../tests:/tests:rw
       - workspace-data:/workspace/data
+    # Explicit networking keeps bootstrap outside Harbor's egress control: it must
+    # reach upstream sources on a cache miss, and no agent code runs in it.
+    networks:
+      - default
     command: ["/bin/bash", "/bootstrap.sh"]
 
 volumes:

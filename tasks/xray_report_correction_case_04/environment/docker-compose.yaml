@@ -31,6 +31,10 @@ services:
       - patient-data:/data/patient:rw
     environment:
       - PYTHONUNBUFFERED=1
+    # Explicit networking keeps bootstrap outside Harbor's egress control: it must
+    # reach upstream sources on a cache miss, and no agent code runs in it.
+    networks:
+      - default
     command: ["/bin/bash", "/bootstrap.sh"]
 
   main:
@@ -41,14 +45,8 @@ services:
     depends_on:
       bootstrap:
         condition: service_completed_successfully
-    env_file:
-      # CHEXPROMPT_OPENAI_API_KEY, CHEXPROMPT_OPENAI_BASE_URL, CHEXPROMPT_DEPLOYMENT (verifier).
-      # NOTE: PN_USER / PN_PASS in the same .env do get loaded into main
-      # by docker compose, but the verifier doesn't read them — the
-      # bootstrap service is what touches PhysioNet. The agent has shell
-      # access; if PN-credential isolation matters more, split .env into
-      # two files and reference them per-service.
-      - ../../../.env
+    # No env_file here: the judge credentials live only in the separate verifier
+    # ([verifier.env] in task.toml) and PN_USER/PN_PASS only in bootstrap.
     volumes:
       # Agent-visible (read-only): patient images + reports staged by
       # bootstrap. The named ``patient-data`` volume holds REAL JPG file

@@ -5,7 +5,8 @@
   "private": true,
   "description": "Leaderboard website for the MedCLI agentic healthcare benchmark suite.",
   "scripts": {
-    "gen": "node scripts/build-results.mjs",
+    "gen": "node scripts/build-results.mjs && node scripts/build-v2-results.mjs",
+    "gen:v2": "node scripts/build-v2-results.mjs",
     "dev": "npm run gen && astro dev",
     "build": "npm run gen && astro build",
     "preview": "astro preview"

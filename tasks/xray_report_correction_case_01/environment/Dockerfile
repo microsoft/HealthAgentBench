@@ -1,27 +1,22 @@
 FROM python:3.12-slim
 
-# bash, curl/wget, flock for the bootstrap script. git is needed for the
-# verifier-venv's `pip install git+...chexprompt`. ripgrep + jq are
-# convenience tools the agent often needs.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    bash \
-    curl \
-    wget \
-    git \
-    util-linux \
-    jq \
-    ripgrep \
-    && rm -rf /var/lib/apt/lists/*
+# bash, curl/wget, flock for the bootstrap script. ripgrep + jq are convenience
+# tools for the agent. The chexprompt judge lives in the separate verifier image
+# (tests/Dockerfile), not here.
+RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl procps jq tmux asciinema ripgrep wget util-linux && rm -rf /var/lib/apt/lists/*
+# Node.js preinstalled from NodeSource (one package). Harbor's codex setup only
+# apt-installs curl/node/npm/ripgrep when the commands are missing; Debian's
+# ``npm`` meta-package pulls in ~700 debs and made five concurrent trials exceed
+# the agent-setup timeout on shared hosts. Codex itself is still installed by
+# Harbor at setup time (nvm + npm), reproducibly and per its own version pin.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -     && apt-get install -y --no-install-recommends nodejs     && rm -rf /var/lib/apt/lists/*     && node --version && npm --version
 
-# Verifier-only venv: chexprompt + the legacy openai==0.28 SDK pin it
-# requires. Isolated from anything the agent might install at runtime.
-RUN python -m venv /opt/verifier-venv \
-    && /opt/verifier-venv/bin/pip install --no-cache-dir --upgrade pip \
-    && /opt/verifier-venv/bin/pip install --no-cache-dir \
-        'openai==0.28.0' \
-        'aiolimiter>=1.1.0' \
-        'git+https://github.com/microsoft/chexprompt.git@main'
 
+# Analysis stack preinstalled: the agent phase has no internet beyond the model API
+# (task.toml [agent] allowlist), so nothing can be pip-installed later.
+RUN pip install --no-cache-dir numpy==2.4.2 pillow==12.1.1 matplotlib==3.10.8 \
+        scipy==1.18.1 scikit-image==0.26.0 opencv-python-headless==5.0.0.93 \
+        scikit-learn==1.9.1 pandas==3.0.6
 # Don't write .pyc files anywhere — keeps the bind-mounted /tests dir free
 # of root-owned __pycache__ residue.
 ENV PYTHONDONTWRITEBYTECODE=1

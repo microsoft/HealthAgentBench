@@ -1,0 +1,1 @@
+MRI inputs are the `axial.npy`, `coronal.npy`, and `sagittal.npy` arrays in `/workspace/mri/exam_1/` through `/workspace/mri/exam_3/`. Save the ACL and meniscus answers for every exam to `/workspace/submission.json`. See the task instructions for definitions and the exact JSON schema.

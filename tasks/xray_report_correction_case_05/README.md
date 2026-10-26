@@ -12,6 +12,7 @@ Given a MIMIC-CXR study, correct the radiology report FINDINGS. The submission i
 
 ```bash
 uv run harbor run \
+  --env-file .env \
   --path tasks/xray_report_correction_case_05 \
   --agent claude-code \
   --model claude-opus-4-8 \
@@ -26,6 +27,7 @@ Point `--path` at `tasks/` and glob the category name with `--include-task-name`
 
 ```bash
 uv run harbor run \
+  --env-file .env \
   --path tasks \
   --include-task-name "xray_report_correction_*" \
   --agent claude-code \

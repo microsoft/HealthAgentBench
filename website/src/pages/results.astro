@@ -1,25 +1,5 @@
 ---
-import Base from '../layouts/Base.astro';
-import Leaderboard from '../components/Leaderboard.astro';
-import results from '../data/results.json';
-
-const totalTasks = results.totalTaskCount;
-const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
-const withBase = (path) => `${basePath}${path}`;
+import BenchmarkResults from '../components/BenchmarkResults.astro';
 ---
 
-<Base title="Results — HealthAgentBench">
-  <section>
-    <div class="container">
-      <div class="section-head">
-        <h2>Detailed Results</h2>
-        <p>Full per-category leaderboard for the current HealthAgentBench release, including the task-category breakdown behind the pooled success rate.</p>
-      </div>
-      <div class="leaderboard-actions">
-        <a class="btn" href={withBase('/')}>Back to overview</a>
-      </div>
-      <Leaderboard tableId="leaderboard-results" />
-      <p class="note">This page expands the homepage summary into per-category success rates across all {totalTasks} tasks.</p>
-    </div>
-  </section>
-</Base>
+<BenchmarkResults version="v2" />

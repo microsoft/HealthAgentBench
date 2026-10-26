@@ -6,8 +6,8 @@ services:
     image: ${COMPOSE_PROJECT_NAME}-img
     # /data/_cache is intentionally NOT mounted into main. /tests/ is not
     # mounted into main during agent runtime either (Harbor's convention --
-    # the agent has no path to read test_labels.csv mid-run). Harbor
-    # auto-mounts /tests/ when invoking the verifier (test.sh).
+    # the agent has no path to read test_labels.csv mid-run). Harbor builds
+    # the separate verifier image from tests/ at verification time.
     volumes:
       - workspace-data:/workspace/data:rw
     depends_on:
@@ -17,7 +17,13 @@ services:
       - PYTHONUNBUFFERED=1
 
   bootstrap:
-    image: ${COMPOSE_PROJECT_NAME}-img
+    # Separate image from main: carries ``redivis`` (and its heavy transitive
+    # deps) for the EHRSHOT download + slicing. The agent's main image ships
+    # only numpy + pandas.
+    image: ${COMPOSE_PROJECT_NAME}-bootstrap
+    build:
+      context: ..
+      dockerfile: environment/Dockerfile.bootstrap
     # All host paths are relative to this compose file's location
     # (tasks/ehr_event_modelling/<task>/environment/) so the repo is portable across
     # users / machines. The Redivis API token is read from the repo-root .env
@@ -38,10 +44,14 @@ services:
       # Harbor's verifier reads it from there when invoking test.sh.
       - ../tests:/tests:rw
       # bootstrap.sh (per-task entrypoint) and stage_data.py (the slicer) are
-      # mounted into the bootstrap service ONLY -- never baked into the shared
+      # mounted into the bootstrap service ONLY -- never baked into either
       # image -- so the agent's main container cannot read them.
       - ./bootstrap.sh:/bootstrap.sh:ro
       - ./stage_data.py:/opt/ehr_event_modelling/stage_data.py:ro
+    # Explicit networking keeps bootstrap outside Harbor's egress control: it must
+    # reach upstream sources on a cache miss, and no agent code runs in it.
+    networks:
+      - default
     command: ["/bin/bash", "/bootstrap.sh"]
 
 volumes:

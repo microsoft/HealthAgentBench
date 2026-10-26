@@ -1,0 +1,30 @@
+{
+  "task_id": "survival_prediction_mskchord_crc_tte",
+  "dataset": "mskchord",
+  "cohort": "crc",
+  "prediction_task": "TTE_OS",
+  "num_folds": 5,
+  "fold": 0,
+  "seed": 20,
+  "n_source_rows": 5545,
+  "n_exact_duplicate_rows_removed": 2,
+  "n_train": 4434,
+  "n_test": 1109,
+  "cox": {
+    "c_index": 0.7476468155904369,
+    "cmae_years": 2.3281108303503357,
+    "ibs": 0.2706972739488322
+  },
+  "rsf": {
+    "c_index": 0.7800590615914071,
+    "cmae_years": 2.112638085916278,
+    "ibs": 0.24762551684741907
+  },
+  "baseline_source": "scripts/regenerate_survival_baselines.py; exact-row deduplication before SurvPrompt fold 0; CoxPHFitter penalizer=0.1; RandomSurvivalForest n_estimators=1000, min_samples_split=10, min_samples_leaf=15, random_state=20",
+  "baseline_versions": {
+    "lifelines": "0.30.0",
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scikit-survival": "0.28.0"
+  }
+}

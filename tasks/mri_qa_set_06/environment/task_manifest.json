@@ -1,0 +1,102 @@
+{
+  "task_id": "mri_qa_set_06",
+  "dataset": "aimi.mrnet_knee_mri_s:4a2c:v1_0",
+  "image_table": "valid:zcmk",
+  "exams": [
+    {
+      "slot": "exam_1",
+      "source_exam_id": "1144",
+      "files": {
+        "axial": {
+          "file_id": "zcmk-axqbkjp30.N2oo-N-8bB6-qUP5oN7wrw",
+          "file_name": "axial/1144.npy",
+          "size": "2752640",
+          "added_at": "2026-03-31 22:50:44.187000",
+          "md5_hash": "+RZosmsMu3FSoxfJvWrUGw=="
+        },
+        "coronal": {
+          "file_id": "zcmk-axqbkjp30.eqghMk_qs8SFcqFRCAuHEA",
+          "file_name": "coronal/1144.npy",
+          "size": "2293888",
+          "added_at": "2026-03-31 22:50:44.187000",
+          "md5_hash": "/zDqjY0Pu6vV6LwvopHPdQ=="
+        },
+        "sagittal": {
+          "file_id": "zcmk-axqbkjp30.-zcXqCdf3Nh2DwQhF41zyQ",
+          "file_name": "sagittal/1144.npy",
+          "size": "2490496",
+          "added_at": "2026-03-31 22:50:44.187000",
+          "md5_hash": "AowkWwKBAe8YxRmuXV866A=="
+        }
+      }
+    },
+    {
+      "slot": "exam_2",
+      "source_exam_id": "1236",
+      "files": {
+        "axial": {
+          "file_id": "zcmk-axqbkjp30.Ok1D_yw5ZjyHSjAPTMXvfA",
+          "file_name": "axial/1236.npy",
+          "size": "2883712",
+          "added_at": "2026-03-31 22:50:47.811000",
+          "md5_hash": "/8rhM13ouh7QcVi0qnY2mw=="
+        },
+        "coronal": {
+          "file_id": "zcmk-axqbkjp30.OcQEoHYxKphf_nDtA1E_4Q",
+          "file_name": "coronal/1236.npy",
+          "size": "2228352",
+          "added_at": "2026-03-31 22:50:44.187000",
+          "md5_hash": "j8SQSIdPP+mnXp8k0R2jXg=="
+        },
+        "sagittal": {
+          "file_id": "zcmk-axqbkjp30.41IdrB0sj6r9QdPvLFWbzA",
+          "file_name": "sagittal/1236.npy",
+          "size": "2228352",
+          "added_at": "2026-03-31 22:50:44.187000",
+          "md5_hash": "09PR+t9MZq/qkYRryPj6Nw=="
+        }
+      }
+    },
+    {
+      "slot": "exam_3",
+      "source_exam_id": "1245",
+      "files": {
+        "axial": {
+          "file_id": "zcmk-axqbkjp30.S3DQY9G1jd-dns9-vpskbQ",
+          "file_name": "axial/1245.npy",
+          "size": "2621568",
+          "added_at": "2026-03-31 22:50:47.811000",
+          "md5_hash": "KuHOfzxsbLStHfbJfFfS6A=="
+        },
+        "coronal": {
+          "file_id": "zcmk-axqbkjp30.3oFdl-uW_W1pMjWmJSxfpQ",
+          "file_name": "coronal/1245.npy",
+          "size": "2162816",
+          "added_at": "2026-03-31 22:50:44.187000",
+          "md5_hash": "kh9KTxt5623NuYEI3+OnGQ=="
+        },
+        "sagittal": {
+          "file_id": "zcmk-axqbkjp30.OT3FVcJu7pI8AXt7AAPPIw",
+          "file_name": "sagittal/1245.npy",
+          "size": "2097280",
+          "added_at": "2026-03-31 22:50:44.187000",
+          "md5_hash": "ei/XUHYzq/TyJrd2928DuQ=="
+        }
+      }
+    }
+  ],
+  "label_tables": {
+    "abnormal": {
+      "table": "valid_abnormal:851r",
+      "canonical_sha256": "f396748fe352959884c1478f714b68509c21ce0ef48c3b6e439fd6d62d671572"
+    },
+    "acl": {
+      "table": "valid_acl:sqwh",
+      "canonical_sha256": "ec143ef9754b521679ecf3c09b355a43c1853bde649a303d4ff95fe077809704"
+    },
+    "meniscus": {
+      "table": "valid_meniscus:nqng",
+      "canonical_sha256": "e59d8f7d64dbd9687a77e4bfff955c5b365741e5659847ef6ed644d101407af1"
+    }
+  }
+}

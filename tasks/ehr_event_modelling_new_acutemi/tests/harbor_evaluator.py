@@ -16,8 +16,8 @@ import json
 import sys
 from pathlib import Path
 
-# evaluate.py ships alongside this file in tests/ (mounted at /tests only at
-# verify time), so it is never in the agent's reach.
+# evaluate.py ships alongside this file in tests/, which is baked into Harbor's
+# separate verifier image (tests/Dockerfile), so it is never in the agent's reach.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import evaluate as _ev  # noqa: E402
 

@@ -1,9 +1,0 @@
-id: task_demographic_conflict_clues
-seed: 3
-in_scope_patient_count: 100
-tables:
-- patients
-detailed_instruction: true
-injectors:
-- family: demographic_conflict
-  count: 18

@@ -1,0 +1,97 @@
+{
+  "task_id": "pathology_tumor_slide_selection_set_07",
+  "slides": [
+    "slide_1.svs",
+    "slide_2.svs",
+    "slide_3.svs",
+    "slide_4.svs",
+    "slide_5.svs",
+    "slide_6.svs",
+    "slide_7.svs",
+    "slide_8.svs"
+  ],
+  "tumor_slides": [
+    "slide_6.svs",
+    "slide_8.svs"
+  ],
+  "source_slides": {
+    "slide_1.svs": "slide_0003",
+    "slide_2.svs": "slide_0087",
+    "slide_3.svs": "slide_0050",
+    "slide_4.svs": "slide_0098",
+    "slide_5.svs": "slide_0097",
+    "slide_6.svs": "slide_0191",
+    "slide_7.svs": "slide_0093",
+    "slide_8.svs": "slide_0156"
+  },
+  "label_criteria": {
+    "tumor": "GDC sample_type in (Primary Tumor, Metastatic) and reviewed percent_tumor_cells > 0; the lowest-percentage eligible slides are used",
+    "normal": "GDC sample_type == Solid Tissue Normal and reviewed percent_tumor_cells == 0"
+  },
+  "slide_review": {
+    "slide_1.svs": {
+      "sample_type": "Solid Tissue Normal",
+      "project": "TCGA-BRCA",
+      "pct_tumor": 0.0,
+      "pct_normal": 100.0,
+      "pct_nuclei": null,
+      "size_mb": 103
+    },
+    "slide_2.svs": {
+      "sample_type": "Solid Tissue Normal",
+      "project": "TCGA-STAD",
+      "pct_tumor": 0.0,
+      "pct_normal": 60.0,
+      "pct_nuclei": 0.0,
+      "size_mb": 35
+    },
+    "slide_3.svs": {
+      "sample_type": "Solid Tissue Normal",
+      "project": "TCGA-KIRP",
+      "pct_tumor": 0.0,
+      "pct_normal": 80.0,
+      "pct_nuclei": 0.0,
+      "size_mb": 31
+    },
+    "slide_4.svs": {
+      "sample_type": "Solid Tissue Normal",
+      "project": "TCGA-UCEC",
+      "pct_tumor": 0.0,
+      "pct_normal": 30.0,
+      "pct_nuclei": 0.0,
+      "size_mb": 93
+    },
+    "slide_5.svs": {
+      "sample_type": "Solid Tissue Normal",
+      "project": "TCGA-UCEC",
+      "pct_tumor": 0.0,
+      "pct_normal": 100.0,
+      "pct_nuclei": null,
+      "size_mb": 97
+    },
+    "slide_6.svs": {
+      "sample_type": "Metastatic",
+      "project": "TCGA-SKCM",
+      "pct_tumor": 65.0,
+      "pct_normal": 0.0,
+      "pct_nuclei": 65.0,
+      "size_mb": 237
+    },
+    "slide_7.svs": {
+      "sample_type": "Solid Tissue Normal",
+      "project": "TCGA-THYM",
+      "pct_tumor": 0.0,
+      "pct_normal": 0.0,
+      "pct_nuclei": 0.0,
+      "size_mb": 75
+    },
+    "slide_8.svs": {
+      "sample_type": "Metastatic",
+      "project": "TCGA-SKCM",
+      "pct_tumor": 65.0,
+      "pct_normal": 20.0,
+      "pct_nuclei": 80.0,
+      "size_mb": 186
+    }
+  }
+}

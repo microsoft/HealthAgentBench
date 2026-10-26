@@ -56,16 +56,15 @@ use any approach. Iterate freely: only the final submission you write to
   e.g. `SNOMED/...`, `LOINC/...`, `RxNorm/...`, `CVX/...`, `ICD10PCS/...`,
   `CPT4/...`, plus demographic/visit metadata codes like `Gender/F`,
   `Race/...`, `Visit/IP`. `value` is populated for numeric events
-  (e.g. lab results) and empty otherwise. The file is read-only and
-  large (~1-2 GB after slicing); stream it with
-  `pandas.read_csv(..., chunksize=...)` or `pyarrow` if memory is tight.
+  (e.g. lab results) and empty otherwise.
 
   **Anti-leakage rule:** when scoring or training a row at
   `prediction_time = T`, only use events with `start < T` for that
   patient. Events at or after `T` are not legitimately observable.
 
-- `splits/person_id_map.csv` — patient → split mapping (so you can
-  cross-check which patients are train/val/test).
+- `splits/person_id_map.csv` — patient → split mapping. Columns:
+  `omop_person_id, split` (`omop_person_id` is the same identifier as
+  `patient_id` in the other files; `split` is `train`, `val` or `test`).
 
 ## Output
 
@@ -84,23 +83,22 @@ you are that the label is positive (1)**:
   - the closer to **0**, the more confident you are the label is negative.
 
 Submit raw continuous probabilities/scores, not hard 0/1 predictions and
-not coarse buckets. For multilabel tasks, each label column is independent
-(one continuous confidence per finding; they do not need to sum to 1
-across columns).
+not coarse buckets. Every value must be a finite number; an empty or
+`NaN` probability counts as a missing row.
 
-The verifier matches rows by `(patient_id, prediction_time)` and rejects
-submissions with missing rows.
+The verifier matches rows by `(patient_id, prediction_time)` and
+**rejects the whole submission if any test row is missing**. Extra rows
+not in `test_examples.csv` are ignored.
 
 ## Scoring
 
 Your submission will be scored with **AUROC** (Area Under the Receiver
-Operating Characteristic curve) against the held-out test labels.
+Operating Characteristic curve) against the held-out test labels. The
+task counts as solved when your AUROC reaches or exceeds a fixed
+reference AUROC.
 
-## Constraints
+## Resources
 
-- Time limit: you have up to 1 hour to complete this task.** The
-  environment is terminated the moment the hour elapses — anything not
-  finished by then is lost. Make sure you write `/workspace/submission/predictions.csv` before the hour
-  is up.
-- You have internet access and may install any Python packages or
-  external tools you need.
+You have 1 hour to complete the task. There is no internet access beyond the model
+API. The container is configured for 16 CPUs, 64 GiB of memory, 64 GiB of disk, and
+no GPU. System tools may report host resources, not these limits.
